@@ -66,20 +66,6 @@ public interface IUserDao
 
 	/**
 	 * @param brandId
-	 * @param pagination TODO
-	 * @return
-	 */
-	DatagridVo<User> getAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination);
-
-	/**
-	 * @param brandId
-	 * @param pagination TODO
-	 * @return
-	 */
-	DatagridVo<User> getNotAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination);
-
-	/**
-	 * @param brandId
 	 * @param userIds
 	 * @return 
 	 */

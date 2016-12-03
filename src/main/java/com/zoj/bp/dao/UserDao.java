@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.model.User;
-import com.zoj.bp.model.User.Role;
 import com.zoj.bp.vo.DatagridVo;
 import com.zoj.bp.vo.Pagination;
 
@@ -115,44 +114,6 @@ public class UserDao extends BaseDao implements IUserDao
 		}
 		sql += part + ";";
 		return jdbcOps.update(sql, new MapSqlParameterSource("userId", userId));
-	}
-
-	@Override
-	public DatagridVo<User> getAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination)
-	{
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("PRODUCT_TYPE_ID", brandId);
-		paramMap.put("ROLE", Role.product_operator.getValue());
-		String sql = "SELECT DISTINCT U.* FROM USER_PRODUCT_TYPE_RELATION R"
-				+ " LEFT JOIN USER U ON R.USER_ID = U.id"
-				+ " WHERE R.PRODUCT_TYPE_ID = :PRODUCT_TYPE_ID AND U.ROLE = :ROLE";
-		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
-		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " LIMIT :start, :rows";
-		paramMap.put("start", pagination.getStartRow());
-		paramMap.put("rows", pagination.getRows());
-		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
-	}
-
-	@Override
-	public DatagridVo<User> getNotAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination)
-	{
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("PRODUCT_TYPE_ID", brandId);
-		paramMap.put("ROLE", Role.product_operator.getValue());
-		String sql = "SELECT U2.* FROM USER U2"
-				+ " WHERE U2.id NOT IN"
-				+ "	("
-				+ " 	SELECT DISTINCT U.id FROM USER_PRODUCT_TYPE_RELATION R"
-				+ "		LEFT JOIN USER U ON R.USER_ID = U.id"
-				+ "		WHERE R.PRODUCT_TYPE_ID = :PRODUCT_TYPE_ID AND U.ROLE = :ROLE"
-				+ "	) AND U2.ROLE = :ROLE";
-		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
-		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " LIMIT :start, :rows";
-		paramMap.put("start", pagination.getStartRow());
-		paramMap.put("rows", pagination.getRows());
-		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
 	}
 
 	@Override

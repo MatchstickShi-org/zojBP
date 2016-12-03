@@ -1,0 +1,119 @@
+@charset "utf-8";
+/* CSS Document */
+body,html,img,input
+{
+	padding:0;
+	margin:0;
+	border: none;
+}
+
+#container
+{
+	width:100%;
+	height:100%;
+	background:url(images/bg.jpg) repeat-x;
+}
+#maincontent
+{
+	width:715px;
+	height:334px;
+	margin:0 auto;
+	padding-top:129px;
+}
+
+#bg_top
+{
+	width:715px;
+	height:100px;
+	background:url(images/bg_top.gif) no-repeat;
+}
+
+#bg_bottom
+{
+	width:715px;
+	height:334px;
+}
+
+#bg_left
+{
+	width:313px;
+	height:272px;
+	background: url(images/bg_left.gif) no-repeat;
+	float:left;
+}
+#bg_right
+{
+	width:402px;
+	height:334px;
+	background:url(images/bg_right.gif) no-repeat;
+	float:left;
+}
+
+#icon
+{
+	width:54px;
+	height:49px;
+	background:url(logo_small.png) no-repeat;
+	float:left;
+}
+
+#title
+{
+	font-family:"微软雅黑";
+	font-size:30px;
+	height:49px;
+	line-height:49px;	
+}
+
+#left_content
+{
+	width:260px;
+	height:190px;
+	padding-top:10px;
+	padding-left:30px;
+}
+
+#button a
+{
+	width:93px;
+	height:52px;
+	background:url(images/button.gif) no-repeat;float: right; margin-right: 18px; margin-top: 20px;
+}
+#button a:hover{
+	width:93px;
+	height:52px;
+	background:url(images/button_hover.gif) no-repeat;float: right; margin-right: 18px; margin-top: 20px;
+}
+
+#button #loginBtn{
+	width:93px;
+	height:52px;
+	background:url(images/button.gif) no-repeat;float: right; margin-right: 18px; margin-top: 20px;
+}
+#button #loginBtn:hover{
+	width:93px;
+	height:52px;
+	background:url(images/button_hover.gif) no-repeat;float: right; margin-right: 18px; margin-top: 20px;
+	cursor:pointer;
+}
+
+table{width: auto; border: 0px; border-collapse: collapse;}
+table tr td{padding: 0px;}
+table tr td#userNameLabelTd{ background: url(images/user_left.gif) no-repeat; width: 68px; height: 39px; line-height: 39px; float: left }
+table tr td#pwdLabelTd{ background: url(images/password_left.gif) no-repeat; width: 68px; height: 39px; line-height: 39px; float: left }
+table tr td.valueTd
+{
+	background: url(images/button1.gif) no-repeat; width: 143px; height: 39px; line-height: 39px;
+	float: left; padding-left: 6px;
+}
+
+table tr td.valueTd input
+{
+	background: url(images/button1.gif) no-repeat; width: 143px; height: 39px; line-height: 39px;
+	float: left; padding-left: 6px;
+}
+table tr td select{width: 130px;} 
+#text1{
+	font-family:"微软雅黑";
+	font-size:24px;
+}

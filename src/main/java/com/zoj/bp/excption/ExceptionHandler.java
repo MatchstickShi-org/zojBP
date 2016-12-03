@@ -4,7 +4,6 @@
 package com.zoj.bp.excption;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,23 +14,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.zoj.bp.util.HttpUtils;
 import com.zoj.bp.util.ResponseUtils;
 
 /**
@@ -41,13 +34,6 @@ import com.zoj.bp.util.ResponseUtils;
 public class ExceptionHandler extends ExceptionHandlerExceptionResolver
 {
 	private static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
-	
-	@Override
-	public void afterPropertiesSet()
-	{
-		super.getMessageConverters().add(0, getApplicationContext().getBean(FastJsonHttpMessageConverter.class));
-		super.afterPropertiesSet();
-	}
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
@@ -71,33 +57,11 @@ public class ExceptionHandler extends ExceptionHandlerExceptionResolver
 		
 		if (handler != null)
 		{
-			HandlerMethod handlerMethod = (HandlerMethod) handler;
-			Method method = handlerMethod.getMethod();
-			ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method, ResponseBody.class);
-			if (responseBodyAnn != null)
+			if (HttpUtils.instance().isAjaxRequest(request))
 			{
 				Map<String, Object> returnMap = ResponseUtils.buildRespMap(e);
 				try
 				{
-					ResponseStatus responseStatusAnn = AnnotationUtils.findAnnotation(method, ResponseStatus.class);
-					if (responseStatusAnn != null)
-					{
-						HttpStatus responseStatus = responseStatusAnn.value();
-						String reason = responseStatusAnn.reason();
-						if (!StringUtils.hasText(reason))
-							response.setStatus(responseStatus.value());
-						else
-						{
-							try
-							{
-								response.sendError(responseStatus.value(), reason);
-							}
-							catch (IOException e1)
-							{}
-						}
-					}
-					else
-						response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 					return handleResponseBody(returnMap, request, response);
 				}
 				catch (Exception e1)
@@ -105,7 +69,7 @@ public class ExceptionHandler extends ExceptionHandlerExceptionResolver
 					return null;
 				}
 			}
-			else if(method.getReturnType() == ModelAndView.class)		//默认为视图
+			else		//默认为视图
 				return new ModelAndView("global/500", "msg", e.getMessage());
 		}
 		return null;

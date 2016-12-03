@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * @author MatchstickShi
  */
@@ -28,7 +26,7 @@ public class User implements Serializable
 	private String pwd;
 	
 	@NotNull
-	private String role = "1";
+	private Integer role = 1;
 	
 	private List<Menu> menus;
 	
@@ -72,12 +70,12 @@ public class User implements Serializable
 		this.pwd = pwd;
 	}
 
-	public String getRole()
+	public Integer getRole()
 	{
 		return role;
 	}
 
-	public void setRole(String role)
+	public void setRole(Integer role)
 	{
 		this.role = role;
 	}
@@ -97,26 +95,34 @@ public class User implements Serializable
 	 */
 	public boolean isAdmin()
 	{
-		return StringUtils.equals(this.role, Role.admin.getValue());
+		return this.role == Role.admin.getValue();
 	}
 	
 	public enum Role
 	{
 		/**管理员*/
-		admin("0"),
-		/**产品维护员*/
-		product_operator("1"),
-		/**车型维护员*/
-		car_operator("2");
+		admin(0),
+		/**市场部-业务员*/
+		marketingSalesman(1),
+		/**市场部-主管*/
+		marketingLeader(2),
+		/**市场部-经理*/
+		marketingManager(3),
+		/**设计部-设计师*/
+		designDesigner(4),
+		/**设计部-主管*/
+		designLeader(5),
+		/**设计部-经理*/
+		designManager(6);
 		
-		private Role(String value)
+		private Role(Integer value)
 		{
 			this.value = value;
 		}
 		
-		private String value;
+		private Integer value;
 		
-		public String getValue()
+		public Integer getValue()
 		{
 			return this.value;
 		}

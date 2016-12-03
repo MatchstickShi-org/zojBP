@@ -1,6 +1,8 @@
 package com.zoj.bp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author MatchstickShi
@@ -15,6 +17,12 @@ public class Menu implements Serializable
 	private String name;
 	
 	private String url;
+	
+	private Integer parentId;
+	
+	private Integer idx;
+	
+	private List<Menu> childMenus = new ArrayList<>();
 
 	public Integer getId()
 	{
@@ -44,5 +52,43 @@ public class Menu implements Serializable
 	public void setUrl(String url)
 	{
 		this.url = url;
+	}
+
+	public List<Menu> getChildMenus()
+	{
+		return childMenus;
+	}
+
+	public void setChildMenus(List<Menu> childMenus)
+	{
+		this.childMenus = childMenus;
+	}
+
+	public Integer getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	/**
+	 * @param m
+	 */
+	public void addChildMenu(Menu m)
+	{
+		this.childMenus.add(m);
+	}
+
+	public Integer getIdx()
+	{
+		return idx;
+	}
+
+	public void setIdx(Integer idx)
+	{
+		this.idx = idx;
 	}
 }

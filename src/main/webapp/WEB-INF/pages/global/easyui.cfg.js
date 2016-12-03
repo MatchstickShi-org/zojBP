@@ -23,6 +23,19 @@ $.ajaxSetup
 
 $(function()
 {
+	$.extend($.fn.accordion.defaults,
+	{
+		fit: true
+	});
+	
+	$.extend($.fn.datalist.defaults,
+	{
+		lines: true,
+		fit: true,
+		striped: true,
+		rowStyler: function(){return "cursor: pointer"},
+	});
+	
 	$.extend($.fn.filebox.defaults,
 	{
 		buttonText: '选择文件',

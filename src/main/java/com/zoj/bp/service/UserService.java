@@ -99,18 +99,6 @@ public class UserService implements IUserService
 	}
 
 	@Override
-	public DatagridVo<User> getAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination)
-	{
-		return userDao.getAssignedOperatorDatagridVoByBrandId(brandId, pagination);
-	}
-
-	@Override
-	public DatagridVo<User> getNotAssignedOperatorDatagridVoByBrandId(Integer brandId, Pagination pagination)
-	{
-		return userDao.getNotAssignedOperatorDatagridVoByBrandId(brandId, pagination);
-	}
-
-	@Override
 	public Integer addOperatorsToBrand(Integer brandId, Integer[] userIds)
 	{
 		userDao.removeOperatorsFromBrand(brandId, userIds);

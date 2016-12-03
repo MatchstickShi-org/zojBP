@@ -8,8 +8,8 @@
 	<bean id="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 		<property name="jdbcUrl"
-			value="jdbc:mysql://localhost:3306/carpartsmgrdb?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true" />
-		<property name="user" value="matchstick" />
+			value="jdbc:mysql://localhost:3306/zajdb?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true" />
+		<property name="user" value="zajDbAdmin" />
 		<property name="password" value="1qaz2wsx" />
 		<property name="initialPoolSize" value="10" />
 		<property name="maxPoolSize" value="20" />

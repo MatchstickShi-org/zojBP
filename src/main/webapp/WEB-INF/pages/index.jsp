@@ -9,7 +9,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>车辆配件管理系统</title>
+<title>中奥建业务管理平台</title>
 <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="css/header.css">
@@ -22,42 +22,17 @@
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'north', border: false" style="height: 50px; overflow: hidden;">
-			<div id="topDiv"><div id="logoDiv"></div><h1>展云车型配件综合管理平台</h1></div>
+			<div id="topDiv"><div id="logoDiv"></div><h1>中奥建业务管理平台</h1></div>
 			<div id="topDiv-bg2"></div>
 			<div id="topDiv-loginUser">
 				欢迎你，${sessionScope.loginUser.alias}
-				<a id="changePwdBtn" href="javascript:void(0)">[修改密码]</a><a id="logoutBtn" href="logout">[注销]</a>
+				<a id="logoutBtn" href="logout">[注销]</a>
 			</div>
 		</div>
 		<div data-options="region:'west', split:true" title="菜单" style="width: 200px;">
-			<div id="westMenuDatalist"></div>
+			<div id="westMenuAccordion"></div>
 		</div>
 		<div id="idxCenterDiv" data-options="region:'center', title:'欢迎使用'"></div>
-	</div>
-	<div id="changePwdWindow" title="修改密码" style="width: 270px;">
-		<form id="changePwdForm" action="userMgr/changePwd" method="post" style="width: 100%;">
-			<input type="hidden" name="id" value="${loginUser.id}">
-			<table style="width: 100%">
-				<tr>
-					<td align="right"><label>原密码：</label></td>
-					<td><input name="originalPwd" class="easyui-textbox" type="password" required="required"/></td>
-				</tr>
-				<tr>
-					<td align="right"><label>新密码：</label></td>
-					<td><input name="newPwd" class="easyui-textbox" type="password" required="required"/></td>
-				</tr>
-				<tr>
-					<td align="right"><label>确认新密码：</label></td>
-					<td><input name="confirmNewPwd" class="easyui-textbox" type="password" required="required"/></td>
-				</tr>
-				<tr>
-					<td align="center" colspan="2">
-						<a class="easyui-linkbutton" id="submitChangePwdBtn" href="javascript:void(0)">保存</a>
-						<a class="easyui-linkbutton" onclick="$('div#changePwdWindow').window('close');" href="javascript:void(0)">取消</a>
-					</td> 
-				</tr>
-			</table>
-		</form>
 	</div>
 </body>
 <script type="text/javascript">
@@ -79,18 +54,67 @@ var _productClassifyJson =
 $(function()
 {
 	var req_userMenus = ${requestScope.loginUserMenus};
-	var $westMenuDatalist = $('div#westMenuDatalist');
+	var $westMenuAccordion = $('div#westMenuAccordion');
 	var $idxCenterDiv = $('div#idxCenterDiv');
-	var $changePwdBtn = $('a#changePwdBtn');
-	var $changePwdWindow = $('div#changePwdWindow');
-	var $submitChangePwdBtn = $('a#submitChangePwdBtn');
 	
 	$idxCenterDiv.panel('options').onLoadError = function(jqXHR, textStatus, errorThrown)
 	{
 		$(this).html(jqXHR.responseText);
 	};
 	
-	$westMenuDatalist.datalist
+	$westMenuAccordion.accordion({border: false});
+	
+	for(var i in req_userMenus)
+	{
+		var parentMenu = req_userMenus[i];
+		$westMenuAccordion.accordion('add', 
+		{
+			title: parentMenu.name,
+			content: function()
+			{
+				if(parentMenu.childMenus.length >0)
+				{
+					var cmDataListHtml = '<ul class="westMenu_datalist">';
+					for(var j in parentMenu.childMenus)
+					{
+						var cm = parentMenu.childMenus[j];
+						cmDataListHtml += '<li value="' + cm.url + '">' + cm.name + '</li>';
+					}
+					cmDataListHtml += '</ul>'
+					return cmDataListHtml;
+				}
+				return '';
+			}()
+		});
+	}
+	$westMenuAccordion.find('ul.westMenu_datalist').datalist
+	({
+		border: false,
+		textField: 'name',
+		valueField: 'url',
+		textFormatter: function (value, row, index)
+		{
+			return '<span style="margin-left: 10px;">' + value + '</span>';
+		},
+		onSelect: function(idx, row)
+		{
+			var opts = $(this).datalist('options');
+			var href = row[opts.valueField];
+			if(href)
+			{
+				try
+				{
+					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
+				} catch (e)
+				{
+					$.messager.alert('提示', '加载页面失败，请稍后再试。');
+				}
+			}
+		}
+	});
+	$westMenuAccordion.accordion('select', 0);
+	
+	/* datalist
 	({
 		lines: true,
 		fit: true,
@@ -110,7 +134,6 @@ $(function()
 			{
 				try
 				{
-					$('.window-body:not(#changePwdWindow)').window('destroy');
 					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
 				} catch (e)
 				{
@@ -119,36 +142,7 @@ $(function()
 			}
 			$(this).data('lastSelIdx', idx);
 		}
-	});
-	
-	$changePwdWindow.window({});
-	$changePwdBtn.click(function()
-	{
-		$changePwdWindow.window('open').window('center');
-	});
-	
-	$submitChangePwdBtn.click(function()
-	{
-		$changePwdWindow.find('form#changePwdForm').form('submit',
-		{
-			onSubmit: function()
-			{
-				if(!$(this).form('validate'))
-					return false;
-				if($(this).find('[name="newPwd"]').val() != $(this).find('[name="confirmNewPwd"]').val())
-				{
-					$.messager.alert('提示', '两次密码输入不一致，请重新输入密码。');
-					return false;
-				}
-			},
-			success: function(data)
-			{
-				data = $.fn.form.defaults.success(data);
-				if(data.returnCode == 0)
-					$changePwdWindow.window('close');
-			}
-		});
-	});
+	}); */
 });
 </script>
 </html>
