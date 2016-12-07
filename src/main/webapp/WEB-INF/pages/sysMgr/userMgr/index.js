@@ -1,6 +1,9 @@
 $(function()
 {
 	var $userDatagrid = $('table#userDatagrid');
+	var $userNameTextbox = $('#userMgr\\.userNameInput');
+	var $aliasTextbox = $('#userMgr\\.alias');
+	var $queryUserBtn = $('a#queryUserBtn');
 	var $addUserWindow = $('div#addUserWindow');
 	var $userMgrTab = $('div#userMgrTab');
 	var $editUserForm = $('form#editUserForm');
@@ -70,6 +73,25 @@ $(function()
 			onSelect: function(idx, row)
 			{
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, row);
+			}
+		});
+		
+		$queryUserBtn.linkbutton
+		({
+			'onClick': function()
+			{
+				$.ajax
+				({
+					url: 'sysMgr/userMgr/getAllUsers',
+					data: {userName: $userNameTextbox.textbox('getValue'), alias: $aliasTextbox.textbox('getValue')},
+					success: function(data, textStatus, jqXHR)
+					{
+						if(data.returnCode == 0)
+							$userDatagrid.datagrid('loadData', data);
+						else
+							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
+					}
+				});
 			}
 		});
 		
@@ -146,7 +168,7 @@ $(function()
 				}
 				$.ajax
 				({
-					url: 'userMgr/addBrandsToUser',
+					url: 'sysMgr/userMgr/addBrandsToUser',
 					dataType: 'JSON',
 					data: {userId: userIds[0], brandIds: brandIds},
 					success: function(data, textStatus, jqXHR)
@@ -191,7 +213,7 @@ $(function()
 				}
 				$.ajax
 				({
-					url: 'userMgr/removeBrandsFromUser',
+					url: 'sysMgr/userMgr/removeBrandsFromUser',
 					dataType: 'JSON',
 					data: {userId: userIds[0], brandIds: brandIds},
 					success: function(data, textStatus, jqXHR)
@@ -213,7 +235,7 @@ $(function()
 			switch (title)
 			{
 				case '基本信息':
-					$editUserForm.form('load', 'userMgr/getUserById?userId=' + row.id);
+					$editUserForm.form('load', 'sysMgr/userMgr/getUserById?userId=' + row.id);
 					break;
 				case '产品权限信息':
 					if(row.role != 1)
@@ -228,7 +250,7 @@ $(function()
 					}
 					$.ajax
 					({
-						url: 'userMgr/getBrandTreeByUser',
+						url: 'sysMgr/userMgr/getBrandTreeByUser',
 						dataType: 'JSON',
 						data: {userId: row.id},
 						success: function(data, textStatus, jqXHR)
@@ -286,7 +308,7 @@ $(function()
 		$('#showAddUserWindowBtn').linkbutton({onClick: showAddUserWindow});
 		$('#removeUsersBtn').linkbutton({onClick: removeUsers});
 		
-		$addUserWindow.window({width: 320});
+		$addUserWindow.window({width: 500});
 		
 		function removeUsers()
 		{
@@ -309,7 +331,7 @@ $(function()
 					return;
 				$.post
 				(
-					'userMgr/deleteUserByIds',
+					'sysMgr/userMgr/deleteUserByIds',
 					{delIds : selIds},
 					function(data, textStatus, jqXHR)
 					{
@@ -337,15 +359,35 @@ $(function()
 		}
 		
 		var addUserWindowHtml = 
-			'<form id="addUserForm" action="userMgr/addUser" method="post" style="width: 100%;">' + 
+			'<form id="addUserForm" action="sysMgr/userMgr/addUser" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>用户名：</label></td>' + 
 			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td align="right" style="vertical-align: top" rowspan="5"><label>角色：</label></td>' + 
+			'			<td rowspan="5" style="width: 110px;">' + 
+			'				<label><input type="radio" name="role" value="1" checked="checked">市场部业务员</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="2">市场部主管</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="3">市场部经理</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="4">设计部设计师</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="5">设计部主管</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="6">设计部经理</label>' + 
+			'				<br>' + 
+			'				<label><input type="radio" name="role" value="0">管理员</label>' + 
+			'			</td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>昵称：</label></td>' + 
+			'			<td align="right"><label>姓名：</label></td>' + 
 			'			<td><input name="alias" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话：</label></td>' + 
+			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>密码：</label></td>' + 
@@ -356,15 +398,7 @@ $(function()
 			'			<td><input name="confirmPwd" class="easyui-textbox" type="password" required="required" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>角色：</label></td>' + 
-			'			<td>' + 
-			'				<label><input type="radio" name="role" value="1" checked="checked">产品维护员</label>' + 
-			'				<label><input type="radio" name="role" value="2">车型维护员</label>' + 
-			'				<label><input type="radio" name="role" value="0">管理员</label>' + 
-			'			</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="center" colspan="2">' + 
+			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitAddUserForm();" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addUserWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 

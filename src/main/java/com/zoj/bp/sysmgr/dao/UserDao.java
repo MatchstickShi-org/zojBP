@@ -59,10 +59,20 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
-	public DatagridVo<User> getAllUser(Pagination pagination)
+	public DatagridVo<User> getAllUser(Pagination pagination, String userName, String alias)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM USER";
+		String sql = "SELECT * FROM USER WHERE 1=1";
+		if(StringUtils.isNotEmpty(userName))
+		{
+			sql += " AND name LIKE :name";
+			paramMap.put("name", '%' + userName + '%');
+		}
+		if (StringUtils.isNotEmpty(alias))
+		{
+			sql += " AND alias LIKE :alias";
+			paramMap.put("alias", '%' + alias + '%');
+		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
@@ -76,7 +86,7 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO USER(NAME, ALIAS, PWD, ROLE) VALUES(:name, :alias, :pwd, :role)",
+				"INSERT INTO USER(NAME, ALIAS, PWD, ROLE, STATUS, TEL) VALUES(:name, :alias, :pwd, :role, :status, :tel)",
 				new BeanPropertySqlParameterSource(user), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

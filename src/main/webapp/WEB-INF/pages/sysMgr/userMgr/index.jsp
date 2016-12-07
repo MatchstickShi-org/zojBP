@@ -13,8 +13,10 @@
 	<div data-options="region:'center'" style="width: 470px;">
 		<table id="userDatagrid" border="false" title="用户一览"></table>
 		<div id="userDatagridToolbar">
-			<label style="padding-top: 14px;">用户名：<input class="easyui-textbox" name="userName"/></label>
-			<label style="padding-top: 14px;">昵称：<input class="easyui-textbox" name="alias"/></label>
+			<label style="vertical-align: middle;">用户名：</label>
+			<input class="easyui-textbox" id="userMgr.userNameInput"/>
+			<label style="vertical-align: middle;">昵称：</label>
+			<input class="easyui-textbox" id="userMgr.alias"/>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryUserBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">禁用</a>

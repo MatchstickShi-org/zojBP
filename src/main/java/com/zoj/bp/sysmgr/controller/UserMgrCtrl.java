@@ -31,7 +31,7 @@ import com.zoj.bp.sysmgr.service.IUserService;
  *
  */
 @Controller
-@RequestMapping("/sysMgr")
+@RequestMapping("/sysMgr/userMgr")
 public class UserMgrCtrl
 {
 	@Autowired
@@ -43,19 +43,20 @@ public class UserMgrCtrl
 		return "sysMgr/userMgr/index";
 	}
 	
-	@RequestMapping(value = "/userMgr/getAllUsers")
+	@RequestMapping(value = "/getAllUsers")
 	@ResponseBody
-	public DatagridVo<User> getAllUsers(Pagination pagination)
+	public DatagridVo<User> getAllUsers(Pagination pagination,
+			@RequestParam(required=false) String userName, @RequestParam(required=false) String alias)
 	{
-		return userSvc.getAllUser(pagination);
+		return userSvc.getAllUser(pagination, userName, alias);
 	}
 	
-	@RequestMapping(value = "/userMgr/addUser")
+	@RequestMapping(value = "/addUser")
 	@ResponseBody
 	public Map<String, ?> addUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		if(!StringUtils.equals(user.getPwd(), confirmPwd))
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。")));
 		user.setPwd(EncryptUtil.encoderByMd5(user.getPwd()));
@@ -63,7 +64,7 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	@RequestMapping(value = "/userMgr/editUser")
+	@RequestMapping(value = "/editUser")
 	@ResponseBody
 	public Map<String, ?> editUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws Exception
 	{
@@ -81,7 +82,7 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	@RequestMapping(value = "/userMgr/deleteUserByIds")
+	@RequestMapping(value = "/deleteUserByIds")
 	@ResponseBody
 	public Map<String, ?> deleteUserByIds(@RequestParam("delIds[]") Integer[] userIds, HttpSession session) throws Exception
 	{
@@ -94,7 +95,7 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	@RequestMapping(value = "/userMgr/getUserById")
+	@RequestMapping(value = "/getUserById")
 	@ResponseBody
 	public Map<String, Object> getUserById(@RequestParam("userId") Integer userId) throws Exception
 	{
@@ -105,7 +106,7 @@ public class UserMgrCtrl
 		return map;
 	}
 	
-	@RequestMapping(value = "/userMgr/changePwd")
+	@RequestMapping(value = "/changePwd")
 	@ResponseBody
 	public Map<String, Object> changePwd(HttpSession session, @RequestParam("originalPwd") String originalPwd,
 			@RequestParam("newPwd") String newPwd, @RequestParam("confirmNewPwd") String confirmNewPwd) throws Exception

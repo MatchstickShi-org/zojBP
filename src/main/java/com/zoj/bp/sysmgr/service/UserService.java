@@ -53,9 +53,9 @@ public class UserService implements IUserService
 	 * @return
 	 */
 	@Override
-	public DatagridVo<User> getAllUser(Pagination pagination)
+	public DatagridVo<User> getAllUser(Pagination pagination, String userName, String alias)
 	{
-		return userDao.getAllUser(pagination);
+		return userDao.getAllUser(pagination, userName, alias);
 	}
 
 	/**

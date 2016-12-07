@@ -27,11 +27,14 @@ public class User implements Serializable
 	private String pwd;
 	
 	@NotNull
+	private Long tel;
+	
+	@NotNull
 	private Integer role = 1;
 	
 	private Integer leaderId;
 	
-	private Integer status;
+	private Integer status = 1;
 	
 	private List<Menu> menus;
 	
@@ -151,5 +154,15 @@ public class User implements Serializable
 	public void setStatus(Integer status)
 	{
 		this.status = status;
+	}
+
+	public Long getTel()
+	{
+		return tel;
+	}
+
+	public void setTel(Long tel)
+	{
+		this.tel = tel;
 	}
 }
