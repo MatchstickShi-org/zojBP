@@ -21,10 +21,10 @@
 	</tx:advice>
 
 	<aop:config>
-		<aop:pointcut id="txPointcut" expression="execution(* com.zoj.bp.service.**.*Service.*(..))" />
+		<aop:pointcut id="txPointcut" expression="execution(* com.zoj.bp.**.service.**.*Service.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 	</aop:config>
 	
 	<!-- 全局异常处理器 -->
-	<bean id="exceptionHandler" class="com.zoj.bp.excption.ExceptionHandler"/>
+	<bean id="exceptionHandler" class="com.zoj.bp.common.excption.ExceptionHandler"/>
 </beans>

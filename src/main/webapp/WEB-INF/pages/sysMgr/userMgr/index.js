@@ -28,14 +28,26 @@ $(function()
 					{
 						switch (value)
 						{
-							case '0':
+							case 0:
 								return '管理员';
 								break;
-							case '1':
-								return '产品维护员';
+							case 1:
+								return '市场部业务员';
 								break;
-							case '2':
-								return '车型维护员';
+							case 2:
+								return '市场部主管';
+								break;
+							case 3:
+								return '市场部经理';
+								break;
+							case 4:
+								return '设计部设计师';
+								break;
+							case 5:
+								return '设计部主管';
+								break;
+							case 2:
+								return '设计部部经理';
 								break;
 							default:
 								return '未知';
@@ -43,12 +55,18 @@ $(function()
 						}
 					}
 				},
+				{
+					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+					{
+						return value == 1 ? '正常' : '禁用';
+					}
+				}
 			]],
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: '/sysMgr/userMgr/getAllUsers',
+			url: 'sysMgr/userMgr/getAllUsers',
 			onSelect: function(idx, row)
 			{
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, row);
@@ -198,7 +216,7 @@ $(function()
 					$editUserForm.form('load', 'userMgr/getUserById?userId=' + row.id);
 					break;
 				case '产品权限信息':
-					if(row.role != '1')
+					if(row.role != 1)
 					{
 						$addUserBrandBtn.linkbutton('disable');
 						$removeUserBrandBtn.linkbutton('disable');

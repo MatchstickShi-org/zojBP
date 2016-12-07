@@ -13,9 +13,12 @@
 	<div data-options="region:'center'" style="width: 470px;">
 		<table id="userDatagrid" border="false" title="用户一览"></table>
 		<div id="userDatagridToolbar">
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn" style="float: left;">新增</a>
-			<div class="datagrid-btn-separator" style="float: left;"></div>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">删除</a>
+			<label style="padding-top: 14px;">用户名：<input class="easyui-textbox" name="userName"/></label>
+			<label style="padding-top: 14px;">昵称：<input class="easyui-textbox" name="alias"/></label>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryUserBtn">查询</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">禁用</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="assignSubordinate">分配下属</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -75,6 +78,6 @@
 	</div>
 </div>
 <div id="addUserWindow"></div>
-<script type="text/javascript" src="pages/userMgr/index.js"></script>
+<script type="text/javascript" src="pages/sysMgr/userMgr/index.js"></script>
 </body>
 </html>

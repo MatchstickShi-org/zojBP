@@ -30,7 +30,8 @@ import com.zoj.bp.sysmgr.service.IUserService;
  * @author MatchstickShi
  *
  */
-@Controller("/sysMgr")
+@Controller
+@RequestMapping("/sysMgr")
 public class UserMgrCtrl
 {
 	@Autowired

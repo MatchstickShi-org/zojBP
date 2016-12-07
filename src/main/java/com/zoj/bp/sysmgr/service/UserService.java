@@ -48,20 +48,20 @@ public class UserService implements IUserService
 		userDao.updateUser(user, changePwd);
 	}
 
-	@Override
 	/**
 	 * @param pagination
 	 * @return
 	 */
+	@Override
 	public DatagridVo<User> getAllUser(Pagination pagination)
 	{
 		return userDao.getAllUser(pagination);
 	}
 
-	@Override
 	/**
 	 * @param user
 	 */
+	@Override
 	public void addUser(User user)
 	{
 		userDao.addUser(user);

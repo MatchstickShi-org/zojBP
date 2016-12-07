@@ -15,6 +15,7 @@ public class User implements Serializable
 	
 	/**id INT(20) not null AUTO_INCREMENT*/
 	private Integer id;
+	
 	/**name*/
 	@NotNull
 	private String name;
@@ -27,6 +28,10 @@ public class User implements Serializable
 	
 	@NotNull
 	private Integer role = 1;
+	
+	private Integer leaderId;
+	
+	private Integer status;
 	
 	private List<Menu> menus;
 	
@@ -126,5 +131,25 @@ public class User implements Serializable
 		{
 			return this.value;
 		}
+	}
+
+	public Integer getLeaderId()
+	{
+		return leaderId;
+	}
+
+	public void setLeaderId(Integer leaderId)
+	{
+		this.leaderId = leaderId;
+	}
+
+	public Integer getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(Integer status)
+	{
+		this.status = status;
 	}
 }
