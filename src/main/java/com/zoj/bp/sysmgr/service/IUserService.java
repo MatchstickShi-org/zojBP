@@ -54,30 +54,35 @@ public interface IUserService
 	void changPwd(Integer userId, String newPwdForMD5);
 
 	/**
-	 * @param userId
-	 * @param brandIds
-	 * @throws BusinessException 
+	 * @param userIds
 	 */
-	void addBrandsToUser(Integer userId, Integer[] brandIds) throws BusinessException;
+	Integer revertUserByIds(Integer[] userIds);
 
 	/**
 	 * @param userId
-	 * @param brandIds
-	 * @throws BusinessException 
-	 */
-	void removeBrandsFromUser(Integer userId, Integer[] brandIds) throws BusinessException;
-
-	/**
-	 * @param brandId
-	 * @param userIds
+	 * @param pagination TODO
 	 * @return
 	 */
-	Integer addOperatorsToBrand(Integer brandId, Integer[] userIds);
+	DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination);
 
 	/**
-	 * @param brandId
-	 * @param userIds
+	 * @param userId
+	 * @param pagination TODO
 	 * @return
 	 */
-	Integer removeOperatorsFromBrand(Integer brandId, Integer[] userIds);
+	DatagridVo<User> getNotAssignUnderling(Integer userId, Pagination pagination);
+
+	/**
+	 * @param userId
+	 * @param underlingIds
+	 * @throws BusinessException
+	 */
+	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds) throws BusinessException;
+
+	/**
+	 * @param userId
+	 * @param underlingIds
+	 * @throws BusinessException
+	 */
+	Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException;
 }

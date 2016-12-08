@@ -5,14 +5,16 @@ $(function()
 	var $aliasTextbox = $('#userMgr\\.alias');
 	var $queryUserBtn = $('a#queryUserBtn');
 	var $addUserWindow = $('div#addUserWindow');
+	var $revertUsersBtn = $('a#revertUsersBtn');
+	var $removeUsersBtn = $('a#removeUsersBtn');
 	var $userMgrTab = $('div#userMgrTab');
 	var $editUserForm = $('form#editUserForm');
 	var $submitUpdateUserFormBtn = $('a#submitUpdateUserFormBtn');
 	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
-	var $notAssignProductBrandTree = $('ul#notAssignProductBrandTree');
-	var $assignedProductBrandTree = $('ul#assignedProductBrandTree');
-	var $addUserBrandBtn = $('a#addUserBrandBtn');
-	var $removeUserBrandBtn = $('a#removeUserBrandBtn');
+	var $notAssignUnderlingGrid = $('table#notAssignUnderlingGrid');
+	var $assignedUnderlingGrid = $('table#assignedUnderlingGrid');
+	var $assignUnderlingBtn = $('a#assignUnderlingBtn');
+	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
 	{
@@ -72,14 +74,26 @@ $(function()
 			url: 'sysMgr/userMgr/getAllUsers',
 			onSelect: function(idx, row)
 			{
+				if(row.role == 2 || row.role == 5)
+				{
+					$userMgrTab.tabs('enableTab', 1)
+					$userMgrTab.tabs('update', {tab: $userMgrTab.tabs('getTab', 1), options: {title: row.role == 2 ? '下属业务员' : '下属设计师'}});
+				}
+				else
+					$userMgrTab.tabs('select', 0).tabs('disableTab', 1)
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, row);
-			}
+			},
+			onCheck: updateBtnStatus,
+			onUncheck: updateBtnStatus,
+			onCheckAll: updateBtnStatus,
+			onUncheckAll: updateBtnStatus,
 		});
 		
 		$queryUserBtn.linkbutton
 		({
 			'onClick': function()
 			{
+				$userDatagrid.datagrid('loading');
 				$.ajax
 				({
 					url: 'sysMgr/userMgr/getAllUsers',
@@ -90,6 +104,7 @@ $(function()
 							$userDatagrid.datagrid('loadData', data);
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
+						$userDatagrid.datagrid('loaded');
 					}
 				});
 			}
@@ -117,66 +132,118 @@ $(function()
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
-		$notAssignProductBrandTree.tree
+		$notAssignUnderlingGrid.datagrid
 		({
-			checkbox: true,
-			onlyLeafCheck: true,
-			onBeforeCheck: function(node, checked)
-			{
-				if(checked && !node.attributes.isLeaf)
-					return false;
-			}
+			idField: 'id',
+			columns:
+			[[
+				{field:'id', hidden: true},
+				{field: 'ck', checkbox: true},
+				{field:'name', title:'用户名', width: 5},
+				{field:'alias', title:'昵称', width: 5},
+				{
+					field:'role', title:'角色', width: 5, formatter: function(value, row, index)
+					{
+						switch (value)
+						{
+							case 1:
+								return '市场部业务员';
+								break;
+							case 4:
+								return '设计部设计师';
+								break;
+							default:
+								return '未知';
+								break;
+						}
+					}
+				},
+				{
+					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
+					{
+						if(!value)
+							return '<span style="color: gray;">无</span>';
+						return value;
+					}
+				},
+				{
+					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+					{
+						return value == 1 ? '正常' : '禁用';
+					}
+				}
+			]],
+			pagination: true
 		});
 		
-		$assignedProductBrandTree.tree
+		$assignedUnderlingGrid.datagrid
 		({
-			checkbox: true,
-			onlyLeafCheck: true,
-			onBeforeCheck: function(node, checked)
-			{
-				if(checked && !node.attributes.isLeaf)
-					return false;
-			}
+			idField: 'id',
+			columns:
+			[[
+				{field:'id', hidden: true},
+				{field: 'ck', checkbox: true},
+				{field:'name', title:'用户名', width: 5},
+				{field:'alias', title:'昵称', width: 5},
+				{
+				  field:'role', title:'角色', width: 5, formatter: function(value, row, index)
+				  {
+					  switch (value)
+					  {
+						  case 1:
+							  return '市场部业务员';
+							  break;
+						  case 4:
+							  return '设计部设计师';
+							  break;
+						  default:
+							  return '未知';
+						  break;
+					  }
+				  }
+				},
+				{field:'leaderName', title:'上级', width: 5},
+				{
+				  field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+				  {
+					  return value == 1 ? '正常' : '禁用';
+				  }
+				}
+			]],
+			pagination: true
 		});
+
+		$assignedUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getAssignedUnderlingByUser';
+		$notAssignUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getNotAssignUnderlingByUser';
 		
-		$addUserBrandBtn.linkbutton
+		$assignUnderlingBtn.linkbutton
 		({
 			onClick: function()
 			{
 				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
 				if(userIds.length == 0)
 				{
-					$.messager.alert('提示', '请选择要赋予产品权限的用户。');
+					$.messager.alert('提示', '请选择要分配下属的用户。');
 					return;
 				}
-				var chkNodes = $notAssignProductBrandTree.tree('getChecked');
-				if(chkNodes.length == 0)
+				var underlingIds = $notAssignUnderlingGrid.datagrid('getSelectRowPkValues');
+				if(underlingIds.length == 0)
 				{
-					$.messager.alert('提示', '请勾选要分配给选择用户的产品品牌。');
+					$.messager.alert('提示', '请勾选要分配的下属用户。');
 					return;
 				}
 				
-				var brandIds = [];
-				for(var i in chkNodes)
-				{
-					if(!chkNodes[i].attributes.isLeaf)		//非品牌
-					{
-						$.messager.alert('提示', '请勾选要分配给选择用户的产品品牌。');
-						return;
-					}
-					brandIds.push(chkNodes[i].id);
-				}
 				$.ajax
 				({
-					url: 'sysMgr/userMgr/addBrandsToUser',
+					url: 'sysMgr/userMgr/addUnderlingToUser',
 					dataType: 'JSON',
-					data: {userId: userIds[0], brandIds: brandIds},
+					data: {userId: userIds[0], underlingIds: underlingIds},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
 						{
-							$notAssignProductBrandTree.tree('loadData', data.notAssignProductBrandTree);
-							$assignedProductBrandTree.tree('loadData', data.assignedProductBrandTree);
+							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
+							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
 						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
@@ -185,43 +252,33 @@ $(function()
 			}
 		});
 			
-		$removeUserBrandBtn.linkbutton
+		$removeUnderlingBtn.linkbutton
 		({
 			onClick: function()
 			{
 				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
 				if(userIds.length == 0)
 				{
-					$.messager.alert('提示', '请选择要从移除产品权限的用户。');
+					$.messager.alert('提示', '请选择要移除下属的用户。');
 					return;
 				}
-				var chkNodes = $assignedProductBrandTree.tree('getChecked');
-				if(chkNodes.length == 0)
+				var underlingIds = $assignedUnderlingGrid.datagrid('getSelectRowPkValues');
+				if(underlingIds.length == 0)
 				{
-					$.messager.alert('提示', '请勾选要从选择用户权限中移除的产品品牌。');
+					$.messager.alert('提示', '请勾选要移除的下属用户。');
 					return;
-				}
-				var brandIds = [];
-				for(var i in chkNodes)
-				{
-					if(!chkNodes[i].attributes.isLeaf)		//非品牌
-					{
-						$.messager.alert('提示', '请勾选要从选择用户权限中移除的产品品牌。');
-						return;
-					}
-					brandIds.push(chkNodes[i].id);
 				}
 				$.ajax
 				({
-					url: 'sysMgr/userMgr/removeBrandsFromUser',
+					url: 'sysMgr/userMgr/removeUnderlingFromUser',
 					dataType: 'JSON',
-					data: {userId: userIds[0], brandIds: brandIds},
+					data: {userId: userIds[0], underlingIds: underlingIds},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
 						{
-							$notAssignProductBrandTree.tree('loadData', data.notAssignProductBrandTree);
-							$assignedProductBrandTree.tree('loadData', data.assignedProductBrandTree);
+							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
+							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
 						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
@@ -229,41 +286,47 @@ $(function()
 				});
 			}
 		});
+
+		function updateBtnStatus()
+		{
+			var selRows = $userDatagrid.datagrid('getChecked');
+			if(selRows.length > 0)
+			{
+				var revertFlag = true, removeFlag = true;
+				for(var i in selRows)
+				{
+					if(selRows[i].status == 1)
+					{
+						$revertUsersBtn.linkbutton('disable');
+						revertFlag = false;
+					}
+					else
+					{
+						$removeUsersBtn.linkbutton('disable');
+						removeFlag = false;
+					}
+				}
+				if(revertFlag)
+					$revertUsersBtn.linkbutton('enable');
+				if(removeFlag)
+					$removeUsersBtn.linkbutton('enable');
+				return;
+			}
+			$revertUsersBtn.linkbutton('enable');
+			$removeUsersBtn.linkbutton('enable');
+		}
 		
 		function loadTabData(title, row)
 		{
 			switch (title)
 			{
-				case '基本信息':
-					$editUserForm.form('load', 'sysMgr/userMgr/getUserById?userId=' + row.id);
+				case '详情':
+					$editUserForm.form('clear').form('load', 'sysMgr/userMgr/getUserById?userId=' + row.id);
 					break;
-				case '产品权限信息':
-					if(row.role != 1)
-					{
-						$addUserBrandBtn.linkbutton('disable');
-						$removeUserBrandBtn.linkbutton('disable');
-					}
-					else
-					{
-						$addUserBrandBtn.linkbutton('enable');
-						$removeUserBrandBtn.linkbutton('enable');
-					}
-					$.ajax
-					({
-						url: 'sysMgr/userMgr/getBrandTreeByUser',
-						dataType: 'JSON',
-						data: {userId: row.id},
-						success: function(data, textStatus, jqXHR)
-						{
-							if(data.returnCode == 0)
-							{
-								$notAssignProductBrandTree.tree('loadData', data.notAssignProductBrandTree);
-								$assignedProductBrandTree.tree('loadData', data.assignedProductBrandTree);
-							}
-							else
-								$.messager.show({title:'提示', msg:'获取用户权限信息失败\n' + data.msg});   
-						}
-					});
+				case '下属业务员':
+				case '下属设计师':
+					$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
+					$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
 					break;
 			}
 		}
@@ -276,8 +339,8 @@ $(function()
 					$editUserForm.form('clear');
 					break;
 				case '产品权限信息':
-					$notAssignProductBrandTree.tree('loadData', []);
-					$assignedProductBrandTree.tree('loadData', []);
+					$notAssignUnderlingGrid.datagrid('loadData', []);
+					$assignedUnderlingGrid.datagrid('loadData', []);
 					break;
 			}
 		}
@@ -306,16 +369,54 @@ $(function()
 		}
 		
 		$('#showAddUserWindowBtn').linkbutton({onClick: showAddUserWindow});
-		$('#removeUsersBtn').linkbutton({onClick: removeUsers});
+		$removeUsersBtn.linkbutton({onClick: removeUsers});
+		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
 		$addUserWindow.window({width: 500});
+		
+		function revertUsers()
+		{
+			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要恢复的用户。');
+				return;
+			}
+			
+			if($.inArray(_session_loginUser.id, selIds) >= 0)
+			{
+				$.messager.alert('提示', '不恢复除自己。');
+				return;
+			}
+			
+			$.messager.confirm('警告','确定要恢复选中的用户吗？',function(r)
+			{
+				if (!r)
+					return;
+				$.post
+				(
+						'sysMgr/userMgr/revertUserByIds',
+						{revertIds : selIds},
+						function(data, textStatus, jqXHR)
+						{
+							if(data.returnCode == 0)
+							{
+								$.messager.show({title:'提示',msg:'恢复成功。'});
+								$userDatagrid.datagrid('reload');
+							}
+							else
+								$.messager.show({title:'提示', msg:'恢复失败\n' + data.msg});   
+						}
+				);
+			});
+		}
 		
 		function removeUsers()
 		{
 			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选择要删除的用户。');
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户。');
 				return;
 			}
 			
@@ -363,7 +464,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>用户名：</label></td>' + 
-			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td style="width: 240px;"><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
 			'			<td align="right" style="vertical-align: top" rowspan="5"><label>角色：</label></td>' + 
 			'			<td rowspan="5" style="width: 110px;">' + 
 			'				<label><input type="radio" name="role" value="1" checked="checked">市场部业务员</label>' + 

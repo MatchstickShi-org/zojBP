@@ -1,5 +1,6 @@
 $.ajaxSetup
 ({
+	accepts: 'application/json, text/javascript, */*;',
 	success: function(data)
 	{
 		if(data.returnCode == 0)
@@ -75,6 +76,10 @@ $(function()
 		{
 			var msg = jqXHR.responseJSON ? jqXHR.responseJSON.msg : $.parseJSON(jqXHR.responseText).msg;
 			$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。');
+		},
+		onLoadSuccess: function(data)
+		{
+			$(this).datagrid('uncheckAll');
 		}
 	});
 	
@@ -176,6 +181,7 @@ $(function()
 	
 	$.extend($.fn.form.defaults,
 	{
+		iframe: false,
 		success : function(data)
 		{
 			data = $.parseJSON(data);

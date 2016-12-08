@@ -1,8 +1,10 @@
 /**  */
 package com.zoj.bp.common.model;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
@@ -35,6 +37,8 @@ public class User implements Serializable
 	private Integer leaderId;
 	
 	private Integer status = 1;
+	
+	private String leaderName;
 	
 	private List<Menu> menus;
 	
@@ -103,7 +107,47 @@ public class User implements Serializable
 	 */
 	public boolean isAdmin()
 	{
-		return this.role == Role.admin.getValue();
+		return this.role == Role.admin.value();
+	}
+	
+	/**
+	 * 是否是市场部业务员
+	 * @return
+	 */
+	@Transient
+	public boolean isMarketingSalesman()
+	{
+		return this.role == Role.marketingSalesman.value();
+	}
+	
+	/**
+	 * 是否是市场部主管
+	 * @return
+	 */
+	@Transient
+	public boolean isMarketingLeader()
+	{
+		return this.role == Role.marketingLeader.value();
+	}
+	
+	/**
+	 * 是否是设计部设计师
+	 * @return
+	 */
+	@Transient
+	public boolean isDesignDesigner()
+	{
+		return this.role == Role.designDesigner.value();
+	}
+	
+	/**
+	 * 是否是设计部主管
+	 * @return
+	 */
+	@Transient
+	public boolean isDesignLeader()
+	{
+		return this.role == Role.designLeader.value();
 	}
 	
 	public enum Role
@@ -130,9 +174,14 @@ public class User implements Serializable
 		
 		private Integer value;
 		
-		public Integer getValue()
+		public Integer value()
 		{
 			return this.value;
+		}
+		
+		public Role valueOf(Integer value)
+		{
+			return Stream.of(Role.values()).filter(r -> r.value() == value).findFirst().orElse(null);
 		}
 	}
 
@@ -164,5 +213,15 @@ public class User implements Serializable
 	public void setTel(Long tel)
 	{
 		this.tel = tel;
+	}
+
+	public String getLeaderName()
+	{
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName)
+	{
+		this.leaderName = leaderName;
 	}
 }

@@ -55,28 +55,35 @@ public interface IUserDao
 	void changePwd(Integer userId, String newPwdForMD5);
 
 	/**
-	 * @param userId
-	 * @param brandIds
-	 */
-	Integer removeBrandsFromUser(Integer userId, Integer[] brandIds);
-
-	/**
-	 * @param userId
-	 * @param brandIds
-	 */
-	Integer addBrandsToUser(Integer userId, Integer[] brandIds);
-
-	/**
-	 * @param brandId
-	 * @param userIds
-	 * @return 
-	 */
-	Integer removeOperatorsFromBrand(Integer brandId, Integer[] userIds);
-
-	/**
-	 * @param brandId
 	 * @param userIds
 	 * @return
 	 */
-	Integer addOperatorsToBrand(Integer brandId, Integer[] userIds);
+	Integer revertUserByIds(Integer[] userIds);
+
+	/**
+	 * @param userId
+	 * @param pagination TODO
+	 * @return
+	 */
+	DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination);
+
+	/**
+	 * @param leader
+	 * @param pagination TODO
+	 * @return
+	 */
+	DatagridVo<User> getNotAssignUnderling(User leader, Pagination pagination);
+
+	/**
+	 * @param userId
+	 * @param underlingIds
+	 */
+	Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds);
+
+	/**
+	 * @param userId
+	 * @param underlingIds
+	 * @return
+	 */
+	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds);
 }

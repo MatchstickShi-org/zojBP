@@ -72,7 +72,8 @@ public class UserMgrCtrl
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
 		if(!StringUtils.equals(user.getPwd(), confirmPwd))
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。")));
-		if(StringUtils.equals(user.getPwd(), "******"))		//不修改密码
+		//if(StringUtils.equals(user.getPwd(), "******"))		//不修改密码
+		if(StringUtils.isEmpty(user.getPwd()))		//不修改密码
 			userSvc.updateUser(user, false);
 		else
 		{
@@ -95,14 +96,27 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/revertUserByIds")
+	@ResponseBody
+	public Map<String, ?> revertUserByIds(@RequestParam("revertIds[]") Integer[] userIds, HttpSession session) throws Exception
+	{
+		if(ArrayUtils.isEmpty(userIds))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可恢复的用户"));
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(ArrayUtils.contains(userIds, loginUser.getId()))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("不能恢复你自己。"));
+		userSvc.revertUserByIds(userIds);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/getUserById")
 	@ResponseBody
 	public Map<String, Object> getUserById(@RequestParam("userId") Integer userId) throws Exception
 	{
 		User user = userSvc.getUserById(userId);
-		user.setPwd("******");
+		user.setPwd(null);
 		Map<String, Object> map = ResponseUtils.buildRespMapByBean(user);
-		map.put("confirmPwd", user.getPwd());
+		map.put("confirmPwd", null);
 		return map;
 	}
 	
@@ -123,5 +137,47 @@ public class UserMgrCtrl
 		loginUser.setPwd(newPwdForMD5);
 		userSvc.changPwd(loginUser.getId(), newPwdForMD5);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS.setMsg("密码修改成功。"));
+	}
+	
+	@RequestMapping(value = "/getAssignedUnderlingByUser")
+	@ResponseBody
+	public DatagridVo<User> getAssignedUnderlingByUser(@RequestParam("userId") Integer userId, Pagination pagination) throws BusinessException
+	{
+		return userSvc.getAssignedUnderling(userId, pagination);
+	}
+	
+	@RequestMapping(value = "/getNotAssignUnderlingByUser")
+	@ResponseBody
+	public DatagridVo<User> getNotAssignUnderlingByUser(@RequestParam("userId") Integer userId, Pagination pagination) throws BusinessException
+	{
+		return userSvc.getNotAssignUnderling(userId, pagination);
+	}
+	
+	@RequestMapping(value = "/addUnderlingToUser")
+	@ResponseBody
+	public Map<String, Object> addUnderlingToUser(HttpSession session,
+			@RequestParam("userId") Integer userId, @RequestParam("underlingIds[]") Integer[] underlingIds) throws BusinessException
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您没有修改用户下属的权限。"));
+		if(ArrayUtils.isEmpty(underlingIds))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可分配的下属。"));
+		userSvc.addUnderlingToUser(userId, underlingIds);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
+	@RequestMapping(value = "/removeUnderlingFromUser")
+	@ResponseBody
+	public Map<String, Object> removeUnderlingFromUser(HttpSession session,
+			@RequestParam("userId") Integer userId, @RequestParam("underlingIds[]") Integer[] underlingIds) throws BusinessException
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您没有修改用户下属的权限。"));
+		if(ArrayUtils.isEmpty(underlingIds))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可移除的下属。"));
+		userSvc.removeUnderlingFromUser(userId, underlingIds);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

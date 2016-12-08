@@ -72,6 +72,12 @@ public class UserService implements IUserService
 	{
 		return userDao.deleteUserByIds(userIds);
 	}
+	
+	@Override
+	public Integer revertUserByIds(Integer[] userIds)
+	{
+		return userDao.revertUserByIds(userIds);
+	}
 
 	@Override
 	public void changPwd(Integer userId, String newPwdForMD5)
@@ -80,34 +86,36 @@ public class UserService implements IUserService
 	}
 
 	@Override
-	public void addBrandsToUser(Integer userId, Integer[] brandIds) throws BusinessException
+	public Integer addUnderlingToUser(Integer userId, Integer[] underlingIds) throws BusinessException
 	{
 		User user = userDao.getUserById(userId);
 		if(user.isAdmin())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法修改[管理员]的产品权限。"));
-		userDao.removeBrandsFromUser(userId, brandIds);
-		userDao.addBrandsToUser(userId, brandIds);
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法分配[管理员]的下属。"));
+		userDao.removeUnderlingFromUser(userId, underlingIds);
+		return userDao.addUnderlingToUser(userId, underlingIds);
 	}
 
 	@Override
-	public void removeBrandsFromUser(Integer userId, Integer[] brandIds) throws BusinessException
+	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException
 	{
 		User user = userDao.getUserById(userId);
 		if(user.isAdmin())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法修改[管理员]的产品权限。"));
-		userDao.removeBrandsFromUser(userId, brandIds);
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法移除[管理员]的下属。"));
+		return userDao.removeUnderlingFromUser(userId, underlingIds);
 	}
 
 	@Override
-	public Integer addOperatorsToBrand(Integer brandId, Integer[] userIds)
+	public DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination)
 	{
-		userDao.removeOperatorsFromBrand(brandId, userIds);
-		return userDao.addOperatorsToBrand(brandId, userIds);
+		return userDao.getAssignedUnderling(userId, pagination);
 	}
 
 	@Override
-	public Integer removeOperatorsFromBrand(Integer brandId, Integer[] userIds)
+	public DatagridVo<User> getNotAssignUnderling(Integer userId, Pagination pagination)
 	{
-		return userDao.removeOperatorsFromBrand(brandId, userIds);
+		User leader = this.getUserById(userId);
+		if(!leader.isMarketingLeader() && !leader.isDesignLeader())
+			return DatagridVo.<User>emptyVo();
+		return userDao.getNotAssignUnderling(leader, pagination);
 	}
 }

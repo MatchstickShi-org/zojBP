@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -51,7 +52,7 @@ public class UserDao extends BaseDao implements IUserDao
 	@Override
 	public void updateUser(User user, boolean changePwd)
 	{
-		String sql = "UPDATE USER SET ALIAS = :alias, NAME = :name, ROLE = :role";
+		String sql = "UPDATE USER SET ALIAS = :alias, NAME = :name, ROLE = :role, TEL = :tel";
 		if(changePwd)
 			sql += ", PWD = :pwd";
 		sql += " WHERE ID = :id";
@@ -94,7 +95,13 @@ public class UserDao extends BaseDao implements IUserDao
 	@Override
 	public Integer deleteUserByIds(Integer[] userIds)
 	{
-		return jdbcOps.update("DELETE FROM USER WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+		return jdbcOps.update("UPDATE USER SET STATUS = 0 WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
+	public Integer revertUserByIds(Integer[] userIds)
+	{
+		return jdbcOps.update("UPDATE USER SET STATUS = 1 WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 
 	@Override
@@ -105,48 +112,48 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
-	public Integer removeBrandsFromUser(Integer userId, Integer[] brandIds)
+	public DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination)
 	{
-		return jdbcOps.update("DELETE FROM USER_PRODUCT_TYPE_RELATION"
-				+ " WHERE USER_ID = :userId AND PRODUCT_TYPE_ID IN (" + StringUtils.join(brandIds, ',') + ")", 
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME FROM USER U LEFT JOIN USER LU ON U.LEADER_ID = LU.ID WHERE U.LEADER_ID = :userId AND U.STATUS = 1";
+		paramMap.put("userId", userId);
+
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY U.ALIAS, U.NAME LIMIT :start, :rows ";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
+	}
+
+	@Override
+	public DatagridVo<User> getNotAssignUnderling(User leader, Pagination pagination)
+	{
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME FROM USER U LEFT JOIN USER LU ON U.LEADER_ID = LU.ID"
+				+ " WHERE U.STATUS = 1 AND U.ROLE = :role AND (U.LEADER_ID <> :userId OR U.LEADER_ID IS NULL)";
+		paramMap.put("userId", leader.getId());
+		paramMap.put("role", leader.isMarketingLeader() ? Role.marketingSalesman.value() : Role.designDesigner.value());
+
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY U.ALIAS, U.NAME LIMIT :start, :rows ";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
+	}
+
+	@Override
+	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds)
+	{
+		return jdbcOps.update("UPDATE USER SET LEADER_ID = NULL WHERE LEADER_ID = :userId AND ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
 				new MapSqlParameterSource("userId", userId));
 	}
 
 	@Override
-	public Integer addBrandsToUser(Integer userId, Integer[] brandIds)
+	public Integer addUnderlingToUser(Integer userId, Integer[] underlingIds)
 	{
-		String sql = "INSERT INTO USER_PRODUCT_TYPE_RELATION(USER_ID, PRODUCT_TYPE_ID) VALUES";
-		String part = "";
-		for(Integer brandId : brandIds)
-		{
-			if(StringUtils.isNotEmpty(part))
-				part += ",";
-			part += "(:userId, " + brandId + ")";
-		}
-		sql += part + ";";
-		return jdbcOps.update(sql, new MapSqlParameterSource("userId", userId));
-	}
-
-	@Override
-	public Integer removeOperatorsFromBrand(Integer brandId, Integer[] userIds)
-	{
-		return jdbcOps.update("DELETE FROM USER_PRODUCT_TYPE_RELATION"
-				+ " WHERE PRODUCT_TYPE_ID = :brandId AND USER_ID IN (" + StringUtils.join(userIds, ',') + ")", 
-				new MapSqlParameterSource("brandId", brandId));
-	}
-
-	@Override
-	public Integer addOperatorsToBrand(Integer brandId, Integer[] userIds)
-	{
-		String sql = "INSERT INTO USER_PRODUCT_TYPE_RELATION(USER_ID, PRODUCT_TYPE_ID) VALUES";
-		String part = "";
-		for(Integer userId : userIds)
-		{
-			if(StringUtils.isNotEmpty(part))
-				part += ",";
-			part += "(" + userId + ", :brandId)";
-		}
-		sql += part + ";";
-		return jdbcOps.update(sql, new MapSqlParameterSource("brandId", brandId));
+		return jdbcOps.update("UPDATE USER SET LEADER_ID = :userId WHERE (ROLE = 1 OR ROLE = 4) AND ID IN (" + StringUtils.join(underlingIds, ',') + ")",
+				new MapSqlParameterSource("userId", userId));
 	}
 }

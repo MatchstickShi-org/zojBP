@@ -37,7 +37,7 @@ public class DatagridVo<T> implements Serializable
 		this.total = totalRows;
 	}
 	
-	public static <Y> DatagridVo<Y> emptyVo(Class<Y> cls)
+	public static <Y> DatagridVo<Y> emptyVo()
 	{
 		return new DatagridVo<>(new ArrayList<Y>(), 0);
 	}
