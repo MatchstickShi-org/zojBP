@@ -1,4 +1,9 @@
+<%@page import="com.zoj.bp.common.model.MsgLog"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<% SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); %>
 <!DOCTYPE html>
 <%
 	String path = request.getContextPath();
@@ -18,13 +23,35 @@
 <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
+<style type="text/css">
+#broadcastMsgDiv span
+{
+	display:block;/*这个属性是必须的*/
+	font-size:14px;
+	line-height:16px;
+	text-decoration:none;
+	cursor: pointer;
+}
+
+#broadcastMsgDiv
+{
+	width:600px;
+	position: absolute;
+	top: 2px;
+	left: 320px;
+	text-align: left;
+	color: red;
+	height:48px;
+	overflow:hidden;
+}
+</style>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'north', border: false" style="height: 50px; overflow: hidden;">
 			<div id="topDiv"><div id="logoDiv"></div><h1>中奥建业务管理平台</h1></div>
 			<div id="topDiv-bg2"></div>
-			<div id="topDiv-loginUser">
+			<div id="topDiv-loginUser" style="font-size: 14px;">
 				欢迎你，${sessionScope.loginUser.alias}
 				<a id="logoutBtn" href="logout">[注销]</a>
 			</div>
@@ -34,6 +61,11 @@
 		</div>
 		<div id="idxCenterDiv" data-options="region:'center', title:'欢迎使用'"></div>
 	</div>
+	<div id="broadcastMsgDiv">
+		<c:forEach items="${sessionScope.broadcastMsgs}" var="m">
+			<span id="${m.id}">[<%= sdf.format(((MsgLog)pageContext.getAttribute("m")).getSendTime()) %>]: ${m.content}</span>
+		</c:forEach>
+	</div>
 </body>
 <script type="text/javascript">
 var _session_loginUser =
@@ -41,15 +73,52 @@ var _session_loginUser =
 	id : ${loginUser.id},
 	isAdmin: false
 };
-if(${loginUser.role == '0'})
+if(${loginUser.role == 0})
 	_session_loginUser.isAdmin = true;
-
-var _productClassifyJson =
+	
+var $broadcastMsgDiv = $('div#broadcastMsgDiv');
+var $lastSpan = $broadcastMsgDiv.find('span:last');
+function showNews()
 {
-	A: '刹车片',
-	B: '雨刮器',
-	C: '机油'
+	var $firstSpan = $broadcastMsgDiv.find('span:first');
+	$firstSpan.animate
+	(
+		{ 
+			marginTop: "-16px"
+		},500,function()
+		{
+			$firstSpan.remove();
+			$broadcastMsgDiv.append($firstSpan);
+			$firstSpan.css('marginTop', '0px');
+		}
+	);
 };
+
+setInterval(showNews, 5500);
+
+function getBroadcastMsgs()
+{
+	$.ajax
+	({
+		url: 'getLastBroadcastMsg',
+		success: function(data, textStatus, jqXHR)
+		{
+			if(data.returnCode == 0)
+			{
+				for(var i in data.msgs)
+				{
+					var msg = data.msgs[i];
+					var $tmpSapan = $('<span id="' + msg.id + '">[' + msg.sendTime + ']: ' + msg.content + '</span>');
+					$lastSpan.after($tmpSapan);
+					$lastSpan = $tmpSapan;
+				}
+				getBroadcastMsgs();
+			}
+		},
+		timeout: 0
+	});
+}
+getBroadcastMsgs();
 
 $(function()
 {
@@ -104,6 +173,7 @@ $(function()
 			{
 				try
 				{
+					$('.window-body').window('destroy');
 					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
 				} catch (e)
 				{
@@ -113,36 +183,6 @@ $(function()
 		}
 	});
 	$westMenuAccordion.accordion('select', 0);
-	
-	/* datalist
-	({
-		lines: true,
-		fit: true,
-		striped: true,
-		border: false,
-		textField: 'name',
-		valueField: 'url',
-		data: req_userMenus,
-		rowStyler: function(){return "cursor: pointer"},
-		onSelect: function(idx, row)
-		{
-			if(idx == $(this).data('lastSelIdx'))
-				return;
-			var opts = $(this).datalist('options');
-			var href = row[opts.valueField];
-			if(href)
-			{
-				try
-				{
-					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
-				} catch (e)
-				{
-					$.messager.alert('提示', '加载页面失败，请稍后再试。');
-				}
-			}
-			$(this).data('lastSelIdx', idx);
-		}
-	}); */
 });
 </script>
 </html>

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zoj.bp.sysmgr.controller;
+package com.zoj.bp.sysmgr.usermgr.controller;
 
 import java.util.Map;
 
@@ -24,7 +24,7 @@ import com.zoj.bp.common.util.EncryptUtil;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
-import com.zoj.bp.sysmgr.service.IUserService;
+import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 
 /**
  * @author MatchstickShi

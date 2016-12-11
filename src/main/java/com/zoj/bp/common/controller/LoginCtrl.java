@@ -14,10 +14,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.msg.BroadcastMsgManager;
 import com.zoj.bp.common.util.EncryptUtil;
 import com.zoj.bp.common.util.ResponseUtils;
-import com.zoj.bp.sysmgr.service.IMenuService;
-import com.zoj.bp.sysmgr.service.IUserService;
+import com.zoj.bp.sysmgr.usermgr.service.IMenuService;
+import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 
 /**
  * @author MatchstickShi
@@ -52,6 +53,7 @@ public class LoginCtrl
 		
 		u.setMenus(menuSvc.getMenusByUser(u));
 		
+		session.setAttribute("broadcastMsgs", BroadcastMsgManager.instance().getAllMsgs());
 		session.setAttribute("loginUser", u);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

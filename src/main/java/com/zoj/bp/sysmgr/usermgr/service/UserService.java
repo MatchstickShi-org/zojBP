@@ -1,4 +1,4 @@
-package com.zoj.bp.sysmgr.service;
+package com.zoj.bp.sysmgr.usermgr.service;
 
 import java.text.MessageFormat;
 
@@ -10,7 +10,7 @@ import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
-import com.zoj.bp.sysmgr.dao.IUserDao;
+import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 /**
  * @author MatchstickShi

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zoj.bp.sysmgr.dao;
+package com.zoj.bp.sysmgr.usermgr.dao;
 
 import java.util.List;
 

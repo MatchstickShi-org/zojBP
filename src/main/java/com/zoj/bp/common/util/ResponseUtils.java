@@ -43,6 +43,15 @@ public class ResponseUtils
 		return returnMap;
 	}
 	
+	public static Map<String, Object> buildRespMap(ReturnCode returnCode, String key, Object value)
+	{
+		Map<String, Object> returnMap = new TreeMap<>();
+		returnMap.put("returnCode", returnCode.getReturnCode());
+		returnMap.put("msg", returnCode.getMsg());
+		returnMap.put(key, value);
+		return returnMap;
+	}
+	
 	public static Map<String, Object> buildRespMapByBean(Serializable bean)
 	{
 		return buildRespMapByBean(ReturnCode.SUCCESS, bean);

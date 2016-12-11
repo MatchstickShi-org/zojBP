@@ -1,8 +1,9 @@
 /**
  * 
  */
-package com.zoj.bp.sysmgr.dao;
+package com.zoj.bp.sysmgr.usermgr.service;
 
+import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -11,22 +12,21 @@ import com.zoj.bp.common.vo.Pagination;
  * @author Administrator
  *
  */
-public interface IUserDao
+public interface IUserService
 {
 	User getUserByName(String userName);
 
 	/**
 	 * @param id
-	 * @return
 	 */
 	User getUserById(Integer id);
 
 	/**
 	 * @param user
 	 * @param changePwd TODO
-	 * @return
+	 * @throws BusinessException 
 	 */
-	void updateUser(User user, boolean changePwd);
+	void updateUser(User user, boolean changePwd) throws BusinessException;
 
 	/**
 	 * @param pagination
@@ -38,25 +38,23 @@ public interface IUserDao
 
 	/**
 	 * @param user
-	 * @return 
 	 */
-	Integer addUser(User user);
+	void addUser(User user);
 
 	/**
 	 * @param userIds
-	 * @return
+	 * @return TODO
 	 */
 	Integer deleteUserByIds(Integer[] userIds);
 
 	/**
-	 * @param userId
+	 * @param id
 	 * @param newPwdForMD5
 	 */
-	void changePwd(Integer userId, String newPwdForMD5);
+	void changPwd(Integer userId, String newPwdForMD5);
 
 	/**
 	 * @param userIds
-	 * @return
 	 */
 	Integer revertUserByIds(Integer[] userIds);
 
@@ -68,22 +66,23 @@ public interface IUserDao
 	DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination);
 
 	/**
-	 * @param leader
+	 * @param userId
 	 * @param pagination TODO
 	 * @return
 	 */
-	DatagridVo<User> getNotAssignUnderling(User leader, Pagination pagination);
+	DatagridVo<User> getNotAssignUnderling(Integer userId, Pagination pagination);
 
 	/**
 	 * @param userId
 	 * @param underlingIds
+	 * @throws BusinessException
 	 */
-	Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds);
+	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds) throws BusinessException;
 
 	/**
 	 * @param userId
 	 * @param underlingIds
-	 * @return
+	 * @throws BusinessException
 	 */
-	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds);
+	Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException;
 }

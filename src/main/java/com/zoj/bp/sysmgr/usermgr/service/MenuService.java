@@ -1,4 +1,4 @@
-package com.zoj.bp.sysmgr.service;
+package com.zoj.bp.sysmgr.usermgr.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.model.Menu;
 import com.zoj.bp.common.model.User;
-import com.zoj.bp.sysmgr.dao.IMenuDao;
+import com.zoj.bp.sysmgr.usermgr.dao.IMenuDao;
 
 /**
  * @author MatchstickShi
