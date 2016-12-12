@@ -10,6 +10,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>北京中奥建工程设计有限公司业务管理平台</title>
 <link rel="stylesheet" href="css/login.css" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="css/themes/icon.css">
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
@@ -77,7 +79,7 @@ $(function()
 				window.location.href = "toIndexView";
 				return;
 			}
-			$.messager.alert('提示', retMsg.msg, 'warning', function(){$loginNameInput.textbox('textbox').focus().select();});
+			$.messager.alert('提示', retMsg.msg, 'warning', function(){$loginNameInput.focus().select();});
 		}
 	});
 	
