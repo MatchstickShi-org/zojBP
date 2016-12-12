@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
-import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.InfoerVisit;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -18,9 +17,9 @@ import com.zoj.bp.common.vo.Pagination;
 public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao {
 
 	@Override
-	public DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Infoer infoer) {
+	public DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM INFOER_VISIT WHERE INFOER_ID="+infoer.getId();
+		String sql = "SELECT * FROM INFOER_VISIT WHERE INFOER_ID="+infoerId;
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";

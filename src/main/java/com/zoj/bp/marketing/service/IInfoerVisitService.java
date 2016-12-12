@@ -1,29 +1,21 @@
-/**
- * 
- */
-package com.zoj.bp.marketing.dao;
+package com.zoj.bp.marketing.service;
 
 import com.zoj.bp.common.model.InfoerVisit;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
-/**
- * @author wangw
- *
- */
-public interface IInfoerVisitDao
-{
+public interface IInfoerVisitService {
+
+	/**
+	 * @param pagination
+	 * @param infoerId 信息员ID
+	 * @return
+	 */
+	DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId);
+
 	/**
 	 * @param infoerVisit
 	 * @return 
 	 */
 	Integer addInfoerVisit(InfoerVisit infoerVisit);
-	/**
-	 * @param pagination
-	 * @param infoerId 信息员Id
-	 * @return
-	 */
-	DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId);
-
-	
 }

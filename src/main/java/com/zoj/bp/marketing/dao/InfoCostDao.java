@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.InfoCost;
-import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -18,9 +17,9 @@ import com.zoj.bp.common.vo.Pagination;
 public class InfoCostDao extends BaseDao implements IInfoCostDao {
 
 	@Override
-	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Infoer infoer) {
+	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM INFO_COST WHERE VISITOR_ID="+infoer.getId();
+		String sql = "SELECT * FROM INFO_COST WHERE VISITOR_ID="+infoerId;
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
