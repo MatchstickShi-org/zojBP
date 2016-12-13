@@ -31,21 +31,23 @@ public class Infoer implements Serializable
 	private String address;
 	
 	@NotNull
-	private Integer tel;
+	private String tel;
 	
-	private Integer tel2;
+	private String tel2;
 	
-	private Integer tel3;
+	private String tel3;
 	
-	private Integer tel4;
+	private String tel4;
 	
-	private Integer tel5;
+	private String tel5;
 	
 	@NotNull
 	private Integer level;
 	
 	@NotNull
 	private Integer salesmanId;
+	
+	private String salesmanName;
 	
 	public Integer getId()
 	{
@@ -91,43 +93,43 @@ public class Infoer implements Serializable
 		this.address = address;
 	}
 
-	public Integer getTel() {
+	public String getTel() {
 		return tel;
 	}
 
-	public void setTel(Integer tel) {
+	public void setTel(String tel) {
 		this.tel = tel;
 	}
 
-	public Integer getTel2() {
+	public String getTel2() {
 		return tel2;
 	}
 
-	public void setTel2(Integer tel2) {
+	public void setTel2(String tel2) {
 		this.tel2 = tel2;
 	}
 
-	public Integer getTel3() {
+	public String getTel3() {
 		return tel3;
 	}
 
-	public void setTel3(Integer tel3) {
+	public void setTel3(String tel3) {
 		this.tel3 = tel3;
 	}
 
-	public Integer getTel4() {
+	public String getTel4() {
 		return tel4;
 	}
 
-	public void setTel4(Integer tel4) {
+	public void setTel4(String tel4) {
 		this.tel4 = tel4;
 	}
 
-	public Integer getTel5() {
+	public String getTel5() {
 		return tel5;
 	}
 
-	public void setTel5(Integer tel5) {
+	public void setTel5(String tel5) {
 		this.tel5 = tel5;
 	}
 
@@ -145,5 +147,13 @@ public class Infoer implements Serializable
 
 	public void setSalesmanId(Integer salesmanId) {
 		this.salesmanId = salesmanId;
+	}
+
+	public String getSalesmanName() {
+		return salesmanName;
+	}
+
+	public void setSalesmanName(String salesmanName) {
+		this.salesmanName = salesmanName;
 	}
 }

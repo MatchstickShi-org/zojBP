@@ -3,6 +3,7 @@ package com.zoj.bp.marketing.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -54,9 +55,29 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser) {
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM INFOER WHERE SALESMAN_ID="+loginUser.getId();
+		String sql = "SELECT I.*,U.ALIAS as SALESMAN_Name FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
+		if(StringUtils.isNotEmpty(name))
+		{
+			sql += " AND I.NAME LIKE :name";
+			paramMap.put("name", '%' + name + '%');
+		}
+		if (StringUtils.isNotEmpty(tel))
+		{
+			sql += " AND (I.TEL LIKE :tel OR I.TEL2 LIKE :tel2 OR I.TEL3 LIKE :tel3 OR I.TEL4 LIKE :tel4 OR I.TEL5 LIKE :tel5)";
+			paramMap.put("tel", '%' + tel + '%');
+			paramMap.put("tel2", '%' + tel + '%');
+			paramMap.put("tel3", '%' + tel + '%');
+			paramMap.put("tel4", '%' + tel + '%');
+			paramMap.put("tel5", '%' + tel + '%');
+		}
+		if(StringUtils.isNotEmpty(level) && Integer.valueOf(level) > 0)
+		{
+			sql += " AND I.LEVEL = :level";
+			paramMap.put("level", Integer.valueOf(level));
+		}
+		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
