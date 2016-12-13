@@ -105,13 +105,9 @@ function getBroadcastMsgs()
 		{
 			if(data.returnCode == 0)
 			{
-				for(var i in data.msgs)
-				{
-					var msg = data.msgs[i];
-					var $tmpSapan = $('<span id="' + msg.id + '">[' + msg.sendTime + ']: ' + msg.content + '</span>');
-					$lastSpan.after($tmpSapan);
-					$lastSpan = $tmpSapan;
-				}
+				var $tmpSapan = $('<span id="' + data.newestMsg.id + '">[' + data.newestMsg.sendTime + ']: ' + data.newestMsg.content + '</span>');
+				$lastSpan.after($tmpSapan);
+				$lastSpan = $tmpSapan;
 				getBroadcastMsgs();
 			}
 		},

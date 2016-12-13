@@ -10,6 +10,8 @@ public enum ReturnCode
 {
 	/**操作成功*/
 	SUCCESS(0, "操作成功。"),
+	/**登录用户重复*/
+	LOGIN_USER_REPEATED(4000, "当前用户已登录。"),
 	/**系统内部错误*/
 	SYSTEM_INTERNAL_ERROR(9999, "系统内部错误，请联系管理员。"),
 	/**找不到记录*/

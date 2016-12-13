@@ -18,6 +18,7 @@
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>ASYNC</dispatcher>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
@@ -27,6 +28,7 @@
 			<param-value></param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
+		<async-supported>true</async-supported>
 		<multipart-config>
 			<location>F:/tmp</location>
 			<max-file-size>5242880</max-file-size>
