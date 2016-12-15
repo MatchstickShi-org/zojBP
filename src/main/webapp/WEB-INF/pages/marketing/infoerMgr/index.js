@@ -5,7 +5,7 @@ $(function()
 	var $telTextbox = $('#infoerMgr\\.telInput');
 	var $levelCheckbox = $('[name="infoerMgr.level"][checked]');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
-	var $addUserWindow = $('div#addUserWindow');
+	var $addInfoerWindow = $('div#addInfoerWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
 	var $removeUsersBtn = $('a#removeUsersBtn');
 	var $infoerMgrTab = $('div#infoerMgrTab');
@@ -258,27 +258,7 @@ $(function()
 			if(selRows.length > 0)
 			{
 				var revertFlag = true, removeFlag = true;
-				for(var i in selRows)
-				{
-					if(selRows[i].status == 1)
-					{
-						$revertUsersBtn.linkbutton('disable');
-						revertFlag = false;
-					}
-					else
-					{
-						$removeUsersBtn.linkbutton('disable');
-						removeFlag = false;
-					}
-				}
-				if(revertFlag)
-					$revertUsersBtn.linkbutton('enable');
-				if(removeFlag)
-					$removeUsersBtn.linkbutton('enable');
-				return;
 			}
-			$revertUsersBtn.linkbutton('enable');
-			$removeUsersBtn.linkbutton('enable');
 		}
 		
 		function loadTabData(title, row)
@@ -290,7 +270,6 @@ $(function()
 					break;
 				case '回访记录':
 					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
-					$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
 					break;
 			}
 		}
@@ -299,11 +278,10 @@ $(function()
 		{
 			switch (title)
 			{
-				case '基本信息':
+				case '详情':
 					$editInfoerForm.form('clear');
 					break;
-				case '产品权限信息':
-					$notAssignUnderlingGrid.datagrid('loadData', []);
+				case '回访记录':
 					$infoerVisitGrid.datagrid('loadData', []);
 					break;
 			}
@@ -332,11 +310,11 @@ $(function()
 			});
 		}
 		
-		$('#showAddUserWindowBtn').linkbutton({onClick: showAddUserWindow});
+		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
 		$removeUsersBtn.linkbutton({onClick: removeUsers});
 		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
-		$addUserWindow.window({width: 500});
+		$addInfoerWindow.window({width: 500});
 		
 		function revertUsers()
 		{
@@ -413,69 +391,56 @@ $(function()
 			});
 		}
 		
-		function showAddUserWindow()
+		function showAddInfoerWindow()
 		{
-			$addUserWindow.window('clear');
-			$addUserWindow.window('open').window
+			$addInfoerWindow.window('clear');
+			$addInfoerWindow.window('open').window
 			({
-				title: '新增用户',
-				content: addUserWindowHtml
+				title: '新增信息员',
+				content: addInfoerWindowHtml
 			}).window('open').window('center');
 		}
 		
-		var addUserWindowHtml = 
-			'<form id="addUserForm" action="sysMgr/userMgr/addUser" method="post" style="width: 100%;">' + 
+		var addInfoerWindowHtml = 
+			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td align="right"><label>用户名：</label></td>' + 
-			'			<td style="width: 240px;"><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
-			'			<td align="right" style="vertical-align: top" rowspan="5"><label>角色：</label></td>' + 
-			'			<td rowspan="5" style="width: 110px;">' + 
-			'				<label><input type="radio" name="role" value="1" checked="checked">市场部业务员</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="2">市场部主管</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="3">市场部经理</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="4">设计部设计师</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="5">设计部主管</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="6">设计部经理</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="0">管理员</label>' + 
-			'			</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>姓名：</label></td>' + 
-			'			<td><input name="alias" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td align="right"><label>名称：</label></td>' + 
+			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/> ＋</td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>密码：</label></td>' + 
-			'			<td><input name="pwd" class="easyui-textbox" type="password" required="required" style="width: 230px;"/></td>' + 
+			'			<td align="right"><label>性质：</label></td>' + 
+			'			<td><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
+			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
+			'			</td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>密码确认：</label></td>' + 
-			'			<td><input name="confirmPwd" class="easyui-textbox" type="password" required="required" style="width: 230px;"/></td>' + 
+			'			<td align="right"><label>工作单位：</label></td>' + 
+			'			<td><input name="org" class="easyui-textbox" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>地址：</label></td>' + 
+			'			<td><input name="address" class="easyui-textbox" style="width: 230px;"/></td>' + 
+			'		</tr>' + 
+			'		<input name="level" type="hidden" value="4" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddUserForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addUserWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
 			'</form>' +
 			'<script type="text/javascript">' + 
-			'var $addUserWindow = $(\'div#addUserWindow\');' +
+			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
 			'var $userDatagrid = $(\'table#userDatagrid\');' +
-			'function submitAddUserForm()' + 
+			'function submitaddInfoerForm()' + 
 			'{' + 
-			'	$addUserWindow.find(\'form#addUserForm\').form(\'submit\',' + 
+			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
 			'	{' + 
 			'		onSubmit: function()' + 
 			'		{' + 
@@ -493,7 +458,7 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$userDatagrid.datagrid(\'reload\');' + 
-			'				$addUserWindow.window(\'close\');' + 
+			'				$addInfoerWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

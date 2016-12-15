@@ -44,7 +44,6 @@ public class Infoer implements Serializable
 	
 	private String levelDesc; //等级对应的中文
 	
-	@NotNull
 	private Integer salesmanId;
 	
 	private String salesmanName;

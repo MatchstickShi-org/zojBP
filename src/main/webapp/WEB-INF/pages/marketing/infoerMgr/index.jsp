@@ -24,7 +24,7 @@
 			<input type="checkbox" value="3" name="infoerMgr.level"/>铜牌
 			<input type="checkbox" value="4" name="infoerMgr.level"/>铁牌
 			&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -67,7 +67,7 @@
 					</table>
 				</form>
 			</div>
-			<div title="回访记录" border="false" style="padding: 2px;" disabled="true">
+			<div title="回访记录" border="false" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -81,7 +81,7 @@
 					</tr>
 				</table>
 			</div>
-			<div title="在谈单" border="false" style="padding: 2px;" disabled="false">
+			<div title="在谈单" border="false" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -97,7 +97,7 @@
 					</tr>
 				</table>
 			</div>
-			<div title="信息费" border="false" style="padding: 2px;" disabled="true">
+			<div title="信息费" border="false" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -113,7 +113,7 @@
 					</tr>
 				</table>
 			</div>
-			<div title="提成" border="false" style="padding: 2px;" disabled="true">
+			<div title="提成" border="false" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -129,7 +129,7 @@
 					</tr>
 				</table>
 			</div>
-			<div title="客户" border="false" style="padding: 2px;" disabled="true">
+			<div title="客户" border="false" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -148,7 +148,7 @@
 		</div>
 	</div>
 </div>
-<div id="addUserWindow"></div>
+<div id="addInfoerWindow"></div>
 <script type="text/javascript" src="pages/marketing/infoerMgr/index.js"></script>
 </body>
 </html>

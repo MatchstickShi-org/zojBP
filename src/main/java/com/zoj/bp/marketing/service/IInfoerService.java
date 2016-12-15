@@ -28,8 +28,8 @@ public interface IInfoerService {
 	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level);
 
 	/**
-	 * @param Infoer
+	 * @param infoer
 	 * @return 
 	 */
-	Integer addInfoer(Infoer Infoer);
+	Integer addInfoer(Infoer infoer);
 }
