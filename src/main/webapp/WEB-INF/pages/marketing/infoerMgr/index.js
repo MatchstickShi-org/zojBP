@@ -6,6 +6,7 @@ $(function()
 	var $levelCheckbox = $('[name="infoerMgr.level"][checked]');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
+	var $addInfoerVisitWindow = $('div#addInfoerVisitWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
 	var $removeUsersBtn = $('a#removeUsersBtn');
 	var $infoerMgrTab = $('div#infoerMgrTab');
@@ -83,7 +84,6 @@ $(function()
 			'onClick': function()
 			{
 				$userDatagrid.datagrid('loading');
-				alert($("[name='infoerMgr.level'][checked]").val());
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
@@ -269,7 +269,7 @@ $(function()
 					$editInfoerForm.form('clear').form('load', 'marketing/infoerMgr/getInfoerById?infoerId=' + row.id);
 					break;
 				case '回访记录':
-					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
+					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
 					break;
 			}
 		}
@@ -311,10 +311,12 @@ $(function()
 		}
 		
 		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
+		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
 		$removeUsersBtn.linkbutton({onClick: removeUsers});
 		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
 		$addInfoerWindow.window({width: 500});
+		$addInfoerVisitWindow.window({width: 400});
 		
 		function revertUsers()
 		{
@@ -459,6 +461,59 @@ $(function()
 			'			{' + 
 			'				$userDatagrid.datagrid(\'reload\');' + 
 			'				$addInfoerWindow.window(\'close\');' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showAddInfoerVisitWindow()
+		{
+			$addInfoerVisitWindow.window('clear');
+			$addInfoerVisitWindow.window('open').window
+			({
+				title: '新增回访记录',
+				content: addInfoerVisitWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var addInfoerVisitWindowHtml = 
+			'<form id="addInfoerVisitForm" action="marketing/infoerMgr/addInfoerVisit" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>回访内容：</label></td>' + 
+			'			<td><textarea name="content" required="required" style="width: 230px;"></textarea></td>' + 
+			'		</tr>' + 
+			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddInfoerVisitForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addInfoerVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $addInfoerVisitWindow = $(\'div#addInfoerVisitWindow\');' +
+			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var selRows = $userDatagrid.datagrid("getSelections");' +
+			'$addInfoerVisitWindow.find(\'#infoerId\').val(selRows[0].id);' +
+			'function submitaddInfoerVisitForm()' + 
+			'{' + 
+			'	$addInfoerVisitWindow.find(\'form#addInfoerVisitForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$infoerVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$addInfoerVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

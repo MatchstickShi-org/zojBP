@@ -32,7 +32,7 @@ public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao {
 	public Integer addInfoerVisit(InfoerVisit infoerVisit) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO INFOER_VISIT(INFOER_ID,DATE,CONTENT) VALUES(:infoerId,now(),:content)",
+				"INSERT INTO INFOER_VISIT(INFOER_ID,SALESMAN_ID,DATE,CONTENT) VALUES(:infoerId,:salesmanId,now(),:content)",
 				new BeanPropertySqlParameterSource(infoerVisit), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

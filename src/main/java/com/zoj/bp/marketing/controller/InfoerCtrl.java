@@ -77,6 +77,18 @@ public class InfoerCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/addInfoerVisit")
+	@ResponseBody
+	public Map<String, ?> addInfoerVisit(@Valid InfoerVisit infoerVisit,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		infoerVisit.setSalesmanId(loginUser.getId());
+		infoerVisitSvc.addInfoerVisit(infoerVisit);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/editInfoer")
 	@ResponseBody
 	public Map<String, ?> editInfoer(@Valid Infoer infoer, Errors errors) throws Exception

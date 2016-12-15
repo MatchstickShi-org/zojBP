@@ -71,7 +71,7 @@
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<input type="button" value="新增" class="easyui-button" />
+				    		<input type="button" id="addInfoerVisitBtn" value="新增" class="easyui-button" />
 						</td>
 					</tr>
 					<tr>
@@ -149,6 +149,7 @@
 	</div>
 </div>
 <div id="addInfoerWindow"></div>
+<div id="addInfoerVisitWindow"></div>
 <script type="text/javascript" src="pages/marketing/infoerMgr/index.js"></script>
 </body>
 </html>

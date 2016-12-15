@@ -2,7 +2,10 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author wangw
@@ -20,10 +23,12 @@ public class InfoerVisit implements Serializable
 	
 	private Integer infoerId;
 	
-	private Date date;
+	private Integer salesmanId;
 	
+	private String date;
+	
+	@NotNull
 	private String content;
-	
 	
 	public Integer getId()
 	{
@@ -43,11 +48,19 @@ public class InfoerVisit implements Serializable
 		this.infoerId = infoerId;
 	}
 
-	public Date getDate() {
+	public Integer getSalesmanId() {
+		return salesmanId;
+	}
+
+	public void setSalesmanId(Integer salesmanId) {
+		this.salesmanId = salesmanId;
+	}
+
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

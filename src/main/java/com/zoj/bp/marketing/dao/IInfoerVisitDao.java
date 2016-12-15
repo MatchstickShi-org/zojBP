@@ -20,7 +20,7 @@ public interface IInfoerVisitDao
 	Integer addInfoerVisit(InfoerVisit infoerVisit);
 	/**
 	 * @param pagination
-	 * @param infoerId –≈œ¢‘±Id
+	 * @param infoerId 
 	 * @return
 	 */
 	DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId);
