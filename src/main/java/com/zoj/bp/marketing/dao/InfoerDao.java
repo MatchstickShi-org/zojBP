@@ -37,7 +37,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Infoer getInfoerById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM INFOER WHERE ID = :id",
+			return jdbcOps.queryForObject("SELECT I.*,CASE I.`LEVEL` WHEN 1 THEN '金牌' WHEN 2 THEN '银牌' WHEN 3 THEN '铜牌' WHEN 4 THEN '铁牌' END as LEVEL_DESC,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE I.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Infoer.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -57,7 +57,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT I.*,U.ALIAS as SALESMAN_Name FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
+		String sql = "SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND I.NAME LIKE :name";

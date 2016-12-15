@@ -24,10 +24,8 @@ public class Infoer implements Serializable
 	@NotNull
 	private String nature;
 	
-	@NotNull
 	private String org;
 	
-	@NotNull
 	private String address;
 	
 	@NotNull
@@ -43,6 +41,8 @@ public class Infoer implements Serializable
 	
 	@NotNull
 	private Integer level;
+	
+	private String levelDesc; //等级对应的中文
 	
 	@NotNull
 	private Integer salesmanId;
@@ -99,6 +99,14 @@ public class Infoer implements Serializable
 
 	public void setTel(String tel) {
 		this.tel = tel;
+	}
+	
+	public String getLevelDesc() {
+		return levelDesc;
+	}
+
+	public void setLevelDesc(String levelDesc) {
+		this.levelDesc = levelDesc;
 	}
 
 	public String getTel2() {

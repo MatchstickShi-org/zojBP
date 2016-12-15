@@ -23,53 +23,117 @@
 			<input type="checkbox" value="2" name="infoerMgr.level"/>银牌
 			<input type="checkbox" value="3" name="infoerMgr.level"/>铜牌
 			<input type="checkbox" value="4" name="infoerMgr.level"/>铁牌
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryUserBtn">查询</a>
+			&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
-		<div id="userMgrTab">
+		<div id="infoerMgrTab">
 			<div title="详情" border="false" style="padding: 2px;">
-				<form id="editUserForm" action="sysMgr/userMgr/editUser" method="post" style="width: 100%;">
+				<form id="editInfoerForm" action="marketing/infoerMgr/editInfoer" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
-					<table style="width: 100%; min-width: 500px;">
+					<table style="width: 100%; min-width: 700px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="vertical-align: top; min-width: 80px;" rowspan="7"><label>工作单位：</label></td>
+							<td align="right"><label>工作单位：</label></td>
 							<td style="min-width: 200px;"><input name="org" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="vertical-align: top; min-width: 80px;" rowspan="7"><label>地址：</label></td>
+							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>地址：</label></td>
 							<td style="min-width: 200px;"><input name="address" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td align="right"><label>联系电话：</label></td>
-							<td style="min-width: 200px;"><input name="tel" class="easyui-textbox" required="required"/></td>
-							<td align="right"><label>业务员：</label></td>
-							<td style="min-width: 200px;"><input name="salesmanName" class="easyui-textbox" required="required"/></td>
-							<td align="right"><label>性质：</label></td>
+							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
+							<td style="min-width: 200px;"><input name="tel" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td align="right" ><label>业务员：</label></td>
+							<td style="min-width: 200px;"><input name="salesmanId" type="hidden"/><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>性质：</label></td>
 							<td style="min-width: 200px;">
-								<label><input type="radio" name="nature" value="1" checked="checked">中介</label>
-								<label><input type="radio" name="nature" value="2" >售楼</label>
+								<label><input type="radio" name="nature" value="1" checked="checked">中介
+								<input type="radio" name="nature" value="2" >售楼</label>
 							</td>
 						</tr>
 						<tr>
-							<td align="right"><label>联系电话2：</label></td>
-							<td style="min-width: 200px;"><input name="tel2" class="easyui-textbox"/></td>
-							<td align="right"><label>信息员等级：</label></td>
-							<td style="min-width: 200px;"><input name="level" class="easyui-textbox"/></td>
+							<td align="right" style="min-width: 80px;"><label>联系电话2：</label></td>
+							<td style="min-width: 200px;"><input name="tel2" readonly="readonly" class="easyui-textbox"/></td>
+							<td align="right" style="vertical-align: top; min-width: 80px;" rowspan="7"><label>信息员等级：</label></td>
+							<td style="min-width: 200px;"><input name="level" type="hidden"/><input name="levelDesc" readonly="readonly" class="easyui-textbox"/></td>
 						</tr>
-						<tr><td colspan="4">
-							<a id="submitUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
-							<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
-						</td></tr>
+						<tr>
+							<td align="center" colspan="6">
+								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
+								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
+							</td>
+						</tr>
 					</table>
 				</form>
 			</div>
-			<div title="下属业务员" border="false" style="padding: 2px;" disabled="true">
+			<div title="回访记录" border="false" style="padding: 2px;" disabled="true">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="assignedUnderlingGrid" title="下属"></table>
+				    		<input type="button" value="新增" class="easyui-button" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+				    		<table id="infoerVisitGrid" title="回访记录"></table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div title="在谈单" border="false" style="padding: 2px;" disabled="false">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="orderGrid" title="下属"></table>
+						</td>
+						<td style="width: 40px; text-align: center;">
+					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
+							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
+						</td>
+						<td width="50%">
+				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div title="信息费" border="false" style="padding: 2px;" disabled="true">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="infoCostGrid" title="下属"></table>
+						</td>
+						<td style="width: 40px; text-align: center;">
+					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
+							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
+						</td>
+						<td width="50%">
+				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div title="提成" border="false" style="padding: 2px;" disabled="true">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="commissionCostGrid" title="下属"></table>
+						</td>
+						<td style="width: 40px; text-align: center;">
+					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
+							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
+						</td>
+						<td width="50%">
+				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div title="客户" border="false" style="padding: 2px;" disabled="true">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="clientGrid" title="下属"></table>
 						</td>
 						<td style="width: 40px; text-align: center;">
 					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>

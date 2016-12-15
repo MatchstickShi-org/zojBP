@@ -4,16 +4,16 @@ $(function()
 	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
 	var $telTextbox = $('#infoerMgr\\.telInput');
 	var $levelCheckbox = $('[name="infoerMgr.level"][checked]');
-	var $queryUserBtn = $('a#queryUserBtn');
+	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addUserWindow = $('div#addUserWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
 	var $removeUsersBtn = $('a#removeUsersBtn');
-	var $userMgrTab = $('div#userMgrTab');
-	var $editUserForm = $('form#editUserForm');
-	var $submitUpdateUserFormBtn = $('a#submitUpdateUserFormBtn');
+	var $infoerMgrTab = $('div#infoerMgrTab');
+	var $editInfoerForm = $('form#editInfoerForm');
+	var $submitUpdateInfoerFormBtn = $('a#submitUpdateInfoerFormBtn');
 	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
 	var $notAssignUnderlingGrid = $('table#notAssignUnderlingGrid');
-	var $assignedUnderlingGrid = $('table#assignedUnderlingGrid');
+	var $infoerVisitGrid = $('table#infoerVisitGrid');
 	var $assignUnderlingBtn = $('a#assignUnderlingBtn');
 	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
@@ -70,14 +70,7 @@ $(function()
 			url: 'marketing/infoerMgr/getAllInfoers',
 			onSelect: function(idx, row)
 			{
-				if(row.role == 2 || row.role == 5)
-				{
-					$userMgrTab.tabs('enableTab', 1)
-					$userMgrTab.tabs('update', {tab: $userMgrTab.tabs('getTab', 1), options: {title: row.role == 2 ? '下属业务员' : '下属设计师'}});
-				}
-				else
-					$userMgrTab.tabs('select', 0).tabs('disableTab', 1)
-				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, row);
+				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 			onCheck: updateBtnStatus,
 			onUncheck: updateBtnStatus,
@@ -85,7 +78,7 @@ $(function()
 			onUncheckAll: updateBtnStatus,
 		});
 		
-		$queryUserBtn.linkbutton
+		$queryInfoerBtn.linkbutton
 		({
 			'onClick': function()
 			{
@@ -107,7 +100,7 @@ $(function()
 			}
 		});
 		
-		$userMgrTab.tabs
+		$infoerMgrTab.tabs
 		({
 			border: false,
 			onSelect: function(title, index)
@@ -121,12 +114,12 @@ $(function()
 			}
 		});
 		
-		$submitUpdateUserFormBtn.linkbutton({'onClick': submitEditUserForm});
+		$submitUpdateInfoerFormBtn.linkbutton({'onClick': submitEditInfoerForm});
 		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
 		{
 			var selRows = $userDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
-				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
 		$notAssignUnderlingGrid.datagrid
@@ -173,45 +166,20 @@ $(function()
 			pagination: true
 		});
 		
-		$assignedUnderlingGrid.datagrid
+		$infoerVisitGrid.datagrid
 		({
 			idField: 'id',
 			columns:
 			[[
 				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
-				{
-				  field:'role', title:'角色', width: 5, formatter: function(value, row, index)
-				  {
-					  switch (value)
-					  {
-						  case 1:
-							  return '市场部业务员';
-							  break;
-						  case 4:
-							  return '设计部设计师';
-							  break;
-						  default:
-							  return '未知';
-						  break;
-					  }
-				  }
-				},
-				{field:'leaderName', title:'上级', width: 5},
-				{
-				  field:'status', title:'状态', width: 5, formatter: function(value, row, index)
-				  {
-					  return value == 1 ? '正常' : '禁用';
-				  }
-				}
+				{field:'content', title:'回访内容', width: 5},
+				{field:'date', title:'回访日期', width: 5}
 			]],
 			pagination: true
 		});
 
-		$assignedUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getAssignedUnderlingByUser';
-		$notAssignUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getNotAssignUnderlingByUser';
+		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
+		$notAssignUnderlingGrid.datagrid('options').url = 'marketing/infoerMgr/getNotAssignUnderlingByUser';
 		
 		$assignUnderlingBtn.linkbutton
 		({
@@ -240,7 +208,7 @@ $(function()
 						if(data.returnCode == 0)
 						{
 							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
+							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
 						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
@@ -259,7 +227,7 @@ $(function()
 					$.messager.alert('提示', '请选择要移除下属的用户。');
 					return;
 				}
-				var underlingIds = $assignedUnderlingGrid.datagrid('getSelectRowPkValues');
+				var underlingIds = $infoerVisitGrid.datagrid('getSelectRowPkValues');
 				if(underlingIds.length == 0)
 				{
 					$.messager.alert('提示', '请勾选要移除的下属用户。');
@@ -275,7 +243,7 @@ $(function()
 						if(data.returnCode == 0)
 						{
 							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
+							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
 						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
@@ -318,11 +286,10 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editUserForm.form('clear').form('load', 'sysMgr/userMgr/getUserById?userId=' + row.id);
+					$editInfoerForm.form('clear').form('load', 'marketing/infoerMgr/getInfoerById?infoerId=' + row.id);
 					break;
-				case '下属业务员':
-				case '下属设计师':
-					$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
+				case '回访记录':
+					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
 					$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
 					break;
 			}
@@ -333,28 +300,28 @@ $(function()
 			switch (title)
 			{
 				case '基本信息':
-					$editUserForm.form('clear');
+					$editInfoerForm.form('clear');
 					break;
 				case '产品权限信息':
 					$notAssignUnderlingGrid.datagrid('loadData', []);
-					$assignedUnderlingGrid.datagrid('loadData', []);
+					$infoerVisitGrid.datagrid('loadData', []);
 					break;
 			}
 		}
 		
-		function submitEditUserForm()
+		function submitEditInfoerForm()
 		{
-			$editUserForm.form('submit',
+			$editInfoerForm.form('submit',
 			{
 				onSubmit: function()
 				{
 					if(!$(this).form('validate'))
 						return false;
-					if($(this).find('[name="pwd"]').val() != $(this).find('[name="confirmPwd"]').val())
+					/*if($(this).find('[name="pwd"]').val() != $(this).find('[name="confirmPwd"]').val())
 					{
 						$.messager.alert('提示', '两次密码输入不一致，请重新输入密码。');
 						return false;
-					}
+					}*/
 				},
 				success: function(data)
 				{
