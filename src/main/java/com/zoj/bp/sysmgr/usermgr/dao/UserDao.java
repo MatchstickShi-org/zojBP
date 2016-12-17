@@ -40,7 +40,12 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM USER WHERE ID = :id",
+			return jdbcOps.queryForObject(
+					"SELECT U.*, G.ID GROUP_ID, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
+					+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
+					+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+					+ " LEFT JOIN USER LU ON G.LEADER_ID = LU.ID "
+					+ " WHERE U.ID = :id ",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(User.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -63,7 +68,7 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getAllUser(Pagination pagination, String userName, String alias)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.NAME LEADER_NAME FROM USER U"
+		String sql = "SELECT U.*, G.ID GROUP_ID, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U"
 				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
 				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON G.LEADER_ID = LU.ID "
@@ -137,11 +142,11 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME, G.NAME GROUP_NAME FROM USER U "
+		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
 				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
 				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
-				+ " WHERE G.LEADER_ID = :userId AND U.STATUS = 1";
+				+ " WHERE G.LEADER_ID = :userId AND U.STATUS = 1 AND G.LEADER_ID <> U.ID ";
 		paramMap.put("userId", userId);
 
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
@@ -156,8 +161,11 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getNotAssignUnderling(User leader, Pagination pagination)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME FROM USER U LEFT JOIN USER LU ON U.LEADER_ID = LU.ID"
-				+ " WHERE U.STATUS = 1 AND U.ROLE = :role AND (U.LEADER_ID <> :userId OR U.LEADER_ID IS NULL)";
+		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
+				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
+				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
+				+ " WHERE U.STATUS = 1 AND U.ROLE = :role AND (G.LEADER_ID <> :userId OR G.LEADER_ID IS NULL)";
 		paramMap.put("userId", leader.getId());
 		paramMap.put("role", leader.isMarketingLeader() ? Role.marketingSalesman.value() : Role.designDesigner.value());
 
@@ -170,16 +178,36 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
+	public Integer removeUnderling(Integer[] underlingIds)
+	{
+		return jdbcOps.update("DELETE FROM USER_GROUP_MEMBER "
+				+ " WHERE MEMBER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
+				EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
 	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds)
 	{
-		return jdbcOps.update("UPDATE USER SET LEADER_ID = NULL WHERE LEADER_ID = :userId AND ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
-				new MapSqlParameterSource("userId", userId));
+		return jdbcOps.update("DELETE FROM USER_GROUP_MEMBER "
+				+ " WHERE GROUP_ID = (SELECT ID FROM USER_GROUP WHERE LEADER_ID = :leaderId) "
+				+ " AND MEMBER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
+				new MapSqlParameterSource("leaderId", userId));
 	}
 
 	@Override
-	public Integer addUnderlingToUser(Integer userId, Integer[] underlingIds)
+	public Integer addUnderlingToUser(Integer userId, Integer... underlingIds)
 	{
-		return jdbcOps.update("UPDATE USER SET LEADER_ID = :userId WHERE (ROLE = 1 OR ROLE = 4) AND ID IN (" + StringUtils.join(underlingIds, ',') + ")",
-				new MapSqlParameterSource("userId", userId));
+		Integer groupId = jdbcOps.queryForObject("SELECT ID FROM USER_GROUP "
+				+ " WHERE LEADER_ID = :leaderId", new MapSqlParameterSource("leaderId", userId), Integer.class);
+		StringBuffer sql = new StringBuffer("INSERT INTO USER_GROUP_MEMBER(GROUP_ID, MEMBER_ID) VALUES");
+		StringBuffer part = new StringBuffer();
+		for(Integer underlingId : underlingIds)
+		{
+			if(part.length() > 0)
+				part.append(",");
+			part.append("(:groupId, ").append(underlingId).append(")");
+		}
+		sql.append(part).append(";");
+		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("groupId", groupId));
 	}
 }

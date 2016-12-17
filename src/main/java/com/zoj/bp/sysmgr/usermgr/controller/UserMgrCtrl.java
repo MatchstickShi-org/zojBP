@@ -16,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -137,6 +138,16 @@ public class UserMgrCtrl
 		loginUser.setPwd(newPwdForMD5);
 		userSvc.changPwd(loginUser.getId(), newPwdForMD5);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS.setMsg("密码修改成功。"));
+	}
+	
+	@RequestMapping("/showAssignUnderlingWindow")
+	public ModelAndView showAssignUnderlingWindow(@RequestParam Integer leaderId)
+	{
+		ModelAndView mv = new ModelAndView("sysMgr/userMgr/assignUnderling", "isLeader", true);
+		User user = userSvc.getUserById(leaderId);
+		if(!user.isMarketingLeader() && !user.isDesignLeader())	//非主管
+			mv.addObject("isLeader", false);
+		return mv;
 	}
 	
 	@RequestMapping(value = "/getAssignedUnderlingByUser")

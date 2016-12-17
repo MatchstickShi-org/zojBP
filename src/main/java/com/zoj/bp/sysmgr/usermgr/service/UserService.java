@@ -69,6 +69,7 @@ public class UserService implements IUserService
 		{
 			Integer count = userDao.getCountByRole(user.getRole());
 			userDao.addUserGroup(leaderId, (user.isMarketingLeader() ? "市场部" : "设计部") + "-组" + count);
+			userDao.addUnderlingToUser(leaderId, leaderId);
 		}
 	}
 
@@ -94,18 +95,15 @@ public class UserService implements IUserService
 	public Integer addUnderlingToUser(Integer userId, Integer[] underlingIds) throws BusinessException
 	{
 		User user = userDao.getUserById(userId);
-		if(user.isAdmin())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法分配[管理员]的下属。"));
-		userDao.removeUnderlingFromUser(userId, underlingIds);
+		if(!user.isDesignLeader() && !user.isMarketingLeader())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("要为其分配下属的用户不是[主管]，无法分配。"));
+		userDao.removeUnderling(underlingIds);
 		return userDao.addUnderlingToUser(userId, underlingIds);
 	}
 
 	@Override
 	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException
 	{
-		User user = userDao.getUserById(userId);
-		if(user.isAdmin())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("无法移除[管理员]的下属。"));
 		return userDao.removeUnderlingFromUser(userId, underlingIds);
 	}
 

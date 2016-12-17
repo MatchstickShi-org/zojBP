@@ -5,6 +5,7 @@ $(function()
 	var $aliasTextbox = $('#userMgr\\.alias');
 	var $queryUserBtn = $('a#queryUserBtn');
 	var $addUserWindow = $('div#addUserWindow');
+	var $addUnderlingWindow = $('div#addUnderlingWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
 	var $removeUsersBtn = $('a#removeUsersBtn');
 	var $userMgrTab = $('div#userMgrTab');
@@ -26,7 +27,7 @@ $(function()
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
 				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
+				{field:'alias', title:'姓名', width: 5},
 				{
 					field:'role', title:'角色', width: 5, formatter: function(value, row, index)
 					{
@@ -62,14 +63,18 @@ $(function()
 				{
 					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
 					{
+						if(row.role == 0)
+							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';
-						return value;
+						return row.leaderId == row.id ? '<span style="color: gray">-</span>' : value;
 					}
 				},
 				{
-					field:'groupName', title:'所属小组', width: 5, formatter: function(value, row, index)
+					field:'groupName', title:'所属组', width: 5, formatter: function(value, row, index)
 					{
+						if(row.role == 0)
+							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';
 						return value;
@@ -156,7 +161,7 @@ $(function()
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
 				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
+				{field:'alias', title:'姓名', width: 5},
 				{
 				  field:'role', title:'角色', width: 5, formatter: function(value, row, index)
 				  {
@@ -183,7 +188,7 @@ $(function()
 					}
 				},
 				{
-					field:'groupName', title:'所属小组', width: 5, formatter: function(value, row, index)
+					field:'groupName', title:'所属组', width: 5, formatter: function(value, row, index)
 					{
 						if(!value)
 							return '<span style="color: red;">无</span>';
@@ -201,6 +206,25 @@ $(function()
 		});
 
 		$assignedUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getAssignedUnderlingByUser';
+		
+		$('#showAddUserWindowBtn').linkbutton({onClick: showAddUserWindow});
+		$showAddUnderlingWindowBtn.linkbutton({onClick: function()
+		{
+			var selRows = $userDatagrid.datagrid('getSelections');
+			if(selRows.length == 0 || (selRows[0].role != 2 && selRows[0].role != 5))
+			{
+				$.messager.alert('提示', '请选择要分配下属的主管。');
+				return;
+			}
+			showAddUnderlingWindow(selRows[0].alias, selRows[0].id);
+		}});
+		$removeUnderlingBtn.linkbutton({onClick: removeUnderlings});
+		
+		$removeUsersBtn.linkbutton({onClick: removeUsers});
+		$revertUsersBtn.linkbutton({onClick: revertUsers});
+		
+		$addUserWindow.window({width: 500});
+		$addUnderlingWindow.window({width: 500});
 
 		function updateBtnStatus()
 		{
@@ -236,7 +260,21 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editUserForm.form('clear').form('load', 'sysMgr/userMgr/getUserById?userId=' + row.id);
+					$.ajax
+					({
+						url: 'sysMgr/userMgr/getUserById?userId=' + row.id,
+						success: function(data, textStatus, jqXHR)
+						{
+							if(data.returnCode == 0)
+							{
+								if(data.id == data.leaderId)
+									data.leaderName = '-';
+								$editUserForm.form('clear').form('load', data);
+							}
+							else
+								$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
+						}
+					});
 					break;
 				case '下属业务员':
 				case '下属设计师':
@@ -281,12 +319,6 @@ $(function()
 			});
 		}
 		
-		$('#showAddUserWindowBtn').linkbutton({onClick: showAddUserWindow});
-		$removeUsersBtn.linkbutton({onClick: removeUsers});
-		$revertUsersBtn.linkbutton({onClick: revertUsers});
-		
-		$addUserWindow.window({width: 500});
-		
 		function revertUsers()
 		{
 			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
@@ -324,6 +356,40 @@ $(function()
 			});
 		}
 		
+		function removeUnderlings()
+		{
+			var userRow = $userDatagrid.datagrid('getSelections')[0];
+			var selIds = $assignedUnderlingGrid.datagrid('getCheckedRowPkValues');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要移除的下属。');
+				return;
+			}
+			$.messager.confirm('警告','确定要将勾选的用户从<span style="color: red;">' + userRow.groupName + '</span>移除吗？',
+			function(r)
+			{
+				if (!r)
+					return;
+				$.post
+				(
+					'sysMgr/userMgr/removeUnderlingFromUser',
+					{userId: userRow.id, underlingIds : selIds},
+					function(data, textStatus, jqXHR)
+					{
+						if(data.returnCode == 0)
+						{
+							$.messager.show({title:'提示',msg:'移除成功。'});
+							$userDatagrid.datagrid('reload');
+							$assignedUnderlingGrid.datagrid('reload');
+						}
+						else
+							$.messager.show({title:'提示', msg:'移除失败\n' + data.msg});   
+					},
+					'JSON'
+				);
+			});
+		}
+		
 		function removeUsers()
 		{
 			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
@@ -332,14 +398,8 @@ $(function()
 				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要设为离职的用户。');
 				return;
 			}
-			
-			if($.inArray(_session_loginUser.id, selIds) >= 0)
-			{
-				$.messager.alert('提示', '不能设置自己。');
-				return;
-			}
 	
-			$.messager.confirm('警告','确定要设置勾选的用户到<span style="color: red;">离职</span>状态吗？',function(r)
+			$.messager.confirm('警告','确定要修改勾选的用户为<span style="color: red;">离职</span>状态吗？',function(r)
 			{
 				if (!r)
 					return;
@@ -370,6 +430,15 @@ $(function()
 				title: '新增用户',
 				content: addUserWindowHtml
 			}).window('open').window('center');
+		}
+		
+		function showAddUnderlingWindow(alias, id)
+		{
+			$addUnderlingWindow.window('clear');
+			$addUnderlingWindow.window('open').window
+			({
+				title: '请勾选需要为 ' + alias + ' 分配的下属'
+			}).window('open').window('refresh', 'sysMgr/userMgr/showAssignUnderlingWindow?leaderId=' + id);
 		}
 		
 		var addUserWindowHtml = 

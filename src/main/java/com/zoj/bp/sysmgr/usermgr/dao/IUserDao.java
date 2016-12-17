@@ -85,7 +85,7 @@ public interface IUserDao
 	 * @param underlingIds
 	 * @return
 	 */
-	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds);
+	Integer addUnderlingToUser(Integer userId, Integer... underlingIds);
 
 	/**
 	 * @param role
@@ -99,4 +99,10 @@ public interface IUserDao
 	 * @return
 	 */
 	Integer addUserGroup(Integer leaderId, String name);
+
+	/**
+	 * @param underlingIds
+	 * @return
+	 */
+	Integer removeUnderling(Integer[] underlingIds);
 }

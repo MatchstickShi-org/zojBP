@@ -38,12 +38,21 @@
 						<tr>
 							<td align="right"><label>姓名：</label></td>
 							<td><input name="alias" class="easyui-textbox" required="required"/></td>
+							<td align="right"><label>上级：</label></td>
+							<td><input name="leaderName" class="easyui-textbox" readonly="readonly"/></td>
+						</tr>
+						<tr>
 							<td align="right"><label>新密码：</label></td>
 							<td><span class="easyui-tooltip" content="不填写表示不修改密码" position="right"><input name="pwd" class="easyui-textbox" type="password"/></span></td>
+							<td align="right"><label>所属组：</label></td>
+							<td><input name="groupName" class="easyui-textbox" readonly="readonly"/></td>
 						</tr>
-						<tr><td align="right" style="vertical-align: top;"><label>角色：</label></td>
+						<tr>
+							<td align="right"><label>密码确认：</label></td>
+							<td><input name="confirmPwd" class="easyui-textbox" type="password"/></td>
+							<td align="right" style="vertical-align: top;"><label>角色：</label></td>
 							<td>
-								<select class="easyui-combobox" name="role">
+								<select class="easyui-combobox" name="role" style="width: 173px;">
 									<option value="1" selected="selected">市场部业务员</option>
 									<option value="2">市场部主管</option>
 									<option value="3">市场部经理</option>
@@ -53,8 +62,6 @@
 									<option value="0">管理员</option>
 								</select>
 							</td>
-							<td align="right"><label>密码确认：</label></td>
-							<td><input name="confirmPwd" class="easyui-textbox" type="password"/></td>
 						</tr>
 						<tr><td colspan="4">
 							<a id="submitUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
@@ -75,6 +82,7 @@
 	</div>
 </div>
 <div id="addUserWindow"></div>
+<div id="addUnderlingWindow"></div>
 <script type="text/javascript" src="pages/sysMgr/userMgr/index.js"></script>
 </body>
 </html>

@@ -50,7 +50,8 @@ $(function()
 		maximizable: false,
 		resizable: false,
 		closed: true,
-		modal: true
+		modal: true,
+		onLoad: function(){$(this).window('center');}
 	});
 	
 	$.extend($.fn.layout.defaults,

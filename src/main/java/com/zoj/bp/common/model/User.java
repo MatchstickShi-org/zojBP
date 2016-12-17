@@ -40,6 +40,8 @@ public class User implements Serializable
 	
 	private String leaderName;
 	
+	private Integer groupId;
+	
 	private String groupName;
 	
 	private List<Menu> menus;
@@ -235,5 +237,15 @@ public class User implements Serializable
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
+	}
+
+	public Integer getGroupId()
+	{
+		return groupId;
+	}
+
+	public void setGroupId(Integer groupId)
+	{
+		this.groupId = groupId;
 	}
 }

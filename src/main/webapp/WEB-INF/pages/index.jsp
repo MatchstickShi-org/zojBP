@@ -138,7 +138,7 @@ $(function()
 		valueField: 'url',
 		textFormatter: function (value, row, index)
 		{
-			return '<span style="margin-left: 40px;">' + value + '</span>';
+			return '<span style="margin-left: 20px;">' + value + '</span>';
 		},
 		onSelect: function(idx, row)
 		{
