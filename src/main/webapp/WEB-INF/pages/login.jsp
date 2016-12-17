@@ -43,7 +43,7 @@
 								</tr>
 								<tr>
 									<td id="pwdLabelTd"></td>
-									<td class="valueTd"><input type="password" name="pwd" maxlength="20"/></td>
+									<td class="valueTd"><input type="text" name="pwd" maxlength="20" onfocus="this.type='password'" autocomplete="off"/></td>
 								</tr>
 								<tr>
 									<td height="52px" id="button" colspan="2"><div id="loginBtn"></div></td>

@@ -19,8 +19,8 @@
 			<input class="easyui-textbox" id="userMgr.alias"/>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryUserBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">删除</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="revertUsersBtn">恢复</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">设为离职</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="revertUsersBtn">设为在职</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -32,30 +32,27 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>用户名：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="vertical-align: top; min-width: 80px;" rowspan="7"><label>角色：</label></td>
-							<td rowspan="5" style="width: 70%;">
-								<label><input type="radio" name="role" value="1" checked="checked">市场部业务员</label><br>
-								<label><input type="radio" name="role" value="2">市场部主管</label><br>
-								<label><input type="radio" name="role" value="3">市场部经理</label><br>
-								<label><input type="radio" name="role" value="4">设计部设计师</label><br>
-								<label><input type="radio" name="role" value="5">设计部主管</label><br>
-								<label><input type="radio" name="role" value="6">设计部经理</label><br>
-								<label><input type="radio" name="role" value="0">管理员</label>
-							</td>
+							<td align="right" style="min-width: 80px;"><label>电话：</label></td>
+							<td width="70%"><input name="tel" class="easyui-textbox"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>姓名：</label></td>
 							<td><input name="alias" class="easyui-textbox" required="required"/></td>
-						</tr>
-						<tr>
-							<td align="right"><label>电话：</label></td>
-							<td><input name="tel" class="easyui-textbox"/></td>
-						</tr>
-						<tr>
 							<td align="right"><label>新密码：</label></td>
 							<td><span class="easyui-tooltip" content="不填写表示不修改密码" position="right"><input name="pwd" class="easyui-textbox" type="password"/></span></td>
 						</tr>
-						<tr>
+						<tr><td align="right" style="vertical-align: top;"><label>角色：</label></td>
+							<td>
+								<select class="easyui-combobox" name="role">
+									<option value="1" selected="selected">市场部业务员</option>
+									<option value="2">市场部主管</option>
+									<option value="3">市场部经理</option>
+									<option value="4">设计部设计师</option>
+									<option value="5">设计部主管</option>
+									<option value="6">设计部经理</option>
+									<option value="0">管理员</option>
+								</select>
+							</td>
 							<td align="right"><label>密码确认：</label></td>
 							<td><input name="confirmPwd" class="easyui-textbox" type="password"/></td>
 						</tr>
@@ -67,20 +64,12 @@
 				</form>
 			</div>
 			<div title="下属业务员" border="false" style="padding: 2px;" disabled="true">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="assignedUnderlingGrid" title="下属"></table>
-						</td>
-						<td style="width: 40px; text-align: center;">
-					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
-							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
-						</td>
-						<td width="50%">
-				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
-						</td>
-					</tr>
-				</table>
+	    		<table id="assignedUnderlingGrid"></table>
+	    		<div id="assignedUnderlingGridToolbar">
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUnderlingWindowBtn" style="float: left;">分配下属</a>
+					<div class="datagrid-btn-separator" style="float: left;"></div>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUnderlingBtn">移除下属</a>
+				</div>
 			</div>
 		</div>
 	</div>

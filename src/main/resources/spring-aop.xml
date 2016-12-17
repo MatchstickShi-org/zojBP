@@ -21,7 +21,7 @@
 	</tx:advice>
 
 	<aop:config>
-		<aop:pointcut id="txPointcut" expression="execution(* com.zoj.bp.**.service.**.*Service.*(..))" />
+		<aop:pointcut id="txPointcut" expression="execution(* com.zoj.bp..service..*Service.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 	</aop:config>
 	

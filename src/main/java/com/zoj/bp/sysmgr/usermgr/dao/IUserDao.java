@@ -86,4 +86,17 @@ public interface IUserDao
 	 * @return
 	 */
 	Integer addUnderlingToUser(Integer userId, Integer[] underlingIds);
+
+	/**
+	 * @param role
+	 * @return
+	 */
+	Integer getCountByRole(Integer role);
+
+	/**
+	 * @param leaderId
+	 * @param name
+	 * @return
+	 */
+	Integer addUserGroup(Integer leaderId, String name);
 }

@@ -1,5 +1,9 @@
+<%@page import="com.zoj.bp.common.model.MsgLog"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<% SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); %>
 <!DOCTYPE html>
 <%
 	String path = request.getContextPath();
@@ -18,27 +22,25 @@
 <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
+<script type="text/javascript" src="js/xMarquee.js"></script>
 <style type="text/css">
-#broadcastMsgDiv span
+div#broadcastMsgDiv
 {
-	display:block;/*这个属性是必须的*/
-	font-size:14px;
-	line-height:16px;
-	cursor: pointer;
-	float: left;
-	margin-left: 50px;
-}
-
-#broadcastMsgDiv
-{
-	left: 320px;
 	position: absolute;
 	top: 57px;
-	right: 0px;
-	text-align: left;
-	color: red;
-	height:16px;
+	color: red; height:16px; right: 2px; left:320px; line-height:18px; 
 	overflow:hidden;
+}
+
+.xMarquee ol
+{
+	list-style-type:none; margin:0px; padding:0px; font-size:14px; width:100000%;
+}
+.xMarquee ol li
+{
+	float:left;
+	cursor: pointer;
+	padding-right: 50px;
 }
 </style>
 </head>
@@ -57,11 +59,11 @@
 		</div>
 		<div id="idxCenterDiv" data-options="region:'center', title:'欢迎使用'"></div>
 	</div>
-	<marquee id="broadcastMsgDiv" scrollamount="2">
+	<div id="broadcastMsgDiv" class="xMarquee"><ol>
 		<c:forEach items="${sessionScope.broadcastMsgs}" var="m">
-			<span id="${m.id}">${m.content}</span>
+			<li id="${m.id}">[<%= sdf.format(((MsgLog)pageContext.getAttribute("m")).getSendTime()) %>]: ${m.content}</li>
 		</c:forEach>
-	</marquee>
+	</ol></div>
 </body>
 <script type="text/javascript">
 var _session_loginUser =
@@ -71,12 +73,13 @@ var _session_loginUser =
 };
 if(${loginUser.role == 0})
 	_session_loginUser.isAdmin = true;
+	
+var $broadcastMsgDiv = $('div#broadcastMsgDiv');
 
 $(function()
 {
-	var $broadcastMsgDiv = $('#broadcastMsgDiv');
-	var $lastSpan = $broadcastMsgDiv.find('span:last');
-		
+	$broadcastMsgDiv.xMarquee();
+	
 	function getBroadcastMsgs()
 	{
 		$.ajax
@@ -86,7 +89,7 @@ $(function()
 			{
 				if(data.returnCode == 0)
 				{
-					var $tmpSapan = $('<span id="' + data.newestMsg.id + '">' + data.newestMsg.content + '</span>');
+					var $tmpSapan = $('<li id="' + data.newestMsg.id + '">[' + data.newestMsg.sendTime + ']: ' + data.newestMsg.content + '</li>');
 					$lastSpan.after($tmpSapan);
 					$lastSpan = $tmpSapan;
 					getBroadcastMsgs();
@@ -138,7 +141,7 @@ $(function()
 		valueField: 'url',
 		textFormatter: function (value, row, index)
 		{
-			return '<span style="margin-left: 40px;">' + value + '</span>';
+			return '<span style="margin-left: 10px;">' + value + '</span>';
 		},
 		onSelect: function(idx, row)
 		{

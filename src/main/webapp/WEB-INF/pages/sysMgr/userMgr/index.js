@@ -11,9 +11,8 @@ $(function()
 	var $editUserForm = $('form#editUserForm');
 	var $submitUpdateUserFormBtn = $('a#submitUpdateUserFormBtn');
 	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
-	var $notAssignUnderlingGrid = $('table#notAssignUnderlingGrid');
 	var $assignedUnderlingGrid = $('table#assignedUnderlingGrid');
-	var $assignUnderlingBtn = $('a#assignUnderlingBtn');
+	var $showAddUnderlingWindowBtn = $('a#showAddUnderlingWindowBtn');
 	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
@@ -61,9 +60,25 @@ $(function()
 					}
 				},
 				{
+					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
+					{
+						if(!value)
+							return '<span style="color: red;">无</span>';
+						return value;
+					}
+				},
+				{
+					field:'groupName', title:'所属小组', width: 5, formatter: function(value, row, index)
+					{
+						if(!value)
+							return '<span style="color: red;">无</span>';
+						return value;
+					}
+				},
+				{
 					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
 					{
-						return value == 1 ? '正常' : '禁用';
+						return value == 1 ? '在职' : '离职';
 					}
 				}
 			]],
@@ -132,53 +147,10 @@ $(function()
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
-		$notAssignUnderlingGrid.datagrid
-		({
-			idField: 'id',
-			columns:
-			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
-				{
-					field:'role', title:'角色', width: 5, formatter: function(value, row, index)
-					{
-						switch (value)
-						{
-							case 1:
-								return '市场部业务员';
-								break;
-							case 4:
-								return '设计部设计师';
-								break;
-							default:
-								return '未知';
-								break;
-						}
-					}
-				},
-				{
-					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
-					{
-						if(!value)
-							return '<span style="color: gray;">无</span>';
-						return value;
-					}
-				},
-				{
-					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
-					{
-						return value == 1 ? '正常' : '禁用';
-					}
-				}
-			]],
-			pagination: true
-		});
-		
 		$assignedUnderlingGrid.datagrid
 		({
 			idField: 'id',
+			toolbar: '#assignedUnderlingGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -202,7 +174,22 @@ $(function()
 					  }
 				  }
 				},
-				{field:'leaderName', title:'上级', width: 5},
+				{
+					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
+					{
+						if(!value)
+							return '<span style="color: red;">无</span>';
+						return value;
+					}
+				},
+				{
+					field:'groupName', title:'所属小组', width: 5, formatter: function(value, row, index)
+					{
+						if(!value)
+							return '<span style="color: red;">无</span>';
+						return value;
+					}
+				},
 				{
 				  field:'status', title:'状态', width: 5, formatter: function(value, row, index)
 				  {
@@ -214,78 +201,6 @@ $(function()
 		});
 
 		$assignedUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getAssignedUnderlingByUser';
-		$notAssignUnderlingGrid.datagrid('options').url = 'sysMgr/userMgr/getNotAssignUnderlingByUser';
-		
-		$assignUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要分配下属的用户。');
-					return;
-				}
-				var underlingIds = $notAssignUnderlingGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要分配的下属用户。');
-					return;
-				}
-				
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/addUnderlingToUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
-			
-		$removeUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要移除下属的用户。');
-					return;
-				}
-				var underlingIds = $assignedUnderlingGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要移除的下属用户。');
-					return;
-				}
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/removeUnderlingFromUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
 
 		function updateBtnStatus()
 		{
@@ -326,7 +241,6 @@ $(function()
 				case '下属业务员':
 				case '下属设计师':
 					$assignedUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
-					$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload', {userId: row.id});
 					break;
 			}
 		}
@@ -335,11 +249,10 @@ $(function()
 		{
 			switch (title)
 			{
-				case '基本信息':
+				case '详情':
 					$editUserForm.form('clear');
 					break;
-				case '产品权限信息':
-					$notAssignUnderlingGrid.datagrid('loadData', []);
+				default:
 					$assignedUnderlingGrid.datagrid('loadData', []);
 					break;
 			}
@@ -379,17 +292,17 @@ $(function()
 			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要恢复的用户。');
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要设为在职的用户。');
 				return;
 			}
 			
 			if($.inArray(_session_loginUser.id, selIds) >= 0)
 			{
-				$.messager.alert('提示', '不恢复除自己。');
+				$.messager.alert('提示', '不设置自己。');
 				return;
 			}
 			
-			$.messager.confirm('警告','确定要恢复选中的用户吗？',function(r)
+			$.messager.confirm('警告','确定要恢复选中的用户到<span style="color: red;">在职</span>状态吗？',function(r)
 			{
 				if (!r)
 					return;
@@ -401,11 +314,11 @@ $(function()
 						{
 							if(data.returnCode == 0)
 							{
-								$.messager.show({title:'提示',msg:'恢复成功。'});
+								$.messager.show({title:'提示',msg:'设置成功。'});
 								$userDatagrid.datagrid('reload');
 							}
 							else
-								$.messager.show({title:'提示', msg:'恢复失败\n' + data.msg});   
+								$.messager.show({title:'提示', msg:'设置失败\n' + data.msg});   
 						}
 				);
 			});
@@ -416,17 +329,17 @@ $(function()
 			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户。');
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要设为离职的用户。');
 				return;
 			}
 			
 			if($.inArray(_session_loginUser.id, selIds) >= 0)
 			{
-				$.messager.alert('提示', '不能删除自己。');
+				$.messager.alert('提示', '不能设置自己。');
 				return;
 			}
 	
-			$.messager.confirm('警告','确定要删除选中的用户吗？',function(r)
+			$.messager.confirm('警告','确定要设置勾选的用户到<span style="color: red;">离职</span>状态吗？',function(r)
 			{
 				if (!r)
 					return;
@@ -438,11 +351,11 @@ $(function()
 					{
 						if(data.returnCode == 0)
 						{
-							$.messager.show({title:'提示',msg:'删除成功。'});
+							$.messager.show({title:'提示',msg:'设置成功。'});
 							$userDatagrid.datagrid('reload');
 						}
 						else
-							$.messager.show({title:'提示', msg:'删除失败\n' + data.msg});   
+							$.messager.show({title:'提示', msg:'设置失败\n' + data.msg});   
 					},
 					'JSON'
 				);

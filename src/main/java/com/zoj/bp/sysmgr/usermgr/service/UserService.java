@@ -64,7 +64,12 @@ public class UserService implements IUserService
 	@Override
 	public void addUser(User user)
 	{
-		userDao.addUser(user);
+		Integer leaderId = userDao.addUser(user);
+		if (user.isMarketingLeader() || user.isDesignLeader())		//主管
+		{
+			Integer count = userDao.getCountByRole(user.getRole());
+			userDao.addUserGroup(leaderId, (user.isMarketingLeader() ? "市场部" : "设计部") + "-组" + count);
+		}
 	}
 
 	@Override

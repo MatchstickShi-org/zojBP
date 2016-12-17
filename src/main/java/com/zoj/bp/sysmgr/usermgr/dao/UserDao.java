@@ -63,7 +63,11 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getAllUser(Pagination pagination, String userName, String alias)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM USER WHERE 1=1";
+		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.NAME LEADER_NAME FROM USER U"
+				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
+				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+				+ " LEFT JOIN USER LU ON G.LEADER_ID = LU.ID "
+				+ " WHERE 1=1";
 		if(StringUtils.isNotEmpty(userName))
 		{
 			sql += " AND name LIKE :name";
@@ -91,6 +95,24 @@ public class UserDao extends BaseDao implements IUserDao
 				new BeanPropertySqlParameterSource(user), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
+	
+	@Override
+	public Integer addUserGroup(Integer leaderId, String name)
+	{
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcOps.update(
+				"INSERT INTO USER_GROUP(NAME, LEADER_ID) VALUES(:name, :leaderId)",
+				new MapSqlParameterSource("name", name).addValue("leaderId", leaderId), keyHolder);
+		return keyHolder.getKey().intValue();
+	}
+	
+	@Override
+	public Integer getCountByRole(Integer role)
+	{
+		return jdbcOps.queryForObject(
+				"SELECT COUNT(1) FROM USER WHERE ROLE = :role",
+				new MapSqlParameterSource("role", role), Integer.class);
+	}
 
 	@Override
 	public Integer deleteUserByIds(Integer[] userIds)
@@ -115,7 +137,11 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME FROM USER U LEFT JOIN USER LU ON U.LEADER_ID = LU.ID WHERE U.LEADER_ID = :userId AND U.STATUS = 1";
+		String sql = "SELECT U.*, LU.ALIAS LEADER_NAME, G.NAME GROUP_NAME FROM USER U "
+				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
+				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
+				+ " WHERE G.LEADER_ID = :userId AND U.STATUS = 1";
 		paramMap.put("userId", userId);
 
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
