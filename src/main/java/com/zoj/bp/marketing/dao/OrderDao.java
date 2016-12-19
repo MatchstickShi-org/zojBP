@@ -42,7 +42,8 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser) {
+	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
+			String infoerName, String status) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT * FROM ORDER WHERE SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";

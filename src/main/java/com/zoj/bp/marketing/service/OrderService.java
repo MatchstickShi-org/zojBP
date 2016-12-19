@@ -24,8 +24,9 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser) {
-		return dao.getAllOrder(pagination, loginUser);
+	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser ,String name, String tel,
+			String infoerName, String status) {
+		return dao.getAllOrder(pagination, loginUser,name,tel,infoerName, status);
 	}
 
 	@Override

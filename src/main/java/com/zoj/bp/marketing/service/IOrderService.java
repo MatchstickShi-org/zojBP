@@ -20,9 +20,13 @@ public interface IOrderService {
 
 	/**
 	 * @param pagination
+	 * @param status 
+	 * @param infoerName 
+	 * @param tel 
+	 * @param name 
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser);
+	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, String status);
 
 	/**
 	 * @param order
