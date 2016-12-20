@@ -18,11 +18,11 @@
 			<label style="vertical-align: middle;">电话：</label>
 			<input class="easyui-textbox" id="infoerMgr.telInput"/>
 			<label style="vertical-align: middle;">信息员等级：</label>
-			<input type="checkbox" value="0" name="infoerMgr.level" checked="checked"/>全部
-			<input type="checkbox" value="1" name="infoerMgr.level"/>金牌
-			<input type="checkbox" value="2" name="infoerMgr.level"/>银牌
-			<input type="checkbox" value="3" name="infoerMgr.level"/>铜牌
-			<input type="checkbox" value="4" name="infoerMgr.level"/>铁牌
+			<input type="checkbox" value="0" name="levelInput" checked="checked"/>全部
+			<input type="checkbox" value="1" name="levelInput"/>金牌
+			<input type="checkbox" value="2" name="levelInput"/>银牌
+			<input type="checkbox" value="3" name="levelInput"/>铜牌
+			<input type="checkbox" value="4" name="levelInput"/>铁牌
 			&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 		</div>
@@ -68,12 +68,8 @@
 				</form>
 			</div>
 			<div title="回访记录" border="false" style="padding: 2px;">
+		    	<a id="addInfoerVisitBtn" href="javascript:void(0)" style="width: 60px;">新增</a><br>
 				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<input type="button" id="addInfoerVisitBtn" value="新增" class="easyui-button" />
-						</td>
-					</tr>
 					<tr>
 						<td>
 				    		<table id="infoerVisitGrid" title="回访记录"></table>
@@ -85,14 +81,7 @@
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="orderGrid" title="下属"></table>
-						</td>
-						<td style="width: 40px; text-align: center;">
-					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
-							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
-						</td>
-						<td width="50%">
-				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+				    		<table id="orderGrid" title="在谈单"></table>
 						</td>
 					</tr>
 				</table>
@@ -101,14 +90,7 @@
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="infoCostGrid" title="下属"></table>
-						</td>
-						<td style="width: 40px; text-align: center;">
-					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
-							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
-						</td>
-						<td width="50%">
-				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+				    		<table id="infoCostGrid" title="信息费"></table>
 						</td>
 					</tr>
 				</table>
@@ -117,30 +99,17 @@
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="commissionCostGrid" title="下属"></table>
-						</td>
-						<td style="width: 40px; text-align: center;">
-					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
-							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
-						</td>
-						<td width="50%">
-				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+				    		<table id="commissionCostGrid" title="提成"></table>
 						</td>
 					</tr>
 				</table>
 			</div>
 			<div title="客户" border="false" style="padding: 2px;">
+				<a id="addClientBtn" href="javascript:void(0)" style="width: 60px;">新增</a><br>
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="clientGrid" title="下属"></table>
-						</td>
-						<td style="width: 40px; text-align: center;">
-					    	<a id="assignUnderlingBtn" href="javascript:void(0)">&lt;&lt;</a>
-							<a id="removeUnderlingBtn" href="javascript:void(0)">&gt;&gt;</a>
-						</td>
-						<td width="50%">
-				    		<table id="notAssignUnderlingGrid" title="可分配人员"></table>
+				    		<table id="clientGrid" title="客户"></table>
 						</td>
 					</tr>
 				</table>
@@ -150,6 +119,7 @@
 </div>
 <div id="addInfoerWindow"></div>
 <div id="addInfoerVisitWindow"></div>
+<div id="addClientWindow"></div>
 <script type="text/javascript" src="pages/marketing/infoerMgr/index.js"></script>
 </body>
 </html>

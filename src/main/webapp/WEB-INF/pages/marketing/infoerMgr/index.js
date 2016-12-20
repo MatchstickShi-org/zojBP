@@ -3,19 +3,19 @@ $(function()
 	var $userDatagrid = $('table#userDatagrid');
 	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
 	var $telTextbox = $('#infoerMgr\\.telInput');
-	var $levelCheckbox = $('[name="infoerMgr.level"][checked]');
+	var $levelCheckbox = $('input[name="levelInput"]:checked');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
 	var $addInfoerVisitWindow = $('div#addInfoerVisitWindow');
+	var $addClientWindow = $('div#addClientWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
 	var $removeUsersBtn = $('a#removeUsersBtn');
 	var $infoerMgrTab = $('div#infoerMgrTab');
 	var $editInfoerForm = $('form#editInfoerForm');
 	var $submitUpdateInfoerFormBtn = $('a#submitUpdateInfoerFormBtn');
 	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
-	var $notAssignUnderlingGrid = $('table#notAssignUnderlingGrid');
 	var $infoerVisitGrid = $('table#infoerVisitGrid');
-	var $assignUnderlingBtn = $('a#assignUnderlingBtn');
+	var $clientGrid = $('table#clientGrid');
 	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
@@ -62,7 +62,11 @@ $(function()
 				{field:'org', title:'工作单位', width: 5},
 				{field:'address', title:'地址', width: 5},
 				{field:'salesmanName', title:'业务员', width: 5},
-				{field:'visitLeftDays', title:'回访剩余天数', width: 5}
+				{field:'visitLeftDays', title:'回访剩余天数', width: 5,
+					styler: function (value, row, index) {
+						if(value < 5)
+							return 'background-color:red';
+		           }}
 			]],
 			pagination: true,
 			singleSelect: true,
@@ -84,6 +88,9 @@ $(function()
 			'onClick': function()
 			{
 				$userDatagrid.datagrid('loading');
+				$levelCheckbox.each(function(){ 
+					alert($(this).val()); 
+					}); 
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
@@ -122,7 +129,7 @@ $(function()
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
-		$notAssignUnderlingGrid.datagrid
+		/*$notAssignUnderlingGrid.datagrid
 		({
 			idField: 'id',
 			columns:
@@ -164,7 +171,7 @@ $(function()
 				}
 			]],
 			pagination: true
-		});
+		});*/
 		
 		$infoerVisitGrid.datagrid
 		({
@@ -177,81 +184,28 @@ $(function()
 			]],
 			pagination: true
 		});
+		
+		$clientGrid.datagrid
+		({
+			idField: 'id',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'name', title:'联系人', width: 5},
+				  {field:'tel', title:'联系电话', width: 5},
+				  {field:'orgAddr', title:'单位地址', width: 5},
+				  {field:'projectName', title:'工程名称', width: 5},
+				  {field:'projectAddr', title:'工程地址', width: 5},
+				  {field:'infoerName', title:'信息员', width: 5},
+				  {field:'salesmanName', title:'业务员', width: 5},
+				  {field:'insertTime', title:'录入日期', width: 5}
+				  ]],
+				  pagination: true
+		});
 
 		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
-		$notAssignUnderlingGrid.datagrid('options').url = 'marketing/infoerMgr/getNotAssignUnderlingByUser';
+		$clientGrid.datagrid('options').url = 'marketing/infoerMgr/getClientByInfoer';
 		
-		$assignUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要分配下属的用户。');
-					return;
-				}
-				var underlingIds = $notAssignUnderlingGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要分配的下属用户。');
-					return;
-				}
-				
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/addUnderlingToUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
-			
-		$removeUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要移除下属的用户。');
-					return;
-				}
-				var underlingIds = $infoerVisitGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要移除的下属用户。');
-					return;
-				}
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/removeUnderlingFromUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
-
 		function updateBtnStatus()
 		{
 			var selRows = $userDatagrid.datagrid('getChecked');
@@ -271,6 +225,9 @@ $(function()
 				case '回访记录':
 					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
 					break;
+				case '客户':
+					$clientGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
+					break;
 			}
 		}
 		
@@ -283,6 +240,9 @@ $(function()
 					break;
 				case '回访记录':
 					$infoerVisitGrid.datagrid('loadData', []);
+					break;
+				case '客户':
+					$clientGrid.datagrid('loadData', []);
 					break;
 			}
 		}
@@ -312,11 +272,13 @@ $(function()
 		
 		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
 		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
+		$('#addClientBtn').linkbutton({onClick: showAddClientWindow});
 		$removeUsersBtn.linkbutton({onClick: removeUsers});
 		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
 		$addInfoerWindow.window({width: 500});
-		$addInfoerVisitWindow.window({width: 400});
+		$addInfoerVisitWindow.window({width: 350});
+		$addClientWindow.window({width: 450});
 		
 		function revertUsers()
 		{
@@ -482,7 +444,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;"></textarea></td>' + 
+			'			<td><textarea name="content" required="required" style="width: 230px;height:150px;"></textarea></td>' + 
 			'		</tr>' + 
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
@@ -496,6 +458,7 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addInfoerVisitWindow = $(\'div#addInfoerVisitWindow\');' +
 			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var $infoerVisitGrid = $("table#infoerVisitGrid");' +
 			'var selRows = $userDatagrid.datagrid("getSelections");' +
 			'$addInfoerVisitWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'function submitaddInfoerVisitForm()' + 
@@ -512,11 +475,90 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$infoerVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$infoerVisitGrid.datagrid(\'reload\');' + 
 			'				$addInfoerVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showAddClientWindow()
+		{
+			$addClientWindow.window('clear');
+			$addClientWindow.window('open').window
+			({
+				title: '新增客户',
+				content: addClientWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var addClientWindowHtml = 
+			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系人：</label></td>' + 
+			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input name="tel"  onblur="checkValue(this)" class="easyui-textbox" required="required" style="width: 150px;"/> ＋<label></label></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>所属信息员：</label></td>' + 
+			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 150px;"/></td>' + 
+			'		</tr>' + 
+			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="right"><label>单位地址：</label></td>' + 
+			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>工程名称：</label></td>' + 
+			'			<td><input name="projectName" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>工程地址：</label></td>' + 
+			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $addClientWindow = $(\'div#addClientWindow\');' +
+			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var $clientGrid = $("table#clientGrid");' +
+			'var selRows = $userDatagrid.datagrid("getSelections");' +
+			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
+			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
+			'function submitaddClientForm()' + 
+			'{' + 
+			'	$addClientWindow.find(\'form#addClientForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$clientGrid.datagrid(\'reload\');' + 
+			'				$addClientWindow.window(\'close\');' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'function checkValue(obj)' + 
+			'{' + 
+			'	alert(obj.value);' + 
 			'}' + 
 			'</script>';
 	}

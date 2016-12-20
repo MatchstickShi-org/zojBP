@@ -2,8 +2,6 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 

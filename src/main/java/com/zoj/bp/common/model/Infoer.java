@@ -48,6 +48,8 @@ public class Infoer implements Serializable
 	
 	private String salesmanName;
 	
+	private Integer visitLeftDays =1;  //剩余回访天数
+	
 	public Integer getId()
 	{
 		return id;
@@ -162,5 +164,13 @@ public class Infoer implements Serializable
 
 	public void setSalesmanName(String salesmanName) {
 		this.salesmanName = salesmanName;
+	}
+
+	public Integer getVisitLeftDays() {
+		return visitLeftDays;
+	}
+
+	public void setVisitLeftDays(Integer visitLeftDays) {
+		this.visitLeftDays = visitLeftDays;
 	}
 }

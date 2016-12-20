@@ -19,12 +19,14 @@ import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.InfoerVisit;
+import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.service.IInfoerService;
 import com.zoj.bp.marketing.service.IInfoerVisitService;
+import com.zoj.bp.marketing.service.IOrderService;
 
 /**
  * @author wangw
@@ -36,6 +38,9 @@ public class InfoerCtrl
 {
 	@Autowired
 	private IInfoerService infoerSvc;
+	
+	@Autowired
+	private IOrderService orderSvc;
 	
 	@Autowired
 	private IInfoerVisitService infoerVisitSvc;
@@ -77,6 +82,19 @@ public class InfoerCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/addClient")
+	@ResponseBody
+	public Map<String, ?> addClient(@Valid Order order,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		order.setSalesmanId(loginUser.getId());
+		order.setStatus(10);//状态为正跟踪
+		orderSvc.addOrderAndClient(order);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/addInfoerVisit")
 	@ResponseBody
 	public Map<String, ?> addInfoerVisit(@Valid InfoerVisit infoerVisit,Errors errors,HttpSession session) throws Exception
@@ -104,5 +122,13 @@ public class InfoerCtrl
 	public DatagridVo<InfoerVisit> getInfoerVisitByInfoer(@RequestParam("infoerId") Integer infoerId, Pagination pagination) throws BusinessException
 	{
 		return infoerVisitSvc.getAllInfoerVisit(pagination,infoerId);
+	}
+	
+	@RequestMapping(value = "/getClientByInfoer")
+	@ResponseBody
+	public DatagridVo<Order> getClientByInfoer(@RequestParam("infoerId") Integer infoerId,HttpSession session,Pagination pagination) throws BusinessException
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		return orderSvc.getAllOrder(pagination, loginUser, infoerId, null);
 	}
 }

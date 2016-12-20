@@ -19,7 +19,7 @@ public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao {
 	@Override
 	public DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM INFOER_VISIT WHERE INFOER_ID="+infoerId;
+		String sql = "SELECT * FROM INFOER_VISIT WHERE INFOER_ID="+infoerId+" ORDER BY id DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
