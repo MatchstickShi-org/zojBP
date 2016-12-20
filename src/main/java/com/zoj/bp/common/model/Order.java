@@ -106,7 +106,7 @@ public class Order implements Serializable{
 	}
 
 	public void setInsertTime(String insertTime) {
-		this.insertTime = insertTime.substring(0,10);
+		this.insertTime = insertTime.substring(0,19);
 	}
 
 	public Integer getStatus() {

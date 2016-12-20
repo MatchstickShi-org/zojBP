@@ -39,4 +39,9 @@ public class InfoerService implements IInfoerService{
 		return infoerDao.addInfoer(infoer);
 	}
 
+	@Override
+	public Infoer findByTel(String tel) {
+		return infoerDao.findByTel(tel);
+	}
+
 }

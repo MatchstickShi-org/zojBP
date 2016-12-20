@@ -31,10 +31,16 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer status) {
+	public DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer[] status) {
 		return dao.getAllOrder(pagination, loginUser,infoerId,status);
 	}
 
+	@Override
+	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser ,String name, String tel,
+			String infoerName, Integer[]  status) {
+		return dao.getAllOrder(pagination, loginUser,name,tel,infoerName, status);
+	}
+	
 	@Override
 	public Integer addOrder(Order order) {
 		return dao.addOrder(order);
@@ -55,6 +61,11 @@ public class OrderService implements IOrderService {
 			client.setOrderId(orderId);
 			clientDao.addClient(client);
 		}
+	}
+
+	@Override
+	public Client findByTel(String tel) {
+		return clientDao.getClientByTel(tel);
 	}
 
 }

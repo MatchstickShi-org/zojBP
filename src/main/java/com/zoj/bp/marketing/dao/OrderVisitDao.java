@@ -18,9 +18,14 @@ import com.zoj.bp.common.vo.Pagination;
 public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 
 	@Override
-	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,User loginUser) {
+	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,User loginUser,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT * FROM ORDER_VISIT WHERE VISITOR_ID="+loginUser.getId();
+		if(orderId != null && orderId > 0)
+		{
+			sql += " AND orderId = :orderId";
+			paramMap.put("orderId", orderId);
+		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
@@ -33,7 +38,7 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 	public Integer addOrderVisit(OrderVisit orderVisit) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO ORDER_VISIT(ORDER_ID,VISITOR_ID,DATE,CONTENT) VALUES(:infoerId,now(),:content)",
+				"INSERT INTO ORDER_VISIT(ORDER_ID,VISITOR_ID,DATE,CONTENT) VALUES(:orderId,:visitorId,now(),:content)",
 				new BeanPropertySqlParameterSource(orderVisit), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

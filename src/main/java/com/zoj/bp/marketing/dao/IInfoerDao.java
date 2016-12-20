@@ -43,4 +43,11 @@ public interface IInfoerDao
 	 */
 	Integer addInfoer(Infoer infoer);
 
+	/**
+	 * 
+	 * @param tel
+	 * @return
+	 */
+	Infoer findByTel(String tel);
+
 }

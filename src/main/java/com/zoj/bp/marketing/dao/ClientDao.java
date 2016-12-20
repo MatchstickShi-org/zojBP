@@ -74,4 +74,17 @@ public class ClientDao extends BaseDao implements IClientDao {
 		return keyHolder.getKey().intValue();
 	}
 
+	@Override
+	public Client getClientByTel(String tel) {
+		try
+		{
+			return jdbcOps.queryForObject("SELECT * FROM CLIENT WHERE TEL = :tel or TEL2 = :tel or TEL3 = :tel or TEL4 = :tel or TEL5 = :tel ",
+					new MapSqlParameterSource("tel", tel), BeanPropertyRowMapper.newInstance(Client.class));
+		}
+		catch (EmptyResultDataAccessException e)
+		{
+			return null;
+		}
+	}
+
 }

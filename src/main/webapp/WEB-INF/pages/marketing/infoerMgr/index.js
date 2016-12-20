@@ -1,6 +1,6 @@
 $(function()
 {
-	var $userDatagrid = $('table#userDatagrid');
+	var $infoerDatagrid = $('table#infoerDatagrid');
 	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
 	var $telTextbox = $('#infoerMgr\\.telInput');
 	var $levelCheckbox = $('input[name="levelInput"]:checked');
@@ -15,15 +15,18 @@ $(function()
 	var $submitUpdateInfoerFormBtn = $('a#submitUpdateInfoerFormBtn');
 	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
 	var $infoerVisitGrid = $('table#infoerVisitGrid');
+	var $orderGrid = $('table#orderGrid');
+	var $infoCostGrid = $('table#infoCostGrid');
+	var $commissionCostGrid = $('table#commissionCostGrid');
 	var $clientGrid = $('table#clientGrid');
 	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
 	{
-		$userDatagrid.datagrid
+		$infoerDatagrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#userDatagridToolbar',
+			toolbar: '#infoerDatagridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -62,7 +65,7 @@ $(function()
 				{field:'org', title:'工作单位', width: 5},
 				{field:'address', title:'地址', width: 5},
 				{field:'salesmanName', title:'业务员', width: 5},
-				{field:'visitLeftDays', title:'回访剩余天数', width: 5,
+				{field:'visitLeftDays', title:'未回访天数', width: 5,
 					styler: function (value, row, index) {
 						if(value < 5)
 							return 'background-color:red';
@@ -87,9 +90,8 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$userDatagrid.datagrid('loading');
+				$infoerDatagrid.datagrid('loading');
 				$levelCheckbox.each(function(){ 
-					alert($(this).val()); 
 					}); 
 				$.ajax
 				({
@@ -98,10 +100,10 @@ $(function()
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
-							$userDatagrid.datagrid('loadData', data);
+							$infoerDatagrid.datagrid('loadData', data);
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$userDatagrid.datagrid('loaded');
+						$infoerDatagrid.datagrid('loaded');
 					}
 				});
 			}
@@ -112,7 +114,7 @@ $(function()
 			border: false,
 			onSelect: function(title, index)
 			{
-				var selRows = $userDatagrid.datagrid('getSelections');
+				var selRows = $infoerDatagrid.datagrid('getSelections');
 				
 				if(selRows.length == 1)
 					loadTabData(title, selRows[0]);
@@ -124,7 +126,7 @@ $(function()
 		$submitUpdateInfoerFormBtn.linkbutton({'onClick': submitEditInfoerForm});
 		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
 		{
-			var selRows = $userDatagrid.datagrid('getSelections');
+			var selRows = $infoerDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
@@ -176,6 +178,7 @@ $(function()
 		$infoerVisitGrid.datagrid
 		({
 			idField: 'id',
+			toolbar: '#infoerVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -185,30 +188,117 @@ $(function()
 			pagination: true
 		});
 		
-		$clientGrid.datagrid
+		$orderGrid.datagrid
 		({
 			idField: 'id',
 			columns:
 				[[
 				  {field:'id', hidden: true},
-				  {field:'name', title:'联系人', width: 5},
+				  {field:'name', title:'客户', width: 3},
+				  {field:'projectName', title:'工程名称', width: 6},
+				  {field:'projectAddr', title:'工程地址', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
+				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'insertTime', title:'生成日期', width: 5},
+				  {field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+					{
+						switch (value)
+						{
+							case 14:
+								return '在谈单-设计师已打回';
+								break;
+							case 30:
+								return '在谈单-市场部经理审核中';
+								break;
+							case 32:
+								return '在谈单-设计部经理审核中';
+								break;
+							case 34:
+								return '在谈单-设计师跟踪中';
+								break;
+							default:
+								return '未知';
+								break;
+						}
+					}
+				  }
+				  ]],
+				  pagination: true
+		});
+
+		$infoCostGrid.datagrid
+		({
+			idField: 'id',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'orderId', title:'单号', width: 3},
+				  {field:'projectName', title:'项目名称', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
+				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
+						{
+					  		return value = value +' ￥';
+						}
+				  },
+				  {field:'date', title:'打款日期', width: 3},
+				  {field:'remark', title:'备注', width: 8}
+				  ]],
+				  pagination: true
+		});
+		
+		$commissionCostGrid.datagrid
+		({
+			idField: 'id',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'orderId', title:'单号', width: 3},
+				  {field:'projectName', title:'项目名称', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
+				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
+					  {
+					  return value = value +' ￥';
+					  }
+				  },
+				  {field:'date', title:'打款日期', width: 3},
+				  {field:'remark', title:'备注', width: 8}
+				  ]],
+				  pagination: true
+		});
+		
+		$clientGrid.datagrid
+		({
+			idField: 'id',
+			toolbar: '#clientGridToolbar',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'name', title:'联系人', width: 3},
 				  {field:'tel', title:'联系电话', width: 5},
-				  {field:'orgAddr', title:'单位地址', width: 5},
-				  {field:'projectName', title:'工程名称', width: 5},
-				  {field:'projectAddr', title:'工程地址', width: 5},
-				  {field:'infoerName', title:'信息员', width: 5},
-				  {field:'salesmanName', title:'业务员', width: 5},
+				  {field:'orgAddr', title:'单位地址', width: 6},
+				  {field:'projectName', title:'工程名称', width: 6},
+				  {field:'projectAddr', title:'工程地址', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
 				  {field:'insertTime', title:'录入日期', width: 5}
 				  ]],
 				  pagination: true
 		});
 
 		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
+		$orderGrid.datagrid('options').url = 'marketing/infoerMgr/getOrderByInfoer';
+		$infoCostGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoCostByInfoer';
+		$commissionCostGrid.datagrid('options').url = 'marketing/infoerMgr/getCommissionCostByInfoer';
 		$clientGrid.datagrid('options').url = 'marketing/infoerMgr/getClientByInfoer';
 		
 		function updateBtnStatus()
 		{
-			var selRows = $userDatagrid.datagrid('getChecked');
+			var selRows = $infoerDatagrid.datagrid('getChecked');
 			if(selRows.length > 0)
 			{
 				var revertFlag = true, removeFlag = true;
@@ -225,6 +315,15 @@ $(function()
 				case '回访记录':
 					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
 					break;
+				case '在谈单':
+					$orderGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
+					break;
+				case '信息费':
+					$infoCostGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
+					break;
+				case '提成':
+					$commissionCostGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
+					break;
 				case '客户':
 					$clientGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
 					break;
@@ -240,6 +339,15 @@ $(function()
 					break;
 				case '回访记录':
 					$infoerVisitGrid.datagrid('loadData', []);
+					break;
+				case '在谈单':
+					$orderGrid.datagrid('loadData', []);
+					break;
+				case '信息费':
+					$infoCostGrid.datagrid('loadData', []);
+					break;
+				case '提成':
+					$commissionCostGrid.datagrid('loadData', []);
 					break;
 				case '客户':
 					$clientGrid.datagrid('loadData', []);
@@ -265,7 +373,7 @@ $(function()
 				{
 					data = $.fn.form.defaults.success(data);
 					if(data.returnCode == 0)
-						$userDatagrid.datagrid('reload');
+						$infoerDatagrid.datagrid('reload');
 				}
 			});
 		}
@@ -277,12 +385,12 @@ $(function()
 		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
 		$addInfoerWindow.window({width: 500});
-		$addInfoerVisitWindow.window({width: 350});
+		$addInfoerVisitWindow.window({width: 322});
 		$addClientWindow.window({width: 450});
 		
 		function revertUsers()
 		{
-			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
+			var selIds = $infoerDatagrid.datagrid('getCheckedRowPkValues');
 			if(selIds.length == 0)
 			{
 				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要恢复的用户。');
@@ -308,7 +416,7 @@ $(function()
 							if(data.returnCode == 0)
 							{
 								$.messager.show({title:'提示',msg:'恢复成功。'});
-								$userDatagrid.datagrid('reload');
+								$infoerDatagrid.datagrid('reload');
 							}
 							else
 								$.messager.show({title:'提示', msg:'恢复失败\n' + data.msg});   
@@ -319,7 +427,7 @@ $(function()
 		
 		function removeUsers()
 		{
-			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
+			var selIds = $infoerDatagrid.datagrid('getCheckedRowPkValues');
 			if(selIds.length == 0)
 			{
 				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户。');
@@ -345,7 +453,7 @@ $(function()
 						if(data.returnCode == 0)
 						{
 							$.messager.show({title:'提示',msg:'删除成功。'});
-							$userDatagrid.datagrid('reload');
+							$infoerDatagrid.datagrid('reload');
 						}
 						else
 							$.messager.show({title:'提示', msg:'删除失败\n' + data.msg});   
@@ -370,11 +478,11 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>名称：</label></td>' + 
-			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
 			'		</tr>' + 
-			'		<tr>' + 
+			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/> ＋</td>' + 
+			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>性质：</label></td>' + 
@@ -401,7 +509,7 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
-			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
 			'function submitaddInfoerForm()' + 
 			'{' + 
 			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
@@ -421,12 +529,27 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$userDatagrid.datagrid(\'reload\');' + 
+			'				$infoerDatagrid.datagrid(\'reload\');' + 
 			'				$addInfoerWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
 			'}' + 
+			'function removeTelAdd(obj)' +
+			'{' +
+			'	if(confirm("确定要删除此联系电话吗？"))' +
+			'	{' +
+			'		obj.parent().parent().remove();' +
+			'	}' +
+			'} ' +
+			'$(\'#addInfoerTelBtn\').click(function()'+
+			'{' + 
+			'	var appendHtml =\'<tr>'+
+			'	<td align="right"><label>电话：</label></td>'+
+			'	<td><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a><label></label></td>' + 
+			'	</tr>\';' + 
+			'	$(\'#infoerTelTr\').after(appendHtml);' +   
+			'});' +
 			'</script>';
 		
 		function showAddInfoerVisitWindow()
@@ -444,7 +567,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;height:150px;"></textarea></td>' + 
+			'			<td><textarea name="content" required="required" style="width: 230px;height:100px;"></textarea></td>' + 
 			'		</tr>' + 
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
@@ -457,9 +580,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $addInfoerVisitWindow = $(\'div#addInfoerVisitWindow\');' +
-			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
 			'var $infoerVisitGrid = $("table#infoerVisitGrid");' +
-			'var selRows = $userDatagrid.datagrid("getSelections");' +
+			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addInfoerVisitWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'function submitaddInfoerVisitForm()' + 
 			'{' + 
@@ -495,14 +618,14 @@ $(function()
 		
 		var addClientWindowHtml = 
 			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
-			'	<table width="100%">' + 
+			'	<table width="100%" id="clientTab">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>联系人：</label></td>' + 
 			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
 			'		</tr>' + 
-			'		<tr>' + 
+			'		<tr id="clientTelTr">' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel"  onblur="checkValue(this)" class="easyui-textbox" required="required" style="width: 150px;"/> ＋<label></label></td>' + 
+			'			<td><input name="tel" id="tel1" onblur="checkTelValue($(this));" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a><label></label></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>所属信息员：</label></td>' + 
@@ -531,9 +654,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $addClientWindow = $(\'div#addClientWindow\');' +
-			'var $userDatagrid = $(\'table#userDatagrid\');' +
+			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
 			'var $clientGrid = $("table#clientGrid");' +
-			'var selRows = $userDatagrid.datagrid("getSelections");' +
+			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
 			'function submitaddClientForm()' + 
@@ -556,12 +679,31 @@ $(function()
 			'		}' + 
 			'	});' + 
 			'}' + 
-			'function checkValue(obj)' + 
+			'function checkTelValue(obj)' + 
 			'{' + 
-			'	alert(obj.value);' + 
-			'}' + 
+			'	alert(obj);'+
+			'} ' + 
+			'function removeTelAdd(obj)' +
+			'{' +
+			'	if(confirm("确定要删除此联系电话吗？"))' +
+			'	{' +
+			'		obj.parent().parent().remove();' +
+			'	}' +
+			'} ' +
+			'$(\'#addClientTelBtn\').click(function()'+
+			'{' + 
+			'	var appendHtml =\'<tr>'+
+			'	<td align="right"><label>联系电话：</label></td>'+
+			'	<td><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a><label></label></td>' + 
+			'	</tr>\';' + 
+			'	$(\'#clientTelTr\').after(appendHtml);' +   
+			'});' + 
+			'$(\'#tel1\').blur(function()'+
+			'{' + 
+			'	alert(2);' +   
+			'});' + 
 			'</script>';
 	}
-
+	
 	init();
 });

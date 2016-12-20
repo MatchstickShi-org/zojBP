@@ -120,50 +120,6 @@ $(function()
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
-		$notAssignUnderlingGrid.datagrid
-		({
-			idField: 'id',
-			columns:
-			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
-				{
-					field:'role', title:'角色', width: 5, formatter: function(value, row, index)
-					{
-						switch (value)
-						{
-							case 1:
-								return '市场部业务员';
-								break;
-							case 4:
-								return '设计部设计师';
-								break;
-							default:
-								return '未知';
-								break;
-						}
-					}
-				},
-				{
-					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
-					{
-						if(!value)
-							return '<span style="color: gray;">无</span>';
-						return value;
-					}
-				},
-				{
-					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
-					{
-						return value == 1 ? '正常' : '禁用';
-					}
-				}
-			]],
-			pagination: true
-		});
-		
 		$infoerVisitGrid.datagrid
 		({
 			idField: 'id',
@@ -177,78 +133,6 @@ $(function()
 		});
 
 		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
-		$notAssignUnderlingGrid.datagrid('options').url = 'marketing/infoerMgr/getNotAssignUnderlingByUser';
-		
-		$assignUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要分配下属的用户。');
-					return;
-				}
-				var underlingIds = $notAssignUnderlingGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要分配的下属用户。');
-					return;
-				}
-				
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/addUnderlingToUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
-			
-		$removeUnderlingBtn.linkbutton
-		({
-			onClick: function()
-			{
-				var userIds = $userDatagrid.datagrid('getSelectRowPkValues');
-				if(userIds.length == 0)
-				{
-					$.messager.alert('提示', '请选择要移除下属的用户。');
-					return;
-				}
-				var underlingIds = $infoerVisitGrid.datagrid('getSelectRowPkValues');
-				if(underlingIds.length == 0)
-				{
-					$.messager.alert('提示', '请勾选要移除的下属用户。');
-					return;
-				}
-				$.ajax
-				({
-					url: 'sysMgr/userMgr/removeUnderlingFromUser',
-					dataType: 'JSON',
-					data: {userId: userIds[0], underlingIds: underlingIds},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$notAssignUnderlingGrid.datagrid('unselectAll').datagrid('reload');
-							$infoerVisitGrid.datagrid('unselectAll').datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-					}
-				});
-			}
-		});
 
 		function updateBtnStatus()
 		{

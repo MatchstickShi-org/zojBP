@@ -59,7 +59,7 @@ public class InfoerVisit implements Serializable
 	}
 
 	public void setDate(String date) {
-		this.date = date;
+		this.date = date.substring(0, 19);
 	}
 
 	public String getContent() {

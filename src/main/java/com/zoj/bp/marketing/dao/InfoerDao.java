@@ -95,4 +95,17 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		return keyHolder.getKey().intValue();
 	}
 
+	@Override
+	public Infoer findByTel(String tel) {
+		try
+		{
+			return jdbcOps.queryForObject("SELECT * FROM INFOER WHERE tel = :tel or tel2 =:tel or tel3 =:tel or tel4 =:tel or tel5 =:tel",
+					new MapSqlParameterSource("name", tel), BeanPropertyRowMapper.newInstance(Infoer.class));
+		}
+		catch (EmptyResultDataAccessException e)
+		{
+			return null;
+		}
+	}
+
 }

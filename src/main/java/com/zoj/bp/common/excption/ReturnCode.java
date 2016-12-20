@@ -10,6 +10,8 @@ public enum ReturnCode
 {
 	/**操作成功*/
 	SUCCESS(0, "操作成功。"),
+	/**号码已存在*/
+	TEL_EXISTS(3000, "号码已存在。"),
 	/**登录用户重复*/
 	LOGIN_USER_REPEATED(4000, "当前用户已登录。"),
 	/**系统内部错误*/
