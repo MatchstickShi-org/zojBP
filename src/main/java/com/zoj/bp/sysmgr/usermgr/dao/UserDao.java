@@ -68,19 +68,18 @@ public class UserDao extends BaseDao implements IUserDao
 	public DatagridVo<User> getAllUser(Pagination pagination, String userName, String alias)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT U.*, G.ID GROUP_ID, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U"
-				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
-				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+		String sql = "SELECT U.*, G.ID GROUP_ID, G.NAME GROUP_NAME, G.LEADER_ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U"
+				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON G.LEADER_ID = LU.ID "
-				+ " WHERE 1=1";
+				+ " WHERE 1=1 ";
 		if(StringUtils.isNotEmpty(userName))
 		{
-			sql += " AND name LIKE :name";
+			sql += " AND U.NAME LIKE :name";
 			paramMap.put("name", '%' + userName + '%');
 		}
 		if (StringUtils.isNotEmpty(alias))
 		{
-			sql += " AND alias LIKE :alias";
+			sql += " AND U.ALIAS LIKE :alias";
 			paramMap.put("alias", '%' + alias + '%');
 		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
@@ -100,29 +99,12 @@ public class UserDao extends BaseDao implements IUserDao
 				new BeanPropertySqlParameterSource(user), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
-	
-	@Override
-	public Integer addUserGroup(Integer leaderId, String name)
-	{
-		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcOps.update(
-				"INSERT INTO USER_GROUP(NAME, LEADER_ID) VALUES(:name, :leaderId)",
-				new MapSqlParameterSource("name", name).addValue("leaderId", leaderId), keyHolder);
-		return keyHolder.getKey().intValue();
-	}
-	
-	@Override
-	public Integer getCountByRole(Integer role)
-	{
-		return jdbcOps.queryForObject(
-				"SELECT COUNT(1) FROM USER WHERE ROLE = :role",
-				new MapSqlParameterSource("role", role), Integer.class);
-	}
 
 	@Override
 	public Integer deleteUserByIds(Integer[] userIds)
 	{
-		return jdbcOps.update("UPDATE USER SET STATUS = 0 WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+		return jdbcOps.update("UPDATE USER SET STATUS = 0 "
+				+ " WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 	
 	@Override
@@ -143,15 +125,14 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
-				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
-				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
-				+ " WHERE G.LEADER_ID = :userId AND U.STATUS = 1 AND G.LEADER_ID <> U.ID ";
+				+ " WHERE M.PARENT_ID = :userId AND U.STATUS = 1 AND M.LEADER_ID <> U.ID ";
 		paramMap.put("userId", userId);
 
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " ORDER BY U.ALIAS, U.NAME LIMIT :start, :rows ";
+		sql += " ORDER BY U.ALIAS LIMIT :start, :rows ";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
@@ -162,8 +143,7 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
-				+ " LEFT JOIN USER_GROUP_MEMBER M ON U.ID = M.MEMBER_ID "
-				+ " LEFT JOIN USER_GROUP G ON M.GROUP_ID = G.ID "
+				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
 				+ " WHERE U.STATUS = 1 AND U.ROLE = :role AND (G.LEADER_ID <> :userId OR G.LEADER_ID IS NULL)";
 		paramMap.put("userId", leader.getId());
@@ -171,7 +151,7 @@ public class UserDao extends BaseDao implements IUserDao
 
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " ORDER BY U.ALIAS, U.NAME LIMIT :start, :rows ";
+		sql += " ORDER BY U.ALIAS LIMIT :start, :rows ";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(User.class)), count);
@@ -180,34 +160,46 @@ public class UserDao extends BaseDao implements IUserDao
 	@Override
 	public Integer removeUnderling(Integer[] underlingIds)
 	{
-		return jdbcOps.update("DELETE FROM USER_GROUP_MEMBER "
-				+ " WHERE MEMBER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
+		return jdbcOps.update("UPDATE USER SET GROUP_ID = NULL "
+				+ " WHERE USER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
 				EmptySqlParameterSource.INSTANCE);
 	}
 	
 	@Override
-	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds)
+	public Integer removeUnderlingFromLeader(Integer userId, Integer[] underlingIds)
 	{
-		return jdbcOps.update("DELETE FROM USER_GROUP_MEMBER "
-				+ " WHERE GROUP_ID = (SELECT ID FROM USER_GROUP WHERE LEADER_ID = :leaderId) "
-				+ " AND MEMBER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
+		return jdbcOps.update("UPDATE USER SET GROUP_ID = NULL "
+				+ " WHERE GROUP_ID = (SELECT ID FROM GROUP WHERE LEADER_ID = :leaderId) "
+				+ " AND USER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
 				new MapSqlParameterSource("leaderId", userId));
 	}
 
 	@Override
-	public Integer addUnderlingToUser(Integer userId, Integer... underlingIds)
+	public Integer addUnderlingToLeader(Integer userId, Integer... underlingIds)
 	{
-		Integer groupId = jdbcOps.queryForObject("SELECT ID FROM USER_GROUP "
-				+ " WHERE LEADER_ID = :leaderId", new MapSqlParameterSource("leaderId", userId), Integer.class);
-		StringBuffer sql = new StringBuffer("INSERT INTO USER_GROUP_MEMBER(GROUP_ID, MEMBER_ID) VALUES");
-		StringBuffer part = new StringBuffer();
-		for(Integer underlingId : underlingIds)
+		StringBuffer sql = new StringBuffer(
+				" UPDATE USER SET GROUP_ID = (SELECT ID FROM GROUP WHERE LEADER_ID = :leaderId) "
+				+ " WHERE ID IN (" + StringUtils.join(underlingIds, ',') + ")");
+		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("leaderId", userId));
+	}
+	
+	@Override
+	public void setLeaderToEmployee(Integer leaderId, Integer newGroupId)
+	{
+		jdbcOps.update("UPDATE GROUP SET LEADER_ID = NULL WHERE LEADER_ID = :leaderId",
+				new MapSqlParameterSource("leaderId", leaderId));
+		if (newGroupId != null)
 		{
-			if(part.length() > 0)
-				part.append(",");
-			part.append("(:groupId, ").append(underlingId).append(")");
+			jdbcOps.update("UPDATE USER SET GROUP_ID = :newGroupId WHERE ID = :leaderId",
+					new MapSqlParameterSource("newGroupId", newGroupId).addValue("leaderId", leaderId));
 		}
-		sql.append(part).append(";");
-		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("groupId", groupId));
+	}
+
+	@Override
+	public void setUserToLeader(Integer userId, Integer leadGroupId)
+	{
+		if(leadGroupId != null)
+			jdbcOps.update("UPDATE GROUP SET LEADER_ID = :userId WHERE ID = :groupId",
+					new MapSqlParameterSource("userId", userId).addValue("groupId", leadGroupId));
 	}
 }

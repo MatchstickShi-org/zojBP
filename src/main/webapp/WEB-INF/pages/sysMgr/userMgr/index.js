@@ -77,7 +77,7 @@ $(function()
 							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';
-						return value;
+						return value + '-' + row.groupId + '组';
 					}
 				},
 				{
@@ -269,6 +269,15 @@ $(function()
 							{
 								if(data.id == data.leaderId)
 									data.leaderName = '-';
+								var comboData = [];
+								if(data.role >= -1 && data.role <= 0)	//管理员
+									comboData = [{text: '管理员', value: 0}, {text: '超级管理员', value: -1}];
+								else if(data.role >= 1 && data.role <= 3)	//市场部
+									comboData = [{text: '市场部业务员', value: 1}, {text: '市场部主管', value: 2}, {text: '市场部经理', value: 3}];
+								else if(data.role >=4  && data.role <= 6)	//设计部
+									comboData = [{text: '设计部设计师', value: 4}, {text: '设计部主管', value: 5}, {text: '设计部经理', value: 6}];
+								$('#userEditForm\\.role').combobox('loadData', comboData);
+								
 								$editUserForm.form('clear').form('load', data);
 							}
 							else
@@ -446,39 +455,30 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>用户名：</label></td>' + 
-			'			<td style="width: 240px;"><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
-			'			<td align="right" style="vertical-align: top" rowspan="5"><label>角色：</label></td>' + 
-			'			<td rowspan="5" style="width: 110px;">' + 
-			'				<label><input type="radio" name="role" value="1" checked="checked">市场部业务员</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="2">市场部主管</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="3">市场部经理</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="4">设计部设计师</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="5">设计部主管</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="6">设计部经理</label>' + 
-			'				<br>' + 
-			'				<label><input type="radio" name="role" value="0">管理员</label>' + 
-			'			</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
+			'			<td style="width: 170px;"><input name="name" class="easyui-textbox" data-options="required:true, validType:\'length[4, 16]\'" style="width: 160px;"/></td>' + 
 			'			<td align="right"><label>姓名：</label></td>' + 
-			'			<td><input name="alias" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
-			'		</tr>' + 
+			'			<td><input name="alias" class="easyui-textbox" data-options="required:true, validType:\'length[2, 16]\'" style="width: 160px;"/></td>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>密码：</label></td>' + 
-			'			<td><input name="pwd" class="easyui-textbox" type="password" required="required" style="width: 230px;"/></td>' + 
+			'			<td><input name="pwd" class="easyui-textbox" type="password" data-options="required:true, validType:\'length[6, 24]\'" style="width: 160px;"/></td>' + 
+			'			<td align="right"><label>电话：</label></td>' + 
+			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 160px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>密码确认：</label></td>' + 
-			'			<td><input name="confirmPwd" class="easyui-textbox" type="password" required="required" style="width: 230px;"/></td>' + 
+			'			<td><input name="confirmPwd" class="easyui-textbox" type="password" data-options="required:true, validType:\'length[6, 24]\'" style="width: 160px;"/></td>' + 
+			'			<td align="right"><label>角色：</label></td>' + 
+			'			<td style="width: 170px;">' +
+			'				<select class="easyui-combobox" name="role" style="width: 160px;" initValue="1">' +
+			'					<option value="1" selected="selected">市场部业务员</option>' +
+			'					<option value="2">市场部主管</option>' +
+			'					<option value="3">市场部经理</option>' +
+			'					<option value="4">设计部设计师</option>' +
+			'					<option value="5">设计部主管</option>' +
+			'					<option value="6">设计部经理</option>' +
+			'					<option value="0">管理员</option>' +
+			'				</select>' +
+			'			</td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 

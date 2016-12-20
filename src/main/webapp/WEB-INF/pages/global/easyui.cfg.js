@@ -3,8 +3,24 @@ $.ajaxSetup
 	accepts: 'application/json, text/javascript, */*;',
 	success: function(data)
 	{
+		if(typeof data == 'string')
+		{
+			try
+			{
+				data = $.parseJSON(data);
+			} catch (e)
+			{
+			}
+		}
 		if(data.returnCode == 0)
 			$.messager.show({title: '提示', msg: data.msg || '操作成功。'})
+		else if(data.sessionTimeout == true)
+		{
+			$.messager.alert('警告', '你已长时间未操作，请重新登录。', function()
+			{
+				window.location.href = '';
+			});
+		}
 	},
 	error : function(jqXHR, textStatus, errorThrown)
 	{
@@ -182,20 +198,6 @@ $(function()
 	
 	$.extend($.fn.form.defaults,
 	{
-		iframe: false,
-		success : function(data)
-		{
-			data = $.parseJSON(data);
-			if(data.returnCode != 0)
-				$.messager.alert('操作失败', data.msg || '系统内部错误，请联系管理员。');
-			else
-				$.messager.show({title:'提示',msg: data.msg || '操作成功。'});
-			return data;
-		},
-		onLoadError : function(jqXHR, textStatus, errorThrown)
-		{
-			var msg = jqXHR.responseJSON ? jqXHR.responseJSON.msg : $.parseJSON(jqXHR.responseText).msg;
-			$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。');
-		}
+		iframe: false
 	});
 });

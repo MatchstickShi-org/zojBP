@@ -135,6 +135,26 @@ public class User implements Serializable
 	}
 	
 	/**
+	 * 是否是主管
+	 * @return
+	 */
+	@Transient
+	public boolean isLeader()
+	{
+		return this.isMarketingLeader() || this.isDesignLeader();
+	}
+	
+	/**
+	 * 是否是员工（业务员或设计师）
+	 * @return
+	 */
+	@Transient
+	public boolean isStaff()
+	{
+		return this.isMarketingSalesman() || this.isDesignDesigner();
+	}
+	
+	/**
 	 * 是否是设计部设计师
 	 * @return
 	 */
@@ -183,9 +203,9 @@ public class User implements Serializable
 			return this.value;
 		}
 		
-		public Role valueOf(Integer value)
+		public static Role valueOf(Integer role)
 		{
-			return Stream.of(Role.values()).filter(r -> r.value() == value).findFirst().orElse(null);
+			return Stream.of(Role.values()).filter(r -> r.value() == role).findFirst().orElse(null);
 		}
 	}
 

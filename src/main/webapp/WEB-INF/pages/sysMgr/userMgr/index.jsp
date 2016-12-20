@@ -31,36 +31,28 @@
 					<table style="width: 100%; min-width: 500px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>用户名：</label></td>
-							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="min-width: 80px;"><label>电话：</label></td>
-							<td width="70%"><input name="tel" class="easyui-textbox"/></td>
+							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[4, 16]'"/></td>
+							<td align="right"><label>姓名：</label></td>
+							<td width="70%"><input name="alias" class="easyui-textbox" data-options="required:true, validType:'length[2, 16]'"/></td>
 						</tr>
 						<tr>
-							<td align="right"><label>姓名：</label></td>
-							<td><input name="alias" class="easyui-textbox" required="required"/></td>
+							<td align="right" style="min-width: 80px;"><label>电话：</label></td>
+							<td><input name="tel" class="easyui-textbox" data-options="required:true, validType:'length[11, 11]'"/></td>
 							<td align="right"><label>上级：</label></td>
 							<td><input name="leaderName" class="easyui-textbox" readonly="readonly"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>新密码：</label></td>
-							<td><span class="easyui-tooltip" content="不填写表示不修改密码" position="right"><input name="pwd" class="easyui-textbox" type="password"/></span></td>
+							<td><span class="easyui-tooltip" content="不填写表示不修改密码" position="right"><input id="pwd" name="pwd" class="easyui-textbox" type="password" data-options="validType:'length[6, 24]'"/></span></td>
 							<td align="right"><label>所属组：</label></td>
 							<td><input name="groupName" class="easyui-textbox" readonly="readonly"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>密码确认：</label></td>
-							<td><input name="confirmPwd" class="easyui-textbox" type="password"/></td>
+							<td><input name="confirmPwd" class="easyui-textbox" type="password" data-options="validType:'length[6, 24]'"/></td>
 							<td align="right" style="vertical-align: top;"><label>角色：</label></td>
 							<td>
-								<select class="easyui-combobox" name="role" style="width: 173px;">
-									<option value="1" selected="selected">市场部业务员</option>
-									<option value="2">市场部主管</option>
-									<option value="3">市场部经理</option>
-									<option value="4">设计部设计师</option>
-									<option value="5">设计部主管</option>
-									<option value="6">设计部经理</option>
-									<option value="0">管理员</option>
-								</select>
+								<select class="easyui-combobox" name="role" style="width: 173px;" id="userEditForm.role"></select>
 							</td>
 						</tr>
 						<tr><td colspan="4">
