@@ -91,12 +91,15 @@ $(function()
 			'onClick': function()
 			{
 				$infoerDatagrid.datagrid('loading');
-				$levelCheckbox.each(function(){ 
-					}); 
+				var chk_value =''; 
+				$('input[name="levelInput"]:checked').each(function(){ 
+					chk_value = chk_value+$(this).val()+","; 
+				}); 
+				alert(chk_value);
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
-					data: {name: $infoerNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),level:$levelCheckbox.val()},
+					data: {name: $infoerNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),level:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -381,87 +384,10 @@ $(function()
 		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
 		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
 		$('#addClientBtn').linkbutton({onClick: showAddClientWindow});
-		$removeUsersBtn.linkbutton({onClick: removeUsers});
-		$revertUsersBtn.linkbutton({onClick: revertUsers});
 		
 		$addInfoerWindow.window({width: 500});
 		$addInfoerVisitWindow.window({width: 322});
 		$addClientWindow.window({width: 450});
-		
-		function revertUsers()
-		{
-			var selIds = $infoerDatagrid.datagrid('getCheckedRowPkValues');
-			if(selIds.length == 0)
-			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要恢复的用户。');
-				return;
-			}
-			
-			if($.inArray(_session_loginUser.id, selIds) >= 0)
-			{
-				$.messager.alert('提示', '不恢复除自己。');
-				return;
-			}
-			
-			$.messager.confirm('警告','确定要恢复选中的用户吗？',function(r)
-			{
-				if (!r)
-					return;
-				$.post
-				(
-						'sysMgr/userMgr/revertUserByIds',
-						{revertIds : selIds},
-						function(data, textStatus, jqXHR)
-						{
-							if(data.returnCode == 0)
-							{
-								$.messager.show({title:'提示',msg:'恢复成功。'});
-								$infoerDatagrid.datagrid('reload');
-							}
-							else
-								$.messager.show({title:'提示', msg:'恢复失败\n' + data.msg});   
-						}
-				);
-			});
-		}
-		
-		function removeUsers()
-		{
-			var selIds = $infoerDatagrid.datagrid('getCheckedRowPkValues');
-			if(selIds.length == 0)
-			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户。');
-				return;
-			}
-			
-			if($.inArray(_session_loginUser.id, selIds) >= 0)
-			{
-				$.messager.alert('提示', '不能删除自己。');
-				return;
-			}
-	
-			$.messager.confirm('警告','确定要删除选中的用户吗？',function(r)
-			{
-				if (!r)
-					return;
-				$.post
-				(
-					'sysMgr/userMgr/deleteUserByIds',
-					{delIds : selIds},
-					function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$.messager.show({title:'提示',msg:'删除成功。'});
-							$infoerDatagrid.datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'删除失败\n' + data.msg});   
-					},
-					'JSON'
-				);
-			});
-		}
 		
 		function showAddInfoerWindow()
 		{
@@ -673,6 +599,7 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
+			'				$infoerDatagrid.datagrid(\'reload\');' + 
 			'				$clientGrid.datagrid(\'reload\');' + 
 			'				$addClientWindow.window(\'close\');' + 
 			'			}' + 

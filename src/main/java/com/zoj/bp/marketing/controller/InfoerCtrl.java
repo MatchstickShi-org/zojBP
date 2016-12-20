@@ -69,7 +69,10 @@ public class InfoerCtrl
 			@RequestParam(required=false) String tel,@RequestParam(required=false) String level, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return infoerSvc.getAllInfoer(pagination, loginUser,name,tel,level);
+		String[] levelArr = null;
+		if (StringUtils.isNotEmpty(level))
+			levelArr = level.split(",");
+		return infoerSvc.getAllInfoer(pagination, loginUser,name,tel,levelArr);
 	}
 	
 	@RequestMapping(value = "/getInfoerById")
@@ -104,6 +107,14 @@ public class InfoerCtrl
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
+		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId());
+		/**
+		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
+		 */
+		if (infoer.getLevel() == 4) {
+			infoer.setLevel(3);
+			infoerSvc.updateInfoer(infoer);
+		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

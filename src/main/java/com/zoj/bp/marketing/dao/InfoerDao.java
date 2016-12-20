@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.dao;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level) {
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
 		if(StringUtils.isNotEmpty(name))
@@ -72,10 +73,9 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 			paramMap.put("tel4", '%' + tel + '%');
 			paramMap.put("tel5", '%' + tel + '%');
 		}
-		if(StringUtils.isNotEmpty(level) && Integer.valueOf(level) > 0)
+		if(level != null && !Arrays.asList(level).contains("0"))
 		{
-			sql += " AND I.LEVEL = :level";
-			paramMap.put("level", Integer.valueOf(level));
+			sql += " AND I.LEVEL IN(" + StringUtils.join(level, ',') + ")";
 		}
 		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";

@@ -30,7 +30,7 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser,String name,String tel,String level) {
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser,String name,String tel,String[] level) {
 		return infoerDao.getAllInfoer(pagination, loginUser,name,tel,level);
 	}
 
