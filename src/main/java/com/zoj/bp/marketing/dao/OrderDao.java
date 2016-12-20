@@ -3,6 +3,7 @@ package com.zoj.bp.marketing.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -23,7 +24,12 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public Order getOrderById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM ORDER WHERE ID = :id",
+			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
+				" WHERE ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -34,7 +40,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 
 	@Override
 	public void updateOrder(Order order) {
-		String sql = "UPDATE ORDER SET INFOER_ID = :infoerId, SALESMAN_ID = :salesmanId, STYLIST_ID = :stylistId, PROJECT_NAME = :projectName,"
+		String sql = "UPDATE `ORDER` SET INFOER_ID = :infoerId, SALESMAN_ID = :salesmanId, STYLIST_ID = :stylistId, PROJECT_NAME = :projectName,"
 				+ " PROJECT_ADDR = :projectAddr, STATUS = :status";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
@@ -42,9 +48,63 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser) {
+	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser,Integer infoerId,Integer[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM ORDER WHERE SALESMAN_ID="+loginUser.getId();
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
+				" WHERE 1 = 1 ";
+		if(loginUser != null)
+			sql +=" AND O.SALESMAN_ID="+loginUser.getId();
+		if(infoerId != null && infoerId > 0)
+			sql +=" AND O.INFOER_ID="+infoerId;
+		if(status != null && status.length > 0)
+			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
+		sql +=" ORDER BY O.INSERT_TIME DESC";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Order.class)), count);
+	}
+	
+	@Override
+	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
+			String infoerName, Integer[] status) {
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
+				" WHERE 1 = 1 ";
+		if(loginUser != null)
+			sql +=" AND O.SALESMAN_ID="+loginUser.getId();
+		if(StringUtils.isNotEmpty(name))
+		{
+			sql += " AND C.NAME LIKE :name";
+			paramMap.put("name", '%' + name + '%');
+		}
+		if (StringUtils.isNotEmpty(tel))
+		{
+			sql += " AND (C.TEL LIKE :tel OR C.TEL2 LIKE :tel2 OR C.TEL3 LIKE :tel3 OR C.TEL4 LIKE :tel4 OR C.TEL5 LIKE :tel5)";
+			paramMap.put("tel", '%' + tel + '%');
+			paramMap.put("tel2", '%' + tel + '%');
+			paramMap.put("tel3", '%' + tel + '%');
+			paramMap.put("tel4", '%' + tel + '%');
+			paramMap.put("tel5", '%' + tel + '%');
+		}
+		if(StringUtils.isNotEmpty(infoerName))
+		{
+			sql += " O.INFOER_ID IN(SELECT ID FROM INFOER WHERE `NAME` like :infoerName)";
+			paramMap.put("infoerName", '%' + infoerName + '%');
+		}
+		if(status != null && status.length > 0)
+			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
+		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
@@ -57,7 +117,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public Integer addOrder(Order order) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO ORDER(INFOER_ID,SALESMAN_ID,STYLIST_ID,PROJECT_NAME,PROJECT_ADDR,INSERT_TIME,STATUS) "
+				"INSERT INTO `ORDER`(INFOER_ID,SALESMAN_ID,STYLIST_ID,PROJECT_NAME,PROJECT_ADDR,INSERT_TIME,STATUS) "
 				+ "VALUES(:infoerId,:salesmanId,:stylistId,:projectName,:projectAddr,now(),:status)",
 				new BeanPropertySqlParameterSource(order), keyHolder);
 		return keyHolder.getKey().intValue();

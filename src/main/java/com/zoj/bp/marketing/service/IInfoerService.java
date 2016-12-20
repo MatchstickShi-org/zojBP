@@ -25,11 +25,18 @@ public interface IInfoerService {
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level);
+	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level);
 
 	/**
 	 * @param infoer
 	 * @return 
 	 */
 	Integer addInfoer(Infoer infoer);
+
+	/**
+	 * 
+	 * @param tel
+	 * @return
+	 */
+	Infoer findByTel(String tel);
 }

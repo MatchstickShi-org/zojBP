@@ -67,7 +67,7 @@ public class UserMgrCtrl
 	
 	@RequestMapping(value = "/editUser")
 	@ResponseBody
-	public Map<String, ?> editUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws Exception
+	public Map<String, ?> editUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws BusinessException, Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
@@ -188,7 +188,7 @@ public class UserMgrCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您没有修改用户下属的权限。"));
 		if(ArrayUtils.isEmpty(underlingIds))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可移除的下属。"));
-		userSvc.removeUnderlingFromUser(userId, underlingIds);
+		userSvc.removeUnderlingFromLeader(userId, underlingIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

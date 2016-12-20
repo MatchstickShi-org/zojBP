@@ -150,7 +150,8 @@ $(function()
 				{
 					$('.window-body').window('destroy');
 					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
-				} catch (e)
+				}
+				catch (e)
 				{
 					$.messager.alert('提示', '加载页面失败，请稍后再试。');
 				}

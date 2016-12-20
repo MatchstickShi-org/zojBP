@@ -2,7 +2,6 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author wangw
@@ -21,7 +20,7 @@ public class OrderVisit implements Serializable
 	
 	private Integer visitorId;
 	
-	private Date date;
+	private String date;
 	
 	private String content;
 	
@@ -52,12 +51,12 @@ public class OrderVisit implements Serializable
 		this.visitorId = visitorId;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(String date) {
+		this.date = date.substring(0, 19);
 	}
 
 	public String getContent() {

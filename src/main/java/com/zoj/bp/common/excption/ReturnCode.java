@@ -10,8 +10,12 @@ public enum ReturnCode
 {
 	/**操作成功*/
 	SUCCESS(0, "操作成功。"),
+	/**号码已存在*/
+	TEL_EXISTS(3000, "号码已存在。"),
 	/**登录用户重复*/
 	LOGIN_USER_REPEATED(4000, "当前用户已登录。"),
+	/**会话过期*/
+	SESSION_TIME_OUT(9998, "会话已过期。"),
 	/**系统内部错误*/
 	SYSTEM_INTERNAL_ERROR(9999, "系统内部错误，请联系管理员。"),
 	/**找不到记录*/

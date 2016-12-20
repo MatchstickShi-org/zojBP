@@ -3,7 +3,6 @@ package com.zoj.bp.common.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @author wangw
@@ -22,11 +21,19 @@ public class InfoCost implements Serializable
 	
 	private Integer orderId;
 	
-	private Date date;
+	private String date;
 	
 	private BigDecimal amount;
 	
 	private String remark;
+	
+	private String projectName;
+	
+	private String infoerName;
+	
+	private String salesmanName;
+	
+	private String stylistName;
 	
 	
 	public Integer getId()
@@ -47,12 +54,12 @@ public class InfoCost implements Serializable
 		this.infoerId = infoerId;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(String date) {
+		this.date = date.substring(0,19);
 	}
 
 	public Integer getOrderId() {
@@ -78,4 +85,37 @@ public class InfoCost implements Serializable
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getInfoerName() {
+		return infoerName;
+	}
+
+	public void setInfoerName(String infoerName) {
+		this.infoerName = infoerName;
+	}
+
+	public String getSalesmanName() {
+		return salesmanName;
+	}
+
+	public void setSalesmanName(String salesmanName) {
+		this.salesmanName = salesmanName;
+	}
+
+	public String getStylistName() {
+		return stylistName;
+	}
+
+	public void setStylistName(String stylistName) {
+		this.stylistName = stylistName;
+	}
+	
 }

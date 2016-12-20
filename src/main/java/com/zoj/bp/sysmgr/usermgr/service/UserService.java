@@ -41,10 +41,15 @@ public class UserService implements IUserService
 		User dbUser = userDao.getUserById(user.getId());
 		if(dbUser == null)
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL, "找不到要修改的用户。");
+		if(dbUser.getRole() != user.getRole())		//角色有修改
+		{
+			if(dbUser.isLeader() && !user.isLeader())	//主管 -> 非主管：撤销该主管身份
+				userDao.setLeaderToEmployee(dbUser.getId(), null);
+		}
 		dbUser = userDao.getUserByName(user.getName());
 		if(dbUser != null && dbUser.getId() != user.getId())
 			throw new BusinessException(
-					ReturnCode.VALIDATE_FAIL, MessageFormat.format("已存在用户名为{0}，请修改用户名后再试。", user.getName()));
+					ReturnCode.VALIDATE_FAIL, MessageFormat.format("已存在名称为{0}的用户，请修改用户名后再试。", user.getName()));
 		userDao.updateUser(user, changePwd);
 	}
 
@@ -64,13 +69,7 @@ public class UserService implements IUserService
 	@Override
 	public void addUser(User user)
 	{
-		Integer leaderId = userDao.addUser(user);
-		if (user.isMarketingLeader() || user.isDesignLeader())		//主管
-		{
-			Integer count = userDao.getCountByRole(user.getRole());
-			userDao.addUserGroup(leaderId, (user.isMarketingLeader() ? "市场部" : "设计部") + "-组" + count);
-			userDao.addUnderlingToUser(leaderId, leaderId);
-		}
+		userDao.addUser(user);
 	}
 
 	@Override
@@ -98,13 +97,13 @@ public class UserService implements IUserService
 		if(!user.isDesignLeader() && !user.isMarketingLeader())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("要为其分配下属的用户不是[主管]，无法分配。"));
 		userDao.removeUnderling(underlingIds);
-		return userDao.addUnderlingToUser(userId, underlingIds);
+		return userDao.addUnderlingToLeader(userId, underlingIds);
 	}
 
 	@Override
-	public Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException
+	public Integer removeUnderlingFromLeader(Integer userId, Integer[] underlingIds) throws BusinessException
 	{
-		return userDao.removeUnderlingFromUser(userId, underlingIds);
+		return userDao.removeUnderlingFromLeader(userId, underlingIds);
 	}
 
 	@Override

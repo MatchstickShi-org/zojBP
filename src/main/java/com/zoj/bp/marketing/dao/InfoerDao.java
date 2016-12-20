@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.dao;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String level) {
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
 		if(StringUtils.isNotEmpty(name))
@@ -72,10 +73,9 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 			paramMap.put("tel4", '%' + tel + '%');
 			paramMap.put("tel5", '%' + tel + '%');
 		}
-		if(StringUtils.isNotEmpty(level) && Integer.valueOf(level) > 0)
+		if(level != null && !Arrays.asList(level).contains("0"))
 		{
-			sql += " AND I.LEVEL = :level";
-			paramMap.put("level", Integer.valueOf(level));
+			sql += " AND I.LEVEL IN(" + StringUtils.join(level, ',') + ")";
 		}
 		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
@@ -93,6 +93,19 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID) VALUES(:name,:nature,:org,:address,:tel,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId)",
 				new BeanPropertySqlParameterSource(infoer), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public Infoer findByTel(String tel) {
+		try
+		{
+			return jdbcOps.queryForObject("SELECT * FROM INFOER WHERE tel = :tel or tel2 =:tel or tel3 =:tel or tel4 =:tel or tel5 =:tel",
+					new MapSqlParameterSource("name", tel), BeanPropertyRowMapper.newInstance(Infoer.class));
+		}
+		catch (EmptyResultDataAccessException e)
+		{
+			return null;
+		}
 	}
 
 }

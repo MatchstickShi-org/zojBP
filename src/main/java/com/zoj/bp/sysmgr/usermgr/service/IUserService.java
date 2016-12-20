@@ -23,7 +23,7 @@ public interface IUserService
 
 	/**
 	 * @param user
-	 * @param changePwd TODO
+	 * @param changePwd 
 	 * @throws BusinessException 
 	 */
 	void updateUser(User user, boolean changePwd) throws BusinessException;
@@ -43,7 +43,7 @@ public interface IUserService
 
 	/**
 	 * @param userIds
-	 * @return TODO
+	 * @return 
 	 */
 	Integer deleteUserByIds(Integer[] userIds);
 
@@ -60,14 +60,14 @@ public interface IUserService
 
 	/**
 	 * @param userId
-	 * @param pagination TODO
+	 * @param pagination 
 	 * @return
 	 */
 	DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination);
 
 	/**
 	 * @param userId
-	 * @param pagination TODO
+	 * @param pagination 
 	 * @return
 	 */
 	DatagridVo<User> getNotAssignUnderling(Integer userId, Pagination pagination);
@@ -84,5 +84,5 @@ public interface IUserService
 	 * @param underlingIds
 	 * @throws BusinessException
 	 */
-	Integer removeUnderlingFromUser(Integer userId, Integer[] underlingIds) throws BusinessException;
+	Integer removeUnderlingFromLeader(Integer userId, Integer[] underlingIds) throws BusinessException;
 }

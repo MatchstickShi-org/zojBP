@@ -43,4 +43,11 @@ public interface IClientDao
 	 */
 	Integer addClient(Client client);
 
+	/**
+	 * 
+	 * @param tel
+	 * @return
+	 */
+	Client getClientByTel(String tel);
+
 }

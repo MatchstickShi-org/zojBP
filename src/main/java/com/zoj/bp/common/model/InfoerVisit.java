@@ -2,8 +2,6 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -61,7 +59,7 @@ public class InfoerVisit implements Serializable
 	}
 
 	public void setDate(String date) {
-		this.date = date;
+		this.date = date.substring(0, 19);
 	}
 
 	public String getContent() {
