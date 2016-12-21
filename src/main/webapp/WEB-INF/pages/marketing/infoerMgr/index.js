@@ -32,7 +32,7 @@ $(function()
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
 				{field:'name', title:'名称', width: 5},
-				{field:'tel', title:'联系电话', width: 5},
+				{field:'tel1', title:'联系电话', width: 5},
 				{
 					field:'level', title:'等级', width: 5, formatter: function(value, row, index)
 					{
@@ -95,7 +95,6 @@ $(function()
 				$('input[name="levelInput"]:checked').each(function(){ 
 					chk_value = chk_value+$(this).val()+","; 
 				}); 
-				alert(chk_value);
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
@@ -282,7 +281,7 @@ $(function()
 				[[
 				  {field:'id', hidden: true},
 				  {field:'name', title:'联系人', width: 3},
-				  {field:'tel', title:'联系电话', width: 5},
+				  {field:'tel1', title:'联系电话', width: 5},
 				  {field:'orgAddr', title:'单位地址', width: 6},
 				  {field:'projectName', title:'工程名称', width: 6},
 				  {field:'projectAddr', title:'工程地址', width: 6},
@@ -408,7 +407,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' + 
+			'			<td style="vertical-align:top"><input name="tel1" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>性质：</label></td>' + 
@@ -425,6 +424,7 @@ $(function()
 			'			<td><input name="address" class="easyui-textbox" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
 			'		<input name="level" type="hidden" value="4" />' + 
+			'		<input id="infoerTelCount" type="hidden" value="1" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" href="javascript:void(0)">保存</a>' + 
@@ -470,11 +470,18 @@ $(function()
 			'} ' +
 			'$(\'#addInfoerTelBtn\').click(function()'+
 			'{' + 
-			'	var appendHtml =\'<tr>'+
-			'	<td align="right"><label>电话：</label></td>'+
-			'	<td><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a><label></label></td>' + 
-			'	</tr>\';' + 
-			'	$(\'#infoerTelTr\').after(appendHtml);' +   
+			' 	var count = $(\'#infoerTelCount\').val();' + 
+			' 	count = parseInt(count)+1;' + 
+			' 	if(count <6){' + 
+			' 		$(\'#infoerTelCount\').val(count);' + 
+			'		var appendHtml =\'<tr>'+
+			'		<td align="right"><label>电话：</label></td>'+
+			'		<td><input name="tel\'+count+\'" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a><label></label></td>' + 
+			'		</tr>\';' + 
+			'		$(\'#infoerTelTr\').after(appendHtml);' +   
+			'	}else{' +   
+			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
+			'	}' +   
 			'});' +
 			'</script>';
 		
@@ -551,12 +558,13 @@ $(function()
 			'		</tr>' + 
 			'		<tr id="clientTelTr">' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel" id="tel1" onblur="checkTelValue($(this));" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a><label></label></td>' + 
+			'			<td><input name="tel1" id="tel1" onblur="checkTelValue($(this));" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a><label></label></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>所属信息员：</label></td>' + 
 			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 150px;"/></td>' + 
 			'		</tr>' + 
+			'		<input id="clientTelCount" type="hidden" value="1" />' + 
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
@@ -614,16 +622,26 @@ $(function()
 			'{' +
 			'	if(confirm("确定要删除此联系电话吗？"))' +
 			'	{' +
+			' 		var count = $(\'#clientTelCount\').val();' + 
+			' 		count = parseInt(count)-1;' + 
+			' 		$(\'#clientTelCount\').val(count);' +
 			'		obj.parent().parent().remove();' +
 			'	}' +
 			'} ' +
 			'$(\'#addClientTelBtn\').click(function()'+
 			'{' + 
-			'	var appendHtml =\'<tr>'+
-			'	<td align="right"><label>联系电话：</label></td>'+
-			'	<td><input name="tel" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a><label></label></td>' + 
-			'	</tr>\';' + 
-			'	$(\'#clientTelTr\').after(appendHtml);' +   
+			' 	var count = $(\'#clientTelCount\').val();' + 
+			' 	count = parseInt(count)+1;' + 
+			' 	if(count <6){' + 
+			' 		$(\'#clientTelCount\').val(count);' + 
+			'		var appendHtml =\'<tr>'+
+			'		<td align="right"><label>联系电话：</label></td>'+
+			'		<td><input name="tel\'+count+\'" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a><label></label></td>' + 
+			'		</tr>\';' + 
+			'		$(\'#clientTelTr\').after(appendHtml);' +   
+			'	}else{' +   
+			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
+			'	}' +   
 			'});' + 
 			'$(\'#tel1\').blur(function()'+
 			'{' + 

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
-import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.CommissionCost;
 import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Infoer;
@@ -149,7 +148,7 @@ public class InfoerCtrl
 			infoer = infoerSvc.findByTel(tel);
 		}
 		if(infoer != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS,"telCopy","重复！该号码于 2016-12-20 20:37:59 被业务员 XXX 录入！");
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -157,12 +156,12 @@ public class InfoerCtrl
 	@ResponseBody
 	public Map<String, ?> checkClientTel(@RequestParam String tel) throws Exception
 	{
-		Client client = null;
+		Order order = null;
 		if(StringUtils.isNotEmpty(tel)){
-			client = orderSvc.findByTel(tel);
+			order = orderSvc.findByTel(tel);
 		}
-		if(client != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS,"telCopy","重复！该号码于 2016-12-20 20:37:59 被业务员 XXX 录入！");
+		if(order != null)
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+order.getInsertTime()+"被业务员 "+order.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

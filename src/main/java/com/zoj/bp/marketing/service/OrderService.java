@@ -53,7 +53,7 @@ public class OrderService implements IOrderService {
 			Client client = new Client();
 			client.setName(order.getName());
 			client.setOrgAddr(order.getOrgAddr());
-			client.setTel(order.getTel());
+			client.setTel1(order.getTel1());
 			client.setTel2(order.getTel2());
 			client.setTel3(order.getTel3());
 			client.setTel4(order.getTel4());
@@ -64,7 +64,7 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public Client findByTel(String tel) {
+	public Order findByTel(String tel) {
 		return clientDao.getClientByTel(tel);
 	}
 

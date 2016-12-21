@@ -1,6 +1,5 @@
 package com.zoj.bp.marketing.service;
 
-import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -45,5 +44,5 @@ public interface IOrderService {
 
 	void addOrderAndClient(Order order);
 
-	Client findByTel(String tel);
+	Order findByTel(String tel);
 }

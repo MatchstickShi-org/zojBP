@@ -24,7 +24,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public Order getOrderById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
@@ -50,7 +50,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	@Override
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser,Integer infoerId,Integer[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
@@ -75,7 +75,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
 			String infoerName, Integer[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
@@ -90,8 +90,8 @@ public class OrderDao extends BaseDao implements IOrderDao {
 		}
 		if (StringUtils.isNotEmpty(tel))
 		{
-			sql += " AND (C.TEL LIKE :tel OR C.TEL2 LIKE :tel2 OR C.TEL3 LIKE :tel3 OR C.TEL4 LIKE :tel4 OR C.TEL5 LIKE :tel5)";
-			paramMap.put("tel", '%' + tel + '%');
+			sql += " AND (C.TEL1 LIKE :tel1 OR C.TEL2 LIKE :tel2 OR C.TEL3 LIKE :tel3 OR C.TEL4 LIKE :tel4 OR C.TEL5 LIKE :tel5)";
+			paramMap.put("tel1", '%' + tel + '%');
 			paramMap.put("tel2", '%' + tel + '%');
 			paramMap.put("tel3", '%' + tel + '%');
 			paramMap.put("tel4", '%' + tel + '%');
