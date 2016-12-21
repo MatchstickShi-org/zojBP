@@ -1,3 +1,20 @@
+String.prototype.startWith = function(str)
+{
+	if (str == null || str == "" || this.length == 0 || str.length > this.length)
+		return false;
+	if (this.substr(0, str.length) != str)
+		return false;
+	return true;
+}
+String.prototype.endWith = function(str)
+{
+	if (str == null || str == "" || this.length == 0 || str.length > this.length)
+		return false;
+	if (this.substring(this.length - str.length) != str)
+		return false;
+	return true;
+}
+
 $.ajaxSetup
 ({
 	accepts: 'application/json, text/javascript, */*;',
@@ -198,6 +215,10 @@ $(function()
 	
 	$.extend($.fn.form.defaults,
 	{
-		iframe: false
+		iframe: false,
+		success : function(data)
+		{
+			return $.parseJSON(data);
+		}
 	});
 });

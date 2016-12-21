@@ -29,7 +29,7 @@ public class Infoer implements Serializable
 	private String address;
 	
 	@NotNull
-	private String tel;
+	private String tel1;
 	
 	private String tel2;
 	
@@ -47,6 +47,8 @@ public class Infoer implements Serializable
 	private Integer salesmanId;
 	
 	private String salesmanName;
+	
+	private String insertTime;
 	
 	private Integer visitLeftDays =1;  //剩余回访天数
 	
@@ -94,12 +96,12 @@ public class Infoer implements Serializable
 		this.address = address;
 	}
 
-	public String getTel() {
-		return tel;
+	public String getTel1() {
+		return tel1;
 	}
 
-	public void setTel(String tel) {
-		this.tel = tel;
+	public void setTel1(String tel1) {
+		this.tel1 = tel1;
 	}
 	
 	public String getLevelDesc() {
@@ -173,4 +175,13 @@ public class Infoer implements Serializable
 	public void setVisitLeftDays(Integer visitLeftDays) {
 		this.visitLeftDays = visitLeftDays;
 	}
+
+	public String getInsertTime() {
+		return insertTime;
+	}
+
+	public void setInsertTime(String insertTime) {
+		this.insertTime = insertTime;
+	}
+	
 }

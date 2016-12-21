@@ -50,7 +50,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public void updateInfoer(Infoer infoer) {
 		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address,"
-				+ " TEL = :tel, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, LEVEL = :level, SALESMAN_ID = :salesmanId";
+				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, LEVEL = :level, SALESMAN_ID = :salesmanId";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
 	}
@@ -66,8 +66,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		}
 		if (StringUtils.isNotEmpty(tel))
 		{
-			sql += " AND (I.TEL LIKE :tel OR I.TEL2 LIKE :tel2 OR I.TEL3 LIKE :tel3 OR I.TEL4 LIKE :tel4 OR I.TEL5 LIKE :tel5)";
-			paramMap.put("tel", '%' + tel + '%');
+			sql += " AND (I.TEL1 LIKE :tel1 OR I.TEL2 LIKE :tel2 OR I.TEL3 LIKE :tel3 OR I.TEL4 LIKE :tel4 OR I.TEL5 LIKE :tel5)";
+			paramMap.put("tel1", '%' + tel + '%');
 			paramMap.put("tel2", '%' + tel + '%');
 			paramMap.put("tel3", '%' + tel + '%');
 			paramMap.put("tel4", '%' + tel + '%');
@@ -90,7 +90,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Integer addInfoer(Infoer infoer) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID) VALUES(:name,:nature,:org,:address,:tel,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId)",
+				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now())",
 				new BeanPropertySqlParameterSource(infoer), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
@@ -99,8 +99,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Infoer findByTel(String tel) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM INFOER WHERE tel = :tel or tel2 =:tel or tel3 =:tel or tel4 =:tel or tel5 =:tel",
-					new MapSqlParameterSource("name", tel), BeanPropertyRowMapper.newInstance(Infoer.class));
+			return jdbcOps.queryForObject("SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE tel1 = :tel or tel2 =:tel or tel3 =:tel or tel4 =:tel or tel5 =:tel",
+					new MapSqlParameterSource("tel", tel), BeanPropertyRowMapper.newInstance(Infoer.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{

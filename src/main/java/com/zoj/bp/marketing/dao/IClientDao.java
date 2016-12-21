@@ -4,6 +4,7 @@
 package com.zoj.bp.marketing.dao;
 
 import com.zoj.bp.common.model.Client;
+import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -44,10 +45,10 @@ public interface IClientDao
 	Integer addClient(Client client);
 
 	/**
-	 * 
+	 * 根据号码查询客户
 	 * @param tel
 	 * @return
 	 */
-	Client getClientByTel(String tel);
+	Order getClientByTel(String tel);
 
 }

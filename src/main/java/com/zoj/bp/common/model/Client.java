@@ -22,7 +22,7 @@ public class Client implements Serializable
 	
 	private String orgAddr;
 	
-	private String tel;
+	private String tel1;
 	
 	private String tel2;
 	
@@ -66,12 +66,12 @@ public class Client implements Serializable
 		this.orgAddr = orgAddr;
 	}
 
-	public String getTel() {
-		return tel;
+	public String getTel1() {
+		return tel1;
 	}
 
-	public void setTel(String tel) {
-		this.tel = tel;
+	public void setTel1(String tel1) {
+		this.tel1 = tel1;
 	}
 
 	public String getTel2() {

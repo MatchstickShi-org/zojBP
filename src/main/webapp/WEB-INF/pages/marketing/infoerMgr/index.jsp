@@ -43,7 +43,7 @@
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td style="min-width: 200px;"><input name="tel" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="tel1" readonly="readonly" class="easyui-textbox" required="required"/></td>
 							<td align="right" ><label>业务员：</label></td>
 							<td style="min-width: 200px;"><input name="salesmanId" type="hidden"/><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required"/></td>
 							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>性质：</label></td>

@@ -37,7 +37,7 @@ public class GroupMgrCtrl
 	private IGroupService grpSvc;
 	
 	@RequestMapping(value = "/toIndexView")
-	public String toUserMgrView() throws BusinessException
+	public String toIndexView() throws BusinessException
 	{
 		return "sysMgr/userGrpMgr/index";
 	}
