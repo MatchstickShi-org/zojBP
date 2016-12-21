@@ -69,7 +69,7 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, G.ID GROUP_ID, G.NAME GROUP_NAME, G.LEADER_ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U"
-				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
+				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON G.LEADER_ID = LU.ID "
 				+ " WHERE 1=1 ";
 		if(StringUtils.isNotEmpty(userName))
@@ -125,7 +125,7 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
-				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
+				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
 				+ " WHERE M.PARENT_ID = :userId AND U.STATUS = 1 AND M.LEADER_ID <> U.ID ";
 		paramMap.put("userId", userId);
@@ -143,7 +143,7 @@ public class UserDao extends BaseDao implements IUserDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.ID GROUP_ID, G.NAME GROUP_NAME FROM USER U "
-				+ " LEFT JOIN GROUP G ON U.GROUP_ID = G.ID "
+				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.ID = G.LEADER_ID "
 				+ " WHERE U.STATUS = 1 AND U.ROLE = :role AND (G.LEADER_ID <> :userId OR G.LEADER_ID IS NULL)";
 		paramMap.put("userId", leader.getId());
@@ -169,7 +169,7 @@ public class UserDao extends BaseDao implements IUserDao
 	public Integer removeUnderlingFromLeader(Integer userId, Integer[] underlingIds)
 	{
 		return jdbcOps.update("UPDATE USER SET GROUP_ID = NULL "
-				+ " WHERE GROUP_ID = (SELECT ID FROM GROUP WHERE LEADER_ID = :leaderId) "
+				+ " WHERE GROUP_ID = (SELECT ID FROM `GROUP` WHERE LEADER_ID = :leaderId) "
 				+ " AND USER_ID IN (" + StringUtils.join(underlingIds, ',') + ")", 
 				new MapSqlParameterSource("leaderId", userId));
 	}
@@ -178,7 +178,7 @@ public class UserDao extends BaseDao implements IUserDao
 	public Integer addUnderlingToLeader(Integer userId, Integer... underlingIds)
 	{
 		StringBuffer sql = new StringBuffer(
-				" UPDATE USER SET GROUP_ID = (SELECT ID FROM GROUP WHERE LEADER_ID = :leaderId) "
+				" UPDATE USER SET GROUP_ID = (SELECT ID FROM `GROUP` WHERE LEADER_ID = :leaderId) "
 				+ " WHERE ID IN (" + StringUtils.join(underlingIds, ',') + ")");
 		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("leaderId", userId));
 	}
@@ -186,7 +186,7 @@ public class UserDao extends BaseDao implements IUserDao
 	@Override
 	public void setLeaderToEmployee(Integer leaderId, Integer newGroupId)
 	{
-		jdbcOps.update("UPDATE GROUP SET LEADER_ID = NULL WHERE LEADER_ID = :leaderId",
+		jdbcOps.update("UPDATE `GROUP` SET LEADER_ID = NULL WHERE LEADER_ID = :leaderId",
 				new MapSqlParameterSource("leaderId", leaderId));
 		if (newGroupId != null)
 		{
@@ -199,7 +199,7 @@ public class UserDao extends BaseDao implements IUserDao
 	public void setUserToLeader(Integer userId, Integer leadGroupId)
 	{
 		if(leadGroupId != null)
-			jdbcOps.update("UPDATE GROUP SET LEADER_ID = :userId WHERE ID = :groupId",
+			jdbcOps.update("UPDATE `GROUP` SET LEADER_ID = :userId WHERE ID = :groupId",
 					new MapSqlParameterSource("userId", userId).addValue("groupId", leadGroupId));
 	}
 }

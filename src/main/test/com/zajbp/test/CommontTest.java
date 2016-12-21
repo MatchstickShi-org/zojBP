@@ -23,4 +23,11 @@ public class CommontTest
 	{
 		System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
+	
+	@Test
+	public void testMaxValue()
+	{
+		System.out.println(Integer.valueOf(Character.MAX_VALUE));
+		System.out.println(Integer.MAX_VALUE);
+	}
 }

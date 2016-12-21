@@ -24,7 +24,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	public DatagridVo<Group> getAllGroups(Pagination pagination, Integer type)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
+		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM `GROUP` G "
 				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
 				+ " WHERE 1=1 ";
 		if(type != null)
@@ -45,7 +45,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	public Integer addGroup(String name, boolean isMarketingGroup, Integer leaderId)
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcOps.update("INSERT INTO GROUP(NAME, TYPE, LEADER_ID) VALUES(:name, :type, :leaderId)",
+		jdbcOps.update("INSERT INTO `GROUP`(NAME, TYPE, LEADER_ID) VALUES(:name, :type, :leaderId)",
 				new MapSqlParameterSource("name", name)
 					.addValue("type", isMarketingGroup ? 0 : 1).addValue("leaderId", leaderId), keyHolder);
 		return keyHolder.getKey().intValue();
@@ -57,7 +57,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 		try
 		{
 			return jdbcOps.queryForObject(
-					"SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G LEFT JOIN USER U ON G.LEADER_ID = U.ID WHERE ID = :id",
+					"SELECT G.*, U.ALIAS LEADER_NAME FROM `GROUP` G LEFT JOIN USER U ON G.LEADER_ID = U.ID WHERE ID = :id",
 					new MapSqlParameterSource("id", groupId), BeanPropertyRowMapper.newInstance(Group.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -71,7 +71,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	{
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM GROUP WHERE NAME = :name",
+			return jdbcOps.queryForObject("SELECT * FROM `GROUP` WHERE NAME = :name",
 					new MapSqlParameterSource("name", name), BeanPropertyRowMapper.newInstance(Group.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -83,14 +83,14 @@ public class GroupDao extends BaseDao implements IGroupDao
 	@Override
 	public Integer updateGroup(Group group)
 	{
-		String sql = "UPDATE GROUP SET NAME = :name, TYPE = :type, LEADER_ID = :leaderId WHERE ID = :id";
+		String sql = "UPDATE `GROUP` SET NAME = :name, TYPE = :type, LEADER_ID = :leaderId WHERE ID = :id";
 		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(group));
 	}
 
 	@Override
 	public Integer deleteGroupByIds(Integer[] grpIds)
 	{
-		return jdbcOps.update("DELETE FROM GROUP "
+		return jdbcOps.update("DELETE FROM `GROUP` "
 				+ " WHERE ID IN(" + StringUtils.join(grpIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 
@@ -98,7 +98,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	public DatagridVo<Group> getAssignedUnderling(Integer groupId, Pagination pagination)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
+		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM `GROUP` G "
 				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
 				+ " WHERE U.GROUP_ID = :groupId";
 		paramMap.put("groupId", groupId);
@@ -116,7 +116,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	public DatagridVo<Group> getNotAssignUnderling(Integer groupId, Pagination pagination)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
+		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM `GROUP` G "
 				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
 				+ " WHERE U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL ";
 		paramMap.put("groupId", groupId);
