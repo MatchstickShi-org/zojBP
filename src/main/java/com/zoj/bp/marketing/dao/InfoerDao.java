@@ -58,7 +58,12 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE 1=1";
+		String sql = "SELECT I.*,CASE WHEN IV.ID IS NOT NULL "+
+				"THEN DATEDIFF(NOW(),MAX(IV.DATE)) "+
+				"WHEN IV.ID IS NULL "+
+				"THEN DATEDIFF(NOW(),I.INSERT_TIME) "+
+				"END as leftVisitDays,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
+				+ "WHERE 1=1";
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND I.NAME LIKE :name";
@@ -80,7 +85,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " ORDER BY I.LEFT_VISIT_DAYS,INSERT_TIME LIMIT :start, :rows";
+		sql += " GROUP BY I.ID ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);

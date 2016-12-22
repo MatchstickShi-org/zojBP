@@ -158,10 +158,6 @@ public class InfoerCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		infoerVisit.setSalesmanId(loginUser.getId());
 		infoerVisitSvc.addInfoerVisit(infoerVisit);
-		
-		Infoer infoer = infoerSvc.getInfoerById(infoerVisit.getInfoerId());
-		infoer.setLeftVisitDays(5);
-		infoerSvc.updateInfoer(infoer);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

@@ -67,7 +67,7 @@ $(function()
 				{field:'salesmanName', title:'业务员', width: 5},
 				{field:'leftVisitDays', title:'未回访天数', width: 5,
 					styler: function (value, row, index) {
-						if(value < 5)
+						if(value > 5)
 							return 'background-color:red';
 		           }}
 			]],
@@ -574,6 +574,7 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
+			'				$infoerDatagrid.datagrid(\'reload\');' + 
 			'				$infoerVisitGrid.datagrid(\'reload\');' + 
 			'				$addInfoerVisitWindow.window(\'close\');' + 
 			'			}' + 
