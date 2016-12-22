@@ -50,7 +50,7 @@ public class Infoer implements Serializable
 	
 	private String insertTime;
 	
-	private Integer visitLeftDays =1;  //剩余回访天数
+	private Integer leftVisitDays;  //剩余回访天数
 	
 	public Integer getId()
 	{
@@ -168,12 +168,12 @@ public class Infoer implements Serializable
 		this.salesmanName = salesmanName;
 	}
 
-	public Integer getVisitLeftDays() {
-		return visitLeftDays;
+	public Integer getLeftVisitDays() {
+		return leftVisitDays;
 	}
 
-	public void setVisitLeftDays(Integer visitLeftDays) {
-		this.visitLeftDays = visitLeftDays;
+	public void setLeftVisitDays(Integer leftVisitDays) {
+		this.leftVisitDays = leftVisitDays;
 	}
 
 	public String getInsertTime() {
@@ -181,7 +181,7 @@ public class Infoer implements Serializable
 	}
 
 	public void setInsertTime(String insertTime) {
-		this.insertTime = insertTime;
+		this.insertTime = insertTime.substring(0,19);
 	}
 	
 }

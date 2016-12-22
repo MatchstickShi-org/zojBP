@@ -25,7 +25,7 @@
 			<input type="checkbox" value="12" name="clientTrace.status"/>已放弃
 			<input type="checkbox" value="13" name="clientTrace.status"/>在谈单审核中
 			<input type="checkbox" value="14" name="clientTrace.status"/>在谈单已打回
-			&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderBtn">申请在谈单</a>

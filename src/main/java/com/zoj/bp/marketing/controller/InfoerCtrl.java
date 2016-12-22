@@ -91,6 +91,21 @@ public class InfoerCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(loginUser == null)
+			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
+		Infoer infoerTel = null;
+		if(StringUtils.isNotEmpty(infoer.getTel1()))
+			infoerTel = infoerSvc.findByTel(infoer.getTel1());
+		if(StringUtils.isNotEmpty(infoer.getTel2()))
+			infoerTel = infoerSvc.findByTel(infoer.getTel2());
+		if(StringUtils.isNotEmpty(infoer.getTel3()))
+			infoerTel = infoerSvc.findByTel(infoer.getTel3());
+		if(StringUtils.isNotEmpty(infoer.getTel4()))
+			infoerTel = infoerSvc.findByTel(infoer.getTel4());
+		if(StringUtils.isNotEmpty(infoer.getTel5()))
+			infoerTel = infoerSvc.findByTel(infoer.getTel5());
+		if(infoerTel != null)
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
 		infoer.setSalesmanId(loginUser.getId());
 		infoerSvc.addInfoer(infoer);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -102,7 +117,22 @@ public class InfoerCtrl
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		Order orderTel = null;
+		if(StringUtils.isNotEmpty(order.getTel1()))
+			orderTel = orderSvc.findByTel(order.getTel1());
+		if(StringUtils.isNotEmpty(order.getTel2()))
+			orderTel = orderSvc.findByTel(order.getTel2());
+		if(StringUtils.isNotEmpty(order.getTel3()))
+			orderTel = orderSvc.findByTel(order.getTel3());
+		if(StringUtils.isNotEmpty(order.getTel4()))
+			orderTel = orderSvc.findByTel(order.getTel4());
+		if(StringUtils.isNotEmpty(order.getTel5()))
+			orderTel = orderSvc.findByTel(order.getTel5());
+		if(orderTel != null)
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(loginUser == null)
+			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
@@ -124,8 +154,14 @@ public class InfoerCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(loginUser == null)
+			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		infoerVisit.setSalesmanId(loginUser.getId());
 		infoerVisitSvc.addInfoerVisit(infoerVisit);
+		
+		Infoer infoer = infoerSvc.getInfoerById(infoerVisit.getInfoerId());
+		infoer.setLeftVisitDays(5);
+		infoerSvc.updateInfoer(infoer);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -161,7 +197,7 @@ public class InfoerCtrl
 			order = orderSvc.findByTel(tel);
 		}
 		if(order != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+order.getInsertTime()+"被业务员 "+order.getSalesmanName()+" 录入！"));
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

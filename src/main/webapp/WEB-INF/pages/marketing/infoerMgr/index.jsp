@@ -23,7 +23,7 @@
 			<input type="checkbox" value="2" name="levelInput"/>银牌
 			<input type="checkbox" value="3" name="levelInput"/>铜牌
 			<input type="checkbox" value="4" name="levelInput"/>铁牌
-			&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 		</div>
 	</div>

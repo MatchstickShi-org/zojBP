@@ -50,7 +50,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public void updateInfoer(Infoer infoer) {
 		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address,"
-				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, LEVEL = :level, SALESMAN_ID = :salesmanId";
+				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, LEVEL = :level, SALESMAN_ID = :salesmanId, LEFT_VISIT_DAYS = :leftVisitDays";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
 	}
@@ -80,7 +80,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " LIMIT :start, :rows";
+		sql += " ORDER BY I.LEFT_VISIT_DAYS,INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
@@ -90,7 +90,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Integer addInfoer(Infoer infoer) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now())",
+				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME,LEFT_VISIT_DAYS) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now(),:leftVisitDays)",
 				new BeanPropertySqlParameterSource(infoer), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

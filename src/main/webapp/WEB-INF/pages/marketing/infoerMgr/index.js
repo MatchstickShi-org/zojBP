@@ -65,7 +65,7 @@ $(function()
 				{field:'org', title:'工作单位', width: 5},
 				{field:'address', title:'地址', width: 5},
 				{field:'salesmanName', title:'业务员', width: 5},
-				{field:'visitLeftDays', title:'未回访天数', width: 5,
+				{field:'leftVisitDays', title:'未回访天数', width: 5,
 					styler: function (value, row, index) {
 						if(value < 5)
 							return 'background-color:red';
@@ -402,12 +402,14 @@ $(function()
 			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td align="right"><label>名称：</label></td>' + 
-			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
+			'			<td style="width: 100px;" align="right"><label>名称：</label></td>' + 
+			'			<td style="width: 150px;"><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
+			'			<td style="width: 130px;"></td>' + 
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align:top"><input name="tel1" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' + 
+			'			<td style="width: 150px;"><input name="tel1" id="tel1" onblur="checkTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
+			'			<td><font id="errortel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>性质：</label></td>' + 
@@ -444,11 +446,16 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
-			'			if($(this).find(\'[name="pwd"]\').val() != $(this).find(\'[name="confirmPwd"]\').val())' + 
-			'			{' + 
-			'				$.messager.alert(\'提示\', \'两次密码输入不一致，请重新输入密码。\');' + 
+			'			if($(\'#tel1\').val() == ""){' + 
+			'      			$(\'#errortel1\').html("联系电话未填！"); '+
 			'				return false;' + 
 			'			}' + 
+			'			var reg = /^1[0-9]{10}$/;'+
+			'			if(!(reg.test($(\'#tel1\').val()))){'+
+			'				$(\'#errortel1\').html("无效的手机号码！");'+
+			'				$(\'#tel1\').val().focus(); '+
+			'				return false; '+
+			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -461,10 +468,45 @@ $(function()
 			'		}' + 
 			'	});' + 
 			'}' + 
+			'function checkTelValue(obj)' + 
+			'{' + 
+			'	var errorId = obj.name;'+
+			'	errorId = errorId.charAt(errorId.length - 1);'+
+			'	if(obj.value.length==0) '+
+		    ' 	{ '+
+		    '      $(\'#errortel\'+errorId+\'\').html("联系电话未填！"); '+
+		    '      return; '+
+		    '   } '+
+			'	var reg = /^1[0-9]{10}$/;'+
+			'	if(!(reg.test(obj.value))){'+
+			'		$(\'#errortel\'+errorId+\'\').html("无效的手机号码！");'+
+			'		obj.focus(); '+
+			'		return; '+
+			'	}else{'+
+			'		$(\'#errortel\'+errorId+\'\').html("");'+
+			'	}'+
+			'	$.ajax'+
+			'	({'+
+			'		url: \'marketing/infoerMgr/checkInfoerTel\','+
+			'		data: {tel:obj.value},'+
+			'		success: function(data, textStatus, jqXHR)'+
+			'		{'+
+			'			if(data.returnCode != 0){'+
+			'				$(\'#errortel\'+errorId+\'\').html(data.msg); '+  
+			'				obj.focus(); '+  
+			'			}else{ '+  
+			'				$(\'#errortel\'+errorId+\'\').html(""); '+  
+			'			} '+  
+			'		}'+
+			'	});'+
+			'} ' + 
 			'function removeTelAdd(obj)' +
 			'{' +
 			'	if(confirm("确定要删除此联系电话吗？"))' +
 			'	{' +
+			' 		var count = $(\'#infoerTelCount\').val();' + 
+			' 		count = parseInt(count)-1;' + 
+			' 		$(\'#infoerTelCount\').val(count);' +
 			'		obj.parent().parent().remove();' +
 			'	}' +
 			'} ' +
@@ -476,7 +518,8 @@ $(function()
 			' 		$(\'#infoerTelCount\').val(count);' + 
 			'		var appendHtml =\'<tr>'+
 			'		<td align="right"><label>电话：</label></td>'+
-			'		<td><input name="tel\'+count+\'" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a><label></label></td>' + 
+			'		<td><input name="tel\'+count+\'" onblur="checkTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a></td>' +
+			'		<td><font id="errortel\'+count+\'" color="red"></font></td>' + 
 			'		</tr>\';' + 
 			'		$(\'#infoerTelTr\').after(appendHtml);' +   
 			'	}else{' +   
@@ -551,14 +594,16 @@ $(function()
 		
 		var addClientWindowHtml = 
 			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
-			'	<table width="100%" id="clientTab">' + 
+			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
-			'			<td align="right"><label>联系人：</label></td>' + 
-			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
+			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
+			'			<td style="width: 180px;"><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
+			'			<td></td>' + 
 			'		</tr>' + 
 			'		<tr id="clientTelTr">' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" onblur="checkTelValue($(this));" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a><label></label></td>' + 
+			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
+			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>所属信息员：</label></td>' + 
@@ -568,18 +613,18 @@ $(function()
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程名称：</label></td>' + 
-			'			<td><input name="projectName" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程地址：</label></td>' + 
-			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 250px;"/></td>' + 
+			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="center" colspan="4">' + 
+			'			<td align="center" colspan="3">' + 
 			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
@@ -601,6 +646,16 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			if($(\'#tel1\').val() == ""){' + 
+			'      			$(\'#errorclienttel1\').html("联系电话未填！"); '+
+			'				return false;' + 
+			'			}' + 
+			'			var reg = /^1[0-9]{10}$/;'+
+			'			if(!(reg.test($(\'#tel1\').val()))){'+
+			'				$(\'#errorclienttel1\').html("无效的手机号码！");'+
+			'				$(\'#tel1\').val().focus(); '+
+			'				return false; '+
+			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -614,9 +669,37 @@ $(function()
 			'		}' + 
 			'	});' + 
 			'}' + 
-			'function checkTelValue(obj)' + 
+			'function checkClientTelValue(obj)' + 
 			'{' + 
-			'	alert(obj);'+
+			'	var errorId = obj.name;'+
+			'	errorId = errorId.charAt(errorId.length - 1);'+
+			'	if(obj.value.length==0) '+
+		    ' 	{ '+
+		    '      $(\'#errorclienttel\'+errorId+\'\').html("联系电话未填！"); '+
+		    '      return; '+
+		    '   } '+
+			'	var reg = /^1[0-9]{10}$/;'+
+			'	if(!(reg.test(obj.value))){'+
+			'		$(\'#errorclienttel\'+errorId+\'\').html("无效的手机号码！");'+
+			'		obj.focus(); '+
+			'		return; '+
+			'	}else{'+
+			'		$(\'#errorclienttel\'+errorId+\'\').html("");'+
+			'	}'+
+			'	$.ajax'+
+			'	({'+
+			'		url: \'marketing/infoerMgr/checkClientTel\','+
+			'		data: {tel:obj.value},'+
+			'		success: function(data, textStatus, jqXHR)'+
+			'		{'+
+			'			if(data.returnCode != 0){'+
+			'				$(\'#errorclienttel\'+errorId+\'\').html(data.msg); '+  
+			'				obj.focus(); '+  
+			'			}else{ '+  
+			'				$(\'#errorclienttel\'+errorId+\'\').html(""); '+  
+			'			} '+  
+			'		}'+
+			'	});'+
 			'} ' + 
 			'function removeTelAdd(obj)' +
 			'{' +
@@ -636,16 +719,13 @@ $(function()
 			' 		$(\'#clientTelCount\').val(count);' + 
 			'		var appendHtml =\'<tr>'+
 			'		<td align="right"><label>联系电话：</label></td>'+
-			'		<td><input name="tel\'+count+\'" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a><label></label></td>' + 
+			'		<td><input name="tel\'+count+\'" onblur="checkClientTelValue(this);" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a></td>' +
+			'		<td><font style="text-align:top" id="errorclienttel\'+count+\'" color="red"></font></td>' +
 			'		</tr>\';' + 
 			'		$(\'#clientTelTr\').after(appendHtml);' +   
 			'	}else{' +   
 			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
 			'	}' +   
-			'});' + 
-			'$(\'#tel1\').blur(function()'+
-			'{' + 
-			'	alert(2);' +   
 			'});' + 
 			'</script>';
 	}
