@@ -1,43 +1,38 @@
 $(function()
 {
-	var $userDatagrid = $('table#userDatagrid');
+	var $orderDatagrid = $('table#orderDatagrid');
 	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
 	var $orderNameTextbox = $('#clientTrace\\.nameInput');
 	var $telTextbox = $('#clientTrace\\.telInput');
 	var $statusCheckbox = $('[name="clientTrace.status"][checked]');
 	var $queryOrderBtn = $('a#queryOrderBtn');
-	var $addInfoerWindow = $('div#addInfoerWindow');
-	var $addInfoerVisitWindow = $('div#addInfoerVisitWindow');
-	var $revertUsersBtn = $('a#revertUsersBtn');
-	var $removeUsersBtn = $('a#removeUsersBtn');
-	var $infoerMgrTab = $('div#infoerMgrTab');
-	var $editInfoerForm = $('form#editInfoerForm');
-	var $submitUpdateInfoerFormBtn = $('a#submitUpdateInfoerFormBtn');
-	var $refreshUpdateUserFormBtn = $('a#refreshUpdateUserFormBtn');
-	var $notAssignUnderlingGrid = $('table#notAssignUnderlingGrid');
-	var $infoerVisitGrid = $('table#infoerVisitGrid');
-	var $assignUnderlingBtn = $('a#assignUnderlingBtn');
-	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
+	var $addClientVisitWindow = $('div#addClientVisitWindow');
+	var $addClientWindow = $('div#addClientWindow');
+	var $clientMgrTab = $('div#clientMgrTab');
+	var $editClientForm = $('form#editOrderForm');
+	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
+	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
+	var $orderVisitGrid = $('table#orderVisitGrid');
 	
 	function init()
 	{
-		$userDatagrid.datagrid
+		$orderDatagrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#userDatagridToolbar',
+			toolbar: '#orderDatagridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
-				{field:'name', title:'名称', width: 5},
-				{field:'tel', title:'联系电话', width: 5},
-				{field:'orgAddr', title:'单位地址', width: 5},
-				{field:'projectName', title:'工程名称', width: 5},
-				{field:'projectAddr', title:'工程地址', width: 5},
-				{field:'infoerName', title:'信息员', width: 5},
-				{field:'salesmanName', title:'业务员', width: 5},
+				{field:'name', title:'名称', width: 3},
+				{field:'telAll', title:'联系电话', width: 5},
+				{field:'orgAddr', title:'单位地址', width: 8},
+				{field:'projectName', title:'工程名称', width: 8},
+				{field:'projectAddr', title:'工程地址', width: 8},
+				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanName', title:'业务员', width: 3},
 				{
-					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+					field:'status', title:'状态', width: 3, formatter: function(value, row, index)
 					{
 						switch (value)
 						{
@@ -69,8 +64,9 @@ $(function()
 			url: 'marketing/clientMgr/getAllClientTrace',
 			onSelect: function(idx, row)
 			{
-				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
+				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
+			nowrap: false,
 			onCheck: updateBtnStatus,
 			onUncheck: updateBtnStatus,
 			onCheckAll: updateBtnStatus,
@@ -81,29 +77,33 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$userDatagrid.datagrid('loading');
+				$orderDatagrid.datagrid('loading');
+				var chk_value =''; 
+				$('input[name="statusInput"]:checked').each(function(){ 
+					chk_value = chk_value+$(this).val()+","; 
+				}); 
 				$.ajax
 				({
 					url: 'marketing/clientMgr/getAllClientTrace',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:$statusCheckbox.val()},
+					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
-							$userDatagrid.datagrid('loadData', data);
+							$orderDatagrid.datagrid('loadData', data);
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$userDatagrid.datagrid('loaded');
+						$orderDatagrid.datagrid('loaded');
 					}
 				});
 			}
 		});
 		
-		$infoerMgrTab.tabs
+		$clientMgrTab.tabs
 		({
 			border: false,
 			onSelect: function(title, index)
 			{
-				var selRows = $userDatagrid.datagrid('getSelections');
+				var selRows = $orderDatagrid.datagrid('getSelections');
 				
 				if(selRows.length == 1)
 					loadTabData(title, selRows[0]);
@@ -112,17 +112,18 @@ $(function()
 			}
 		});
 		
-		$submitUpdateInfoerFormBtn.linkbutton({'onClick': submitEditInfoerForm});
-		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
+		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
+		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
 		{
-			var selRows = $userDatagrid.datagrid('getSelections');
+			var selRows = $orderDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
-				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
 		
-		$infoerVisitGrid.datagrid
+		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
+			toolbar: '#orderVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -132,11 +133,11 @@ $(function()
 			pagination: true
 		});
 
-		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
+		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
 
 		function updateBtnStatus()
 		{
-			var selRows = $userDatagrid.datagrid('getChecked');
+			var selRows = $orderDatagrid.datagrid('getChecked');
 			if(selRows.length > 0)
 			{
 				var revertFlag = true, removeFlag = true;
@@ -148,10 +149,10 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editInfoerForm.form('clear').form('load', 'marketing/infoerMgr/getInfoerById?infoerId=' + row.id);
+					$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
 					break;
 				case '回访记录':
-					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
+					$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
 			}
 		}
@@ -161,245 +162,242 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editInfoerForm.form('clear');
+					$editClientForm.form('clear');
 					break;
 				case '回访记录':
-					$infoerVisitGrid.datagrid('loadData', []);
+					$orderVisitGrid.datagrid('loadData', []);
 					break;
 			}
 		}
 		
-		function submitEditInfoerForm()
+		function submitEditClientForm()
 		{
-			$editInfoerForm.form('submit',
+			$editClientForm.form('submit',
 			{
 				onSubmit: function()
 				{
 					if(!$(this).form('validate'))
 						return false;
-					/*if($(this).find('[name="pwd"]').val() != $(this).find('[name="confirmPwd"]').val())
-					{
-						$.messager.alert('提示', '两次密码输入不一致，请重新输入密码。');
-						return false;
-					}*/
 				},
 				success: function(data)
 				{
 					data = $.fn.form.defaults.success(data);
 					if(data.returnCode == 0)
-						$userDatagrid.datagrid('reload');
+						$orderDatagrid.datagrid('reload');
+					else
+						$.messager.show({title: '提示', msg: data.msg});
 				}
 			});
 		}
 		
-		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
-		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
-		$removeUsersBtn.linkbutton({onClick: removeUsers});
-		$revertUsersBtn.linkbutton({onClick: revertUsers});
+		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
+		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
 		
-		$addInfoerWindow.window({width: 500});
-		$addInfoerVisitWindow.window({width: 400});
+		$addClientVisitWindow.window({width: 400});
+		$addClientWindow.window({width: 450});
 		
-		function revertUsers()
+		function showAddClientVisitWindow()
 		{
-			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
-			if(selIds.length == 0)
-			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要恢复的用户。');
-				return;
-			}
-			
-			if($.inArray(_session_loginUser.id, selIds) >= 0)
-			{
-				$.messager.alert('提示', '不恢复除自己。');
-				return;
-			}
-			
-			$.messager.confirm('警告','确定要恢复选中的用户吗？',function(r)
-			{
-				if (!r)
-					return;
-				$.post
-				(
-						'sysMgr/userMgr/revertUserByIds',
-						{revertIds : selIds},
-						function(data, textStatus, jqXHR)
-						{
-							if(data.returnCode == 0)
-							{
-								$.messager.show({title:'提示',msg:'恢复成功。'});
-								$userDatagrid.datagrid('reload');
-							}
-							else
-								$.messager.show({title:'提示', msg:'恢复失败\n' + data.msg});   
-						}
-				);
-			});
-		}
-		
-		function removeUsers()
-		{
-			var selIds = $userDatagrid.datagrid('getCheckedRowPkValues');
-			if(selIds.length == 0)
-			{
-				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户。');
-				return;
-			}
-			
-			if($.inArray(_session_loginUser.id, selIds) >= 0)
-			{
-				$.messager.alert('提示', '不能删除自己。');
-				return;
-			}
-	
-			$.messager.confirm('警告','确定要删除选中的用户吗？',function(r)
-			{
-				if (!r)
-					return;
-				$.post
-				(
-					'sysMgr/userMgr/deleteUserByIds',
-					{delIds : selIds},
-					function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-						{
-							$.messager.show({title:'提示',msg:'删除成功。'});
-							$userDatagrid.datagrid('reload');
-						}
-						else
-							$.messager.show({title:'提示', msg:'删除失败\n' + data.msg});   
-					},
-					'JSON'
-				);
-			});
-		}
-		
-		function showAddInfoerWindow()
-		{
-			$addInfoerWindow.window('clear');
-			$addInfoerWindow.window('open').window
+			$addClientVisitWindow.window('clear');
+			$addClientVisitWindow.window('open').window
 			({
-				title: '新增信息员',
-				content: addInfoerWindowHtml
+				title: '新增回访记录',
+				content: addClientVisitWindowHtml
 			}).window('open').window('center');
 		}
 		
-		var addInfoerWindowHtml = 
-			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
+		var addClientVisitWindowHtml = 
+			'<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td align="right"><label>名称：</label></td>' + 
-			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 230px;"/></td>' + 
+			'			<td align="right"><label>回访内容：</label></td>' + 
+			'			<td><textarea name="content" required="required" style="width: 230px;height:100px;"></textarea></td>' + 
 			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 230px;"/> ＋</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>性质：</label></td>' + 
-			'			<td><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
-			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
-			'			</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>工作单位：</label></td>' + 
-			'			<td><input name="org" class="easyui-textbox" style="width: 230px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>地址：</label></td>' + 
-			'			<td><input name="address" class="easyui-textbox" style="width: 230px;"/></td>' + 
-			'		</tr>' + 
-			'		<input name="level" type="hidden" value="4" />' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitAddClientVisitForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
 			'</form>' +
 			'<script type="text/javascript">' + 
-			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
-			'var $userDatagrid = $(\'table#userDatagrid\');' +
-			'function submitaddInfoerForm()' + 
+			'var $addClientVisitWindow = $(\'div#addClientVisitWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderVisitGrid = $(\'table#orderVisitGrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'function submitAddClientVisitForm()' + 
 			'{' + 
-			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
+			'	$addClientVisitWindow.find(\'form#addClientVisitForm\').form(\'submit\',' + 
 			'	{' + 
 			'		onSubmit: function()' + 
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
-			'			if($(this).find(\'[name="pwd"]\').val() != $(this).find(\'[name="confirmPwd"]\').val())' + 
-			'			{' + 
-			'				$.messager.alert(\'提示\', \'两次密码输入不一致，请重新输入密码。\');' + 
-			'				return false;' + 
-			'			}' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$userDatagrid.datagrid(\'reload\');' + 
-			'				$addInfoerWindow.window(\'close\');' + 
+			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
 			'}' + 
 			'</script>';
 		
-		function showAddInfoerVisitWindow()
+		function showAddClientWindow()
 		{
-			$addInfoerVisitWindow.window('clear');
-			$addInfoerVisitWindow.window('open').window
+			$addClientWindow.window('clear');
+			$addClientWindow.window('open').window
 			({
-				title: '新增回访记录',
-				content: addInfoerVisitWindowHtml
+				title: '新增客户',
+				content: addClientWindowHtml
 			}).window('open').window('center');
 		}
 		
-		var addInfoerVisitWindowHtml = 
-			'<form id="addInfoerVisitForm" action="marketing/infoerMgr/addInfoerVisit" method="post" style="width: 100%;">' + 
-			'	<table width="100%">' + 
+		var addClientWindowHtml = 
+			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
-			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;"></textarea></td>' + 
+			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
+			'			<td style="width: 180px;"><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
+			'			<td></td>' + 
 			'		</tr>' + 
-			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
+			'		<tr id="clientTelTr">' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
+			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<input id="clientTelCount" type="hidden" value="1" />' +
 			'		<tr>' + 
-			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerVisitForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addInfoerVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			<td align="right"><label>所属信息员：</label></td>' + 
+			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 150px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>单位地址：</label></td>' + 
+			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>工程名称：</label></td>' + 
+			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>工程地址：</label></td>' + 
+			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="3">' + 
+			'				<a class="easyui-linkbutton" onclick="submitAddClientForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
 			'</form>' +
 			'<script type="text/javascript">' + 
-			'var $addInfoerVisitWindow = $(\'div#addInfoerVisitWindow\');' +
-			'var $userDatagrid = $(\'table#userDatagrid\');' +
-			'var selRows = $userDatagrid.datagrid("getSelections");' +
-			'$addInfoerVisitWindow.find(\'#infoerId\').val(selRows[0].id);' +
-			'function submitaddInfoerVisitForm()' + 
+			'var $addClientWindow = $(\'div#addClientWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'function submitAddClientForm()' + 
 			'{' + 
-			'	$addInfoerVisitWindow.find(\'form#addInfoerVisitForm\').form(\'submit\',' + 
+			'	$addClientWindow.find(\'form#addClientForm\').form(\'submit\',' + 
 			'	{' + 
 			'		onSubmit: function()' + 
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			if($(\'#tel1\').val() == ""){' + 
+			'      			$(\'#errorclienttel1\').html("联系电话未填！"); '+
+			'				return false;' + 
+			'			}' + 
+			'			var reg = /^1[0-9]{10}$/;'+
+			'			if(!(reg.test($(\'#tel1\').val()))){'+
+			'				$(\'#errorclienttel1\').html("无效的手机号码！");'+
+			'				$(\'#tel1\').val().focus(); '+
+			'				return false; '+
+			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$infoerVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				$addInfoerVisitWindow.window(\'close\');' + 
+			'				$orderDatagrid.datagrid(\'reload\');' + 
+			'				$addClientWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
 			'}' + 
+			'function checkClientTelValue(obj)' + 
+			'{' + 
+			'	var errorId = obj.name;'+
+			'	errorId = errorId.charAt(errorId.length - 1);'+
+			'	if(obj.value.length==0) '+
+		    ' 	{ '+
+		    '      $(\'#errorclienttel\'+errorId+\'\').html("联系电话未填！"); '+
+		    '      return; '+
+		    '   } '+
+			'	var reg = /^1[0-9]{10}$/;'+
+			'	if(!(reg.test(obj.value))){'+
+			'		$(\'#errorclienttel\'+errorId+\'\').html("无效的手机号码！");'+
+			'		obj.focus(); '+
+			'		return; '+
+			'	}else{'+
+			'		$(\'#errorclienttel\'+errorId+\'\').html("");'+
+			'	}'+
+			'	if(errorId > 1) '+
+			' 	{ '+
+			'		if($(\'#tel1\').val() == obj.value){' + 
+			'      		$(\'#errorclienttel\'+errorId+\'\').html("联系电话重复！"); '+
+			'      		return; '+
+			'   	} '+
+			'   } '+
+			'	$.ajax'+
+			'	({'+
+			'		url: \'marketing/infoerMgr/checkClientTel\','+
+			'		data: {tel:obj.value},'+
+			'		success: function(data, textStatus, jqXHR)'+
+			'		{'+
+			'			if(data.returnCode != 0){'+
+			'				$(\'#errorclienttel\'+errorId+\'\').html(data.msg); '+  
+			'				obj.focus(); '+  
+			'			}else{ '+  
+			'				$(\'#errorclienttel\'+errorId+\'\').html(""); '+  
+			'			} '+  
+			'		}'+
+			'	});'+
+			'} ' + 
+			'function removeTelAdd(obj)' +
+			'{' +
+			'	$.messager.confirm(\'确认\',\'您确认想要删除此联系电话吗？\',function(r){' +  
+			'   	if (r){ ' +
+			' 			var count = $(\'#clientTelCount\').val();' + 
+			' 			count = parseInt(count)-1;' + 
+			' 			$(\'#clientTelCount\').val(count);' +
+			'			obj.parent().parent().remove();' +
+			'    	}  ' +
+			'	}); ' +
+			'} ' +
+			'$(\'#addClientTelBtn\').click(function()'+
+			'{' + 
+			' 	var count = $(\'#clientTelCount\').val();' + 
+			' 	count = parseInt(count)+1;' + 
+			' 	if(count <6){' + 
+			' 		$(\'#clientTelCount\').val(count);' + 
+			'		var appendHtml =\'<tr>'+
+			'		<td align="right"><label>联系电话：</label></td>'+
+			'		<td><input name="tel\'+count+\'" onblur="checkClientTelValue(this);" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a></td>' +
+			'		<td><font style="text-align:top" id="errorclienttel\'+count+\'" color="red"></font></td>' +
+			'		</tr>\';' + 
+			'		$(\'#clientTelTr\').after(appendHtml);' +   
+			'	}else{' +   
+			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
+			'	}' +   
+			'});' + 
 			'</script>';
 	}
 

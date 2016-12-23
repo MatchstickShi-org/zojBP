@@ -3,7 +3,6 @@ $(function()
 	var $infoerDatagrid = $('table#infoerDatagrid');
 	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
 	var $telTextbox = $('#infoerMgr\\.telInput');
-	var $levelCheckbox = $('input[name="levelInput"]:checked');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
 	var $addInfoerVisitWindow = $('div#addInfoerVisitWindow');
@@ -31,10 +30,10 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
-				{field:'name', title:'名称', width: 5},
-				{field:'tel1', title:'联系电话', width: 5},
+				{field:'name', title:'名称', width: 3},
+				{field:'telAll', title:'联系电话', width:5},
 				{
-					field:'level', title:'等级', width: 5, formatter: function(value, row, index)
+					field:'level', title:'等级', width: 3, formatter: function(value, row, index)
 					{
 						switch (value)
 						{
@@ -57,20 +56,21 @@ $(function()
 					}
 				},
 				{
-					field:'nature', title:'性质', width: 5, formatter: function(value, row, index)
+					field:'nature', title:'性质', width: 3, formatter: function(value, row, index)
 					{
 						return value == 1 ? '中介' : '售楼';
 					}
 				},
-				{field:'org', title:'工作单位', width: 5},
-				{field:'address', title:'地址', width: 5},
-				{field:'salesmanName', title:'业务员', width: 5},
+				{field:'org', title:'工作单位', width: 8},
+				{field:'address', title:'地址', width: 8},
+				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'leftVisitDays', title:'未回访天数', width: 5,
 					styler: function (value, row, index) {
 						if(value > 5)
 							return 'background-color:red';
 		           }}
 			]],
+			nowrap: false,
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
@@ -132,50 +132,6 @@ $(function()
 			if(selRows.length == 1)
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 		}});
-		
-		/*$notAssignUnderlingGrid.datagrid
-		({
-			idField: 'id',
-			columns:
-			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'name', title:'用户名', width: 5},
-				{field:'alias', title:'昵称', width: 5},
-				{
-					field:'role', title:'角色', width: 5, formatter: function(value, row, index)
-					{
-						switch (value)
-						{
-							case 1:
-								return '市场部业务员';
-								break;
-							case 4:
-								return '设计部设计师';
-								break;
-							default:
-								return '未知';
-								break;
-						}
-					}
-				},
-				{
-					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
-					{
-						if(!value)
-							return '<span style="color: gray;">无</span>';
-						return value;
-					}
-				},
-				{
-					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
-					{
-						return value == 1 ? '正常' : '禁用';
-					}
-				}
-			]],
-			pagination: true
-		});*/
 		
 		$infoerVisitGrid.datagrid
 		({
@@ -281,10 +237,10 @@ $(function()
 				[[
 				  {field:'id', hidden: true},
 				  {field:'name', title:'联系人', width: 3},
-				  {field:'tel1', title:'联系电话', width: 5},
-				  {field:'orgAddr', title:'单位地址', width: 6},
-				  {field:'projectName', title:'工程名称', width: 6},
-				  {field:'projectAddr', title:'工程地址', width: 6},
+				  {field:'telAll', title:'联系电话', width: 6},
+				  {field:'orgAddr', title:'单位地址', width: 8},
+				  {field:'projectName', title:'工程名称', width: 5},
+				  {field:'projectAddr', title:'工程地址', width: 8},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
 				  {field:'insertTime', title:'录入日期', width: 5}
@@ -376,6 +332,8 @@ $(function()
 					data = $.fn.form.defaults.success(data);
 					if(data.returnCode == 0)
 						$infoerDatagrid.datagrid('reload');
+					else
+						$.messager.show({title: '提示', msg: data.msg});
 				}
 			});
 		}
@@ -502,14 +460,15 @@ $(function()
 			'} ' + 
 			'function removeTelAdd(obj)' +
 			'{' +
-			'	if(confirm("确定要删除此联系电话吗？"))' +
-			'	{' +
-			' 		var count = $(\'#infoerTelCount\').val();' + 
-			' 		count = parseInt(count)-1;' + 
-			' 		$(\'#infoerTelCount\').val(count);' +
-			'		obj.parent().parent().remove();' +
-			'	}' +
-			'} ' +
+			'	$.messager.confirm(\'确认\',\'您确认想要删除此联系电话吗？\',function(r){' +  
+			'   	if (r){ ' +
+			' 			var count = $(\'#infoerTelCount\').val();' + 
+			' 			count = parseInt(count)-1;' + 
+			' 			$(\'#infoerTelCount\').val(count);' +
+			'			obj.parent().parent().remove();' +
+			'    	}' +
+			'	});' +
+			'}' +
 			'$(\'#addInfoerTelBtn\').click(function()'+
 			'{' + 
 			' 	var count = $(\'#infoerTelCount\').val();' + 
@@ -687,6 +646,13 @@ $(function()
 			'	}else{'+
 			'		$(\'#errorclienttel\'+errorId+\'\').html("");'+
 			'	}'+
+			'	if(errorId > 1) '+
+			' 	{ '+
+			'		if($(\'#tel1\').val() == obj.value){' + 
+			'      		$(\'#errorclienttel\'+errorId+\'\').html("联系电话重复！"); '+
+			'      		return; '+
+			'   	} '+
+			'   } '+
 			'	$.ajax'+
 			'	({'+
 			'		url: \'marketing/infoerMgr/checkClientTel\','+
@@ -704,13 +670,14 @@ $(function()
 			'} ' + 
 			'function removeTelAdd(obj)' +
 			'{' +
-			'	if(confirm("确定要删除此联系电话吗？"))' +
-			'	{' +
-			' 		var count = $(\'#clientTelCount\').val();' + 
-			' 		count = parseInt(count)-1;' + 
-			' 		$(\'#clientTelCount\').val(count);' +
-			'		obj.parent().parent().remove();' +
-			'	}' +
+			'	$.messager.confirm(\'确认\',\'您确认想要删除此联系电话吗？\',function(r){' +  
+			'   	if (r){ ' +
+			' 			var count = $(\'#clientTelCount\').val();' + 
+			' 			count = parseInt(count)-1;' + 
+			' 			$(\'#clientTelCount\').val(count);' +
+			'			obj.parent().parent().remove();' +
+			'    	}  ' +
+			'	}); ' +
 			'} ' +
 			'$(\'#addClientTelBtn\').click(function()'+
 			'{' + 

@@ -49,8 +49,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 
 	@Override
 	public void updateInfoer(Infoer infoer) {
-		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address,"
-				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, LEVEL = :level, SALESMAN_ID = :salesmanId, LEFT_VISIT_DAYS = :leftVisitDays";
+		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
 	}
@@ -95,7 +94,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Integer addInfoer(Infoer infoer) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME,LEFT_VISIT_DAYS) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now(),:leftVisitDays)",
+				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now())",
 				new BeanPropertySqlParameterSource(infoer), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

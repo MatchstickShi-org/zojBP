@@ -26,8 +26,9 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public void updateOrder(Order order) {
+	public void updateOrder(Order order,Client client) {
 		dao.updateOrder(order);
+		clientDao.updateClient(client);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser ,String name, String tel,
-			String infoerName, Integer[]  status) {
+			String infoerName, String[]  status) {
 		return dao.getAllOrder(pagination, loginUser,name,tel,infoerName, status);
 	}
 	

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author wangw
  */
@@ -16,7 +18,6 @@ public class Order implements Serializable{
 
 	private Integer id;
 	
-	@NotNull
 	private Integer infoerId;
 	
 	private String infoerName;
@@ -42,7 +43,6 @@ public class Order implements Serializable{
 	
 	private String orgAddr;
 	
-	@NotNull
 	private String tel1;
 	
 	private String tel2;
@@ -52,6 +52,9 @@ public class Order implements Serializable{
 	private String tel4;
 	
 	private String tel5;
+	
+	@SuppressWarnings("unused")
+	private String telAll;
 
 	public Integer getId() {
 		return id;
@@ -197,4 +200,22 @@ public class Order implements Serializable{
 		this.tel5 = tel5;
 	}
 	
+	public String getTelAll() {
+		String telAll = StringUtils.EMPTY;
+		if(StringUtils.isNotEmpty(tel1))
+			telAll +=tel1;
+		if(StringUtils.isNotEmpty(tel2))
+			telAll = telAll+" "+tel2;
+		if(StringUtils.isNotEmpty(tel3))
+			telAll = telAll+" "+tel3;
+		if(StringUtils.isNotEmpty(tel4))
+			telAll = telAll+" "+tel4;
+		if(StringUtils.isNotEmpty(tel5))
+			telAll = telAll+" "+tel5;
+		return telAll;
+	}
+
+	public void setTelAll(String telAll) {
+		this.telAll = telAll;
+	}
 }

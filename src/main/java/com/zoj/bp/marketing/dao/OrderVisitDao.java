@@ -23,7 +23,7 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 		String sql = "SELECT * FROM ORDER_VISIT WHERE VISITOR_ID="+loginUser.getId();
 		if(orderId != null && orderId > 0)
 		{
-			sql += " AND orderId = :orderId";
+			sql += " AND ORDER_ID = :orderId";
 			paramMap.put("orderId", orderId);
 		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";

@@ -45,10 +45,23 @@ public class ClientDao extends BaseDao implements IClientDao {
 			return null;
 		}
 	}
+	
+	@Override
+	public Client getClientByOrderId(Integer orderId) {
+		try
+		{
+			return jdbcOps.queryForObject("SELECT * FROM CLIENT WHERE ORDER_ID = :orderId",
+					new MapSqlParameterSource("orderId", orderId), BeanPropertyRowMapper.newInstance(Client.class));
+		}
+		catch (EmptyResultDataAccessException e)
+		{
+			return null;
+		}
+	}
 
 	@Override
 	public void updateClient(Client client) {
-		String sql = "UPDATE CLIENT SET ORDER_ID = :orderId, NAME = :name, NATURE = :nature, ORG_ADDR = :orgAddr,"
+		String sql = "UPDATE CLIENT SET ORDER_ID = :orderId, NAME = :name,ORG_ADDR = :orgAddr,"
 				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(client));

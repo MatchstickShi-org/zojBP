@@ -28,17 +28,25 @@ public interface IOrderDao {
 	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer[] status);
 
 	/**
+	 * 
 	 * @param pagination
-	 * @param status 
-	 * @param infoerName 
-	 * @param tel 
-	 * @param name 
+	 * @param loginUser
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, Integer[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, String[] status);
 	/**
 	 * @param order
 	 * @return 
 	 */
 	Integer addOrder(Order order);
+
+	/**
+	 * 更新订单状态
+	 * @param order
+	 */
+	void updateOrderStatus(Order order);
 }

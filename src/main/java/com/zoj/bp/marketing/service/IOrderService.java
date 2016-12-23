@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.service;
 
+import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -14,9 +15,10 @@ public interface IOrderService {
 
 	/**
 	 * @param order
+	 * @param client
 	 * @return
 	 */
-	void updateOrder(Order order);
+	void updateOrder(Order order,Client client);
 
 	/**
 	 * @param pagination
@@ -28,14 +30,16 @@ public interface IOrderService {
 	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer[] status);
 
 	/**
+	 * 
 	 * @param pagination
-	 * @param status 
-	 * @param infoerName 
-	 * @param tel 
-	 * @param name 
+	 * @param loginUser
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, Integer[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, String[] status);
 	/**
 	 * @param order
 	 * @return 

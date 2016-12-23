@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.dao;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
-				" WHERE ID = :id",
+				" WHERE O.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -45,6 +46,14 @@ public class OrderDao extends BaseDao implements IOrderDao {
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
 
+	}
+	
+	@Override
+	public void updateOrderStatus(Order order) {
+		String sql = "UPDATE `ORDER` SET STATUS = :status";
+		sql += " WHERE ID = :id";
+		jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
+		
 	}
 
 	@Override
@@ -73,7 +82,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	
 	@Override
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
-			String infoerName, Integer[] status) {
+			String infoerName, String[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
@@ -99,10 +108,10 @@ public class OrderDao extends BaseDao implements IOrderDao {
 		}
 		if(StringUtils.isNotEmpty(infoerName))
 		{
-			sql += " O.INFOER_ID IN(SELECT ID FROM INFOER WHERE `NAME` like :infoerName)";
+			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
-		if(status != null && status.length > 0)
+		if(status != null && !Arrays.asList(status).contains("0"))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";

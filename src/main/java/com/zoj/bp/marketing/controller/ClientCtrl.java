@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
+import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
+import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.IOrderService;
 import com.zoj.bp.marketing.service.IOrderVisitService;
 
@@ -40,6 +43,9 @@ public class ClientCtrl
 	@Autowired
 	private IOrderVisitService orderVisitSvc;
 	
+	@Autowired
+	private IClientService clientSvc;
+	
 	@RequestMapping(value = "/toClientTraceView")
 	public String toClientTraceView() throws BusinessException
 	{
@@ -49,10 +55,13 @@ public class ClientCtrl
 	@RequestMapping(value = "/getAllClientTrace")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientTrace(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) Integer[] status, HttpSession session)
+			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,status);
+		String[] statusArr = null;
+		if (StringUtils.isNotEmpty(status))
+			statusArr = status.split(",");
+		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -78,18 +87,25 @@ public class ClientCtrl
 	
 	@RequestMapping(value = "/editOrder")
 	@ResponseBody
-	public Map<String, ?> editOrder(@Valid Order order, Errors errors) throws Exception
+	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
-		orderSvc.updateOrder(order);
+		Client client = clientSvc.getClientByOrderId(orderForm.getId());
+		client.setName(orderForm.getName());
+		client.setOrgAddr(orderForm.getOrgAddr());
+		Order order = orderSvc.getOrderById(orderForm.getId());
+		order.setProjectName(orderForm.getProjectName());
+		order.setProjectAddr(orderForm.getProjectAddr());
+		orderSvc.updateOrder(order,client);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	/*@RequestMapping(value = "/getInfoerVisitByInfoer")
+	@RequestMapping(value = "/getOrderVisitByOrder")
 	@ResponseBody
-	public DatagridVo<InfoerVisit> getInfoerVisitByInfoer(@RequestParam("infoerId") Integer infoerId, Pagination pagination) throws BusinessException
+	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
-		return infoerVisitSvc.getAllInfoerVisit(pagination,infoerId);
-	}*/
+		User loginUser = (User) session.getAttribute("loginUser");
+		return orderVisitSvc.getAllOrderVisit(pagination, loginUser, orderId);
+	}
 }

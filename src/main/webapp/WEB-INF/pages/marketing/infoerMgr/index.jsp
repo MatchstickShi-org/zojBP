@@ -35,17 +35,17 @@
 					<table style="width: 100%; min-width: 700px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
-							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 250px;"><input name="name" class="easyui-textbox" required="required"/></td>
 							<td align="right"><label>工作单位：</label></td>
-							<td style="min-width: 200px;"><input name="org" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="org" style="min-width: 250px;" class="easyui-textbox" required="required"/></td>
 							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>地址：</label></td>
-							<td style="min-width: 200px;"><input name="address" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="address" style="min-width: 250px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td style="min-width: 200px;"><input name="tel1" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 250px;"><input name="telAll" style="min-width: 250px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
 							<td align="right" ><label>业务员：</label></td>
-							<td style="min-width: 200px;"><input name="salesmanId" type="hidden"/><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="salesmanId" type="hidden"/><input name="salesmanName" readonly="readonly" style="min-width: 250px;" class="easyui-textbox" required="required"/></td>
 							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>性质：</label></td>
 							<td style="min-width: 200px;">
 								<label><input type="radio" name="nature" value="1" checked="checked">中介
@@ -53,10 +53,8 @@
 							</td>
 						</tr>
 						<tr>
-							<td align="right" style="min-width: 80px;"><label>联系电话2：</label></td>
-							<td style="min-width: 200px;"><input name="tel2" readonly="readonly" class="easyui-textbox"/></td>
-							<td align="right" style="vertical-align: top; min-width: 80px;" rowspan="7"><label>信息员等级：</label></td>
-							<td style="min-width: 200px;"><input name="level" type="hidden"/><input name="levelDesc" readonly="readonly" class="easyui-textbox"/></td>
+							<td align="right" style="vertical-align: top; min-width: 80px;"><label>信息员等级：</label></td>
+							<td style="min-width: 200px;"><input name="level" type="hidden"/><input name="levelDesc" readonly="readonly" style="min-width: 250px;" class="easyui-textbox"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="6">

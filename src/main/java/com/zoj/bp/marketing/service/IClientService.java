@@ -32,4 +32,11 @@ public interface IClientService {
 	 * @return 
 	 */
 	Integer addClient(Client client);
+
+	/**
+	 * 根据订单Id获取客户
+	 * @param orderId
+	 * @return
+	 */
+	Client getClientByOrderId(Integer orderId);
 }

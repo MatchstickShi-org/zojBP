@@ -39,4 +39,9 @@ public class ClientService implements IClientService{
 		return dao.addClient(client);
 	}
 
+	@Override
+	public Client getClientByOrderId(Integer orderId) {
+		return dao.getClientByOrderId(orderId);
+	}
+
 }

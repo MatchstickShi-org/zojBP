@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author wangw
  */
@@ -28,7 +30,6 @@ public class Infoer implements Serializable
 	
 	private String address;
 	
-	@NotNull
 	private String tel1;
 	
 	private String tel2;
@@ -39,7 +40,6 @@ public class Infoer implements Serializable
 	
 	private String tel5;
 	
-	@NotNull
 	private Integer level;
 	
 	private String levelDesc; //等级对应的中文
@@ -51,6 +51,9 @@ public class Infoer implements Serializable
 	private String insertTime;
 	
 	private Integer leftVisitDays;  //剩余回访天数
+	
+	@SuppressWarnings("unused")
+	private String telAll;
 	
 	public Integer getId()
 	{
@@ -182,6 +185,25 @@ public class Infoer implements Serializable
 
 	public void setInsertTime(String insertTime) {
 		this.insertTime = insertTime.substring(0,19);
+	}
+
+	public String getTelAll() {
+		String telAll = StringUtils.EMPTY;
+		if(StringUtils.isNotEmpty(tel1))
+			telAll +=tel1;
+		if(StringUtils.isNotEmpty(tel2))
+			telAll = telAll+" "+tel2;
+		if(StringUtils.isNotEmpty(tel3))
+			telAll = telAll+" "+tel3;
+		if(StringUtils.isNotEmpty(tel4))
+			telAll = telAll+" "+tel4;
+		if(StringUtils.isNotEmpty(tel5))
+			telAll = telAll+" "+tel5;
+		return telAll;
+	}
+
+	public void setTelAll(String telAll) {
+		this.telAll = telAll;
 	}
 	
 }

@@ -51,4 +51,11 @@ public interface IClientDao
 	 */
 	Order getClientByTel(String tel);
 
+	/**
+	 * 根据订单Id查询客户
+	 * @param id
+	 * @return
+	 */
+	Client getClientByOrderId(Integer id);
+
 }
