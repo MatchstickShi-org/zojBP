@@ -1,8 +1,6 @@
 package com.zoj.bp.sysmgr.groupmgr.dao;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -14,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.Group;
+import com.zoj.bp.common.model.Group.Type;
+import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -23,31 +24,32 @@ public class GroupDao extends BaseDao implements IGroupDao
 	@Override
 	public DatagridVo<Group> getAllGroups(Pagination pagination, Integer type)
 	{
-		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
-				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
+		String sql = "SELECT G.*, U.ID LEADER_ID, U.ALIAS LEADER_NAME FROM `GROUP` G "
+				+ " LEFT JOIN USER U ON G.ID = U.GROUP_ID AND (U.ROLE = :marketLeader OR U.ROLE = :designLeader) "
 				+ " WHERE 1=1 ";
+		MapSqlParameterSource params = 
+				new MapSqlParameterSource("marketLeader", Role.marketingLeader.value())
+					.addValue("designLeader", Role.designLeader.value());
 		if(type != null)
 		{
 			sql += " AND G.TYPE = :type";
-			paramMap.put("type", type);
+			params.addValue("type", type);
 		}
 		
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
-		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " LIMIT :start, :rows";
-		paramMap.put("start", pagination.getStartRow());
-		paramMap.put("rows", pagination.getRows());
-		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Group.class)), count);
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
+		sql += " ORDER BY G.NAME LIMIT :start, :rows";
+		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(Group.class)), count);
 	}
 	
 	@Override
-	public Integer addGroup(String name, boolean isMarketingGroup, Integer leaderId)
+	public Integer addGroup(String name, boolean isMarketingGroup)
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcOps.update("INSERT INTO GROUP(NAME, TYPE, LEADER_ID) VALUES(:name, :type, :leaderId)",
+		jdbcOps.update("INSERT INTO `GROUP`(NAME, TYPE) VALUES(:name, :type)",
 				new MapSqlParameterSource("name", name)
-					.addValue("type", isMarketingGroup ? 0 : 1).addValue("leaderId", leaderId), keyHolder);
+					.addValue("type", isMarketingGroup ? 0 : 1), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
 
@@ -57,8 +59,11 @@ public class GroupDao extends BaseDao implements IGroupDao
 		try
 		{
 			return jdbcOps.queryForObject(
-					"SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G LEFT JOIN USER U ON G.LEADER_ID = U.ID WHERE ID = :id",
-					new MapSqlParameterSource("id", groupId), BeanPropertyRowMapper.newInstance(Group.class));
+					"SELECT G.*, U.ID LEADER_ID, U.ALIAS LEADER_NAME FROM `GROUP` G "
+					+ " LEFT JOIN USER U ON G.ID = U.GROUP_ID AND (U.ROLE = :marketLeader OR U.ROLE = :designLeader) "
+					+ " WHERE G.ID = :id ",
+					new MapSqlParameterSource("id", groupId).addValue("marketLeader", Role.marketingLeader.value())
+						.addValue("designLeader", Role.designLeader.value()), BeanPropertyRowMapper.newInstance(Group.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{
@@ -71,7 +76,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	{
 		try
 		{
-			return jdbcOps.queryForObject("SELECT * FROM GROUP WHERE NAME = :name",
+			return jdbcOps.queryForObject("SELECT * FROM `GROUP` WHERE NAME = :name",
 					new MapSqlParameterSource("name", name), BeanPropertyRowMapper.newInstance(Group.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -83,64 +88,122 @@ public class GroupDao extends BaseDao implements IGroupDao
 	@Override
 	public Integer updateGroup(Group group)
 	{
-		String sql = "UPDATE GROUP SET NAME = :name, TYPE = :type, LEADER_ID = :leaderId WHERE ID = :id";
+		String sql = "UPDATE `GROUP` SET NAME = :name WHERE ID = :id";
 		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(group));
 	}
 
 	@Override
 	public Integer deleteGroupByIds(Integer[] grpIds)
 	{
-		return jdbcOps.update("DELETE FROM GROUP "
+		return jdbcOps.update("DELETE FROM `GROUP` "
 				+ " WHERE ID IN(" + StringUtils.join(grpIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 
 	@Override
-	public DatagridVo<Group> getAssignedUnderling(Integer groupId, Pagination pagination)
+	public DatagridVo<User> getAssignedUnderling(Integer groupId, Pagination pagination)
 	{
-		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
-				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
-				+ " WHERE U.GROUP_ID = :groupId";
-		paramMap.put("groupId", groupId);
+		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
+				+ " LEFT JOIN `GROUP` G ON G.ID = U.GROUP_ID "
+				+ " LEFT JOIN USER LU ON G.ID = LU.GROUP_ID "
+				+ " AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
+				+ " WHERE U.GROUP_ID = :groupId AND U.STATUS = 1 "
+				+ " AND (U.ROLE = CASE G.TYPE WHEN :marketGroup THEN :salesman ELSE :designer END) ";
+		MapSqlParameterSource params = new MapSqlParameterSource("groupId", groupId)
+				.addValue("marketGroup", Type.marketingGroup.value())
+				.addValue("salesman", Role.marketingSalesman.value()).addValue("designer", Role.designDesigner.value())
+				.addValue("marketingLeader", Role.marketingLeader.value()).addValue("designLeader", Role.designLeader.value());
 		
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
-		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
 		sql += " LIMIT :start, :rows";
-		paramMap.put("start", pagination.getStartRow());
-		paramMap.put("rows", pagination.getRows());
+		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
 		
-		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Group.class)), count);
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class)), count);
 	}
 
 	@Override
-	public DatagridVo<Group> getNotAssignUnderling(Integer groupId, Pagination pagination)
+	public DatagridVo<User> getNotAssignUnderling(Integer groupId, Pagination pagination)
 	{
-		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT G.*, U.ALIAS LEADER_NAME FROM GROUP G "
-				+ " LEFT JOIN USER U ON G.LEADER_ID = U.ID "
-				+ " WHERE U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL ";
-		paramMap.put("groupId", groupId);
+		Group g = getGroupById(groupId);
+		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
+				+ " LEFT JOIN `GROUP` G ON G.ID = U.GROUP_ID "
+				+ " LEFT JOIN USER LU ON G.ID = LU.GROUP_ID AND LU.ROLE = :leaderRole "
+				+ " WHERE U.ROLE = :role AND (U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL) ";
+		MapSqlParameterSource params = new MapSqlParameterSource("groupId", groupId)
+				.addValue("leaderRole", Type.valueOf(g.getType()) 
+						== Type.marketingGroup ? Role.marketingLeader.value() : Role.designLeader.value())
+				.addValue("role", Type.valueOf(g.getType()) 
+						== Type.marketingGroup ? Role.marketingSalesman.value() : Role.designDesigner.value());
 		
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
-		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
 		sql += " LIMIT :start, :rows";
-		paramMap.put("start", pagination.getStartRow());
-		paramMap.put("rows", pagination.getRows());
+		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
 		
-		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Group.class)), count);
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class)), count);
 	}
 
 	@Override
-	public Integer addUnderlingToGroup(Integer groupId, Integer[] underlingIds)
+	public Integer addUnderlingToGroup(Integer groupId, Integer... underlingIds)
 	{
-		StringBuffer sql = new StringBuffer(
-				" UPDATE USER SET GROUP_ID = :groupId WHERE ID IN (" + StringUtils.join(underlingIds, ',') + ")");
+		StringBuffer sql = new StringBuffer(" UPDATE USER SET GROUP_ID = :groupId WHERE 1=1 ");
+		if(!ArrayUtils.isEmpty(underlingIds))
+			sql.append(" AND ID IN (" + StringUtils.join(underlingIds, ',') + ")");
 		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("groupId", groupId));
 	}
 
 	@Override
-	public Integer removeUnderlingFromGroup(Integer groupId, Integer[] underlingIds)
+	public Integer removeUnderlingFromGroup(Integer groupId, Integer... underlingIds)
 	{
-		return null;
+		StringBuffer sql = new StringBuffer(" UPDATE USER SET GROUP_ID = NULL WHERE GROUP_ID = :groupId ");
+		if(!ArrayUtils.isEmpty(underlingIds))
+			sql.append(" AND ID IN (" + StringUtils.join(underlingIds, ',') + ")");
+		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("groupId", groupId));
+	}
+
+	@Override
+	public Integer removeUnderlingFromGroups(Integer... grpIds)
+	{
+		if(ArrayUtils.isEmpty(grpIds))
+			return 0;
+		StringBuffer sql = new StringBuffer(
+				" UPDATE USER SET GROUP_ID = NULL WHERE GROUP_ID IN (" + StringUtils.join(grpIds, ',') + ")");
+		return jdbcOps.update(sql.toString(), EmptySqlParameterSource.INSTANCE);
+	}
+
+	@Override
+	public DatagridVo<User> getCanAssignLeadersByGroup(Integer groupId, Pagination pagination)
+	{
+		String sql = "SELECT U.*, G.NAME GROUP_NAME FROM USER U "
+				+ " LEFT JOIN `GROUP` G ON G.ID = U.GROUP_ID "
+				+ " WHERE (U.ROLE = :marketingLeader OR U.ROLE = :designLeader) ";
+		Integer type = 0;
+		if(groupId != null)
+		{
+			Group g = getGroupById(groupId);
+			type = g.getType();
+			sql += " AND G.TYPE = :type AND (U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL) ";
+		}
+
+		MapSqlParameterSource params = new MapSqlParameterSource("marketingLeader", Role.marketingLeader.value())
+			.addValue("designLeader", Role.designLeader.value()).addValue("type", type)
+			.addValue("marketGroup", Type.marketingGroup.value()).addValue("groupId", groupId);
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
+		sql += " LIMIT :start, :rows";
+		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class)), count);
+	}
+
+	@Override
+	public Integer removeLeaderFromGroup(Integer groupId)
+	{
+		String sql = "UPDATE USER U LEFT JOIN `GROUP` G ON A.GROUP_ID = G.ID SET A.GROUP_ID = NULL "
+				+ " WHERE G.ID = :groupId "
+				+ " AND U.ROLE = (CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END )";
+		MapSqlParameterSource params = new MapSqlParameterSource("marketingLeader", Role.marketingLeader.value())
+				.addValue("designLeader", Role.designLeader.value())
+				.addValue("marketGroup", Type.marketingGroup.value()).addValue("groupId", groupId);
+		return jdbcOps.update(sql.toString(), params);
 	}
 }

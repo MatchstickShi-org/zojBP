@@ -4,6 +4,7 @@
 package com.zoj.bp.sysmgr.groupmgr.dao;
 
 import com.zoj.bp.common.model.Group;
+import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -23,10 +24,9 @@ public interface IGroupDao
 	/**
 	 * @param name
 	 * @param isMarketingGroup
-	 * @param leaderId
 	 * @return
 	 */
-	Integer addGroup(String name, boolean isMarketingGroup, Integer leaderId);
+	Integer addGroup(String name, boolean isMarketingGroup);
 
 	/**
 	 * @param groupId
@@ -56,26 +56,43 @@ public interface IGroupDao
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Group> getAssignedUnderling(Integer groupId, Pagination pagination);
+	DatagridVo<User> getAssignedUnderling(Integer groupId, Pagination pagination);
 
 	/**
 	 * @param groupId
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Group> getNotAssignUnderling(Integer groupId, Pagination pagination);
+	DatagridVo<User> getNotAssignUnderling(Integer groupId, Pagination pagination);
 
 	/**
 	 * @param groupId
 	 * @param underlingIds
 	 * @return
 	 */
-	Integer addUnderlingToGroup(Integer groupId, Integer[] underlingIds);
+	Integer addUnderlingToGroup(Integer groupId, Integer... underlingIds);
 
 	/**
 	 * @param groupId
 	 * @param underlingIds
 	 * @return
 	 */
-	Integer removeUnderlingFromGroup(Integer groupId, Integer[] underlingIds);
+	Integer removeUnderlingFromGroup(Integer groupId, Integer... underlingIds);
+
+	/**
+	 * @param groupId
+	 * @param pagination TODO
+	 * @return
+	 */
+	DatagridVo<User> getCanAssignLeadersByGroup(Integer groupId, Pagination pagination);
+
+	/**
+	 * @param grpIds
+	 */
+	Integer removeUnderlingFromGroups(Integer... grpIds);
+
+	/**
+	 * @param groupId
+	 */
+	Integer removeLeaderFromGroup(Integer groupId);
 }

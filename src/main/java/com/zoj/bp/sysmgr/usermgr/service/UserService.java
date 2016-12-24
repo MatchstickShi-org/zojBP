@@ -10,6 +10,7 @@ import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
+import com.zoj.bp.sysmgr.groupmgr.dao.IGroupDao;
 import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 /**
@@ -20,6 +21,9 @@ public class UserService implements IUserService
 {
 	@Autowired
 	private IUserDao userDao;
+	
+	@Autowired
+	private IGroupDao grpDao;
 
 	@Override
 	public User getUserByName(String userName)
@@ -43,8 +47,8 @@ public class UserService implements IUserService
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL, "找不到要修改的用户。");
 		if(dbUser.getRole() != user.getRole())		//角色有修改
 		{
-			if(dbUser.isLeader() && !user.isLeader())	//主管 -> 非主管：撤销该主管身份
-				userDao.setLeaderToEmployee(dbUser.getId(), null);
+			if(!dbUser.isLeader() && user.isLeader())	//非主管 -> 主管：从当前组移除（如有有的话）
+				grpDao.removeUnderlingFromGroup(user.getGroupId(), user.getId());
 		}
 		dbUser = userDao.getUserByName(user.getName());
 		if(dbUser != null && dbUser.getId() != user.getId())

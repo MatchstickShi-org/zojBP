@@ -84,22 +84,44 @@ public class GroupMgrCtrl
 		return ResponseUtils.buildRespMapByBean(grpSvc.getGroupById(groupId));
 	}
 	
+	@RequestMapping(value = "/getCanAssignLeadersByGroup")
+	@ResponseBody
+	public Map<String, Object> getCanAssignLeadersByGroup(
+			@RequestParam(value="groupId", required=false) Integer groupId, Pagination pagination) throws Exception
+	{
+		return ResponseUtils.buildRespMapByBean(grpSvc.getCanAssignLeadersByGroup(groupId, pagination));
+	}
+	
+	@RequestMapping(value = "/changeLeader4Group")
+	@ResponseBody
+	public Map<String, Object> changeLeader4Group(
+			@RequestParam("groupId") Integer groupId, @RequestParam("leaderId") Integer leaderId) throws Exception
+	{
+		return ResponseUtils.buildRespMapByBean(grpSvc.changeLeader4Group(groupId, leaderId));
+	}
+	
 	@RequestMapping("/showAssignUnderlingWindow")
 	public String showAssignUnderlingWindow(@RequestParam Integer groupId)
 	{
 		return "sysMgr/userGrpMgr/assignUnderling";
 	}
 	
+	@RequestMapping("/showSelectLeaderWindow")
+	public String showSelectLeaderWindow(@RequestParam Integer groupId)
+	{
+		return "sysMgr/userGrpMgr/selectLeader";
+	}
+	
 	@RequestMapping(value = "/getAssignedUnderlingByGroup")
 	@ResponseBody
-	public DatagridVo<Group> getAssignedUnderlingByGroup(@RequestParam("groupId") Integer groupId, Pagination pagination) throws BusinessException
+	public DatagridVo<User> getAssignedUnderlingByGroup(@RequestParam("groupId") Integer groupId, Pagination pagination) throws BusinessException
 	{
 		return grpSvc.getAssignedUnderling(groupId, pagination);
 	}
 	
 	@RequestMapping(value = "/getNotAssignUnderlingByGroup")
 	@ResponseBody
-	public DatagridVo<Group> getNotAssignUnderlingByGroup(@RequestParam("groupId") Integer groupId, Pagination pagination) throws BusinessException
+	public DatagridVo<User> getNotAssignUnderlingByGroup(@RequestParam("groupId") Integer groupId, Pagination pagination) throws BusinessException
 	{
 		return grpSvc.getNotAssignUnderling(groupId, pagination);
 	}

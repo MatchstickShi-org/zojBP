@@ -77,7 +77,7 @@ $(function()
 							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';
-						return value + '-' + row.groupId + '组';
+						return value;
 					}
 				},
 				{
@@ -138,16 +138,7 @@ $(function()
 				var selRows = $userDatagrid.datagrid('getSelections');
 				
 				if(selRows.length == 1)
-				{
-					if(title.startWith('下属') && selRows[0].groupId == null)		//判断是否有组
-					{
-						$.messager.alert('提示', '主管：<span style="color: red;">'
-								+ selRows[0].alias + '</span>还没有被分配任何用户组，无法分配下属，请先为该主管分配用户组。');
-						$(this).tabs('select', 0);
-						return;
-					}
 					loadTabData(title, selRows[0]);
-				}
 				else
 					clearTabData(title);
 			}
@@ -266,6 +257,13 @@ $(function()
 		
 		function loadTabData(title, row)
 		{
+			if(title.startWith('下属') && row.groupId == null)		//判断是否有组
+			{
+				$.messager.alert('提示', '主管：<span style="color: red;">'
+						+ row.alias + '</span>还没有被分配任何用户组，无法分配下属，请先为该主管分配用户组。');
+				$userMgrTab.tabs('select', 0);
+				return;
+			}
 			switch (title)
 			{
 				case '详情':

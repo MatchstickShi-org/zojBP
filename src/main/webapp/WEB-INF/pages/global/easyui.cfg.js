@@ -25,9 +25,8 @@ $.ajaxSetup
 			try
 			{
 				data = $.parseJSON(data);
-			} catch (e)
-			{
 			}
+			catch (e){}
 		}
 		if(data.returnCode == 0)
 			$.messager.show({title: '提示', msg: data.msg || '操作成功。'})
@@ -48,7 +47,7 @@ $.ajaxSetup
 		} catch (e)
 		{
 		}
-		$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。');
+		$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。', 'warning');
 	},
 	dataType : "JSON",
 	type : "POST",
@@ -218,7 +217,10 @@ $(function()
 		iframe: false,
 		success : function(data)
 		{
-			return $.parseJSON(data);
+			data = $.parseJSON(data);
+			/*if(data.returnCode != 0)
+				$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');*/
+			return data;
 		}
 	});
 });

@@ -9,9 +9,11 @@ import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Group;
 import com.zoj.bp.common.model.Group.Type;
+import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.sysmgr.groupmgr.dao.IGroupDao;
+import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 /**
  * @author MatchstickShi
@@ -21,6 +23,9 @@ public class GroupService implements IGroupService
 {
 	@Autowired
 	private IGroupDao grpDao;
+	
+	@Autowired
+	private IUserDao userDao;
 
 	@Override
 	public DatagridVo<Group> getAllGroups(Pagination pagination, Integer type)
@@ -31,7 +36,10 @@ public class GroupService implements IGroupService
 	@Override
 	public Integer addGroup(Group group)
 	{
-		return grpDao.addGroup(group.getName(), Type.valueOf(group.getType()) == Type.marketingGroup, group.getLeaderId());
+		Integer grpId = grpDao.addGroup(group.getName(), Type.valueOf(group.getType()) == Type.marketingGroup);
+		if(group.getLeaderId() != null)
+			grpDao.addUnderlingToGroup(grpId, group.getLeaderId());
+		return grpId;
 	}
 
 	@Override
@@ -39,19 +47,24 @@ public class GroupService implements IGroupService
 	{
 		if(group.getId() == null)
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL, "找不到要修改的用户组。");
-		Group dbGrp = grpDao.getGroupById(group.getId());
-		if(dbGrp == null)
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL, "找不到要修改的用户。");
-		dbGrp = grpDao.getGroupByName(group.getName());
+		Group dbGrp = grpDao.getGroupByName(group.getName());
 		if(dbGrp != null && dbGrp.getId() != group.getId())
 			throw new BusinessException(
 					ReturnCode.VALIDATE_FAIL, MessageFormat.format("已存在名称为{0}的用户组，请修改组名后再试。", group.getName()));
+		dbGrp = grpDao.getGroupById(group.getId());
+		if(dbGrp == null)
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL, "找不到要修改的用户组。");
+		if(dbGrp.getLeaderId() != null && dbGrp.getLeaderId() != group.getLeaderId())	//主管有修改
+			grpDao.removeUnderlingFromGroup(group.getId(), dbGrp.getLeaderId());	//将原主管从当前group移除
+		if(group.getLeaderId() != null)
+			grpDao.addUnderlingToGroup(group.getId(), group.getLeaderId());
 		return grpDao.updateGroup(group);
 	}
 
 	@Override
 	public Integer deleteGroupByIds(Integer[] grpIds)
 	{
+		grpDao.removeUnderlingFromGroups(grpIds);
 		return grpDao.deleteGroupByIds(grpIds);
 	}
 
@@ -62,13 +75,13 @@ public class GroupService implements IGroupService
 	}
 
 	@Override
-	public DatagridVo<Group> getAssignedUnderling(Integer groupId, Pagination pagination)
+	public DatagridVo<User> getAssignedUnderling(Integer groupId, Pagination pagination)
 	{
 		return grpDao.getAssignedUnderling(groupId, pagination);
 	}
 
 	@Override
-	public DatagridVo<Group> getNotAssignUnderling(Integer groupId, Pagination pagination)
+	public DatagridVo<User> getNotAssignUnderling(Integer groupId, Pagination pagination)
 	{
 		return grpDao.getNotAssignUnderling(groupId, pagination);
 	}
@@ -80,8 +93,26 @@ public class GroupService implements IGroupService
 	}
 
 	@Override
+	public Integer changeLeader4Group(Integer groupId, Integer leaderId) throws BusinessException
+	{
+		User leader = userDao.getUserById(leaderId);
+		if(leader == null)
+			throw new BusinessException(ReturnCode.NOT_FIND_RECORD);
+		if(!leader.isLeader())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("选择用户不是主管，无法变更。"));
+		grpDao.removeLeaderFromGroup(groupId);
+		return grpDao.addUnderlingToGroup(groupId, leaderId);
+	}
+
+	@Override
 	public Integer removeUnderlingFromGroup(Integer groupId, Integer[] underlingIds)
 	{
 		return grpDao.removeUnderlingFromGroup(groupId, underlingIds);
+	}
+
+	@Override
+	public DatagridVo<User> getCanAssignLeadersByGroup(Integer groupId, Pagination pagination)
+	{
+		return grpDao.getCanAssignLeadersByGroup(groupId, pagination);
 	}
 }

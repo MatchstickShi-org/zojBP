@@ -91,18 +91,4 @@ public interface IUserDao
 	 * @return
 	 */
 	Integer removeUnderling(Integer[] underlingIds);
-
-	/**
-	 * 移除指定用户的主管身份（从USER_GROUP表）
-	 * @param leaderId
-	 * @param newGroupId 
-	 */
-	void setLeaderToEmployee(Integer leaderId, Integer newGroupId);
-
-	/**
-	 * 设置指定用户为指定组组长
-	 * @param userId
-	 * @param leadGroupId
-	 */
-	void setUserToLeader(Integer userId, Integer leadGroupId);
 }

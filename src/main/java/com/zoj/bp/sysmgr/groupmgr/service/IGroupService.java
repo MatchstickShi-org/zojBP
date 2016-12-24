@@ -2,6 +2,7 @@ package com.zoj.bp.sysmgr.groupmgr.service;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.Group;
+import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -45,14 +46,14 @@ public interface IGroupService
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Group> getAssignedUnderling(Integer groupId, Pagination pagination);
+	DatagridVo<User> getAssignedUnderling(Integer groupId, Pagination pagination);
 
 	/**
 	 * @param groupId
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Group> getNotAssignUnderling(Integer groupId, Pagination pagination);
+	DatagridVo<User> getNotAssignUnderling(Integer groupId, Pagination pagination);
 
 	/**
 	 * @param groupId
@@ -65,4 +66,19 @@ public interface IGroupService
 	 * @param underlingIds
 	 */
 	Integer removeUnderlingFromGroup(Integer groupId, Integer[] underlingIds);
+
+	/**
+	 * @param groupId
+	 * @param pagination TODO
+	 * @return
+	 */
+	DatagridVo<User> getCanAssignLeadersByGroup(Integer groupId, Pagination pagination);
+
+	/**
+	 * @param groupId
+	 * @param leaderId
+	 * @return
+	 * @throws BusinessException 
+	 */
+	Integer changeLeader4Group(Integer groupId, Integer leaderId) throws BusinessException;
 }
