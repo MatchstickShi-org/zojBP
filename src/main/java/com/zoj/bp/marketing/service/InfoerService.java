@@ -1,5 +1,7 @@
 package com.zoj.bp.marketing.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,11 @@ public class InfoerService implements IInfoerService{
 	@Override
 	public Infoer findByTel(String tel) {
 		return infoerDao.findByTel(tel);
+	}
+
+	@Override
+	public List<Infoer> findBySalesmanId(Integer salesmanId) {
+		return infoerDao.findBySalesmanId(salesmanId);
 	}
 
 }

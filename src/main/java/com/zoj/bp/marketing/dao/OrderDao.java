@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -130,6 +131,13 @@ public class OrderDao extends BaseDao implements IOrderDao {
 				+ "VALUES(:infoerId,:salesmanId,:stylistId,:projectName,:projectAddr,now(),:status)",
 				new BeanPropertySqlParameterSource(order), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public Integer deleteOrderByIds(Integer[] orderIds) {
+		return jdbcOps.update("UPDATE `ORDER` SET STATUS = 12 "
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+		
 	}
 
 }

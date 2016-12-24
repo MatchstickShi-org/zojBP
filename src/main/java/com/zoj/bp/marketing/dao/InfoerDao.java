@@ -2,6 +2,7 @@ package com.zoj.bp.marketing.dao;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,11 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		{
 			return null;
 		}
+	}
+
+	@Override
+	public List<Infoer> findBySalesmanId(Integer salesmanId) {
+		 return jdbcOps.query("SELECT * FROM INFOER WHERE SALESMAN_ID = :salesmanId", new MapSqlParameterSource("salesmanId", salesmanId), BeanPropertyRowMapper.newInstance(Infoer.class));
 	}
 
 }

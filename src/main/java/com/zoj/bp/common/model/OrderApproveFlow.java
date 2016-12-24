@@ -1,7 +1,6 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author wangw
@@ -11,20 +10,14 @@ public class OrderApproveFlow implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7937493510888925818L;
+	private static final long serialVersionUID = -9009386661981089873L;
 
 	private Integer id;
 	
-	private Integer orderId;
+	private Integer status;
 	
-	private Integer claimer;
+	private Integer nextStatus;
 	
-	private Integer approver;
-	
-	private Integer oprate;
-	
-	private Date oprateTime;
-
 	public Integer getId() {
 		return id;
 	}
@@ -33,43 +26,19 @@ public class OrderApproveFlow implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getOrderId() {
-		return orderId;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
-	public Integer getClaimer() {
-		return claimer;
+	public Integer getNextStatus() {
+		return nextStatus;
 	}
 
-	public void setClaimer(Integer claimer) {
-		this.claimer = claimer;
-	}
-
-	public Integer getApprover() {
-		return approver;
-	}
-
-	public void setApprover(Integer approver) {
-		this.approver = approver;
-	}
-
-	public Integer getOprate() {
-		return oprate;
-	}
-
-	public void setOprate(Integer oprate) {
-		this.oprate = oprate;
-	}
-
-	public Date getOprateTime() {
-		return oprateTime;
-	}
-
-	public void setOprateTime(Date oprateTime) {
-		this.oprateTime = oprateTime;
+	public void setNextStatus(Integer nextStatus) {
+		this.nextStatus = nextStatus;
 	}
 }

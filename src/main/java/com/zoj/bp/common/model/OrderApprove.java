@@ -2,22 +2,33 @@ package com.zoj.bp.common.model;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author wangw
  */
 public class OrderApprove implements Serializable{
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9009386661981089873L;
+	private static final long serialVersionUID = 7937493510888925818L;
 
 	private Integer id;
 	
-	private Integer status;
+	@NotNull
+	private Integer orderId;
 	
-	private Integer nextStatus;
+	private Integer claimer;
 	
+	private Integer approver;
+	
+	private Integer operate;
+	
+	private String oprateTime;
+	
+	@NotNull
+	private String remark;
+
 	public Integer getId() {
 		return id;
 	}
@@ -26,19 +37,52 @@ public class OrderApprove implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getStatus() {
-		return status;
+	public Integer getOrderId() {
+		return orderId;
 	}
 
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 
-	public Integer getNextStatus() {
-		return nextStatus;
+	public Integer getClaimer() {
+		return claimer;
 	}
 
-	public void setNextStatus(Integer nextStatus) {
-		this.nextStatus = nextStatus;
+	public void setClaimer(Integer claimer) {
+		this.claimer = claimer;
 	}
+
+	public Integer getApprover() {
+		return approver;
+	}
+
+	public void setApprover(Integer approver) {
+		this.approver = approver;
+	}
+
+	public Integer getOperate() {
+		return operate;
+	}
+
+	public void setOperate(Integer operate) {
+		this.operate = operate;
+	}
+
+	public String getOprateTime() {
+		return oprateTime;
+	}
+
+	public void setOprateTime(String oprateTime) {
+		this.oprateTime = oprateTime;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	
 }

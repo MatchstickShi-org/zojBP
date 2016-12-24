@@ -49,4 +49,10 @@ public interface IOrderDao {
 	 * @param order
 	 */
 	void updateOrderStatus(Order order);
+
+	/**
+	 * 设置客户状态为已放弃
+	 * @param orderIds
+	 */
+	Integer deleteOrderByIds(Integer[] orderIds);
 }

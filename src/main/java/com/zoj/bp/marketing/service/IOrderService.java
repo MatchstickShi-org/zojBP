@@ -2,6 +2,7 @@ package com.zoj.bp.marketing.service;
 
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -49,4 +50,17 @@ public interface IOrderService {
 	void addOrderAndClient(Order order);
 
 	Order findByTel(String tel);
+
+	/**
+	 * 放弃客户
+	 * @param orderIds
+	 */
+	Integer deleteOrderByIds(Integer[] orderIds);
+
+	/**
+	 * 申请再谈单
+	 * @param orderApprove
+	 * @return
+	 */
+	Integer addOrderApprove(OrderApprove orderApprove);
 }

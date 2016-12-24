@@ -8,6 +8,7 @@ $(function()
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
+	var $applyOrderWindow = $('div#applyOrderWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
@@ -191,10 +192,127 @@ $(function()
 		}
 		
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
+		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
+		$('#applyOrderBtn').linkbutton({onClick: showApplyOrderWindow});
 		
-		$addClientVisitWindow.window({width: 400});
+		
+		function removeOrder()
+		{
+			var selIds = $orderDatagrid.datagrid('getCheckedRowPkValues');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要放弃的客户。');
+				return;
+			}
+			var selRows = $orderDatagrid.datagrid('getChecked');
+			if(selRows.length > 0){
+				var flag = false;
+				$.each(selRows,function(index,obj){
+					if(obj.status !=10){
+						flag = true;
+						return;
+					}
+				});
+				if(flag){
+					$.messager.alert('提示', '只能放弃状态为<span style="color: red;">正跟踪</span>的客户。');
+					return;
+				}
+			}
+			$.messager.confirm('警告','确定要放弃勾选的客户吗？',function(r)
+			{
+				if (!r)
+					return;
+				$.post
+				(
+					'marketing/clientMgr/deleteOrderByIds',
+					{delIds : selIds},
+					function(data, textStatus, jqXHR)
+					{
+						if(data.returnCode == 0)
+						{
+							$.messager.show({title:'提示',msg:'操作成功。'});
+							$orderDatagrid.datagrid('reload');
+						}
+						else
+							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
+					}
+				);
+			});
+		}
+		
+		$addClientVisitWindow.window({width: 350});
 		$addClientWindow.window({width: 450});
+		$applyOrderWindow.window({width: 450});
+		
+		function showApplyOrderWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要申请在谈单的客户。');
+				return;
+			}
+			$applyOrderWindow.window('clear');
+			$applyOrderWindow.window('open').window
+			({
+				title: '申请在谈单',
+				content: applyOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var applyOrderWindowHtml = 
+			'<form id="applyOrderForm" action="marketing/clientMgr/applyOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><textarea name="remark" required="required" class="easyui-textbox" style="width: 230px;height:50px;"></textarea></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitApplyOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$applyOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $applyOrderWindow = $(\'div#applyOrderWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$applyOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$applyOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$applyOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitApplyOrderForm()' + 
+			'{' + 
+			'	$applyOrderWindow.find(\'form#applyOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$applyOrderWindow.window(\'close\');' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
 		
 		function showAddClientVisitWindow()
 		{
@@ -276,7 +394,9 @@ $(function()
 			'		<input id="clientTelCount" type="hidden" value="1" />' +
 			'		<tr>' + 
 			'			<td align="right"><label>所属信息员：</label></td>' + 
-			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 150px;"/></td>' + 
+			'			<td><select id="infoerId" name="infoerId" class="easyui-select" style="width: 150px;">' + 
+			'				<option value="1">infoerName</option>' + 
+			'			</select></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.util.ResponseUtils;
@@ -85,6 +87,19 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/applyOrder")
+	@ResponseBody
+	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setOperate(2);
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/editOrder")
 	@ResponseBody
 	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors) throws Exception
@@ -107,5 +122,15 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		return orderVisitSvc.getAllOrderVisit(pagination, loginUser, orderId);
+	}
+	
+	@RequestMapping(value = "/deleteOrderByIds")
+	@ResponseBody
+	public Map<String, ?> deleteOrderByIds(@RequestParam("delIds[]") Integer[] orderIds, HttpSession session) throws Exception
+	{
+		if(ArrayUtils.isEmpty(orderIds))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
+		orderSvc.deleteOrderByIds(orderIds);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

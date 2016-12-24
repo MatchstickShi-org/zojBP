@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
+import com.zoj.bp.marketing.dao.IOrderApproveDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
 
 @Service
@@ -19,7 +21,10 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	private IClientDao clientDao;
-
+	
+	@Autowired
+	private IOrderApproveDao approveDao;
+	
 	@Override
 	public Order getOrderById(Integer id) {
 		return dao.getOrderById(id);
@@ -69,4 +74,17 @@ public class OrderService implements IOrderService {
 		return clientDao.getClientByTel(tel);
 	}
 
+	@Override
+	public Integer deleteOrderByIds(Integer[] orderIds) {
+		return dao.deleteOrderByIds(orderIds);
+	}
+
+	@Override
+	public Integer addOrderApprove(OrderApprove orderApprove) {
+		approveDao.addOrderApprove(orderApprove);
+		Order order = dao.getOrderById(orderApprove.getOrderId());
+		order.setStatus(30);
+		dao.updateOrderStatus(order);
+		return null;
+	}
 }

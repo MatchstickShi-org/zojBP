@@ -28,7 +28,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderBtn">申请在谈单</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -85,6 +85,7 @@
 </div>
 <div id="addClientVisitWindow"></div>
 <div id="addClientWindow"></div>
+<div id="applyOrderWindow"></div>
 <script type="text/javascript" src="pages/marketing/clientTrace/index.js"></script>
 </body>
 </html>
