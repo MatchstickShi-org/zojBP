@@ -49,10 +49,23 @@ public class MsgLogDao extends BaseDao implements IMsgLogDao
 	@Override
 	public List<MsgLog> getLast24hoursBroadcastMsgs()
 	{
-		String sql = "SELECT * FROM MSG_LOG WHERE SEND_TIME >= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -1 DAY)";
+		String sql = "SELECT * FROM MSG_LOG WHERE SEND_TIME >= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -1 DAY) "
+				+ "ORDER BY SEND_TIME DESC ";
 		List<MsgLog> ms = jdbcOps.query(sql, BeanPropertyRowMapper.newInstance(MsgLog.class));
 		while(ms.size() > 50)
 			ms.remove(0);
 		return ms;
+	}
+
+	@Override
+	public DatagridVo<MsgLog> getMsgsByUser(Integer userId, Pagination pagination)
+	{
+		String sql = "SELECT * FROM MSG_LOG WHERE TARGET_USER = :userId OR TARGET_USER IS NULL ";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		MapSqlParameterSource params = new MapSqlParameterSource("userId", userId);
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
+		sql += " ORDER BY SEND_TIME DESC LIMIT :start, :rows";
+		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(MsgLog.class)), count);
 	}
 }

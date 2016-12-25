@@ -58,4 +58,10 @@ public class MsgLogService implements IMsgLogService
 	{
 		return msgLogDao.getLast24hoursBroadcastMsgs();
 	}
+	
+	@Override
+	public DatagridVo<MsgLog> getMsgsByUser(Integer userId, Pagination pagination)
+	{
+		return msgLogDao.getMsgsByUser(userId, pagination);
+	}
 }

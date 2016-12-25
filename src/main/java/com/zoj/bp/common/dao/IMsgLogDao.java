@@ -26,4 +26,11 @@ public interface IMsgLogDao
 	 * @return
 	 */
 	List<MsgLog> getLast24hoursBroadcastMsgs();
+
+	/**
+	 * @param userId
+	 * @param pagination
+	 * @return
+	 */
+	DatagridVo<MsgLog> getMsgsByUser(Integer userId, Pagination pagination);
 }

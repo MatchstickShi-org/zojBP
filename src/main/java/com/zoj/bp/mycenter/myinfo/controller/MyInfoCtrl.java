@@ -35,8 +35,8 @@ public class MyInfoCtrl
 	@Autowired
 	private IUserService userSvc;
 	
-	@RequestMapping(value = "/toMyInfoView")
-	public ModelAndView toMyInfoView(HttpSession session) throws BusinessException
+	@RequestMapping(value = "/toIndexView")
+	public ModelAndView toIndexView(HttpSession session) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		return new ModelAndView("myCenter/myInfo/index", "userInfo", userSvc.getUserById(loginUser.getId()));

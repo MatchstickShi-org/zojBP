@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * @author MatchstickShi
@@ -15,6 +16,7 @@ public class MsgLog implements Serializable
 
 	private Integer id;
 	
+	@JSONField(serialzeFeatures=SerializerFeature.WriteMapNullValue)
 	private Integer targetUser;
 	
 	private String content;
