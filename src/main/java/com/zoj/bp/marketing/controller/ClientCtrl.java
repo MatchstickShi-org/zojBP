@@ -28,6 +28,7 @@ import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.service.IClientService;
+import com.zoj.bp.marketing.service.IInfoerService;
 import com.zoj.bp.marketing.service.IOrderService;
 import com.zoj.bp.marketing.service.IOrderVisitService;
 
@@ -47,6 +48,9 @@ public class ClientCtrl
 	
 	@Autowired
 	private IClientService clientSvc;
+	
+	@Autowired
+	private IInfoerService infoerSvc;
 	
 	@RequestMapping(value = "/toClientTraceView")
 	public String toClientTraceView() throws BusinessException
@@ -132,5 +136,21 @@ public class ClientCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
 		orderSvc.deleteOrderByIds(orderIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
+	@RequestMapping(value = "/findInfoerBySalesmanId")
+	@ResponseBody
+	public Map<String, ?> findInfoerBySalesmanId(HttpSession session,Pagination pagination) throws Exception
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if (loginUser == null)
+			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
+		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination));
+	}
+	
+	@RequestMapping("/showSelectInfoerWindow")
+	public String showSelectInfoerWindow()
+	{
+		return "marketing/clientTrace/selectInfoer";
 	}
 }

@@ -1,7 +1,5 @@
 package com.zoj.bp.marketing.service;
 
-import java.util.List;
-
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -45,7 +43,8 @@ public interface IInfoerService {
 	/**
 	 * 根据业务员Id查询所有信息员
 	 * @param salesmanId
+	 * @param pagination 
 	 * @return
 	 */
-	List<Infoer> findBySalesmanId(Integer salesmanId);
+	DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination);
 }

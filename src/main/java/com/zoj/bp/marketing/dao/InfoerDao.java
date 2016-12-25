@@ -2,7 +2,6 @@ package com.zoj.bp.marketing.dao;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -114,8 +113,17 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public List<Infoer> findBySalesmanId(Integer salesmanId) {
-		 return jdbcOps.query("SELECT * FROM INFOER WHERE SALESMAN_ID = :salesmanId", new MapSqlParameterSource("salesmanId", salesmanId), BeanPropertyRowMapper.newInstance(Infoer.class));
+	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination) {
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT I.* FROM INFOER I "
+				+ " WHERE I.SALESMAN_ID = :salesmanId ";
+		paramMap.put("salesmanId",salesmanId);
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY I.INSERT_TIME LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
 	}
 
 }

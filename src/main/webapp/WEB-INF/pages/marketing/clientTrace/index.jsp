@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -11,7 +12,7 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<table id="orderDatagrid" border="false"></table>
+		<table id="orderDatagrid"></table>
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
 			<input class="easyui-textbox" id="clientTrace.nameInput"/>
@@ -33,7 +34,7 @@
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
 		<div id="clientMgrTab">
-			<div title="详情" border="false" style="padding: 2px;">
+			<div title="详情" style="padding: 2px;">
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
 					<table style="width: 100%; min-width: 700px;">
@@ -68,7 +69,7 @@
 					</table>
 				</form>
 			</div>
-			<div title="回访记录" border="false" style="padding: 2px;">
+			<div title="回访记录" style="padding: 2px;">
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
@@ -86,6 +87,7 @@
 <div id="addClientVisitWindow"></div>
 <div id="addClientWindow"></div>
 <div id="applyOrderWindow"></div>
+<div id="selectInfoerWindow"></div>
 <script type="text/javascript" src="pages/marketing/clientTrace/index.js"></script>
 </body>
 </html>

@@ -9,11 +9,21 @@ $(function()
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $applyOrderWindow = $('div#applyOrderWindow');
+	var $selectInfoerWindow = $('div#selectInfoerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
+	
+	showSelectInfoerWindow = function()
+	{
+		$selectInfoerWindow.window('clear');
+		$selectInfoerWindow.window('open').window
+		({
+			title: '请选择信息员',
+		}).window('open').window('refresh', 'marketing/clientMgr/showSelectInfoerWindow');
+	}
 	
 	function init()
 	{
@@ -68,10 +78,6 @@ $(function()
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 			nowrap: false,
-			onCheck: updateBtnStatus,
-			onUncheck: updateBtnStatus,
-			onCheckAll: updateBtnStatus,
-			onUncheckAll: updateBtnStatus,
 		});
 		
 		$queryOrderBtn.linkbutton
@@ -135,15 +141,6 @@ $(function()
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
-
-		function updateBtnStatus()
-		{
-			var selRows = $orderDatagrid.datagrid('getChecked');
-			if(selRows.length > 0)
-			{
-				var revertFlag = true, removeFlag = true;
-			}
-		}
 		
 		function loadTabData(title, row)
 		{
@@ -244,6 +241,7 @@ $(function()
 		$addClientVisitWindow.window({width: 350});
 		$addClientWindow.window({width: 450});
 		$applyOrderWindow.window({width: 450});
+		$selectInfoerWindow.window({width: 350});
 		
 		function showApplyOrderWindow()
 		{
@@ -251,6 +249,11 @@ $(function()
 			if(selIds.length == 0)
 			{
 				$.messager.alert('提示', '请选中要申请在谈单的客户。');
+				return;
+			}
+			var selRows = $orderDatagrid.datagrid("getSelections");
+			if(selRows[0].status !=10){
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">正跟踪</span>的客户为在谈单。');
 				return;
 			}
 			$applyOrderWindow.window('clear');
@@ -392,11 +395,10 @@ $(function()
 			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<input id="clientTelCount" type="hidden" value="1" />' +
+			'		<input type="hidden" name="infoerId" id="addClientForm_infoerIdInput" type="hidden" value="1" />' +
 			'		<tr>' + 
 			'			<td align="right"><label>所属信息员：</label></td>' + 
-			'			<td><select id="infoerId" name="infoerId" class="easyui-select" style="width: 150px;">' + 
-			'				<option value="1">infoerName</option>' + 
-			'			</select></td>' + 
+			'			<td><input id="addClientForm_infoerSearchbox" name="infoerName" prompt="请选择信息员" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
@@ -422,6 +424,8 @@ $(function()
 			'var $addClientWindow = $(\'div#addClientWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'var $infoerNameSearchbox = $addClientWindow.find("#addClientForm_infoerSearchbox");' +
+			'$infoerNameSearchbox.searchbox({searcher: function(){showSelectInfoerWindow();}});' + 
 			'function submitAddClientForm()' + 
 			'{' + 
 			'	$addClientWindow.find(\'form#addClientForm\').form(\'submit\',' + 

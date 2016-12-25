@@ -1,7 +1,5 @@
 package com.zoj.bp.marketing.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +45,8 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public List<Infoer> findBySalesmanId(Integer salesmanId) {
-		return infoerDao.findBySalesmanId(salesmanId);
+	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination) {
+		return infoerDao.findBySalesmanId(salesmanId,pagination);
 	}
 
 }
