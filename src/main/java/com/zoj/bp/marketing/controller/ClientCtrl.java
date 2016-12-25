@@ -58,9 +58,28 @@ public class ClientCtrl
 		return "/marketing/clientTrace/index";
 	}
 	
+	
+	@RequestMapping(value = "/toClientNegotiationView")
+	public String toClientNegotiationView() throws BusinessException
+	{
+		return "/marketing/clientNegotiation/index";
+	}
+	
 	@RequestMapping(value = "/getAllClientTrace")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientTrace(Pagination pagination,@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		String[] statusArr = null;
+		if (StringUtils.isNotEmpty(status))
+			statusArr = status.split(",");
+		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
+	}
+	
+	@RequestMapping(value = "/getAllClientNegotiation")
+	@ResponseBody
+	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
