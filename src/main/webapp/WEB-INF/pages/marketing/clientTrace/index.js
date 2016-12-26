@@ -31,6 +31,7 @@ $(function()
 		({
 			idField: 'id',
 			toolbar: '#orderDatagridToolbar',
+			border: false,
 			columns:
 			[[
 				{field:'id', hidden: true},

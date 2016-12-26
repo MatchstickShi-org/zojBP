@@ -360,9 +360,9 @@ $(function()
 			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td style="width: 100px;" align="right"><label>名称：</label></td>' + 
-			'			<td style="width: 150px;"><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
-			'			<td style="width: 130px;"></td>' + 
+			'			<td style="min-width: 80px;" align="right"><label>名称：</label></td>' + 
+			'			<td style="min-width: 200px;"><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
+			'			<td style="min-width: 80px;"></td>' + 
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 

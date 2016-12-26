@@ -32,7 +32,7 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>用户名：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[4, 16]'"/></td>
-							<td align="right"><label>姓名：</label></td>
+							<td align="right" style="min-width: 80px;"><label>姓名：</label></td>
 							<td width="70%"><input name="alias" class="easyui-textbox" data-options="required:true, validType:'length[2, 16]'"/></td>
 						</tr>
 						<tr>

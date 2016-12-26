@@ -21,11 +21,11 @@
 			<label style="vertical-align: middle;">信息员名称：</label>
 			<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
 			<label style="vertical-align: middle;">状态筛选：</label>
-			<input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部
-			<input type="checkbox" value="10" name="statusInput"/>正跟踪
-			<input type="checkbox" value="12" name="statusInput"/>已放弃
-			<input type="checkbox" value="30,32" name="statusInput"/>在谈单审核中
-			<input type="checkbox" value="14" name="statusInput"/>在谈单已打回
+			<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>
+			<label><input type="checkbox" value="10" name="statusInput"/>正跟踪</label>
+			<label><input type="checkbox" value="12" name="statusInput"/>已放弃</label>
+			<label><input type="checkbox" value="30,32" name="statusInput"/>在谈单审核中</label>
+			<label><input type="checkbox" value="14" name="statusInput"/>在谈单已打回</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
