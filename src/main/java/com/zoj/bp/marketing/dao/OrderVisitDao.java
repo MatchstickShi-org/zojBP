@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.OrderVisit;
-import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -18,9 +17,9 @@ import com.zoj.bp.common.vo.Pagination;
 public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 
 	@Override
-	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,User loginUser,Integer orderId) {
+	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,Integer visitorId,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT * FROM ORDER_VISIT WHERE VISITOR_ID="+loginUser.getId();
+		String sql = "SELECT * FROM ORDER_VISIT WHERE VISITOR_ID="+visitorId;
 		if(orderId != null && orderId > 0)
 		{
 			sql += " AND ORDER_ID = :orderId";

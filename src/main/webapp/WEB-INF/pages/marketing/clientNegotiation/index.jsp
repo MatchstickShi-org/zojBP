@@ -21,7 +21,7 @@
 			<label style="vertical-align: middle;">信息员名称：</label>
 			<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
 			<label style="vertical-align: middle;">状态筛选：</label>
-			<input type="checkbox" value="0" name="statusInput" checked="checked"/>全部
+			<input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部
 			<input type="checkbox" value="34" name="statusInput"/>在谈单已批准
 			<input type="checkbox" value="90" name="statusInput"/>已签单
 			<input type="checkbox" value="0" name="statusInput"/>死单

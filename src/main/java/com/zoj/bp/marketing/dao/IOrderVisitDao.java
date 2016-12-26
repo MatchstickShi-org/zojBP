@@ -4,7 +4,6 @@
 package com.zoj.bp.marketing.dao;
 
 import com.zoj.bp.common.model.OrderVisit;
-import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -21,11 +20,11 @@ public interface IOrderVisitDao
 	Integer addOrderVisit(OrderVisit orderVisit);
 	/**
 	 * @param pagination
-	 * @param loginUser
+	 * @param visitorId
 	 * @param orderId
 	 * @return
 	 */
-	DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,User loginUser,Integer orderId);
+	DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,Integer visitorId,Integer orderId);
 
 	
 }

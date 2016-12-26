@@ -172,7 +172,7 @@ $(function()
 				  pagination: true
 		});
 		
-		$orderStylistVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderStylistVisitByOrder';
+		$orderStylistVisitGrid.datagrid('options').url = 'marketing/clientMgr/getStylistOrderVisitByOrder';
 		
 		function loadTabData(title, row)
 		{

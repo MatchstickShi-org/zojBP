@@ -65,6 +65,16 @@ public class ClientCtrl
 		return "/marketing/clientNegotiation/index";
 	}
 	
+	/**
+	 * 获取客户跟踪记录
+	 * @param pagination
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping(value = "/getAllClientTrace")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientTrace(Pagination pagination,@RequestParam(required=false) String name,
@@ -77,6 +87,16 @@ public class ClientCtrl
 		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
 	}
 	
+	/**
+	 * 获取客户洽谈记录
+	 * @param pagination
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping(value = "/getAllClientNegotiation")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,@RequestParam(required=false) String name,
@@ -98,6 +118,14 @@ public class ClientCtrl
 		return map;
 	}
 	
+	/**
+	 * 新增客户的回访记录
+	 * @param orderVisit
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/addOrderVisit")
 	@ResponseBody
 	public Map<String, ?> addOrderVisit(@Valid OrderVisit orderVisit,Errors errors,HttpSession session) throws Exception
@@ -110,6 +138,14 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 申请在谈单
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/applyOrder")
 	@ResponseBody
 	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
@@ -123,6 +159,13 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 编辑订单
+	 * @param orderForm
+	 * @param errors
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/editOrder")
 	@ResponseBody
 	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors) throws Exception
@@ -139,14 +182,45 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 获取业务员回访记录
+	 * @param orderId
+	 * @param pagination
+	 * @param session
+	 * @return
+	 * @throws BusinessException
+	 */
 	@RequestMapping(value = "/getOrderVisitByOrder")
 	@ResponseBody
 	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return orderVisitSvc.getAllOrderVisit(pagination, loginUser, orderId);
+		return orderVisitSvc.getAllOrderVisit(pagination, loginUser.getId(), orderId);
 	}
 	
+	/**
+	 * 获取设计师回访记录
+	 * @param orderId
+	 * @param pagination
+	 * @param session
+	 * @return
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/getStylistOrderVisitByOrder")
+	@ResponseBody
+	public DatagridVo<OrderVisit> getStylistOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
+	{
+		Order order = orderSvc.getOrderById(orderId);
+		return orderVisitSvc.getAllOrderVisit(pagination, order.getStylistId(), orderId);
+	}
+	
+	/**
+	 * 放弃客户
+	 * @param orderIds
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/deleteOrderByIds")
 	@ResponseBody
 	public Map<String, ?> deleteOrderByIds(@RequestParam("delIds[]") Integer[] orderIds, HttpSession session) throws Exception
@@ -157,6 +231,13 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 根据业务员查询信息员
+	 * @param session
+	 * @param pagination
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/findInfoerBySalesmanId")
 	@ResponseBody
 	public Map<String, ?> findInfoerBySalesmanId(HttpSession session,Pagination pagination) throws Exception
