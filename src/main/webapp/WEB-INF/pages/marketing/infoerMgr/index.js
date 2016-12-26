@@ -488,6 +488,12 @@ $(function()
 		
 		function showAddInfoerVisitWindow()
 		{
+			var selIds = $infoerDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个信息员。');
+				return;
+			}
 			$addInfoerVisitWindow.window('clear');
 			$addInfoerVisitWindow.window('open').window
 			({
@@ -501,7 +507,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;height:100px;"></textarea></td>' + 
+			'			<td><input name="content" required="required" class="easyui-textbox" multiline="true" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
@@ -543,6 +549,12 @@ $(function()
 		
 		function showAddClientWindow()
 		{
+			var selIds = $infoerDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个信息员。');
+				return;
+			}
 			$addClientWindow.window('clear');
 			$addClientWindow.window('open').window
 			({

@@ -108,7 +108,7 @@ $(function()
 				}); 
 				$.ajax
 				({
-					url: 'marketing/clientMgr/getAllClientTrace',
+					url: 'marketing/clientMgr/getAllClientNegotiation',
 					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
@@ -314,7 +314,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
-			'			<td><textarea name="remark" required="required" class="easyui-textbox" style="width: 230px;height:50px;"></textarea></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
@@ -369,7 +369,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;height:100px;"></textarea></td>' + 
+			'			<td><input name="content" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 

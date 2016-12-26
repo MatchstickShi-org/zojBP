@@ -3,6 +3,7 @@
  */
 package com.zoj.bp.marketing.controller;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -82,8 +83,12 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status))
+		if (StringUtils.isNotEmpty(status)){
 			statusArr = status.split(",");
+			if(Arrays.asList(statusArr).contains("-1"))
+				statusArr = new String[]{"10","12","30","32","14"};
+		}else
+			statusArr = new String[]{"10","12","30","32","14"};
 		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
 	}
 	
@@ -104,8 +109,12 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status))
+		if (StringUtils.isNotEmpty(status)){
 			statusArr = status.split(",");
+			if(Arrays.asList(statusArr).contains("-1"))
+				statusArr = new String[]{"34","90","0","62","64","60"};
+		}else
+			statusArr = new String[]{"34","90","0","62","64","60"};
 		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
 	}
 	

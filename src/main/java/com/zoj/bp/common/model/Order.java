@@ -205,13 +205,13 @@ public class Order implements Serializable{
 		if(StringUtils.isNotEmpty(tel1))
 			telAll +=tel1;
 		if(StringUtils.isNotEmpty(tel2))
-			telAll = telAll+" "+tel2;
+			telAll = telAll+", "+tel2;
 		if(StringUtils.isNotEmpty(tel3))
-			telAll = telAll+" "+tel3;
+			telAll = telAll+", "+tel3;
 		if(StringUtils.isNotEmpty(tel4))
-			telAll = telAll+" "+tel4;
+			telAll = telAll+", "+tel4;
 		if(StringUtils.isNotEmpty(tel5))
-			telAll = telAll+" "+tel5;
+			telAll = telAll+", "+tel5;
 		return telAll;
 	}
 

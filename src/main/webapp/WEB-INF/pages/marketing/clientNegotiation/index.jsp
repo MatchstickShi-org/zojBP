@@ -12,21 +12,21 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<table id="orderDatagrid"></table>
+		<table id="orderDatagrid" border=false></table>
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
-			<input class="easyui-textbox" id="clientTrace.nameInput"/>
+			<input style="width:100px;" class="easyui-textbox" id="clientTrace.nameInput"/>
 			<label style="vertical-align: middle;">电话：</label>
-			<input class="easyui-textbox" id="clientTrace.telInput"/>
+			<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
 			<label style="vertical-align: middle;">信息员名称：</label>
-			<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+			<input style="width:100px;" class="easyui-textbox" id="clientTrace.infoerNameInput"/>
 			<label style="vertical-align: middle;">状态筛选：</label>
-			<input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部
-			<input type="checkbox" value="34" name="statusInput"/>在谈单已批准
-			<input type="checkbox" value="90" name="statusInput"/>已签单
-			<input type="checkbox" value="0" name="statusInput"/>死单
-			<input type="checkbox" value="60,62" name="statusInput"/>不准单审核中
-			<input type="checkbox" value="64" name="statusInput"/>不准单
+			<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>
+			<label><input type="checkbox" value="34" name="statusInput"/>在谈单已批准</label>
+			<label><input type="checkbox" value="90" name="statusInput"/>已签单</label>
+			<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
+			<label><input type="checkbox" value="60,62" name="statusInput"/>不准单审核中</label>
+			<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
@@ -35,36 +35,42 @@
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
 		<div id="clientMgrTab">
-			<div title="详情" style="padding: 2px;">
+			<div title="详情" border=false>
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
 					<table style="width: 100%; min-width: 700px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
-							<td style="min-width: 100px;"><input name="name" style="min-width: 280px;"  class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
 							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td style="min-width: 280px;"><input name="telAll"  style="min-width: 280px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>单位地址：</label></td>
-							<td style="min-width: 280px;"><input style="min-width: 280px;" name="orgAddr" class="easyui-textbox" required="required"/></td>
-						</tr>
-						<tr>
-							<td align="right"><label>工程名称：</label></td>
-							<td><input name="projectName" style="min-width: 280px;" class="easyui-textbox" required="required"/></td>
-							<td align="right" style="min-width: 80px;"><label>工程地址：</label></td>
-							<td><input name="projectAddr" style="min-width: 280px;" class="easyui-textbox" required="required"/></td>
-							<td align="right" ><label>录入日期：</label></td>
-							<td><input name="insertTime" style="min-width: 280px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td width="70%"><input name="telAll" readonly="readonly" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>信息员：</label></td>
-							<td><input name="infoerName" style="min-width: 280px;" readonly="readonly" class="easyui-textbox"/></td>
+							<td><input name="infoerName" readonly="readonly" class="easyui-textbox"/></td>
 							<td align="right" style="min-width: 80px;"><label>业务员：</label></td>
-							<td><input name="salesmanName" style="min-width: 280px;" readonly="readonly" class="easyui-textbox"/></td>
-							<td align="right" style="min-width: 80px;"><label>设计师：</label></td>
-							<td><input name="stylistName" style="min-width: 280px;" readonly="readonly" class="easyui-textbox"/></td>
+							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox"/></td>
 						</tr>
 						<tr>
-							<td align="center" colspan="6">
+							<td align="right" style="min-width: 80px;"><label>设计师：</label></td>
+							<td><input name="stylistName" readonly="readonly" class="easyui-textbox"/></td>
+							<td align="right" style="min-width: 80px;"><label>录入日期：</label></td>
+							<td><input name="insertTime" readonly="readonly" class="easyui-textbox"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>单位地址：</label></td>
+							<td colspan="3"><input name="orgAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>工程名称：</label></td>
+							<td colspan="3"><input name="projectName" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>工程地址：</label></td>
+							<td colspan="3"><input name="projectAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+						</tr>
+						<tr>
+							<td align="center" colspan="4">
 								<a id="submitUpdateClientFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
 								<a id="refreshUpdateClientFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
 							</td>
@@ -72,11 +78,11 @@
 					</table>
 				</form>
 			</div>
-			<div title="业务员回访记录" style="padding: 2px;">
+			<div title="业务员回访记录" border=false>
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="orderVisitGrid" title="回访记录"></table>
+				    		<table id="orderVisitGrid"></table>
 				    		<div id="orderVisitGridToolbar">
 								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
 							</div>
@@ -84,11 +90,11 @@
 					</tr>
 				</table>
 			</div>
-			<div title="设计师回访记录" style="padding: 2px;">
+			<div title="设计师回访记录" border=false>
 				<table style="height: 100%; width: 100%;">
 					<tr>
 						<td>
-				    		<table id="orderStylistVisitGrid" title="回访记录"></table>
+				    		<table id="orderStylistVisitGrid"></table>
 						</td>
 					</tr>
 				</table>

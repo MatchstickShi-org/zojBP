@@ -277,7 +277,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
-			'			<td><textarea name="remark" required="required" class="easyui-textbox" style="width: 230px;height:50px;"></textarea></td>' + 
+			'			<td><input name="remark" required="required" class="easyui-textbox" multiline="true" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
@@ -319,6 +319,12 @@ $(function()
 		
 		function showAddClientVisitWindow()
 		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要新增回访记录的客户。');
+				return;
+			}
 			$addClientVisitWindow.window('clear');
 			$addClientVisitWindow.window('open').window
 			({
@@ -332,7 +338,7 @@ $(function()
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
-			'			<td><textarea name="content" required="required" style="width: 230px;height:100px;"></textarea></td>' + 
+			'			<td><input name="content" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 

@@ -1,6 +1,5 @@
 package com.zoj.bp.marketing.dao;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,7 +111,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
-		if(status != null && !Arrays.asList(status).contains("-1"))
+		if(status != null)
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
