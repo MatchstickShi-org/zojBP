@@ -105,6 +105,14 @@ public class User implements Serializable
 	{
 		this.menus = menus;
 	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isSuperAdmin()
+	{
+		return this.role == Role.superAdmin.value();
+	}
 
 	/**
 	 * @return
@@ -176,6 +184,8 @@ public class User implements Serializable
 	
 	public enum Role
 	{
+		/**超级管理员*/
+		superAdmin(-1),
 		/**管理员*/
 		admin(0),
 		/**市场部-业务员*/

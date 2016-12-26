@@ -26,7 +26,7 @@ public class MenuService implements IMenuService
 	@Override
 	public List<Menu> getMenusByUser(User user)
 	{
-		return this.buildMenus(user.isAdmin() ? menuDao.getAllMenus() : menuDao.getMenusByRole(user.getRole()));
+		return this.buildMenus(user.isSuperAdmin() ? menuDao.getAllMenus() : menuDao.getMenusByRole(user.getRole()));
 	}
 
 	/**
