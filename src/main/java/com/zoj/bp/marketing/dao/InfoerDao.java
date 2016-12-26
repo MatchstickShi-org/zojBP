@@ -57,17 +57,21 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT I.*,CASE WHEN IV.ID IS NOT NULL "+
-				"THEN DATEDIFF(NOW(),MAX(IV.DATE)) "+
-				"WHEN IV.ID IS NULL "+
-				"THEN DATEDIFF(NOW(),I.INSERT_TIME) "+
-				"END as leftVisitDays,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
-				+ "WHERE 1=1";
+		String sql = "SELECT I.*, "
+				+ " CASE MAX(IV.DATE) "
+				+ "		WHEN NULL THEN DATEDIFF(NOW(),I.INSERT_TIME)  "
+				+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
+				+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
+				+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
+				+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
+				+ " WHERE 1=1 AND I.SALESMAN_ID = :salesmanId";
+		paramMap.put("salesmanId", loginUser.getId());
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND I.NAME LIKE :name";
 			paramMap.put("name", '%' + name + '%');
 		}
+		
 		if (StringUtils.isNotEmpty(tel))
 		{
 			sql += " AND (I.TEL1 LIKE :tel1 OR I.TEL2 LIKE :tel2 OR I.TEL3 LIKE :tel3 OR I.TEL4 LIKE :tel4 OR I.TEL5 LIKE :tel5)";
@@ -78,10 +82,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 			paramMap.put("tel5", '%' + tel + '%');
 		}
 		if(level != null && !Arrays.asList(level).contains("0"))
-		{
 			sql += " AND I.LEVEL IN(" + StringUtils.join(level, ',') + ")";
-		}
-		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
+		
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
