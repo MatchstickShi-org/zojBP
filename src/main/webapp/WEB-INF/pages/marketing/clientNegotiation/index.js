@@ -95,7 +95,6 @@ $(function()
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
-			nowrap: false,
 		});
 		
 		$queryOrderBtn.linkbutton

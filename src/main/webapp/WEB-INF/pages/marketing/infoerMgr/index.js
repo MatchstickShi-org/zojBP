@@ -70,7 +70,6 @@ $(function()
 							return 'background-color:red';
 		           }}
 			]],
-			nowrap: false,
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
