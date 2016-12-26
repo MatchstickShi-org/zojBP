@@ -365,7 +365,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="width: 150px;"><input name="tel1" id="tel1" onblur="checkTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
+			'			<td style="width: 150px;"><input name="tel1" id="tel1" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
 			'			<td><font id="errortel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
@@ -395,6 +395,9 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
 			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
+			'var $tel1Input = $(\'table input#tel1\');' +
+			'$tel1Input.textbox({});' +
+			'$tel1Input.textbox("textbox").bind("blur", function(){checkTelValue($tel1Input.get(0));});' +
 			'function submitaddInfoerForm()' + 
 			'{' + 
 			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
@@ -427,7 +430,8 @@ $(function()
 			'}' + 
 			'function checkTelValue(obj)' + 
 			'{' + 
-			'	var errorId = obj.name;'+
+			'	alert(obj.textboxname);'+
+			'	var errorId = obj.textboxname;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+
@@ -630,7 +634,7 @@ $(function()
 			'}' + 
 			'function checkClientTelValue(obj)' + 
 			'{' + 
-			'	var errorId = obj.name;'+
+			'	var errorId = obj.textboxname;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+
