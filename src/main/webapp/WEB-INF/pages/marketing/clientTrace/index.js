@@ -239,8 +239,8 @@ $(function()
 		}
 		
 		$addClientVisitWindow.window({width: 350});
-		$addClientWindow.window({width: 450});
-		$applyOrderWindow.window({width: 450});
+		$addClientWindow.window({width: 500});
+		$applyOrderWindow.window({width: 340});
 		$selectInfoerWindow.window({width: 350});
 		
 		function showApplyOrderWindow()
@@ -268,22 +268,22 @@ $(function()
 			'<form id="applyOrderForm" action="marketing/clientMgr/applyOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td align="right"><label>客户名称：</label></td>' + 
-			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'			<td align="right" style="min-width: 70px;"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" style="width: 230px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
 			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
-			'			<td><input name="remark" required="required" class="easyui-textbox" multiline="true" style="width: 230px;height:50px;" /></td>' + 
+			'			<td align="right"><label>备注：</label></td>' + 
+			'			<td><input name="remark" required="required" class="easyui-textbox" multiline="true" style="width: 230px; height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitApplyOrderForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$applyOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitApplyOrderForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$applyOrderWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -389,37 +389,34 @@ $(function()
 		
 		var addClientWindowHtml = 
 			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+			'	<input id="clientTelCount" type="hidden" value="1" />' +
+			'	<input type="hidden" name="infoerId" id="addClientForm_infoerIdInput" type="hidden" value="1" />' +
 			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
-			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
-			'			<td style="width: 180px;"><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
-			'			<td></td>' + 
+			'			<td style="min-width: 70px;" align="right"><label>联系人：</label></td>' + 
+			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 140px;"/></td>' + 
+			'			<td style="min-width: 75px;" align="right"><label>所属信息员：</label></td>' + 
+			'			<td><input id="addClientForm_infoerSearchbox" name="infoerName" prompt="请选择信息员" editable="false" class="easyui-searchbox" style="width: 136px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr id="clientTelTr">' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
+			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 140px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
 			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
-			'		</tr>' + 
-			'		<input id="clientTelCount" type="hidden" value="1" />' +
-			'		<input type="hidden" name="infoerId" id="addClientForm_infoerIdInput" type="hidden" value="1" />' +
-			'		<tr>' + 
-			'			<td align="right"><label>所属信息员：</label></td>' + 
-			'			<td><input id="addClientForm_infoerSearchbox" name="infoerName" prompt="请选择信息员" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="orgAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程名称：</label></td>' + 
-			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程地址：</label></td>' + 
-			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="projectAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="center" colspan="3">' + 
+			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitAddClientForm();" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
