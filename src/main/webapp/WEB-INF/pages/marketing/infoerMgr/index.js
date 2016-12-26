@@ -343,7 +343,7 @@ $(function()
 		
 		$addInfoerWindow.window({width: 500});
 		$addInfoerVisitWindow.window({width: 322});
-		$addClientWindow.window({width: 450});
+		$addClientWindow.window({width: 500});
 		
 		function showAddInfoerWindow()
 		{
@@ -365,29 +365,23 @@ $(function()
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="width: 150px;"><input name="tel1" id="tel1" onblur="checkTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
+			'			<td><input name="tel1" id="tel1" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
 			'			<td><font id="errortel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>性质：</label></td>' + 
-			'			<td><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
-			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
-			'			</td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
 			'			<td align="right"><label>工作单位：</label></td>' + 
-			'			<td><input name="org" class="easyui-textbox" style="width: 230px;"/></td>' + 
+			'			<td colspan="3"><input name="org" class="easyui-textbox" style="width: 380px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>地址：</label></td>' + 
-			'			<td><input name="address" class="easyui-textbox" style="width: 230px;"/></td>' + 
+			'			<td colspan="3"><input name="address" class="easyui-textbox" style="width: 380px;"/></td>' + 
 			'		</tr>' + 
 			'		<input name="level" type="hidden" value="4" />' + 
 			'		<input id="infoerTelCount" type="hidden" value="1" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" iconCls="icon-save" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -395,6 +389,9 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
 			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
+			'var $tel1Input = $(\'table input#tel1\');' +
+			'$tel1Input.textbox({});' +
+			'$tel1Input.textbox("textbox").bind("blur", function(){checkTelValue($tel1Input.get(0));});' +
 			'function submitaddInfoerForm()' + 
 			'{' + 
 			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
@@ -427,7 +424,8 @@ $(function()
 			'}' + 
 			'function checkTelValue(obj)' + 
 			'{' + 
-			'	var errorId = obj.name;'+
+			'	alert(obj.textboxname);'+
+			'	var errorId = obj.textboxname;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+
@@ -565,39 +563,36 @@ $(function()
 		
 		var addClientWindowHtml = 
 			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+			'	<input id="clientTelCount" type="hidden" value="1" />' + 
+			'	<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
-			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
-			'			<td style="width: 180px;"><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
-			'			<td></td>' + 
+			'			<td style="min-width: 70px;" align="right"><label>联系人：</label></td>' + 
+			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 140px;"/></td>' + 
+			'			<td style="min-width: 75px;" align="right"><label>所属信息员：</label></td>' + 
+			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 136px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr id="clientTelTr">' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
+			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 140px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
 			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>所属信息员：</label></td>' + 
-			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 150px;"/></td>' + 
-			'		</tr>' + 
-			'		<input id="clientTelCount" type="hidden" value="1" />' + 
-			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
-			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="orgAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程名称：</label></td>' + 
-			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程地址：</label></td>' + 
-			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
+			'			<td colspan="3"><input name="projectAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="center" colspan="3">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" iconCls="icon-save" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" iconCls="icon-reload" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -642,7 +637,7 @@ $(function()
 			'}' + 
 			'function checkClientTelValue(obj)' + 
 			'{' + 
-			'	var errorId = obj.name;'+
+			'	var errorId = obj.textboxname;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+

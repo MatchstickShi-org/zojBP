@@ -14,9 +14,9 @@
 		<table id="infoerDatagrid" border="false"></table>
 		<div id="infoerDatagridToolbar">
 			<label>名称：</label>
-			<input style="width:100px;" class="easyui-textbox" id="infoerMgr.nameInput"/>
+			<input class="easyui-textbox" id="infoerMgr.nameInput"/>
 			<label>电话：</label>
-			<input style="width:100px;" class="easyui-textbox" id="infoerMgr.telInput"/>
+			<input class="easyui-textbox" id="infoerMgr.telInput"/>
 			<label>信息员等级：</label>
 			<label><input type="checkbox" value="0" name="levelInput" checked="checked" style="top: 2px;"/>全部</label>
 			<label><input type="checkbox" value="1" name="levelInput" style="top: 2px;"/>金牌</label>
@@ -64,8 +64,8 @@
 						</tr>
 						<tr>
 							<td colspan="4">
-								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
-								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
+								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" iconCls="icon-save" style="width: 60px;">保存</a>
+								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
 							</td>
 						</tr>
 					</table>
