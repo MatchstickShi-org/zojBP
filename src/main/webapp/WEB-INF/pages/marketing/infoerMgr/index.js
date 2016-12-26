@@ -359,9 +359,12 @@ $(function()
 			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td style="min-width: 80px;" align="right"><label>名称：</label></td>' + 
-			'			<td style="min-width: 200px;"><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
-			'			<td style="min-width: 80px;"></td>' + 
+			'			<td style="min-width: 70px;" align="right"><label>名称：</label></td>' + 
+			'			<td><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
+			'			<td style="min-width: 40px;" align="right"><label>性质：</label></td>' + 
+			'			<td style="width: 150px;"><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
+			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
+			'			</td>' + 
 			'		</tr>' + 
 			'		<tr id="infoerTelTr">' + 
 			'			<td align="right"><label>电话：</label></td>' + 
