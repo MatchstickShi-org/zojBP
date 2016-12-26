@@ -82,9 +82,10 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 			sql += " AND I.LEVEL IN(" + StringUtils.join(level, ',') + ")";
 		}
 		sql +=" AND I.SALESMAN_ID="+loginUser.getId();
+		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " GROUP BY I.ID ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
+		sql += " ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
