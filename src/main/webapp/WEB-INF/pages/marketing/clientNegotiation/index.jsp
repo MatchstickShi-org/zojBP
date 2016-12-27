@@ -70,9 +70,9 @@
 							<td colspan="3"><input name="projectAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td align="center" colspan="4">
-								<a id="submitUpdateClientFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
-								<a id="refreshUpdateClientFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
+							<td align="center" colspan="3">
+								<a id="submitUpdateClientFormBtn" href="javascript:void(0)"  iconCls="icon-save" style="width: 60px;">保存</a>
+								<a id="refreshUpdateClientFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
 							</td>
 						</tr>
 					</table>

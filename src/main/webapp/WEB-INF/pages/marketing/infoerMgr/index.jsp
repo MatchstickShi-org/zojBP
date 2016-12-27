@@ -63,7 +63,7 @@
 							<td colspan="3"><input name="telAll" style="width: 459px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td colspan="4">
+							<td align="center" colspan="3">
 								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" iconCls="icon-save" style="width: 60px;">保存</a>
 								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
 							</td>

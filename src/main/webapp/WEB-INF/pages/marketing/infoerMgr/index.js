@@ -130,6 +130,8 @@ $(function()
 			var selRows = $infoerDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+			else
+				$.messager.alert('提示', '请选中一个信息员。');
 		}});
 		
 		$infoerVisitGrid.datagrid
@@ -314,6 +316,12 @@ $(function()
 		
 		function submitEditInfoerForm()
 		{
+			var selIds = $infoerDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个信息员。');
+				return;
+			}
 			$editInfoerForm.form('submit',
 			{
 				onSubmit: function()
@@ -361,15 +369,37 @@ $(function()
 			'		<tr>' + 
 			'			<td style="min-width: 70px;" align="right"><label>名称：</label></td>' + 
 			'			<td><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
 			'			<td style="min-width: 40px;" align="right"><label>性质：</label></td>' + 
 			'			<td style="width: 150px;"><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
 			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
 			'			</td>' + 
 			'		</tr>' + 
-			'		<tr id="infoerTelTr">' + 
-			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerTelBtn"></a></td>' +
+			'		<tr>' + 
+			'			<td align="right"><label>电话1：</label></td>' + 
+			'			<td><input name="tel1" id="tel1" required="required" style="width: 150px;"/></td>' +
 			'			<td><font id="errortel1" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话2：</label></td>' + 
+			'			<td><input name="tel2" id="tel2" style="width: 150px;"/></td>' +
+			'			<td><font id="errortel2" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话3：</label></td>' + 
+			'			<td><input name="tel3" id="tel3" style="width: 150px;"/></td>' +
+			'			<td><font id="errortel3" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话4：</label></td>' + 
+			'			<td><input name="tel4" id="tel4" style="width: 150px;"/></td>' +
+			'			<td><font id="errortel4" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话5：</label></td>' + 
+			'			<td><input name="tel5" id="tel5" style="width: 150px;"/></td>' +
+			'			<td><font id="errortel5" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工作单位：</label></td>' + 
@@ -383,7 +413,7 @@ $(function()
 			'		<input id="infoerTelCount" type="hidden" value="1" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" iconCls="icon-save" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -395,6 +425,18 @@ $(function()
 			'var $tel1Input = $(\'table input#tel1\');' +
 			'$tel1Input.textbox({});' +
 			'$tel1Input.textbox("textbox").bind("blur", function(){checkTelValue($tel1Input.get(0));});' +
+			'var $tel2Input = $(\'table input#tel2\');' +
+			'$tel2Input.textbox({});' +
+			'$tel2Input.textbox("textbox").bind("blur", function(){checkTelValue($tel2Input.get(0));});' +
+			'var $tel3Input = $(\'table input#tel3\');' +
+			'$tel3Input.textbox({});' +
+			'$tel3Input.textbox("textbox").bind("blur", function(){checkTelValue($tel3Input.get(0));});' +
+			'var $tel4Input = $(\'table input#tel4\');' +
+			'$tel4Input.textbox({});' +
+			'$tel4Input.textbox("textbox").bind("blur", function(){checkTelValue($tel4Input.get(0));});' +
+			'var $tel5Input = $(\'table input#tel5\');' +
+			'$tel5Input.textbox({});' +
+			'$tel5Input.textbox("textbox").bind("blur", function(){checkTelValue($tel5Input.get(0));});' +
 			'function submitaddInfoerForm()' + 
 			'{' + 
 			'	$addInfoerWindow.find(\'form#addInfoerForm\').form(\'submit\',' + 
@@ -403,15 +445,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
-			'			if($(\'#tel1\').val() == ""){' + 
-			'      			$(\'#errortel1\').html("联系电话未填！"); '+
-			'				return false;' + 
-			'			}' + 
-			'			var reg = /^1[0-9]{10}$/;'+
-			'			if(!(reg.test($(\'#tel1\').val()))){'+
-			'				$(\'#errortel1\').html("无效的手机号码！");'+
-			'				$(\'#tel1\').val().focus(); '+
-			'				return false; '+
+			'			for(var i=1;i<6;i++){' + 
+			'				var errortel = $(\'#errortel\'+i+\'\');'+
+			'				if(errortel.html().length > 0){' + 
+			'					return false;' + 
+			'				}'+
 			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
@@ -427,21 +465,30 @@ $(function()
 			'}' + 
 			'function checkTelValue(obj)' + 
 			'{' + 
-			'	alert(obj.textboxname);'+
-			'	var errorId = obj.textboxname;'+
+			'	var errorId = obj.id;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+
-		    '      $(\'#errortel\'+errorId+\'\').html("联系电话未填！"); '+
-		    '      return; '+
-		    '   } '+
-			'	var reg = /^1[0-9]{10}$/;'+
-			'	if(!(reg.test(obj.value))){'+
-			'		$(\'#errortel\'+errorId+\'\').html("无效的手机号码！");'+
-			'		obj.focus(); '+
-			'		return; '+
-			'	}else{'+
-			'		$(\'#errortel\'+errorId+\'\').html("");'+
+		    '		if(errorId ==1) '+
+		    ' 		{ '+
+		    '      		$(\'#errortel\'+errorId+\'\').html("联系电话未填！"); '+
+		    '      		return; '+
+		    '      	}'+
+		    '   }else{ '+
+			'		var reg = /^1[0-9]{10}$/;'+
+			'		if(!(reg.test(obj.value))){'+
+			'			$(\'#errortel\'+errorId+\'\').html("无效的手机号码！");'+
+			'			return; '+
+			'		}else{'+
+			'			$(\'#errortel\'+errorId+\'\').html("");'+
+			'		}'+
+			'		if(errorId > 1) '+
+			' 		{ '+
+			'			if($(\'#tel1\').val() == obj.value){' + 
+			'      			$(\'#errortel\'+errorId+\'\').html("联系电话重复！"); '+
+			'      			return; '+
+			'   		} '+
+			'   	} '+
 			'	}'+
 			'	$.ajax'+
 			'	({'+
@@ -451,40 +498,12 @@ $(function()
 			'		{'+
 			'			if(data.returnCode != 0){'+
 			'				$(\'#errortel\'+errorId+\'\').html(data.msg); '+  
-			'				obj.focus(); '+  
 			'			}else{ '+  
 			'				$(\'#errortel\'+errorId+\'\').html(""); '+  
 			'			} '+  
 			'		}'+
 			'	});'+
 			'} ' + 
-			'function removeTelAdd(obj)' +
-			'{' +
-			'	$.messager.confirm(\'确认\',\'您确认想要删除此联系电话吗？\',function(r){' +  
-			'   	if (r){ ' +
-			' 			var count = $(\'#infoerTelCount\').val();' + 
-			' 			count = parseInt(count)-1;' + 
-			' 			$(\'#infoerTelCount\').val(count);' +
-			'			obj.parent().parent().remove();' +
-			'    	}' +
-			'	});' +
-			'}' +
-			'$(\'#addInfoerTelBtn\').click(function()'+
-			'{' + 
-			' 	var count = $(\'#infoerTelCount\').val();' + 
-			' 	count = parseInt(count)+1;' + 
-			' 	if(count <6){' + 
-			' 		$(\'#infoerTelCount\').val(count);' + 
-			'		var appendHtml =\'<tr>'+
-			'		<td align="right"><label>电话：</label></td>'+
-			'		<td><input name="tel\'+count+\'" onblur="checkTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeInfoerTelBtn">删除</a></td>' +
-			'		<td><font id="errortel\'+count+\'" color="red"></font></td>' + 
-			'		</tr>\';' + 
-			'		$(\'#infoerTelTr\').after(appendHtml);' +   
-			'	}else{' +   
-			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
-			'	}' +   
-			'});' +
 			'</script>';
 		
 		function showAddInfoerVisitWindow()
@@ -513,8 +532,8 @@ $(function()
 			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerVisitForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addInfoerVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddInfoerVisitForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addInfoerVisitWindow.window(\'close\');"  iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -575,10 +594,30 @@ $(function()
 			'			<td style="min-width: 75px;" align="right"><label>所属信息员：</label></td>' + 
 			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 136px;"/></td>' + 
 			'		</tr>' + 
-			'		<tr id="clientTelTr">' + 
-			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 140px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
-			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话1：</label></td>' + 
+			'			<td><input name="tel1" id="tel1" required="required" style="width: 140px;"/></td>' + 
+			'			<td colspan="2"><font id="errorclienttel1" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话2：</label></td>' + 
+			'			<td><input name="tel2" id="tel2" style="width: 140px;"/></td>' + 
+			'			<td colspan="2"><font id="errorclienttel2" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话3：</label></td>' + 
+			'			<td><input name="tel3" id="tel3" style="width: 140px;"/></td>' + 
+			'			<td colspan="2"><font id="errorclienttel3" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话4：</label></td>' + 
+			'			<td><input name="tel4" id="tel4" style="width: 140px;"/></td>' + 
+			'			<td colspan="2"><font id="errorclienttel4" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话5：</label></td>' + 
+			'			<td><input name="tel5" id="tel5" style="width: 140px;"/></td>' + 
+			'			<td colspan="2"><font id="errorclienttel5" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
@@ -594,8 +633,8 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" iconCls="icon-save" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" iconCls="icon-reload" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -607,6 +646,21 @@ $(function()
 			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
+			'var $tel1Input = $(\'table input#tel1\');' +
+			'$tel1Input.textbox({});' +
+			'$tel1Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel1Input.get(0));});' +
+			'var $tel2Input = $(\'table input#tel2\');' +
+			'$tel2Input.textbox({});' +
+			'$tel2Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel2Input.get(0));});' +
+			'var $tel3Input = $(\'table input#tel3\');' +
+			'$tel3Input.textbox({});' +
+			'$tel3Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel3Input.get(0));});' +
+			'var $tel4Input = $(\'table input#tel4\');' +
+			'$tel4Input.textbox({});' +
+			'$tel4Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel4Input.get(0));});' +
+			'var $tel5Input = $(\'table input#tel5\');' +
+			'$tel5Input.textbox({});' +
+			'$tel5Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel5Input.get(0));});' +
 			'function submitaddClientForm()' + 
 			'{' + 
 			'	$addClientWindow.find(\'form#addClientForm\').form(\'submit\',' + 
@@ -615,15 +669,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
-			'			if($(\'#tel1\').val() == ""){' + 
-			'      			$(\'#errorclienttel1\').html("联系电话未填！"); '+
-			'				return false;' + 
-			'			}' + 
-			'			var reg = /^1[0-9]{10}$/;'+
-			'			if(!(reg.test($(\'#tel1\').val()))){'+
-			'				$(\'#errorclienttel1\').html("无效的手机号码！");'+
-			'				$(\'#tel1\').val().focus(); '+
-			'				return false; '+
+			'			for(var i=1;i<6;i++){' + 
+			'				var errortel = $(\'#errorclienttel\'+i+\'\');'+
+			'				if(errortel.html().length > 0){' + 
+			'					return false;' + 
+			'				}'+
 			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
@@ -640,28 +690,31 @@ $(function()
 			'}' + 
 			'function checkClientTelValue(obj)' + 
 			'{' + 
-			'	var errorId = obj.textboxname;'+
+			'	var errorId = obj.id;'+
 			'	errorId = errorId.charAt(errorId.length - 1);'+
 			'	if(obj.value.length==0) '+
 		    ' 	{ '+
-		    '      $(\'#errorclienttel\'+errorId+\'\').html("联系电话未填！"); '+
-		    '      return; '+
-		    '   } '+
-			'	var reg = /^1[0-9]{10}$/;'+
-			'	if(!(reg.test(obj.value))){'+
-			'		$(\'#errorclienttel\'+errorId+\'\').html("无效的手机号码！");'+
-			'		obj.focus(); '+
-			'		return; '+
-			'	}else{'+
-			'		$(\'#errorclienttel\'+errorId+\'\').html("");'+
-			'	}'+
-			'	if(errorId > 1) '+
-			' 	{ '+
-			'		if($(\'#tel1\').val() == obj.value){' + 
-			'      		$(\'#errorclienttel\'+errorId+\'\').html("联系电话重复！"); '+
-			'      		return; '+
+		    '		if(errorId ==1) '+
+		    ' 		{ '+
+		    '      		$(\'#errorclienttel\'+errorId+\'\').html("联系电话未填！"); '+
+		    '      		return; '+
+		    '      	}'+
+		    '   }else{ '+
+			'		var reg = /^1[0-9]{10}$/;'+
+			'		if(!(reg.test(obj.value))){'+
+			'			$(\'#errorclienttel\'+errorId+\'\').html("无效的手机号码！");'+
+			'			return; '+
+			'		}else{'+
+			'			$(\'#errorclienttel\'+errorId+\'\').html("");'+
+			'		}'+
+			'		if(errorId > 1) '+
+			' 		{ '+
+			'			if($(\'#tel1\').val() == obj.value){' + 
+			'      			$(\'#errorclienttel\'+errorId+\'\').html("联系电话重复！"); '+
+			'      			return; '+
+			'   		} '+
 			'   	} '+
-			'   } '+
+			'	}'+
 			'	$.ajax'+
 			'	({'+
 			'		url: \'marketing/infoerMgr/checkClientTel\','+
@@ -670,7 +723,6 @@ $(function()
 			'		{'+
 			'			if(data.returnCode != 0){'+
 			'				$(\'#errorclienttel\'+errorId+\'\').html(data.msg); '+  
-			'				obj.focus(); '+  
 			'			}else{ '+  
 			'				$(\'#errorclienttel\'+errorId+\'\').html(""); '+  
 			'			} '+  

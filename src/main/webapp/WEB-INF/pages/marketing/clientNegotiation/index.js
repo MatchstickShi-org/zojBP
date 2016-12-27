@@ -142,6 +142,8 @@ $(function()
 			var selRows = $orderDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+			else
+				$.messager.alert('提示', '请选中一个客户。');
 		}});
 		
 		$orderVisitGrid.datagrid
@@ -207,6 +209,12 @@ $(function()
 		
 		function submitEditClientForm()
 		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个客户。');
+				return;
+			}
 			$editClientForm.form('submit',
 			{
 				onSubmit: function()
@@ -356,6 +364,12 @@ $(function()
 		
 		function showAddClientVisitWindow()
 		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个客户。');
+				return;
+			}
 			$addClientVisitWindow.window('clear');
 			$addClientVisitWindow.window('open').window
 			({
