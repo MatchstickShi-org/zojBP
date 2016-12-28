@@ -58,8 +58,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
-				+ " CASE MAX(IV.DATE) "
-				+ "		WHEN NULL THEN DATEDIFF(NOW(),I.INSERT_TIME)  "
+				+ "		CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME)  "
 				+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
 				+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
 				+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "

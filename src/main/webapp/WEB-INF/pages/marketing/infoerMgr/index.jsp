@@ -25,6 +25,7 @@
 			<label><input type="checkbox" value="4" name="levelInput" style="top: 2px;"/>铁牌</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
