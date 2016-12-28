@@ -49,4 +49,9 @@ public class InfoerService implements IInfoerService{
 		return infoerDao.findBySalesmanId(salesmanId,pagination);
 	}
 
+	@Override
+	public Integer updateInfoerSalesmanId(Integer[] infoerId, Integer salesmanId) {
+		return infoerDao.updateInfoerSalesmanId(infoerId,salesmanId);
+	}
+
 }

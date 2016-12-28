@@ -19,11 +19,11 @@ public class InfoCostDao extends BaseDao implements IInfoCostDao {
 	@Override
 	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT IC.*,O.PROJECT_NAME,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U2.ALIAS AS stylistName FROM INFO_COST IC "+
+		String sql = "SELECT IC.*,O.PROJECT_NAME,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U2.ALIAS AS designerName FROM INFO_COST IC "+
 						"LEFT JOIN `ORDER` O ON O.ID = IC.ORDER_ID "+
 						"LEFT JOIN INFOER I ON I.ID = IC.INFOER_ID "+
 						"LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
-						"LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID "+
+						"LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
 						"WHERE IC.INFOER_ID="+infoerId;
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);

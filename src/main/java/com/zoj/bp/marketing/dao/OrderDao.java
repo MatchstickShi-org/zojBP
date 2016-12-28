@@ -25,10 +25,10 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public Order getOrderById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
-				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
 				" WHERE O.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
@@ -41,7 +41,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 
 	@Override
 	public void updateOrder(Order order) {
-		String sql = "UPDATE `ORDER` SET INFOER_ID = :infoerId, SALESMAN_ID = :salesmanId, STYLIST_ID = :stylistId, PROJECT_NAME = :projectName,"
+		String sql = "UPDATE `ORDER` SET INFOER_ID = :infoerId, SALESMAN_ID = :salesmanId, DESIGNER_ID = :designerId, PROJECT_NAME = :projectName,"
 				+ " PROJECT_ADDR = :projectAddr, STATUS = :status";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
@@ -49,20 +49,20 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 	
 	@Override
-	public void updateOrderStatus(Order order) {
+	public Integer updateOrderStatus(Order order) {
 		String sql = "UPDATE `ORDER` SET STATUS = :status";
 		sql += " WHERE ID = :id";
-		jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
+		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
 		
 	}
 
 	@Override
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser,Integer infoerId,Integer[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
-				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
 				" WHERE 1 = 1 ";
 		if(loginUser != null)
@@ -84,10 +84,10 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
 			String infoerName, String[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS stylistName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
-				" LEFT JOIN `USER` U2 ON U2.ID = O.STYLIST_ID"+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
 				" WHERE 1 = 1 ";
 		if(loginUser != null)
@@ -126,17 +126,32 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public Integer addOrder(Order order) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO `ORDER`(INFOER_ID,SALESMAN_ID,STYLIST_ID,PROJECT_NAME,PROJECT_ADDR,INSERT_TIME,STATUS) "
-				+ "VALUES(:infoerId,:salesmanId,:stylistId,:projectName,:projectAddr,now(),:status)",
+				"INSERT INTO `ORDER`(INFOER_ID,SALESMAN_ID,DESIGNER_ID,PROJECT_NAME,PROJECT_ADDR,INSERT_TIME,STATUS) "
+				+ "VALUES(:infoerId,:salesmanId,:designerId,:projectName,:projectAddr,now(),:status)",
 				new BeanPropertySqlParameterSource(order), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
 
 	@Override
-	public Integer deleteOrderByIds(Integer[] orderIds) {
+	public Integer updateOrderByIds(Integer[] orderIds) {
 		return jdbcOps.update("UPDATE `ORDER` SET STATUS = 12 "
 				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
-		
+	}
+	
+	@Override
+	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId) {
+		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new BeanPropertySqlParameterSource(salesmanId));
+	}
+	@Override
+	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId) {
+		return jdbcOps.update("UPDATE `ORDER` SET DESIGNER_ID = :designerId "
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new BeanPropertySqlParameterSource(designerId));
+	}
+	@Override
+	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
+		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
+				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new BeanPropertySqlParameterSource(infoerIds));
 	}
 
 }

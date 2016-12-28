@@ -76,7 +76,7 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public Integer deleteOrderByIds(Integer[] orderIds) {
-		return dao.deleteOrderByIds(orderIds);
+		return dao.updateOrderByIds(orderIds);
 	}
 
 	@Override
@@ -84,7 +84,21 @@ public class OrderService implements IOrderService {
 		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
 		order.setStatus(30);
-		dao.updateOrderStatus(order);
-		return null;
+		return dao.updateOrderStatus(order);
+	}
+
+	@Override
+	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId) {
+		return dao.updateOrderSalesmanId(orderIds, salesmanId);
+	}
+
+	@Override
+	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId) {
+		return dao.updateOrderDesigerId(orderIds, designerId);
+	}
+
+	@Override
+	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
+		return dao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
 	}
 }

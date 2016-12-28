@@ -48,11 +48,35 @@ public interface IOrderDao {
 	 * 更新订单状态
 	 * @param order
 	 */
-	void updateOrderStatus(Order order);
+	Integer updateOrderStatus(Order order);
 
 	/**
 	 * 设置客户状态为已放弃
 	 * @param orderIds
 	 */
-	Integer deleteOrderByIds(Integer[] orderIds);
+	Integer updateOrderByIds(Integer[] orderIds);
+	
+	/**
+	 * 更新订单的业务员Id
+	 * @param orderIds
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId);
+	
+	/**
+	 * 更新订单的设计师Id
+	 * @param orderIds
+	 * @param designerId
+	 * @return
+	 */
+	Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId);
+
+	/**
+	 * 根据信息Id更新订单的业务员Id
+	 * @param infoerIds
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId);
 }

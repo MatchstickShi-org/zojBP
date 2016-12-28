@@ -26,9 +26,9 @@ public class Order implements Serializable{
 	
 	private String salesmanName;
 	
-	private Integer stylistId;
+	private Integer designerId;
 	
-	private String stylistName;
+	private String designerName;
 	
 	private String projectName;
 	
@@ -80,12 +80,20 @@ public class Order implements Serializable{
 		this.salesmanId = salesmanId;
 	}
 
-	public Integer getStylistId() {
-		return stylistId;
+	public Integer getDesignerId() {
+		return designerId;
 	}
 
-	public void setStylistId(Integer stylistId) {
-		this.stylistId = stylistId;
+	public void setDesignerId(Integer designerId) {
+		this.designerId = designerId;
+	}
+
+	public String getDesignerName() {
+		return designerName;
+	}
+
+	public void setDesignerName(String designerName) {
+		this.designerName = designerName;
 	}
 
 	public String getProjectName() {
@@ -134,14 +142,6 @@ public class Order implements Serializable{
 
 	public void setSalesmanName(String salesmanName) {
 		this.salesmanName = salesmanName;
-	}
-
-	public String getStylistName() {
-		return stylistName;
-	}
-
-	public void setStylistName(String stylistName) {
-		this.stylistName = stylistName;
 	}
 
 	public String getName() {

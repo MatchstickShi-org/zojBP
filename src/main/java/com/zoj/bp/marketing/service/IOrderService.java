@@ -63,4 +63,28 @@ public interface IOrderService {
 	 * @return
 	 */
 	Integer addOrderApprove(OrderApprove orderApprove);
+	
+	/**
+	 * 更新订单的业务员Id
+	 * @param orderIds
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId);
+	
+	/**
+	 * 更新订单的设计师Id
+	 * @param orderIds
+	 * @param designerId
+	 * @return
+	 */
+	Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId);
+
+	/**
+	 * 根据信息Id更新订单的业务员Id
+	 * @param infoerIds
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId);
 }

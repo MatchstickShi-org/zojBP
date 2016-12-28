@@ -47,4 +47,12 @@ public interface IInfoerService {
 	 * @return
 	 */
 	DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination);
+
+	/**
+	 * 信息员业务转移
+	 * @param infoerId
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateInfoerSalesmanId(Integer[] infoerId, Integer salesmanId);
 }

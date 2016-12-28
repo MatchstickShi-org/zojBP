@@ -66,6 +66,21 @@ public class UserService implements IUserService
 	{
 		return userDao.getAllUser(pagination, userName, alias);
 	}
+	
+	
+	/**
+	 * 
+	 * @param pagination
+	 * @param userName
+	 * @param alias
+	 * @param roles
+	 * @return
+	 */
+	@Override
+	public DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,String[] roles)
+	{
+		return userDao.getAllUserByRole(pagination, userName, alias, roles);
+	}
 
 	/**
 	 * @param user

@@ -94,6 +94,35 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
+	public DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,String[] roles)
+	{
+		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
+				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
+				+ " LEFT JOIN USER LU ON G.ID = LU.GROUP_ID "
+				+ " AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
+				+ " WHERE 1=1 ";
+		MapSqlParameterSource params = new MapSqlParameterSource("marketGroup", Type.marketingGroup.value())
+				.addValue("marketingLeader", Role.marketingLeader.value()).addValue("designLeader", Role.designLeader.value());
+		if(StringUtils.isNotEmpty(userName))
+		{
+			sql += " AND U.NAME LIKE :name";
+			params.addValue("name", '%' + userName + '%');
+		}
+		if (StringUtils.isNotEmpty(alias))
+		{
+			sql += " AND U.ALIAS LIKE :alias";
+			params.addValue("alias", '%' + alias + '%');
+		}
+		if(roles != null && roles.length > 0)
+			sql +=" AND U.ROLE IN(" + StringUtils.join(roles, ',') + ")";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
+		sql += " LIMIT :start, :rows";
+		params.addValue("start", pagination.getStartRow());
+		params.addValue("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class)), count);
+	}
+	@Override
 	public Integer addUser(User user)
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
