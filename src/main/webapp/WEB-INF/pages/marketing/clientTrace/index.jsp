@@ -15,11 +15,12 @@
 		<table id="orderDatagrid" border=false></table>
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
-			<input style="width:100px;" class="easyui-textbox" id="clientTrace.nameInput"/>
+			<input class="easyui-textbox" id="clientTrace.nameInput"/>
 			<label style="vertical-align: middle;">电话：</label>
-			<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
+			<input class="easyui-textbox" id="clientTrace.telInput"/>
 			<label style="vertical-align: middle;">信息员名称：</label>
-			<input style="width:100px;" class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+			<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>
 			<label><input type="checkbox" value="10" name="statusInput"/>正跟踪</label>

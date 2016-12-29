@@ -34,7 +34,7 @@ public class CommissionCost implements Serializable
 	
 	private String salesmanName;
 	
-	private String stylistName;
+	private String designerName;
 	
 	public Integer getId()
 	{
@@ -110,12 +110,11 @@ public class CommissionCost implements Serializable
 		this.salesmanName = salesmanName;
 	}
 
-	public String getStylistName() {
-		return stylistName;
+	public String getDesignerName() {
+		return designerName;
 	}
 
-	public void setStylistName(String stylistName) {
-		this.stylistName = stylistName;
+	public void setDesignerName(String designerName) {
+		this.designerName = designerName;
 	}
-	
 }

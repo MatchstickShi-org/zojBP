@@ -32,6 +32,7 @@ import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.IInfoerService;
 import com.zoj.bp.marketing.service.IOrderService;
 import com.zoj.bp.marketing.service.IOrderVisitService;
+import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 
 /**
  * @author wangw
@@ -52,6 +53,9 @@ public class ClientCtrl
 	
 	@Autowired
 	private IInfoerService infoerSvc;
+	
+	@Autowired
+	private IUserService userSvc;
 	
 	@RequestMapping(value = "/toClientTraceView")
 	public String toClientTraceView() throws BusinessException
@@ -220,7 +224,7 @@ public class ClientCtrl
 	public DatagridVo<OrderVisit> getStylistOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
 		Order order = orderSvc.getOrderById(orderId);
-		return orderVisitSvc.getAllOrderVisit(pagination, order.getStylistId(), orderId);
+		return orderVisitSvc.getAllOrderVisit(pagination, order.getDesignerId(), orderId);
 	}
 	
 	/**
@@ -261,5 +265,13 @@ public class ClientCtrl
 	public String showSelectInfoerWindow()
 	{
 		return "marketing/clientTrace/selectInfoer";
+	}
+	
+	@RequestMapping(value = "/getAllDesigner")
+	@ResponseBody
+	public DatagridVo<User> getAllDesigner(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
+	{
+		String[] roles = {"4","5","6"};//4：设计部设计师；5：设计部主管；6：设计部经理
+		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
 	}
 }

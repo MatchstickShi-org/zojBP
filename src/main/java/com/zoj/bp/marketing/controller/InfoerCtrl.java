@@ -32,6 +32,7 @@ import com.zoj.bp.marketing.service.IInfoCostService;
 import com.zoj.bp.marketing.service.IInfoerService;
 import com.zoj.bp.marketing.service.IInfoerVisitService;
 import com.zoj.bp.marketing.service.IOrderService;
+import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 
 /**
  * @author wangw
@@ -55,6 +56,9 @@ public class InfoerCtrl
 	
 	@Autowired
 	private ICommissionCostService commissionCostSvc;
+	
+	@Autowired
+	private IUserService userSvc;
 	
 	@RequestMapping(value = "/toInfoSrcMgrView")
 	public String toInfoSrcMgrView() throws BusinessException
@@ -171,6 +175,14 @@ public class InfoerCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/transferInfoer")
+	@ResponseBody
+	public Map<String, ?> transferInfoer(@RequestParam Integer[] infoerId,@RequestParam Integer salesmanId) throws Exception
+	{
+		infoerSvc.updateInfoerSalesmanId(infoerId,salesmanId);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/checkInfoerTel")
 	@ResponseBody
 	public Map<String, ?> checkInfoerTel(@RequestParam String tel) throws Exception
@@ -234,4 +246,13 @@ public class InfoerCtrl
 	{
 		return commissionCostSvc.getAllCommissionCost(pagination, infoerId);
 	}
+	
+	@RequestMapping(value = "/getAllSalesman")
+	@ResponseBody
+	public DatagridVo<User> getAllSalesman(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
+	{
+		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
+		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
+	}
+	
 }

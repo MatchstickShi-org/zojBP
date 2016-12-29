@@ -158,7 +158,7 @@ $(function()
 				  {field:'projectAddr', title:'工程地址', width: 6},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'insertTime', title:'生成日期', width: 5},
 				  {field:'status', title:'状态', width: 5, formatter: function(value, row, index)
 					{
@@ -196,7 +196,7 @@ $(function()
 				  {field:'projectName', title:'项目名称', width: 6},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
 						{
 					  		return value = value +' ￥';
@@ -218,7 +218,7 @@ $(function()
 				  {field:'projectName', title:'项目名称', width: 6},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'stylistName', title:'设计师', width: 3},
+				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
 					  {
 					  return value = value +' ￥';

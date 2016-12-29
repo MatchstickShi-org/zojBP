@@ -128,4 +128,9 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
 	}
 
+	@Override
+	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
+		return jdbcOps.update("UPDATE INFOER SET SALESMAN_ID = :salesmanId "
+				+ " WHERE ID IN(" + StringUtils.join(infoerIds, ',') + ")", new BeanPropertySqlParameterSource(salesmanId));
+	}
 }

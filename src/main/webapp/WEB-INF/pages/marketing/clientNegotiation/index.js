@@ -43,7 +43,7 @@ $(function()
 				{field:'projectAddr', title:'工程地址', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
-				{field:'stylistName', title:'设计师', width: 3},
+				{field:'designerName', title:'设计师', width: 3},
 				{
 					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
 					{
