@@ -144,7 +144,7 @@ public class GroupDao extends BaseDao implements IGroupDao
 	}
 
 	@Override
-	public Integer addUnderlingToGroup(Integer groupId, Integer... underlingIds)
+	public Integer addUnderling2Group(Integer groupId, Integer... underlingIds)
 	{
 		StringBuffer sql = new StringBuffer(" UPDATE USER SET GROUP_ID = :groupId WHERE 1=1 ");
 		if(!ArrayUtils.isEmpty(underlingIds))

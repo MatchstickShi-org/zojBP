@@ -136,7 +136,7 @@ public class GroupMgrCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您没有修改用户组组员的权限。"));
 		if(ArrayUtils.isEmpty(underlingIds))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可分配的组员。"));
-		grpSvc.addUnderlingToGroup(groupId, underlingIds);
+		grpSvc.addUnderling2Group(groupId, underlingIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

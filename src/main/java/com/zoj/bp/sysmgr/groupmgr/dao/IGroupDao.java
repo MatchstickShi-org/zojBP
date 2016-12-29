@@ -70,7 +70,7 @@ public interface IGroupDao
 	 * @param underlingIds
 	 * @return
 	 */
-	Integer addUnderlingToGroup(Integer groupId, Integer... underlingIds);
+	Integer addUnderling2Group(Integer groupId, Integer... underlingIds);
 
 	/**
 	 * @param groupId

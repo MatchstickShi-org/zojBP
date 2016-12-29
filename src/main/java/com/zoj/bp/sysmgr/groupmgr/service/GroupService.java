@@ -38,7 +38,7 @@ public class GroupService implements IGroupService
 	{
 		Integer grpId = grpDao.addGroup(group.getName(), Type.valueOf(group.getType()) == Type.marketingGroup);
 		if(group.getLeaderId() != null)
-			grpDao.addUnderlingToGroup(grpId, group.getLeaderId());
+			grpDao.addUnderling2Group(grpId, group.getLeaderId());
 		return grpId;
 	}
 
@@ -57,7 +57,7 @@ public class GroupService implements IGroupService
 		if(dbGrp.getLeaderId() != null && dbGrp.getLeaderId() != group.getLeaderId())	//主管有修改
 			grpDao.removeUnderlingFromGroup(group.getId(), dbGrp.getLeaderId());	//将原主管从当前group移除
 		if(group.getLeaderId() != null)
-			grpDao.addUnderlingToGroup(group.getId(), group.getLeaderId());
+			grpDao.addUnderling2Group(group.getId(), group.getLeaderId());
 		return grpDao.updateGroup(group);
 	}
 
@@ -87,9 +87,9 @@ public class GroupService implements IGroupService
 	}
 
 	@Override
-	public Integer addUnderlingToGroup(Integer groupId, Integer[] underlingIds)
+	public Integer addUnderling2Group(Integer groupId, Integer[] underlingIds)
 	{
-		return grpDao.addUnderlingToGroup(groupId, underlingIds);
+		return grpDao.addUnderling2Group(groupId, underlingIds);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class GroupService implements IGroupService
 		if(!leader.isLeader())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("选择用户不是主管，无法变更。"));
 		grpDao.removeLeaderFromGroup(groupId);
-		return grpDao.addUnderlingToGroup(groupId, leaderId);
+		return grpDao.addUnderling2Group(groupId, leaderId);
 	}
 
 	@Override

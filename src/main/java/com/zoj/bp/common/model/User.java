@@ -182,6 +182,16 @@ public class User implements Serializable
 		return this.role == Role.designLeader.value();
 	}
 	
+	/**
+	 * 是否是设计部经理
+	 * @return
+	 */
+	@Transient
+	public boolean isDesignManager()
+	{
+		return this.role == Role.designManager.value();
+	}
+	
 	public enum Role
 	{
 		/**超级管理员*/

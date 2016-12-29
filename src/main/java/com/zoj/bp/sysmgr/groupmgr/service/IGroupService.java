@@ -59,7 +59,7 @@ public interface IGroupService
 	 * @param groupId
 	 * @param underlingIds
 	 */
-	Integer addUnderlingToGroup(Integer groupId, Integer[] underlingIds);
+	Integer addUnderling2Group(Integer groupId, Integer[] underlingIds);
 
 	/**
 	 * @param groupId

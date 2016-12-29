@@ -66,13 +66,33 @@ public class UserService implements IUserService
 	{
 		return userDao.getAllUser(pagination, userName, alias);
 	}
+	
+	
+	/**
+	 * 
+	 * @param pagination
+	 * @param userName
+	 * @param alias
+	 * @param roles
+	 * @return
+	 */
+	@Override
+	public DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,String[] roles)
+	{
+		return userDao.getAllUserByRole(pagination, userName, alias, roles);
+	}
 
 	/**
 	 * @param user
+	 * @throws BusinessException 
 	 */
 	@Override
-	public void addUser(User user)
+	public void addUser(User user) throws BusinessException
 	{
+		User dbUser = userDao.getUserByName(user.getName());
+		if(dbUser != null)
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.
+					setMsg(MessageFormat.format("已存在名称为{0}的用户，请重新输入用户名。", dbUser.getName())));
 		userDao.addUser(user);
 	}
 
