@@ -141,17 +141,17 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	@Override
 	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
-				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new BeanPropertySqlParameterSource(salesmanId));
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
 	@Override
 	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId) {
 		return jdbcOps.update("UPDATE `ORDER` SET DESIGNER_ID = :designerId "
-				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new BeanPropertySqlParameterSource(designerId));
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("designerId",designerId));
 	}
 	@Override
 	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
-				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new BeanPropertySqlParameterSource(infoerIds));
+				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
 
 }

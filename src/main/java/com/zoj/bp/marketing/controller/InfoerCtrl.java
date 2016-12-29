@@ -177,9 +177,9 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/transferInfoer")
 	@ResponseBody
-	public Map<String, ?> transferInfoer(@RequestParam Integer[] infoerId,@RequestParam Integer salesmanId) throws Exception
+	public Map<String, ?> transferInfoer(@RequestParam("infoerIds[]") Integer[] infoerIds,@RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
-		infoerSvc.updateInfoerSalesmanId(infoerId,salesmanId);
+		infoerSvc.updateInfoerSalesmanId(infoerIds,salesmanId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -247,12 +247,17 @@ public class InfoerCtrl
 		return commissionCostSvc.getAllCommissionCost(pagination, infoerId);
 	}
 	
-	@RequestMapping(value = "/getAllSalesman")
-	@ResponseBody
-	public DatagridVo<User> getAllSalesman(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
+	@RequestMapping("/showAllSalesman")
+	public String showAllSalesman()
 	{
-		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
-		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
+		return "marketing/infoerMgr/selectSalesman";
 	}
 	
+	@RequestMapping(value = "/getAllSalesman")
+	@ResponseBody
+	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
+	{
+		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
+		return userSvc.getAllUserByRole(pagination, "", "", roles);
+	}
 }

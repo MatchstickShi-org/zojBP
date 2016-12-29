@@ -127,6 +127,7 @@
 	</div>
 </div>
 <div id="addInfoerWindow"></div>
+<div id="businessTransferWindow"></div>
 <div id="addInfoerVisitWindow"></div>
 <div id="addClientWindow"></div>
 <script type="text/javascript" src="pages/marketing/infoerMgr/index.js"></script>

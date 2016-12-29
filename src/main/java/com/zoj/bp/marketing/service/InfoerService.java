@@ -8,12 +8,17 @@ import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IInfoerDao;
+import com.zoj.bp.marketing.dao.IOrderDao;
 
 @Service
 public class InfoerService implements IInfoerService{
 
 	@Autowired
 	private IInfoerDao infoerDao;
+	
+	@Autowired
+	private IOrderDao orderDao;
+	
 	@Override
 	public Infoer getInfoerByName(String InfoerName) {
 		return infoerDao.getInfoerByName(InfoerName);
@@ -50,8 +55,9 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public Integer updateInfoerSalesmanId(Integer[] infoerId, Integer salesmanId) {
-		return infoerDao.updateInfoerSalesmanId(infoerId,salesmanId);
+	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
+		orderDao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
+		return infoerDao.updateInfoerSalesmanId(infoerIds,salesmanId);
 	}
 
 }

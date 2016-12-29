@@ -5,6 +5,7 @@ $(function()
 	var $telTextbox = $('#infoerMgr\\.telInput');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
+	var $businessTransferWindow = $('div#businessTransferWindow');
 	var $addInfoerVisitWindow = $('div#addInfoerVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $revertUsersBtn = $('a#revertUsersBtn');
@@ -346,12 +347,29 @@ $(function()
 		}
 		
 		$('#showAddInfoerWindowBtn').linkbutton({onClick: showAddInfoerWindow});
+		$('#showBusinessTransferWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
 		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
 		$('#addClientBtn').linkbutton({onClick: showAddClientWindow});
 		
 		$addInfoerWindow.window({width: 500});
+		$businessTransferWindow.window({width: 500});
 		$addInfoerVisitWindow.window({width: 322});
 		$addClientWindow.window({width: 500});
+		
+		function showBusinessTransferWindow()
+		{
+			var selIds = $infoerDatagrid.datagrid('getCheckedRowPkValues');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>需要业务转移的信息员。');
+				return;
+			}
+			$businessTransferWindow.window('clear');
+			$businessTransferWindow.window('open').window
+			({
+				title: '请选择业务员',
+			}).window('open').window('refresh', 'marketing/infoerMgr/showAllSalesman');
+		}
 		
 		function showAddInfoerWindow()
 		{

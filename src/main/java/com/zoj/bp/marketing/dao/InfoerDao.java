@@ -131,6 +131,6 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	@Override
 	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE INFOER SET SALESMAN_ID = :salesmanId "
-				+ " WHERE ID IN(" + StringUtils.join(infoerIds, ',') + ")", new BeanPropertySqlParameterSource(salesmanId));
+				+ " WHERE ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
 }
