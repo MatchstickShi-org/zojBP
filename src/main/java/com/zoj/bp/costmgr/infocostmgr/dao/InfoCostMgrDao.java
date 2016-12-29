@@ -1,4 +1,3 @@
-/**  */
 package com.zoj.bp.costmgr.infocostmgr.dao;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,10 +19,11 @@ import com.zoj.bp.costmgr.infocostmgr.vo.InfoCost;
 @Repository
 public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 {
+	@Override
 	public Integer addInfoCostRecord(InfoCost infoCost)
 	{
-		String sql = "INSERT INTO INFO_COST(INFOER_ID, ORDFER_ID, DATE, AMOUNT, REMARK) "
-				+ " VALUES(:infoerId, :orderId, :remitDate, :cost, :remark)";
+		String sql = "INSERT INTO INFO_COST(INFOER_ID, ORDER_ID, DATE, AMOUNT, REMARK) "
+				+ " VALUES(:infoerId, :orderId, CURRENT_DATE, :cost, :remark)";
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoCost), keyHolder);
 		return keyHolder.getKey().intValue();
@@ -39,9 +39,10 @@ public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 				+ " LEFT JOIN INFO_COST IC ON IC.ORDER_ID = O.ID "
 				+ " LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "
 				+ " LEFT JOIN INFOER I ON O.INFOER_ID = I.ID "
-				+ " LEFT JOIN USER D ON O.DESIGNER_ID = D.ID ";
+				+ " LEFT JOIN USER D ON O.DESIGNER_ID = D.ID "
+				+ " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID ";
 		if(user.isMarketingSalesman())
-			sql += " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID WHERE O.SALESMAN_ID = :userId WHERE 1=1 ";
+			sql += " WHERE O.SALESMAN_ID = :userId ";
 		else if(user.isMarketingLeader())
 		{
 			sql += " WHERE O.SALESMAN_ID IN "
@@ -51,7 +52,8 @@ public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 				+ "	)";
 		}
 		else
-			sql += " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID WHERE 1=1 ";
+			sql += " WHERE 1=1 ";
+		
 		if(status != null)
 			sql += " AND IC.ID IS " + (status == 1 ? " NOT NULL " : "NULL");
 		if(StringUtils.isNotEmpty(clientName))
@@ -71,5 +73,21 @@ public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 		sql += " ORDER BY IC.DATE DESC, O.ID DESC LIMIT :start, :rows";
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params.addValue("start", pagination.getStartRow())
 					.addValue("rows", pagination.getRows()), BeanPropertyRowMapper.newInstance(InfoCost.class)), count);
+	}
+
+	@Override
+	public InfoCost getInfoCostByOrder(Integer orderId)
+	{
+		String sql = "SELECT O.ID ORDER_ID, C.ID CLIENT_ID, C.NAME CLIENT_NAME, O.PROJECT_ADDR, O.INFOER_ID, I.NAME INFOER, "
+				+ " O.DESIGNER_ID, D.ALIAS DESIGNER, O.SALESMAN_ID, S.ALIAS SALESMAN, "
+				+ " IC.DATE REMIT_DATE, IC.AMOUNT COST, IC.REMARK FROM `ORDER` O "
+				+ " LEFT JOIN INFO_COST IC ON IC.ORDER_ID = O.ID "
+				+ " LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "
+				+ " LEFT JOIN INFOER I ON O.INFOER_ID = I.ID "
+				+ " LEFT JOIN USER D ON O.DESIGNER_ID = D.ID "
+				+ " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID "
+				+ " WHERE O.ID = :orderId";
+		return jdbcOps.queryForObject(sql, 
+				new MapSqlParameterSource("orderId", orderId), BeanPropertyRowMapper.newInstance(InfoCost.class));
 	}
 }

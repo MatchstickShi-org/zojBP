@@ -20,4 +20,16 @@ public interface IInfoCostMgrDao
 	 */
 	DatagridVo<InfoCost> getAllInfoCosts(User user, Integer status, String clientName, String orderId, Pagination pagination);
 
+	/**
+	 * @param orderId
+	 * @return
+	 */
+	InfoCost getInfoCostByOrder(Integer orderId);
+
+	/**
+	 * @param infoCost
+	 * @return
+	 */
+	Integer addInfoCostRecord(InfoCost infoCost);
+
 }

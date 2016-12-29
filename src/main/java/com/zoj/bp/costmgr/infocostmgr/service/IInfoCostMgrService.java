@@ -21,4 +21,17 @@ public interface IInfoCostMgrService
 	 * @throws BusinessException 
 	 */
 	DatagridVo<InfoCost> getAllInfoCosts(User user, Integer status, String clientName, String orderId, Pagination pagination) throws BusinessException;
+
+	/**
+	 * @param orderId
+	 * @return
+	 * @throws BusinessException 
+	 */
+	InfoCost getInfoCostByOrder(Integer orderId);
+
+	/**
+	 * @param infoCost
+	 * @return
+	 */
+	Integer addInfoCostRecord(InfoCost infoCost);
 }

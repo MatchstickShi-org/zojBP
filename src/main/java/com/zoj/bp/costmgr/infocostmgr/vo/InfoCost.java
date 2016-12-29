@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -14,14 +17,17 @@ public class InfoCost implements Serializable
 {
 	private static final long serialVersionUID = 3239296569294785547L;
 	
+	@NotNull
 	private Integer orderId;
 	
+	@NotNull
 	private Integer clientId;
 	
 	private String clientName;
 	
 	private String projectAddr;
 	
+	@NotNull
 	private Integer infoerId;
 	
 	private String infoer;
@@ -30,6 +36,7 @@ public class InfoCost implements Serializable
 	
 	private String designer;
 	
+	@NotNull
 	private Integer salesmanId;
 	
 	private String salesman;
@@ -38,6 +45,8 @@ public class InfoCost implements Serializable
 	private Date remitDate;
 	
 	@NumberFormat(pattern="#,###.##")
+	@NotNull
+	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
 	private BigDecimal cost;
 	
 	private String remark;

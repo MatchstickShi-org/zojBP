@@ -20,7 +20,7 @@
 	<label style="vertical-align: middle;"><input type="radio" name="infoCostMgr.status" value="1">已打款</label>
 	<label style="vertical-align: middle;"><input type="radio" name="infoCostMgr.status" value="0">未打款</label>
 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="infoCostMgr.queryBtn">查询</a>
-	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoCostWindowBtn">新增打款记录</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" disabled="true" id="showAddInfoCostWindowBtn">新增打款记录</a>
 </div>
 <div id="showAddInfoCostWindow"></div>
 <script type="text/javascript" src="pages/costMgr/infoCostMgr/index.js"></script>
