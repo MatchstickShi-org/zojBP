@@ -1,16 +1,21 @@
 $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
+	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
 	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
 	var $orderNameTextbox = $('#clientTrace\\.nameInput');
 	var $telTextbox = $('#clientTrace\\.telInput');
-	var $statusCheckbox = $('[name="clientTrace.status"][checked]');
+	var $orderCheckInfoerNameTextbox = $('#order\\.infoerNameInput');
+	var $orderCheckNameTextbox = $('#order\\.nameInput');
+	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
+	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $applyOrderWindow = $('div#applyOrderWindow');
 	var $selectInfoerWindow = $('div#selectInfoerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
+	var $orderMgrTab = $('div#orderMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
@@ -148,6 +153,91 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
 		
+		$orderCheckDatagrid.datagrid
+		({
+			idField: 'id',
+			toolbar: '#orderCheckDatagridToolbar',
+			columns:
+			[[
+				{field:'id', hidden: true},
+				{field: 'ck', checkbox: true},
+				{field:'name', title:'名称', width: 3},
+				{field:'telAll', title:'联系电话', width: 5},
+				{field:'orgAddr', title:'单位地址', width: 8},
+				{field:'projectName', title:'工程名称', width: 8},
+				{field:'projectAddr', title:'工程地址', width: 8},
+				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'salesmanStatus', hidden: true},
+				{
+					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
+					{
+						switch (value)
+						{
+							case 30:
+								return '在谈单审核中';
+								break;
+							case 62:
+								return '不准单审核中';
+								break;
+							default:
+								return '未评级';
+								break;
+						}
+					}
+				},
+				{field:'insertTime', title:'录入日期', width: 5}
+			]],
+			pagination: true,
+			singleSelect: true,
+			selectOnCheck: false,
+			checkOnSelect: false,
+			url: 'marketing/clientMgr/getAllClientCheck',
+			onSelect: function(idx, row)
+			{
+				loadTabCheckData($orderMgrTab.tabs('getSelected').panel('options').title, row);
+			},
+		});
+		
+		$queryCheckOrderBtn.linkbutton
+		({
+			'onClick': function()
+			{
+				$orderCheckDatagrid.datagrid('loading');
+				var chk_value =''; 
+				$('input[name="orderStatusInput"]:checked').each(function(){ 
+					chk_value = chk_value+$(this).val()+","; 
+				}); 
+				$.ajax
+				({
+					url: 'marketing/clientMgr/getAllClientCheck',
+					data: {name: $orderCheckNameTextbox.textbox('getValue'), tel: $orderCheckTelTextbox.textbox('getValue'),infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),status:chk_value},
+					success: function(data, textStatus, jqXHR)
+					{
+						if(data.returnCode == 0)
+							$orderCheckDatagrid.datagrid('loadData', data);
+						else
+							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
+						$orderCheckDatagrid.datagrid('loaded');
+					}
+				});
+			}
+		});
+		
+		$orderMgrTab.tabs
+		({
+			border: false,
+			onSelect: function(title, index)
+			{
+				var selRows = $orderCheckDatagrid.datagrid('getSelections');
+				
+				if(selRows.length == 1)
+					loadTabCheckData(title, selRows[0]);
+				else
+					clearTabCheckData(title);
+			}
+		});
+		
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
@@ -206,6 +296,37 @@ $(function()
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('loadData', []);
 					break;
+			}
+		}
+		function loadTabCheckData(title, row)
+		{
+			switch (title)
+			{
+			case '详情':
+				$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
+				break;
+			case '业务员回访记录':
+				$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+				break;
+			case '设计师回访记录':
+				$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+				break;
+			}
+		}
+		
+		function clearTabCheckData(title)
+		{
+			switch (title)
+			{
+			case '详情':
+				$editClientForm.form('clear');
+				break;
+			case '业务员回访记录':
+				$orderVisitGrid.datagrid('loadData', []);
+				break;
+			case '设计师回访记录':
+				$orderStylistVisitGrid.datagrid('loadData', []);
+				break;
 			}
 		}
 		

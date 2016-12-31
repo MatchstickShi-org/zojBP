@@ -96,6 +96,20 @@ public class ClientCtrl
 		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
 	}
 	
+	@RequestMapping(value = "/getAllClientCheck")
+	@ResponseBody
+	public DatagridVo<Order> getAllClientCheck(Pagination pagination,@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		String[] statusArr = null;
+		if (StringUtils.isNotEmpty(status))
+			statusArr = status.split(",");
+		else
+			statusArr = new String[]{"30","62"};
+		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
+	}
+	
 	/**
 	 * 获取客户洽谈记录
 	 * @param pagination
