@@ -100,13 +100,13 @@ public class InfoerCtrl
 		Infoer infoerTel = null;
 		if(StringUtils.isNotEmpty(infoer.getTel1()))
 			infoerTel = infoerSvc.findByTel(infoer.getTel1());
-		if(StringUtils.isNotEmpty(infoer.getTel2()))
+		if(StringUtils.isNotEmpty(infoer.getTel2()) && infoerTel == null )
 			infoerTel = infoerSvc.findByTel(infoer.getTel2());
-		if(StringUtils.isNotEmpty(infoer.getTel3()))
+		if(StringUtils.isNotEmpty(infoer.getTel3()) && infoerTel == null )
 			infoerTel = infoerSvc.findByTel(infoer.getTel3());
-		if(StringUtils.isNotEmpty(infoer.getTel4()))
+		if(StringUtils.isNotEmpty(infoer.getTel4()) && infoerTel == null )
 			infoerTel = infoerSvc.findByTel(infoer.getTel4());
-		if(StringUtils.isNotEmpty(infoer.getTel5()))
+		if(StringUtils.isNotEmpty(infoer.getTel5()) && infoerTel == null )
 			infoerTel = infoerSvc.findByTel(infoer.getTel5());
 		if(infoerTel != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
@@ -124,13 +124,13 @@ public class InfoerCtrl
 		Order orderTel = null;
 		if(StringUtils.isNotEmpty(order.getTel1()))
 			orderTel = orderSvc.findByTel(order.getTel1());
-		if(StringUtils.isNotEmpty(order.getTel2()))
+		if(StringUtils.isNotEmpty(order.getTel2()) && orderTel == null)
 			orderTel = orderSvc.findByTel(order.getTel2());
-		if(StringUtils.isNotEmpty(order.getTel3()))
+		if(StringUtils.isNotEmpty(order.getTel3()) && orderTel == null)
 			orderTel = orderSvc.findByTel(order.getTel3());
-		if(StringUtils.isNotEmpty(order.getTel4()))
+		if(StringUtils.isNotEmpty(order.getTel4()) && orderTel == null)
 			orderTel = orderSvc.findByTel(order.getTel4());
-		if(StringUtils.isNotEmpty(order.getTel5()))
+		if(StringUtils.isNotEmpty(order.getTel5()) && orderTel == null)
 			orderTel = orderSvc.findByTel(order.getTel5());
 		if(orderTel != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
@@ -192,7 +192,7 @@ public class InfoerCtrl
 			infoer = infoerSvc.findByTel(tel);
 		}
 		if(infoer != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -205,7 +205,7 @@ public class InfoerCtrl
 			order = orderSvc.findByTel(tel);
 		}
 		if(order != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该号码于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

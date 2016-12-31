@@ -274,4 +274,26 @@ public class ClientCtrl
 		String[] roles = {"4","5","6"};//4：设计部设计师；5：设计部主管；6：设计部经理
 		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
 	}
+	
+	@RequestMapping("/showAllSalesman")
+	public String showAllSalesman()
+	{
+		return "marketing/clientTrace/selectSalesman";
+	}
+	
+	@RequestMapping(value = "/getAllSalesman")
+	@ResponseBody
+	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
+	{
+		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
+		return userSvc.getAllUserByRole(pagination, "", "", roles);
+	}
+	
+	@RequestMapping(value = "/transferOrder")
+	@ResponseBody
+	public Map<String, ?> transferOrder(@RequestParam("orderIds[]") Integer[] orderIds,@RequestParam("salesmanId") Integer salesmanId) throws Exception
+	{
+		orderSvc.updateOrderSalesmanId(orderIds,salesmanId);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
 }

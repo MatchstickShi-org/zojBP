@@ -26,9 +26,13 @@ public class Order implements Serializable{
 	
 	private String salesmanName;
 	
+	private Integer salesmanStatus;
+	
 	private Integer designerId;
 	
 	private String designerName;
+	
+	private Integer designerStatus;
 	
 	private String projectName;
 	
@@ -218,4 +222,21 @@ public class Order implements Serializable{
 	public void setTelAll(String telAll) {
 		this.telAll = telAll;
 	}
+
+	public Integer getSalesmanStatus() {
+		return salesmanStatus;
+	}
+
+	public void setSalesmanStatus(Integer salesmanStatus) {
+		this.salesmanStatus = salesmanStatus;
+	}
+
+	public Integer getDesignerStatus() {
+		return designerStatus;
+	}
+
+	public void setDesignerStatus(Integer designerStatus) {
+		this.designerStatus = designerStatus;
+	}
+	
 }

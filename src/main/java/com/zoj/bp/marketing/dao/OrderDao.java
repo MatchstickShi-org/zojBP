@@ -84,7 +84,7 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
 			String infoerName, String[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
