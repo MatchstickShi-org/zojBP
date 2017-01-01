@@ -249,14 +249,14 @@ public class InfoerCtrl
 	@ResponseBody
 	public DatagridVo<InfoCost> getInfoCostByInfoer(@RequestParam("infoerId") Integer infoerId,Pagination pagination) throws BusinessException
 	{
-		return infoCostSvc.getAllInfoCost(pagination, infoerId);
+		return infoCostSvc.getAllInfoCost(pagination, infoerId,null);
 	}
 	
 	@RequestMapping(value = "/getCommissionCostByInfoer")
 	@ResponseBody
 	public DatagridVo<CommissionCost> getCommissionCostByInfoer(@RequestParam("infoerId") Integer infoerId,Pagination pagination) throws BusinessException
 	{
-		return commissionCostSvc.getAllCommissionCost(pagination, infoerId);
+		return commissionCostSvc.getAllCommissionCost(pagination, infoerId,null);
 	}
 	
 	@RequestMapping("/showAllSalesman")

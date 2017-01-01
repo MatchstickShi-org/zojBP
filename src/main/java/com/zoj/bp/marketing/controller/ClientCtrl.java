@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Client;
+import com.zoj.bp.common.model.CommissionCost;
+import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
@@ -29,6 +31,8 @@ import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.service.IClientService;
+import com.zoj.bp.marketing.service.ICommissionCostService;
+import com.zoj.bp.marketing.service.IInfoCostService;
 import com.zoj.bp.marketing.service.IInfoerService;
 import com.zoj.bp.marketing.service.IOrderService;
 import com.zoj.bp.marketing.service.IOrderVisitService;
@@ -53,6 +57,12 @@ public class ClientCtrl
 	
 	@Autowired
 	private IInfoerService infoerSvc;
+	
+	@Autowired
+	private IInfoCostService infoCostSvc;
+	
+	@Autowired
+	private ICommissionCostService commissionCostSvc;
 	
 	@Autowired
 	private IUserService userSvc;
@@ -186,6 +196,19 @@ public class ClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/permitOrder")
+	@ResponseBody
+	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setOperate(1);
+		orderApprove.setApprover(loginUser.getId());
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	/**
 	 * 编辑订单
 	 * @param orderForm
@@ -273,6 +296,20 @@ public class ClientCtrl
 		if (loginUser == null)
 			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination));
+	}
+	
+	@RequestMapping(value = "/getInfoCostByOrder")
+	@ResponseBody
+	public DatagridVo<InfoCost> getInfoCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
+	{
+		return infoCostSvc.getAllInfoCost(pagination,null,orderId);
+	}
+	
+	@RequestMapping(value = "/getCommissionCostByOrder")
+	@ResponseBody
+	public DatagridVo<CommissionCost> getCommissionCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
+	{
+		return commissionCostSvc.getAllCommissionCost(pagination,null,orderId);
 	}
 	
 	@RequestMapping("/showSelectInfoerWindow")

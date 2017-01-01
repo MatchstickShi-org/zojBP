@@ -56,8 +56,8 @@ public class InfoCostMgrCtrl
 	{
 		ModelAndView mv = new ModelAndView("costMgr/infoCostMgr/addInfoCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isDesignManager() && !loginUser.isSuperAdmin())
-			mv.addObject("errorMsg", "对不起，你不是市场部经理，无法新增信息费。");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
 		InfoCost infoCost = infoCostSvc.getInfoCostByOrder(orderId);
 		if(infoCost.getCost() != null)		//已打款
 			mv.addObject("errorMsg", MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName()));

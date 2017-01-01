@@ -15,8 +15,8 @@ public class CommissionCostService implements ICommissionCostService{
 	private ICommissionCostDao dao;
 
 	@Override
-	public DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination, Integer infoerId) {
-		return dao.getAllCommissionCost(pagination, infoerId);
+	public DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination, Integer infoerId,Integer orderId) {
+		return dao.getAllCommissionCost(pagination, infoerId,orderId);
 	}
 
 	@Override

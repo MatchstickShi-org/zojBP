@@ -20,6 +20,9 @@
 			<input class="easyui-textbox" id="clientTrace.telInput"/>
 			<label style="vertical-align: middle;">信息员名称：</label>
 			<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+			<label style="vertical-align: middle;">信息员筛选：</label>
+			<label><input type="checkbox" value="0" name="infoerFilterInput" checked="checked"/>全部信息员</label>
+			<label><input type="checkbox" value="1" name="infoerFilterInput"/>我的信息员</label>
 			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>

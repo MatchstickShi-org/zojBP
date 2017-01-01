@@ -19,7 +19,6 @@ $(function()
 	var $infoCostGrid = $('table#infoCostGrid');
 	var $commissionCostGrid = $('table#commissionCostGrid');
 	var $clientGrid = $('table#clientGrid');
-	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
 	{

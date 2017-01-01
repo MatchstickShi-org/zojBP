@@ -20,10 +20,11 @@ public interface IInfoCostDao
 	Integer addInfoCost(InfoCost infoCost);
 	/**
 	 * @param pagination
-	 * @param infoCost
+	 * @param infoerId
+	 * @param orderId
 	 * @return
 	 */
-	DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoCost);
+	DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId,Integer orderId);
 
 	
 }

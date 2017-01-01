@@ -120,12 +120,38 @@
 					</tr>
 				</table>
 			</div>
+				<div title="信息费" border="false">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="infoCostGrid"></table>
+				    		<div id="infoCostGridToolbar">
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoCostBtn">新增</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="reloadInfoCostBtn">刷新</a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div title="提成" border="false">
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="commissionCostGrid"></table>
+				    		<div id="commissionCostGridToolbar">
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addCommissionCostBtn">新增</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="reloadCommissionCostBtn">刷新</a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
 <div id="addClientVisitWindow"></div>
 <div id="addClientWindow"></div>
-<div id="applyOrderWindow"></div>
+<div id="permitOrderWindow"></div>
 <div id="selectInfoerWindow"></div>
 <script type="text/javascript" src="pages/marketing/clientNegotiation/index.js"></script>
 </body>

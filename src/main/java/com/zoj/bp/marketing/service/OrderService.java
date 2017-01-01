@@ -83,7 +83,12 @@ public class OrderService implements IOrderService {
 	public Integer addOrderApprove(OrderApprove orderApprove) {
 		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
-		order.setStatus(30);
+		if(order.getStatus() == 10)
+			order.setStatus(30);
+		else if(order.getStatus() == 30)
+			order.setStatus(32);
+		else if(order.getStatus() == 62)
+			order.setStatus(64);
 		return dao.updateOrderStatus(order);
 	}
 

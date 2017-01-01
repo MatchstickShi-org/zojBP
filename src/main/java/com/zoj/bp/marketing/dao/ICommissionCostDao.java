@@ -21,9 +21,10 @@ public interface ICommissionCostDao
 	/**
 	 * @param pagination
 	 * @param infoerId
+	 * @param orderId
 	 * @return
 	 */
-	DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId);
+	DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId,Integer orderId);
 
 	
 }

@@ -17,14 +17,24 @@ import com.zoj.bp.common.vo.Pagination;
 public class CommissionCostDao extends BaseDao implements ICommissionCostDao {
 
 	@Override
-	public DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId) {
+	public DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT CC.*,O.PROJECT_NAME,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U2.ALIAS AS designerName FROM COMMISSION_COST CC "+
 				"LEFT JOIN `ORDER` O ON O.ID = CC.ORDER_ID "+
 				"LEFT JOIN INFOER I ON I.ID = CC.INFOER_ID "+
 				"LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
 				"LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
-				"WHERE CC.INFOER_ID="+infoerId;
+				"WHERE 1=1 ";
+		if(infoerId != null)
+		{
+			sql +=" AND CC.INFOER_ID =: infoerId";
+			paramMap.put("infoerId", infoerId);
+		}
+		if(orderId != null)
+		{
+			sql +=" AND CC.ORDER_ID =: orderId";
+			paramMap.put("orderId", orderId);
+		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";

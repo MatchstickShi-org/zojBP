@@ -12,7 +12,7 @@ $(function()
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
-	var $applyOrderWindow = $('div#applyOrderWindow');
+	var $permitOrderWindow = $('div#permitOrderWindow');
 	var $selectInfoerWindow = $('div#selectInfoerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $orderMgrTab = $('div#orderMgrTab');
@@ -21,6 +21,8 @@ $(function()
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
 	var $orderStylistVisitGrid = $('table#orderStylistVisitGrid');
+	var $infoCostGrid = $('table#infoCostGrid');
+	var $commissionCostGrid = $('table#commissionCostGrid');
 	
 	showSelectInfoerWindow = function()
 	{
@@ -47,8 +49,10 @@ $(function()
 				{field:'projectName', title:'工程名称', width: 8},
 				{field:'projectAddr', title:'工程地址', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanId', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'salesmanStatus', hidden: true},
+				{field:'designerId', hidden: true},
 				{field:'designerName', title:'设计师', width: 3},
 				{field:'designerStatus', hidden: true},
 				{
@@ -102,6 +106,52 @@ $(function()
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
+		});
+		
+		$infoCostGrid.datagrid
+		({
+			idField: 'id',
+			toolbar: '#infoCostGridToolbar',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'orderId', title:'单号', width: 3},
+				  {field:'projectName', title:'项目名称', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
+				  {field:'designerName', title:'设计师', width: 3},
+				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
+						{
+					  		return value = value +' ￥';
+						}
+				  },
+				  {field:'date', title:'打款日期', width: 3},
+				  {field:'remark', title:'备注', width: 8}
+				  ]],
+				  pagination: true
+		});
+		
+		$commissionCostGrid.datagrid
+		({
+			idField: 'id',
+			toolbar: '#commissionCostGridToolbar',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'orderId', title:'单号', width: 3},
+				  {field:'projectName', title:'项目名称', width: 6},
+				  {field:'infoerName', title:'信息员', width: 3},
+				  {field:'salesmanName', title:'业务员', width: 3},
+				  {field:'designerName', title:'设计师', width: 3},
+				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
+					  {
+					  return value = value +' ￥';
+					  }
+				  },
+				  {field:'date', title:'打款日期', width: 3},
+				  {field:'remark', title:'备注', width: 8}
+				  ]],
+				  pagination: true
 		});
 		
 		$queryOrderBtn.linkbutton
@@ -252,6 +302,8 @@ $(function()
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
+		$infoCostGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoCostByOrder';
+		$commissionCostGrid.datagrid('options').url = 'marketing/infoerMgr/getCommissionCostByOrder';
 		
 		$orderStylistVisitGrid.datagrid
 		({
@@ -280,6 +332,12 @@ $(function()
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
+				case '信息费':
+					$infoCostGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+					break;
+				case '提成':
+					$commissionCostGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+					break;
 			}
 		}
 		
@@ -295,6 +353,12 @@ $(function()
 					break;
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('loadData', []);
+					break;
+				case '信息费':
+					$infoCostGrid.datagrid('loadData', []);
+					break;
+				case '提成':
+					$commissionCostGrid.datagrid('loadData', []);
 					break;
 			}
 		}
@@ -359,7 +423,7 @@ $(function()
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
-		$('#applyOrderBtn').linkbutton({onClick: showApplyOrderWindow});
+		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
 		
 		
 		function removeOrder()
@@ -408,32 +472,27 @@ $(function()
 		
 		$addClientVisitWindow.window({width: 350});
 		$addClientWindow.window({width: 450});
-		$applyOrderWindow.window({width: 450});
+		$permitOrderWindow.window({width: 340});
 		$selectInfoerWindow.window({width: 350});
 		
-		function showApplyOrderWindow()
+		function showPermitOrderWindow()
 		{
-			var selIds = $orderDatagrid.datagrid('getSelections');
+			var selIds = $orderCheckDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中要申请在谈单的客户。');
+				$.messager.alert('提示', '请选中要批准的客户。');
 				return;
 			}
-			var selRows = $orderDatagrid.datagrid("getSelections");
-			if(selRows[0].status !=10){
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">正跟踪</span>的客户为在谈单。');
-				return;
-			}
-			$applyOrderWindow.window('clear');
-			$applyOrderWindow.window('open').window
+			$permitOrderWindow.window('clear');
+			$permitOrderWindow.window('open').window
 			({
-				title: '申请在谈单',
-				content: applyOrderWindowHtml
+				title: '批准',
+				content: permitOrderWindowHtml
 			}).window('open').window('center');
 		}
 		
-		var applyOrderWindowHtml = 
-			'<form id="applyOrderForm" action="marketing/clientMgr/applyOrder" method="post" style="width: 100%;">' + 
+		var permitOrderWindowHtml = 
+			'<form id="permitOrderForm" action="marketing/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>客户名称：</label></td>' + 
@@ -444,28 +503,34 @@ $(function()
 			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitApplyOrderForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$applyOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$permitOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
 			'</form>' +
 			'<script type="text/javascript">' + 
-			'var $applyOrderWindow = $(\'div#applyOrderWindow\');' +
-			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
-			'var selRows = $orderDatagrid.datagrid("getSelections");' +
-			'$applyOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
-			'$applyOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
-			'$applyOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
-			'function submitApplyOrderForm()' + 
+			'var $permitOrderWindow = $(\'div#permitOrderWindow\');' +
+			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
+			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitPermitOrderForm()' + 
 			'{' + 
-			'	$applyOrderWindow.find(\'form#applyOrderForm\').form(\'submit\',' + 
+			'	$permitOrderWindow.find(\'form#permitOrderForm\').form(\'submit\',' + 
 			'	{' + 
 			'		onSubmit: function()' + 
 			'		{' + 
@@ -477,8 +542,8 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				$applyOrderWindow.window(\'close\');' + 
+			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$permitOrderWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

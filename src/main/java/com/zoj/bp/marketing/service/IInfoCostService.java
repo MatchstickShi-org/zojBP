@@ -9,9 +9,10 @@ public interface IInfoCostService {
 	/**
 	 * @param pagination
 	 * @param infoerId
+	 * @param orderId
 	 * @return
 	 */
-	DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId);
+	DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId,Integer orderId);
 
 	/**
 	 * @param infoCost

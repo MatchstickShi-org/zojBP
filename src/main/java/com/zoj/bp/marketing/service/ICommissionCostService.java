@@ -8,10 +8,11 @@ public interface ICommissionCostService {
 
 	/**
 	 * @param pagination
-	 * @param infoerId –≈œ¢‘±ID
+	 * @param infoerId 
+	 * @param orderId 
 	 * @return
 	 */
-	DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId);
+	DatagridVo<CommissionCost> getAllCommissionCost(Pagination pagination,Integer infoerId,Integer orderId);
 
 	/**
 	 * @param commissionCost
