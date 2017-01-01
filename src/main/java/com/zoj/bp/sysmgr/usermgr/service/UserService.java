@@ -140,8 +140,8 @@ public class UserService implements IUserService
 	public DatagridVo<User> getNotAssignUnderling(Integer userId, Pagination pagination)
 	{
 		User leader = this.getUserById(userId);
-		if(!leader.isMarketingLeader() && !leader.isDesignLeader())
-			return DatagridVo.<User>emptyVo();
+		if(!leader.isLeader() && !leader.isSuperAdmin())
+			return DatagridVo.<User>emptyVo(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是主管，不能查询下属。"));
 		return userDao.getNotAssignUnderling(leader, pagination);
 	}
 }

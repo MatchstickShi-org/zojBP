@@ -3,6 +3,8 @@ package com.zoj.bp.marketing.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zoj.bp.common.excption.BusinessException;
+import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -35,8 +37,12 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser,String name,String tel,String[] level) {
-		return infoerDao.getAllInfoer(pagination, loginUser,name,tel,level);
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,
+			User loginUser, String name, String tel, Integer... levels) throws BusinessException
+	{
+		if(!loginUser.isBelongMarketing())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部人员，无法查看信息员。"));
+		return infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
 	}
 
 	@Override

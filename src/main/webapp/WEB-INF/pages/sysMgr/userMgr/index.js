@@ -40,22 +40,22 @@ $(function()
 								return '管理员';
 								break;
 							case 1:
-								return '市场部业务员';
+								return '商务部业务员';
 								break;
 							case 2:
-								return '市场部主管';
+								return '商务部主管';
 								break;
 							case 3:
-								return '市场部经理';
+								return '商务部经理';
 								break;
 							case 4:
-								return '设计部设计师';
+								return '主案部设计师';
 								break;
 							case 5:
-								return '设计部主管';
+								return '主案部主管';
 								break;
 							case 2:
-								return '设计部部经理';
+								return '主案部部经理';
 								break;
 							default:
 								return '未知';
@@ -171,10 +171,10 @@ $(function()
 					  switch (value)
 					  {
 						  case 1:
-							  return '市场部业务员';
+							  return '商务部业务员';
 							  break;
 						  case 4:
-							  return '设计部设计师';
+							  return '主案部设计师';
 							  break;
 						  default:
 							  return '未知';
@@ -282,10 +282,10 @@ $(function()
 								var comboData = [];
 								if(data.role >= -1 && data.role <= 0)	//管理员
 									comboData = [{text: '管理员', value: 0}, {text: '超级管理员', value: -1}];
-								else if(data.role >= 1 && data.role <= 3)	//市场部
-									comboData = [{text: '市场部业务员', value: 1}, {text: '市场部主管', value: 2}, {text: '市场部经理', value: 3}];
-								else if(data.role >=4  && data.role <= 6)	//设计部
-									comboData = [{text: '设计部设计师', value: 4}, {text: '设计部主管', value: 5}, {text: '设计部经理', value: 6}];
+								else if(data.role >= 1 && data.role <= 3)	//商务部
+									comboData = [{text: '商务部业务员', value: 1}, {text: '商务部主管', value: 2}, {text: '商务部经理', value: 3}];
+								else if(data.role >=4  && data.role <= 6)	//主案部
+									comboData = [{text: '主案部设计师', value: 4}, {text: '主案部主管', value: 5}, {text: '主案部经理', value: 6}];
 								$('#userEditForm\\.role').combobox('loadData', comboData);
 								
 								$editUserForm.form('clear').form('load', data);
@@ -480,12 +480,12 @@ $(function()
 			'			<td align="right"><label>角色：</label></td>' + 
 			'			<td style="width: 170px;">' +
 			'				<select class="easyui-combobox" name="role" style="width: 160px;" initValue="1">' +
-			'					<option value="1" selected="selected">市场部业务员</option>' +
-			'					<option value="2">市场部主管</option>' +
-			'					<option value="3">市场部经理</option>' +
-			'					<option value="4">设计部设计师</option>' +
-			'					<option value="5">设计部主管</option>' +
-			'					<option value="6">设计部经理</option>' +
+			'					<option value="1" selected="selected">商务部业务员</option>' +
+			'					<option value="2">商务部主管</option>' +
+			'					<option value="3">商务部经理</option>' +
+			'					<option value="4">主案部设计师</option>' +
+			'					<option value="5">主案部主管</option>' +
+			'					<option value="6">主案部经理</option>' +
 			'					<option value="0">管理员</option>' +
 			'				</select>' +
 			'			</td>' + 

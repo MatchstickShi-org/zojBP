@@ -1,0 +1,6 @@
+@charset "utf-8";
+/* CSS Document */
+.datagrid-toolbar label, .datagrid-toolbar input, .datagrid-toolbar span
+{
+	vertical-align: middle;
+}

@@ -18,11 +18,11 @@
 			<label>电话：</label>
 			<input style="width: 100px;" class="easyui-textbox" id="infoerMgr.telInput"/>
 			<label>信息员等级：</label>
-			<label><input type="checkbox" value="0" name="levelInput" checked="checked" style="top: 2px;"/>全部</label>
-			<label><input type="checkbox" value="1" name="levelInput" style="top: 2px;"/>金牌</label>
-			<label><input type="checkbox" value="2" name="levelInput" style="top: 2px;"/>银牌</label>
-			<label><input type="checkbox" value="3" name="levelInput" style="top: 2px;"/>铜牌</label>
-			<label><input type="checkbox" value="4" name="levelInput" style="top: 2px;"/>铁牌</label>
+			<label><input type="checkbox" value="" name="levelInput" checked="checked"/>全部</label>
+			<label><input type="checkbox" value="1" name="levelInput"/>金牌</label>
+			<label><input type="checkbox" value="2" name="levelInput"/>银牌</label>
+			<label><input type="checkbox" value="3" name="levelInput"/>铜牌</label>
+			<label><input type="checkbox" value="4" name="levelInput"/>铁牌</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>

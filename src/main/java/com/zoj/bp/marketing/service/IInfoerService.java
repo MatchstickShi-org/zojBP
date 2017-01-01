@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.service;
 
+import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -24,8 +25,9 @@ public interface IInfoerService {
 	/**
 	 * @param pagination
 	 * @return
+	 * @throws BusinessException 
 	 */
-	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level);
+	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,Integer... levels) throws BusinessException;
 
 	/**
 	 * @param infoer

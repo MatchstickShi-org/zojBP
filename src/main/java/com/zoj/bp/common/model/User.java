@@ -106,6 +106,17 @@ public class User implements Serializable
 		this.menus = menus;
 	}
 	
+	/**是否属于商务部人员*/
+	public boolean isBelongMarketing()
+	{
+		return this.isSuperAdmin() || this.isMarketingLeader() || this.isMarketingSalesman() || this.isMarketingManager();
+	}
+	
+	public boolean isMarketingManager()
+	{
+		return this.role == Role.marketingManager.value();
+	}
+	
 	/**
 	 * @return
 	 */

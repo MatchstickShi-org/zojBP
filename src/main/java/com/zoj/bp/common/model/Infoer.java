@@ -2,10 +2,14 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * @author wangw
@@ -47,8 +51,10 @@ public class Infoer implements Serializable
 	private Integer salesmanId;
 	
 	private String salesmanName;
-	
-	private String insertTime;
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
+	private Date insertTime;
 	
 	private Integer leftVisitDays;  //剩余回访天数
 	
@@ -179,12 +185,14 @@ public class Infoer implements Serializable
 		this.leftVisitDays = leftVisitDays;
 	}
 
-	public String getInsertTime() {
+	public Date getInsertTime()
+	{
 		return insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
-		this.insertTime = insertTime.substring(0,19);
+	public void setInsertTime(Date insertTime)
+	{
+		this.insertTime = insertTime;
 	}
 
 	public String getTelAll() {

@@ -91,14 +91,14 @@ $(function()
 			'onClick': function()
 			{
 				$infoerDatagrid.datagrid('loading');
-				var chk_value =''; 
+				var chkLevels = []; 
 				$('input[name="levelInput"]:checked').each(function(){ 
-					chk_value = chk_value+$(this).val()+","; 
-				}); 
+					chkLevels.push($(this).val()); 
+				});
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
-					data: {name: $infoerNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),level:chk_value},
+					data: {name: $infoerNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'), level: chkLevels},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)

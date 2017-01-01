@@ -176,17 +176,21 @@ public class GroupDao extends BaseDao implements IGroupDao
 	{
 		String sql = "SELECT U.*, G.NAME GROUP_NAME FROM USER U "
 				+ " LEFT JOIN `GROUP` G ON G.ID = U.GROUP_ID "
-				+ " WHERE (U.ROLE = :marketingLeader OR U.ROLE = :designLeader) ";
-		Integer type = 0;
-		if(groupId != null)
+				+ " WHERE 1=1 ";
+		Integer role = Role.marketingLeader.value();
+		if(groupId == null)
+			sql += " AND (U.ROLE = :marketingLeader OR U.ROLE = :designLeader) ";
+		else
 		{
 			Group g = getGroupById(groupId);
-			type = g.getType();
-			sql += " AND G.TYPE = :type AND (U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL) ";
+			if(g.getType() == 1)
+				role =  Role.designLeader.value();
+			sql += " AND U.ROLE = :role ";
 		}
+		sql += "AND (U.GROUP_ID <> :groupId OR U.GROUP_ID IS NULL) ";
 
 		MapSqlParameterSource params = new MapSqlParameterSource("marketingLeader", Role.marketingLeader.value())
-			.addValue("designLeader", Role.designLeader.value()).addValue("type", type)
+			.addValue("designLeader", Role.designLeader.value()).addValue("role", role)
 			.addValue("marketGroup", Type.marketingGroup.value()).addValue("groupId", groupId);
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);

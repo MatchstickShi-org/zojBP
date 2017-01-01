@@ -34,7 +34,7 @@ public interface IInfoerDao
 	 * @param pagination
 	 * @return
 	 */
-	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level);
+	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,Integer... levels);
 
 	/**
 	 * 新增信息员

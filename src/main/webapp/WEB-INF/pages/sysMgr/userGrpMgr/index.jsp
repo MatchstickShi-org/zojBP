@@ -15,8 +15,8 @@
 		<div id="groupDatagridToolbar">
 			<label style="vertical-align: middle;">部门：</label>
 			<label style="vertical-align: middle;"><input type="radio" name="type" checked="checked" value="-1">全部</label>
-			<label style="vertical-align: middle;"><input type="radio" name="type" value="0">市场部</label>
-			<label style="vertical-align: middle;"><input type="radio" name="type" value="1">设计部</label>
+			<label style="vertical-align: middle;"><input type="radio" name="type" value="0">商务部</label>
+			<label style="vertical-align: middle;"><input type="radio" name="type" value="1">主案部</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryGroupBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddGroupWindowBtn">新增</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeGroupsBtn">删除</a>

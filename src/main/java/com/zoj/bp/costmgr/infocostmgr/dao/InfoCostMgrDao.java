@@ -44,13 +44,7 @@ public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 		if(user.isMarketingSalesman())
 			sql += " WHERE O.SALESMAN_ID = :userId ";
 		else if(user.isMarketingLeader())
-		{
-			sql += " WHERE O.SALESMAN_ID IN "
-				+ " ("
-				+ "		SELECT G.ID FROM `GROUP` G LEFT JOIN USER U ON U.GROUP_ID = G.ID "
-				+ "		WHERE U.ID = :userId "
-				+ "	)";
-		}
+			sql += " WHERE S.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 		else
 			sql += " WHERE 1=1 ";
 		

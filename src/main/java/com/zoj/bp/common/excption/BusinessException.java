@@ -44,8 +44,8 @@ public class BusinessException extends Exception
 	/**
 	 * @return
 	 */
-	public int getReturnCode()
+	public ReturnCode getReturnCode()
 	{
-		return returnCode.getReturnCode();
+		return returnCode;
 	}
 }

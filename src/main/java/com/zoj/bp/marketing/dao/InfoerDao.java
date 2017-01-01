@@ -1,9 +1,9 @@
 package com.zoj.bp.marketing.dao;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -55,16 +55,25 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,String[] level) {
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser, String name, String tel, Integer... levels)
+	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
 				+ "		CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME)  "
 				+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
 				+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
 				+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
-				+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
-				+ " WHERE 1=1 AND I.SALESMAN_ID = :salesmanId";
-		paramMap.put("salesmanId", loginUser.getId());
+				+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID ";
+		if(loginUser.isMarketingSalesman())
+			sql += " WHERE U.ID = :userId ";
+		else if(loginUser.isMarketingLeader())
+		{
+			sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
+		}
+		else
+			sql += " WHERE 1=1 ";
+		
+		paramMap.put("userId", loginUser.getId());
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND I.NAME LIKE :name";
@@ -80,8 +89,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 			paramMap.put("tel4", '%' + tel + '%');
 			paramMap.put("tel5", '%' + tel + '%');
 		}
-		if(level != null && !Arrays.asList(level).contains("0"))
-			sql += " AND I.LEVEL IN(" + StringUtils.join(level, ',') + ")";
+		if(ArrayUtils.isNotEmpty(levels))
+			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
 		
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
@@ -93,7 +102,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 	
 	@Override
-	public Integer addInfoer(Infoer infoer) {
+	public Integer addInfoer(Infoer infoer)
+	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
 				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now())",

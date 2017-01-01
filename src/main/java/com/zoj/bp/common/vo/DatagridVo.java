@@ -4,12 +4,14 @@
 package com.zoj.bp.common.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+
+import com.zoj.bp.common.excption.ReturnCode;
 
 /**
  * @author Administrator
@@ -31,15 +33,23 @@ public class DatagridVo<T> implements Serializable
 	
 	private Map<String, Object> extParams = new HashMap<>();
 	
+	private DatagridVo(List<T> beanList, int totalRows, ReturnCode returnCode)
+	{
+		this.rows = beanList;
+		this.total = totalRows;
+		this.returnCode = returnCode.getReturnCode();
+		this.msg = returnCode.getMsg();
+	}
+	
 	private DatagridVo(List<T> beanList, int totalRows)
 	{
 		this.rows = beanList;
 		this.total = totalRows;
 	}
 	
-	public static <Y> DatagridVo<Y> emptyVo()
+	public static <Y> DatagridVo<Y> emptyVo(ReturnCode returnCode)
 	{
-		return new DatagridVo<>(new ArrayList<Y>(), 0);
+		return new DatagridVo<>(Collections.<Y>emptyList(), 0, returnCode);
 	}
 	
 	public static <Y> DatagridVo<Y> buildDatagridVo(List<Y> beanList, Integer totalRows)
@@ -79,9 +89,9 @@ public class DatagridVo<T> implements Serializable
 		return returnCode;
 	}
 
-	public void setReturnCode(int returnCode)
+	public void setReturnCode(ReturnCode returnCode)
 	{
-		this.returnCode = returnCode;
+		this.returnCode = returnCode.getReturnCode();
 	}
 
 	public String getMsg()
@@ -89,9 +99,10 @@ public class DatagridVo<T> implements Serializable
 		return msg;
 	}
 
-	public void setMsg(String msg)
+	public DatagridVo<T> setMsg(String msg)
 	{
 		this.msg = msg;
+		return this;
 	}
 
 	public void setTotal(int total)

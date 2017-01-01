@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -68,14 +69,25 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/getAllInfoers")
 	@ResponseBody
-	public DatagridVo<Infoer> getAllInfoers(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String level, HttpSession session)
+	public DatagridVo<Infoer> getAllInfoers(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(value = "level[]", required=false) Integer[] levels, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] levelArr = null;
-		if (StringUtils.isNotEmpty(level))
-			levelArr = level.split(",");
-		return infoerSvc.getAllInfoer(pagination, loginUser,name,tel,levelArr);
+		if(ArrayUtils.isNotEmpty(levels))
+		{
+			while(levels[0] == null)
+				levels = ArrayUtils.remove(levels, 0);
+		}
+		try
+		{
+			return infoerSvc.getAllInfoer(pagination, loginUser, name, tel, levels);
+		}
+		catch (BusinessException e)
+		{
+			return DatagridVo.<Infoer>emptyVo(e.getReturnCode());
+		}
 	}
 	
 	@RequestMapping(value = "/getInfoerById")

@@ -50,7 +50,7 @@ $(function()
 				{
 					field:'type', title:'所属部门', width: 5, formatter: function(value, row, index)
 					{
-						return value == 0 ? '市场部' : '设计部';
+						return value == 0 ? '商务部' : '主案部';
 					}
 				}
 			]],
@@ -83,10 +83,10 @@ $(function()
 					  switch (value)
 					  {
 						  case 1:
-							  return '市场部业务员';
+							  return '商务部业务员';
 							  break;
 						  case 4:
-							  return '设计部设计师';
+							  return '主案部设计师';
 							  break;
 						  default:
 							  return '未知';
