@@ -33,6 +33,9 @@ $(function()
 					{
 						switch (value)
 						{
+							case -1:
+								return '超级管理员';
+								break;
 							case 0:
 								return '管理员';
 								break;
@@ -63,7 +66,7 @@ $(function()
 				{
 					field:'leaderName', title:'上级', width: 5, formatter: function(value, row, index)
 					{
-						if(row.role == 0)
+						if(row.role <= 0)
 							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';
@@ -73,7 +76,7 @@ $(function()
 				{
 					field:'groupName', title:'所属组', width: 5, formatter: function(value, row, index)
 					{
-						if(row.role == 0)
+						if(row.role <= 0)
 							return '<span style="color: gray">-</span>';
 						if(!value)
 							return '<span style="color: red;">无</span>';

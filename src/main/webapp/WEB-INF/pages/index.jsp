@@ -75,7 +75,6 @@ if(${loginUser.role == 0})
 $(function()
 {
 	var $broadcastMsgDiv = $('#broadcastMsgDiv');
-	var $lastSpan = $broadcastMsgDiv.find('span:last');
 		
 	function getBroadcastMsgs()
 	{
@@ -86,9 +85,12 @@ $(function()
 			{
 				if(data.returnCode == 0)
 				{
-					var $tmpSapan = $('<span id="' + data.newestMsg.id + '">' + data.newestMsg.content + '</span>');
-					$lastSpan.after($tmpSapan);
-					$lastSpan = $tmpSapan;
+					var $lastSpan = $broadcastMsgDiv.find('span:last');
+					var $tmpSpan = $('<span id="' + data.newestMsg.id + '">' + data.newestMsg.content + '</span>');
+					if($lastSpan.length == 0)		//之前没有消息
+						$broadcastMsgDiv.append($tmpSpan);
+					else
+						$lastSpan.after($tmpSpan);
 					getBroadcastMsgs();
 				}
 			},

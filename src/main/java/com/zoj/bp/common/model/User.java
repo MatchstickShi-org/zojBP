@@ -119,7 +119,7 @@ public class User implements Serializable
 	 */
 	public boolean isAdmin()
 	{
-		return this.role == Role.admin.value();
+		return this.role == Role.admin.value() || this.role == Role.superAdmin.value();
 	}
 	
 	/**
