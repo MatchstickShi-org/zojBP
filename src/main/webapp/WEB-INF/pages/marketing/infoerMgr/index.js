@@ -19,7 +19,6 @@ $(function()
 	var $infoCostGrid = $('table#infoCostGrid');
 	var $commissionCostGrid = $('table#commissionCostGrid');
 	var $clientGrid = $('table#clientGrid');
-	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
 	
 	function init()
 	{
@@ -78,12 +77,26 @@ $(function()
 			url: 'marketing/infoerMgr/getAllInfoers',
 			onSelect: function(idx, row)
 			{
+				if(row.salesmanId != _session_loginUserId)
+				{
+					$('#addInfoerVisitBtn').linkbutton('disable');
+					$('#addClientBtn').linkbutton('disable');
+				}
+				else
+				{
+					$('#addInfoerVisitBtn').linkbutton('enable');
+					$('#addClientBtn').linkbutton('enable');
+				}
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
-			},
-			onCheck: updateBtnStatus,
-			onUncheck: updateBtnStatus,
-			onCheckAll: updateBtnStatus,
-			onUncheckAll: updateBtnStatus,
+			}
+		});
+		
+		$('#infoerDatagridToolbar :checkbox').click(function()
+		{
+			if($(this).attr('value') == '')		//全选
+				$('#infoerDatagridToolbar :checkbox[value!=""]').attr("checked", false);
+			else
+				$('#infoerDatagridToolbar :checkbox[value=""]').attr("checked", false);
 		});
 		
 		$queryInfoerBtn.linkbutton
@@ -92,7 +105,8 @@ $(function()
 			{
 				$infoerDatagrid.datagrid('loading');
 				var chkLevels = []; 
-				$('input[name="levelInput"]:checked').each(function(){ 
+				$('#infoerDatagridToolbar :checkbox[name="levelInput"]:checked').each(function()
+				{ 
 					chkLevels.push($(this).val()); 
 				});
 				$.ajax
@@ -255,15 +269,6 @@ $(function()
 		$infoCostGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoCostByInfoer';
 		$commissionCostGrid.datagrid('options').url = 'marketing/infoerMgr/getCommissionCostByInfoer';
 		$clientGrid.datagrid('options').url = 'marketing/infoerMgr/getClientByInfoer';
-		
-		function updateBtnStatus()
-		{
-			var selRows = $infoerDatagrid.datagrid('getChecked');
-			if(selRows.length > 0)
-			{
-				var revertFlag = true, removeFlag = true;
-			}
-		}
 		
 		function loadTabData(title, row)
 		{
@@ -521,7 +526,7 @@ $(function()
 			var selIds = $infoerDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中一个信息员。');
+				$.messager.alert("提示", "请选择要回访的信息员。");
 				return;
 			}
 			$addInfoerVisitWindow.window('clear');
@@ -560,6 +565,12 @@ $(function()
 			'	{' + 
 			'		onSubmit: function()' + 
 			'		{' + 
+			'			var selInfoerIds = $infoerDatagrid.datagrid("getSelectRowPkValues");' + 
+			'			if(selInfoerIds.length == 0)' + 
+			'			{' + 
+			'				$.messager.alert("提示", "请选择要回访的信息员。");' + 
+			'				return;' + 
+			'			}' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
 			'		},' + 
