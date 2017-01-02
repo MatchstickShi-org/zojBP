@@ -1,5 +1,6 @@
 package com.zoj.bp.sysmgr.usermgr.dao;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -99,6 +100,7 @@ public class UserDao extends BaseDao implements IUserDao
 		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
 				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON G.ID = LU.GROUP_ID "
+				/* LEFT JOIN LU 需要加上条件LU.ROLE = 主管，否则会出现多个重复user（根据groupId会查出多个user） */
 				+ " AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
 				+ " WHERE 1=1 ";
 		MapSqlParameterSource params = new MapSqlParameterSource("marketGroup", Type.marketingGroup.value())
@@ -113,7 +115,7 @@ public class UserDao extends BaseDao implements IUserDao
 			sql += " AND U.ALIAS LIKE :alias";
 			params.addValue("alias", '%' + alias + '%');
 		}
-		if(roles != null && roles.length > 0)
+		if(ArrayUtils.isNotEmpty(roles))
 			sql +=" AND U.ROLE IN(" + StringUtils.join(roles, ',') + ")";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);

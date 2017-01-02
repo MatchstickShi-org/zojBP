@@ -107,11 +107,13 @@ public class User implements Serializable
 	}
 	
 	/**是否属于商务部人员*/
+	@Transient
 	public boolean isBelongMarketing()
 	{
 		return this.isSuperAdmin() || this.isMarketingLeader() || this.isMarketingSalesman() || this.isMarketingManager();
 	}
-	
+
+	@Transient
 	public boolean isMarketingManager()
 	{
 		return this.role == Role.marketingManager.value();
@@ -120,6 +122,7 @@ public class User implements Serializable
 	/**
 	 * @return
 	 */
+	@Transient
 	public boolean isSuperAdmin()
 	{
 		return this.role == Role.superAdmin.value();
@@ -128,6 +131,7 @@ public class User implements Serializable
 	/**
 	 * @return
 	 */
+	@Transient
 	public boolean isAdmin()
 	{
 		return this.role == Role.admin.value() || this.role == Role.superAdmin.value();

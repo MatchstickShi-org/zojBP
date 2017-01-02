@@ -105,10 +105,10 @@ public class InfoerCtrl
 	public Map<String, ?> addInfoer(@Valid Infoer infoer,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(loginUser == null)
-			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
+		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法新增信息员。"));
 		Infoer infoerTel = null;
 		if(StringUtils.isNotEmpty(infoer.getTel1()))
 			infoerTel = infoerSvc.findByTel(infoer.getTel1());
@@ -165,13 +165,13 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/addInfoerVisit")
 	@ResponseBody
-	public Map<String, ?> addInfoerVisit(@Valid InfoerVisit infoerVisit,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> addInfoerVisit(@Valid InfoerVisit infoerVisit, Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(loginUser == null)
-			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
+		if(loginUser.getId() != infoerVisit.getSalesmanId())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是该信息员的业务员，无法新增。"));
 		infoerVisit.setSalesmanId(loginUser.getId());
 		infoerVisitSvc.addInfoerVisit(infoerVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -179,19 +179,26 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/editInfoer")
 	@ResponseBody
-	public Map<String, ?> editInfoer(@Valid Infoer infoer, Errors errors) throws Exception
+	public Map<String, ?> editInfoer(HttpSession session, @Valid Infoer infoer, Errors errors) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法新增信息员。"));
 		infoerSvc.updateInfoer(infoer);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
 	@RequestMapping(value = "/transferInfoer")
 	@ResponseBody
-	public Map<String, ?> transferInfoer(@RequestParam("infoerIds[]") Integer[] infoerIds,@RequestParam("salesmanId") Integer salesmanId) throws Exception
+	public Map<String, ?> transferInfoer(HttpSession session,
+			@RequestParam("infoerIds[]") Integer[] infoerIds, @RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
-		infoerSvc.updateInfoerSalesmanId(infoerIds,salesmanId);
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部经理，无法操作。"));
+		infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
