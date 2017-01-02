@@ -10,12 +10,16 @@ $(function()
 	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
+	var $addInfoCostBtn = $('a#addInfoCostBtn');
+	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
+	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $permitOrderWindow = $('div#permitOrderWindow');
+	var $rejectOrderWindow = $('div#rejectOrderWindow');
 	var $selectInfoerWindow = $('div#selectInfoerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
-	var $orderMgrTab = $('div#orderMgrTab');
+	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
@@ -105,6 +109,7 @@ $(function()
 			onSelect: function(idx, row)
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
+				$addInfoCostBtn.linkbutton(row.infoerName != null ? 'disable' : 'enable');
 			},
 		});
 		
@@ -178,14 +183,19 @@ $(function()
 				});
 			}
 		});
-		
+		$orderCheckMgrTab.tabs({});
 		$clientMgrTab.tabs
 		({
 			border: false,
 			onSelect: function(title, index)
 			{
-				var selRows = $orderDatagrid.datagrid('getSelections');
-				
+				var selTab = $orderCheckMgrTab.tabs('getSelected');
+				var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+				var selRows = null;
+				if(index == 0)
+					selRows = $orderDatagrid.datagrid('getSelections');
+				else
+					selRows = $orderCheckDatagrid.datagrid('getSelections');
 				if(selRows.length == 1)
 					loadTabData(title, selRows[0]);
 				else
@@ -196,12 +206,32 @@ $(function()
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
 		{
-			var selRows = $orderDatagrid.datagrid('getSelections');
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var selRows = null;
+			if(index == 0)
+				selRows = $orderDatagrid.datagrid('getSelections');
+			else
+				selRows = $orderCheckDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
+		$reloadInfoCostBtn.linkbutton({'onClick': function()
+			{
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var selRows = null;
+			if(index == 0)
+				selRows = $orderDatagrid.datagrid('getSelections');
+			else
+				selRows = $orderCheckDatagrid.datagrid('getSelections');
+			if(selRows.length == 1)
+				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+			else
+				$.messager.alert('提示', '请选中一个客户。');
+			}});
 		
 		$orderCheckDatagrid.datagrid
 		({
@@ -218,6 +248,7 @@ $(function()
 				{field:'projectAddr', title:'工程地址', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'designerName', title:'设计师', width: 3},
 				{field:'salesmanStatus', hidden: true},
 				{
 					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
@@ -231,7 +262,7 @@ $(function()
 								return '不准单审核中';
 								break;
 							default:
-								return '未评级';
+								return '无状态';
 								break;
 						}
 					}
@@ -245,7 +276,8 @@ $(function()
 			url: 'marketing/clientMgr/getAllClientCheck',
 			onSelect: function(idx, row)
 			{
-				loadTabCheckData($orderMgrTab.tabs('getSelected').panel('options').title, row);
+				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
+				$addInfoCostBtn.linkbutton(row.infoerName != null ? 'disable' : 'enable');
 			},
 		});
 		
@@ -274,17 +306,21 @@ $(function()
 			}
 		});
 		
-		$orderMgrTab.tabs
+		$orderCheckMgrTab.tabs
 		({
 			border: false,
 			onSelect: function(title, index)
 			{
-				var selRows = $orderCheckDatagrid.datagrid('getSelections');
-				
-				if(selRows.length == 1)
-					loadTabCheckData(title, selRows[0]);
+				var selRows = null;
+				if(title == '在谈单查询')
+					$orderDatagrid.datagrid('unselectAll').datagrid('reload');
 				else
-					clearTabCheckData(title);
+					$orderCheckDatagrid.datagrid('unselectAll').datagrid('reload');
+				$editClientForm.form('clear');
+				$orderVisitGrid.datagrid('loadData', []);
+				$orderStylistVisitGrid.datagrid('loadData', []);
+				$infoCostGrid.datagrid('loadData', []);
+				$commissionCostGrid.datagrid('loadData', []);
 			}
 		});
 		
@@ -302,8 +338,8 @@ $(function()
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
-		$infoCostGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoCostByOrder';
-		$commissionCostGrid.datagrid('options').url = 'marketing/infoerMgr/getCommissionCostByOrder';
+		$infoCostGrid.datagrid('options').url = 'marketing/clientMgr/getInfoCostByOrder';
+		$commissionCostGrid.datagrid('options').url = 'marketing/clientMgr/getCommissionCostByOrder';
 		
 		$orderStylistVisitGrid.datagrid
 		({
@@ -362,42 +398,17 @@ $(function()
 					break;
 			}
 		}
-		function loadTabCheckData(title, row)
-		{
-			switch (title)
-			{
-			case '详情':
-				$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
-				break;
-			case '业务员回访记录':
-				$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
-				break;
-			case '设计师回访记录':
-				$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
-				break;
-			}
-		}
-		
-		function clearTabCheckData(title)
-		{
-			switch (title)
-			{
-			case '详情':
-				$editClientForm.form('clear');
-				break;
-			case '业务员回访记录':
-				$orderVisitGrid.datagrid('loadData', []);
-				break;
-			case '设计师回访记录':
-				$orderStylistVisitGrid.datagrid('loadData', []);
-				break;
-			}
-		}
 		
 		function submitEditClientForm()
 		{
-			var selIds = $orderDatagrid.datagrid('getSelections');
-			if(selIds.length == 0)
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var selRows = null;
+			if(index == 0)
+				selRows = $orderDatagrid.datagrid('getSelections');
+			else
+				selRows = $orderCheckDatagrid.datagrid('getSelections');
+			if(selRows.length == 0)
 			{
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
@@ -412,8 +423,12 @@ $(function()
 				success: function(data)
 				{
 					data = $.fn.form.defaults.success(data);
-					if(data.returnCode == 0)
-						$orderDatagrid.datagrid('reload');
+					if(data.returnCode == 0){
+						if(index == 0)
+							$orderDatagrid.datagrid('reload');
+						else
+							$orderCheckDatagrid.datagrid('reload');
+					}
 					else
 						$.messager.show({title: '提示', msg: data.msg});
 				}
@@ -424,6 +439,7 @@ $(function()
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
 		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
+		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 		
 		
 		function removeOrder()
@@ -473,7 +489,30 @@ $(function()
 		$addClientVisitWindow.window({width: 350});
 		$addClientWindow.window({width: 450});
 		$permitOrderWindow.window({width: 340});
+		$rejectOrderWindow.window({width: 340});
 		$selectInfoerWindow.window({width: 350});
+		$showAddInfoCostWindow.window({width: 500});
+		
+		$addInfoCostBtn.linkbutton({onClick: function()
+		{
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var orderIds = null;
+			if(index == 0)
+				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
+			else
+				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			if(orderIds.length == 0)
+			{
+				$.messager.alert('提示', '请选择要打款的客户。');
+				return;
+			}
+			$showAddInfoCostWindow.window('clear');
+			$showAddInfoCostWindow.window('open').window
+			({
+				title: '新增信息费打款记录'
+			}).window('open').window('refresh', 'marketing/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
+		}});
 		
 		function showPermitOrderWindow()
 		{
@@ -549,11 +588,93 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
+		function showRejectOrderWindow()
+		{
+			var selIds = $orderCheckDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要驳回的客户。');
+				return;
+			}
+			$rejectOrderWindow.window('clear');
+			$rejectOrderWindow.window('open').window
+			({
+				title: '驳回',
+				content: rejectOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var rejectOrderWindowHtml = 
+			'<form id="rejectOrderForm" action="marketing/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitRejectOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$rejectOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $rejectOrderWindow = $(\'div#rejectOrderWindow\');' +
+			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
+			'$rejectOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$rejectOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$rejectOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$rejectOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$rejectOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitRejectOrderForm()' + 
+			'{' + 
+			'	$rejectOrderWindow.find(\'form#rejectOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$rejectOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
 		
 		function showAddClientVisitWindow()
 		{
-			var selIds = $orderDatagrid.datagrid('getSelections');
-			if(selIds.length == 0)
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var selRows = null;
+			if(index == 0)
+				selRows = $orderDatagrid.datagrid('getSelections');
+			else
+				selRows = $orderCheckDatagrid.datagrid('getSelections');
+			if(selRows.length == 0)
 			{
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
@@ -585,8 +706,16 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addClientVisitWindow = $(\'div#addClientVisitWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
 			'var $orderVisitGrid = $(\'table#orderVisitGrid\');' +
-			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'var $orderCheckMgrTab = $(\'div#orderCheckMgrTab\');' +
+			'var selTab = $orderCheckMgrTab.tabs("getSelected");' +
+			'var index = $orderCheckMgrTab.tabs("getTabIndex",selTab);' +
+			'var selRows = null;' +
+			'if(index == 0)' +
+			'	selRows = $orderDatagrid.datagrid("getSelections");' +
+			'else' +
+			'	selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'function submitAddClientVisitForm()' + 
 			'{' + 

@@ -12,7 +12,7 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<div id="orderMgrTab">
+		<div id="orderCheckMgrTab">
 			<div title="在谈单查询" border=false>
 				<table id="orderDatagrid" border=false></table>
 				<div id="orderDatagridToolbar">
@@ -152,7 +152,9 @@
 <div id="addClientVisitWindow"></div>
 <div id="addClientWindow"></div>
 <div id="permitOrderWindow"></div>
+<div id="rejectOrderWindow"></div>
 <div id="selectInfoerWindow"></div>
+<div id="showAddInfoCostWindow"></div>
 <script type="text/javascript" src="pages/marketing/clientNegotiation/index.js"></script>
 </body>
 </html>

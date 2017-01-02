@@ -83,12 +83,53 @@ public class OrderService implements IOrderService {
 	public Integer addOrderApprove(OrderApprove orderApprove) {
 		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
-		if(order.getStatus() == 10)
-			order.setStatus(30);
-		else if(order.getStatus() == 30)
-			order.setStatus(32);
-		else if(order.getStatus() == 62)
-			order.setStatus(64);
+		switch (orderApprove.getOperate()) {
+		case 0://驳回
+			switch (order.getStatus()) {
+			case 30:
+				order.setStatus(10);
+				break;
+			case 32:
+				order.setStatus(30);
+				break;
+			case 34:
+				order.setStatus(0);
+				break;
+			}
+			break;
+		case 1://批准
+			switch (order.getStatus()) {
+			case 30:
+				order.setStatus(32);
+				break;
+			case 32:
+				order.setStatus(34);
+				break;
+			case 34:
+				order.setStatus(90);
+				break;
+			case 60:
+				order.setStatus(62);
+				break;
+			case 62:
+				order.setStatus(64);
+				break;
+			}
+			break;
+		case 2://申请
+			switch (order.getStatus()) {
+			case 10:
+				order.setStatus(30);
+				break;
+			case 34:
+				order.setStatus(60);
+				break;
+			}
+			break;
+		case 3://打回
+			order.setStatus(14);
+			break;
+		}
 		return dao.updateOrderStatus(order);
 	}
 

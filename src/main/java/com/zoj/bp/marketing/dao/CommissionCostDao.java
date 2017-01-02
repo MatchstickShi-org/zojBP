@@ -27,12 +27,12 @@ public class CommissionCostDao extends BaseDao implements ICommissionCostDao {
 				"WHERE 1=1 ";
 		if(infoerId != null)
 		{
-			sql +=" AND CC.INFOER_ID =: infoerId";
+			sql +=" AND CC.INFOER_ID =:infoerId";
 			paramMap.put("infoerId", infoerId);
 		}
 		if(orderId != null)
 		{
-			sql +=" AND CC.ORDER_ID =: orderId";
+			sql +=" AND CC.ORDER_ID =:orderId";
 			paramMap.put("orderId", orderId);
 		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";

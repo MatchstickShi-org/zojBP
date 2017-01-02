@@ -70,8 +70,8 @@ public class InfoCostMgrCtrl
 	public Map<String, ?> addInfoCost(HttpSession session, InfoCost infoCost, Errors errors)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isDesignManager() && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部经理，无法新增信息费。"));
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法新增信息费。"));
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("输入参数有误，请检查后重新输入。"));
 		infoCostSvc.addInfoCostRecord(infoCost);
