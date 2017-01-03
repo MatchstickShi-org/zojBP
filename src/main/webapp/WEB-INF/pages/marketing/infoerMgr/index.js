@@ -81,11 +81,13 @@ $(function()
 				{
 					$('#addInfoerVisitBtn').linkbutton('disable');
 					$('#addClientBtn').linkbutton('disable');
+					$infoerMgrTab.tabs('hideTool');
 				}
 				else
 				{
 					$('#addInfoerVisitBtn').linkbutton('enable');
 					$('#addClientBtn').linkbutton('enable');
+					$infoerMgrTab.tabs('showTool');
 				}
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
 			}
@@ -139,6 +141,8 @@ $(function()
 			}
 		});
 		
+		$infoerMgrTab.tabs('hideTool');
+		
 		$submitUpdateInfoerFormBtn.linkbutton({'onClick': submitEditInfoerForm});
 		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
 		{
@@ -146,13 +150,13 @@ $(function()
 			if(selRows.length == 1)
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
-				$.messager.alert('提示', '请选中一个信息员。');
+				$.messager.alert('提示', '请选择信息员。');
 		}});
 		
 		$infoerVisitGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#infoerVisitGridToolbar',
+			//toolbar: '#infoerVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -248,7 +252,7 @@ $(function()
 		$clientGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#clientGridToolbar',
+			//toolbar: '#clientGridToolbar',
 			columns:
 				[[
 				  {field:'id', hidden: true},
@@ -325,7 +329,7 @@ $(function()
 			var selIds = $infoerDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中一个信息员。');
+				$.messager.alert('提示', '请选择要修改的信息员。');
 				return;
 			}
 			$editInfoerForm.form('submit',
@@ -593,7 +597,7 @@ $(function()
 			var selIds = $infoerDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中一个信息员。');
+				$.messager.alert('提示', '请选择要添加客户信息员。');
 				return;
 			}
 			$addClientWindow.window('clear');
