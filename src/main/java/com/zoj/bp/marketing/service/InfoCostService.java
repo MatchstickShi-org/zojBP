@@ -15,7 +15,8 @@ public class InfoCostService implements IInfoCostService{
 	private IInfoCostDao infoCostDao;
 
 	@Override
-	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination, Integer infoerId,Integer orderId) {
+	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination, Integer infoerId,Integer orderId)
+	{
 		return infoCostDao.getAllInfoCost(pagination,infoerId,orderId);
 	}
 

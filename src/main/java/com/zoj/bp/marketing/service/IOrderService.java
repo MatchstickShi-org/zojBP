@@ -10,9 +10,10 @@ import com.zoj.bp.common.vo.Pagination;
 public interface IOrderService {
 	/**
 	 * @param id
+	 * @param loginUser TODO
 	 * @return
 	 */
-	Order getOrderById(Integer id);
+	Order getOrderById(Integer id, User loginUser);
 
 	/**
 	 * @param order
@@ -28,7 +29,7 @@ public interface IOrderService {
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer... status);
 
 	/**
 	 * 
@@ -40,9 +41,10 @@ public interface IOrderService {
 	 * @param infoerName 信息员名称
 	 * @param designerName	设计师名称
 	 * @param status 状态
+	 * @param loginUser TODO
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId, String name, String tel, String infoerName,String designerName, String[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId, String name, String tel, String infoerName,String designerName, String[] status, User loginUser);
 	/**
 	 * @param order
 	 * @return 
@@ -51,7 +53,7 @@ public interface IOrderService {
 
 	void addOrderAndClient(Order order);
 
-	Order findByTel(String tel);
+	Order findByTel(String tel, User loginUser);
 
 	/**
 	 * 放弃客户

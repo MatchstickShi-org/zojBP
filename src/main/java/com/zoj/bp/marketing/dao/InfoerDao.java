@@ -35,10 +35,13 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public Infoer getInfoerById(Integer id) {
+	public Infoer getInfoerById(Integer id)
+	{
 		try
 		{
-			return jdbcOps.queryForObject("SELECT I.*,CASE I.`LEVEL` WHEN 1 THEN '金牌' WHEN 2 THEN '银牌' WHEN 3 THEN '铜牌' WHEN 4 THEN '铁牌' END as LEVEL_DESC,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE I.ID = :id",
+			return jdbcOps.queryForObject("SELECT I.*, "
+					+ " CASE I.`LEVEL` WHEN 1 THEN '金牌' WHEN 2 THEN '银牌' WHEN 3 THEN '铜牌' WHEN 4 THEN '铁牌' END as LEVEL_DESC, "
+					+ " U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE I.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Infoer.class));
 		}
 		catch (EmptyResultDataAccessException e)
@@ -48,7 +51,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public void updateInfoer(Infoer infoer) {
+	public void updateInfoer(Infoer infoer)
+	{
 		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
@@ -59,17 +63,15 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
-				+ "		CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME)  "
-				+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
-				+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
-				+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
-				+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID ";
+			+ " CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
+			+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
+			+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
+			+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
+			+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID ";
 		if(loginUser.isMarketingSalesman())
 			sql += " WHERE U.ID = :userId ";
 		else if(loginUser.isMarketingLeader())
-		{
 			sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
-		}
 		else
 			sql += " WHERE 1=1 ";
 		
@@ -125,7 +127,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination) {
+	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination)
+	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.* FROM INFOER I "
 				+ " WHERE I.SALESMAN_ID = :salesmanId ";

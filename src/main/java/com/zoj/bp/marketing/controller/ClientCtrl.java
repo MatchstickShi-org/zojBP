@@ -109,7 +109,7 @@ public class ClientCtrl
 				statusArr = new String[]{"10","12","30","32","14"};
 		}else
 			statusArr = new String[]{"10","12","30","32","14"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
 	}
 	
 	@RequestMapping(value = "/getAllClientCheck")
@@ -123,7 +123,7 @@ public class ClientCtrl
 			statusArr = status.split(",");
 		else
 			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
 	}
 	
 	/**
@@ -149,14 +149,14 @@ public class ClientCtrl
 				statusArr = new String[]{"34","90","0","62","64","60"};
 		}else
 			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
 	@ResponseBody
-	public Map<String, Object> getOrderById(@RequestParam("orderId") Integer orderId) throws Exception
+	public Map<String, Object> getOrderById(@RequestParam("orderId") Integer orderId, HttpSession session) throws Exception
 	{
-		Order order = orderSvc.getOrderById(orderId);
+		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
 		Map<String, Object> map = ResponseUtils.buildRespMapByBean(order);
 		return map;
 	}
@@ -239,14 +239,14 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/editOrder")
 	@ResponseBody
-	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors) throws Exception
+	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
 		Client client = clientSvc.getClientByOrderId(orderForm.getId());
 		client.setName(orderForm.getName());
 		client.setOrgAddr(orderForm.getOrgAddr());
-		Order order = orderSvc.getOrderById(orderForm.getId());
+		Order order = orderSvc.getOrderById(orderForm.getId(), (User) session.getAttribute("loginUser"));
 		order.setProjectName(orderForm.getProjectName());
 		order.setProjectAddr(orderForm.getProjectAddr());
 		orderSvc.updateOrder(order,client);
@@ -279,9 +279,10 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/getStylistOrderVisitByOrder")
 	@ResponseBody
-	public DatagridVo<OrderVisit> getStylistOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
+	public DatagridVo<OrderVisit> getStylistOrderVisitByOrder(
+			@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
-		Order order = orderSvc.getOrderById(orderId);
+		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
 		return orderVisitSvc.getAllOrderVisit(pagination, order.getDesignerId(), orderId);
 	}
 	
@@ -316,7 +317,7 @@ public class ClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if (loginUser == null)
 			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
-		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination));
+		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination, null));
 	}
 	
 	@RequestMapping(value = "/getInfoCostByOrder")

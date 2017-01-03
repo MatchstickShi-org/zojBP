@@ -22,17 +22,24 @@ public class InfoerService implements IInfoerService{
 	private IOrderDao orderDao;
 	
 	@Override
-	public Infoer getInfoerByName(String InfoerName) {
-		return infoerDao.getInfoerByName(InfoerName);
+	public Infoer getInfoerByName(String InfoerName, User loginUser)
+	{
+		Infoer infoer = infoerDao.getInfoerByName(InfoerName);
+		infoer.hideAllTel(loginUser);
+		return infoer;
 	}
 
 	@Override
-	public Infoer getInfoerById(Integer id) {
-		return infoerDao.getInfoerById(id);
+	public Infoer getInfoerById(Integer id, User loginUser)
+	{
+		Infoer infoer = infoerDao.getInfoerById(id);
+		infoer.hideAllTel(loginUser);
+		return infoer;
 	}
 
 	@Override
-	public void updateInfoer(Infoer infoer) {
+	public void updateInfoer(Infoer infoer)
+	{
 		infoerDao.updateInfoer(infoer);
 	}
 
@@ -42,7 +49,10 @@ public class InfoerService implements IInfoerService{
 	{
 		if(!loginUser.isBelongMarketing())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部人员，无法查看信息员。"));
-		return infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
+		DatagridVo<Infoer> is = infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
+		if(loginUser.isLeader())
+			is.getRows().stream().forEach(i -> i.hideAllTel(loginUser));
+		return is;
 	}
 
 	@Override
@@ -51,19 +61,26 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public Infoer findByTel(String tel) {
-		return infoerDao.findByTel(tel);
+	public Infoer findByTel(String tel, User loginUser)
+	{
+		Infoer i = infoerDao.findByTel(tel);
+		i.hideAllTel(loginUser);
+		return i;
 	}
 
 	@Override
-	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination) {
-		return infoerDao.findBySalesmanId(salesmanId,pagination);
+	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination, User loginUser)
+	{
+		 DatagridVo<Infoer> is = infoerDao.findBySalesmanId(salesmanId,pagination);
+		if(loginUser.isLeader())
+			is.getRows().stream().forEach(i -> i.hideAllTel(loginUser));
+		return is;
 	}
 
 	@Override
-	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
+	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId)
+	{
 		orderDao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
 		return infoerDao.updateInfoerSalesmanId(infoerIds,salesmanId);
 	}
-
 }

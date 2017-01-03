@@ -1,6 +1,7 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -56,6 +57,23 @@ public class Order implements Serializable{
 	private String tel4;
 	
 	private String tel5;
+	
+	public boolean canLookTel(User user)
+	{
+		return !user.isLeader() || (user.isLeader() && user.getId() == this.getSalesmanId());
+	}
+	
+	public void hideAllTel(User user)
+	{
+		if(this.canLookTel(user))
+		{
+			Optional.ofNullable(tel1).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel2).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel3).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel4).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel5).ifPresent(tel -> tel = "******");
+		}
+	}
 	
 	@SuppressWarnings("unused")
 	private String telAll;

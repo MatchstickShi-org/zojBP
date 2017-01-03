@@ -3,6 +3,7 @@ package com.zoj.bp.common.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -101,15 +102,35 @@ public class Infoer implements Serializable
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(String address)
+	{
 		this.address = address;
 	}
+	
+	public boolean canLookTel(User user)
+	{
+		return !user.isLeader() || (user.isLeader() && user.getId() == this.getSalesmanId());
+	}
+	
+	public void hideAllTel(User user)
+	{
+		if(this.canLookTel(user))
+		{
+			Optional.ofNullable(tel1).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel2).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel3).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel4).ifPresent(tel -> tel = "******");
+			Optional.ofNullable(tel5).ifPresent(tel -> tel = "******");
+		}
+	}
 
-	public String getTel1() {
+	public String getTel1()
+	{
 		return tel1;
 	}
 
-	public void setTel1(String tel1) {
+	public void setTel1(String tel1)
+	{
 		this.tel1 = tel1;
 	}
 	

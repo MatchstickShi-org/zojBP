@@ -92,9 +92,9 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/getInfoerById")
 	@ResponseBody
-	public Map<String, Object> getInfoerById(@RequestParam("infoerId") Integer infoerId) throws Exception
+	public Map<String, Object> getInfoerById(@RequestParam("infoerId") Integer infoerId, HttpSession session) throws Exception
 	{
-		Infoer infoer = infoerSvc.getInfoerById(infoerId);
+		Infoer infoer = infoerSvc.getInfoerById(infoerId, (User) session.getAttribute("loginUser"));
 		Map<String, Object> map = ResponseUtils.buildRespMapByBean(infoer);
 		return map;
 	}
@@ -102,7 +102,7 @@ public class InfoerCtrl
 
 	@RequestMapping(value = "/addInfoer")
 	@ResponseBody
-	public Map<String, ?> addInfoer(@Valid Infoer infoer,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> addInfoer(@Valid Infoer infoer,Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
@@ -111,15 +111,15 @@ public class InfoerCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法新增信息员。"));
 		Infoer infoerTel = null;
 		if(StringUtils.isNotEmpty(infoer.getTel1()))
-			infoerTel = infoerSvc.findByTel(infoer.getTel1());
-		if(StringUtils.isNotEmpty(infoer.getTel2()) && infoerTel == null )
-			infoerTel = infoerSvc.findByTel(infoer.getTel2());
-		if(StringUtils.isNotEmpty(infoer.getTel3()) && infoerTel == null )
-			infoerTel = infoerSvc.findByTel(infoer.getTel3());
-		if(StringUtils.isNotEmpty(infoer.getTel4()) && infoerTel == null )
-			infoerTel = infoerSvc.findByTel(infoer.getTel4());
-		if(StringUtils.isNotEmpty(infoer.getTel5()) && infoerTel == null )
-			infoerTel = infoerSvc.findByTel(infoer.getTel5());
+			infoerTel = infoerSvc.findByTel(infoer.getTel1(), loginUser);
+		if(StringUtils.isNotEmpty(infoer.getTel2()) && infoerTel == null)
+			infoerTel = infoerSvc.findByTel(infoer.getTel2(), loginUser);
+		if(StringUtils.isNotEmpty(infoer.getTel3()) && infoerTel == null)
+			infoerTel = infoerSvc.findByTel(infoer.getTel3(), loginUser);
+		if(StringUtils.isNotEmpty(infoer.getTel4()) && infoerTel == null)
+			infoerTel = infoerSvc.findByTel(infoer.getTel4(), loginUser);
+		if(StringUtils.isNotEmpty(infoer.getTel5()) && infoerTel == null)
+			infoerTel = infoerSvc.findByTel(infoer.getTel5(), loginUser);
 		if(infoerTel != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
 		infoer.setSalesmanId(loginUser.getId());
@@ -129,30 +129,28 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/addClient")
 	@ResponseBody
-	public Map<String, ?> addClient(@Valid Order order,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> addClient(@Valid Order order, Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
 		Order orderTel = null;
 		if(StringUtils.isNotEmpty(order.getTel1()))
-			orderTel = orderSvc.findByTel(order.getTel1());
+			orderTel = orderSvc.findByTel(order.getTel1(), loginUser);
 		if(StringUtils.isNotEmpty(order.getTel2()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel2());
+			orderTel = orderSvc.findByTel(order.getTel2(), loginUser);
 		if(StringUtils.isNotEmpty(order.getTel3()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel3());
+			orderTel = orderSvc.findByTel(order.getTel3(), loginUser);
 		if(StringUtils.isNotEmpty(order.getTel4()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel4());
+			orderTel = orderSvc.findByTel(order.getTel4(), loginUser);
 		if(StringUtils.isNotEmpty(order.getTel5()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel5());
+			orderTel = orderSvc.findByTel(order.getTel5(), loginUser);
 		if(orderTel != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(loginUser == null)
-			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
-		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId());
+		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId(), null);
 		/**
 		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
 		 */
@@ -204,12 +202,12 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/checkInfoerTel")
 	@ResponseBody
-	public Map<String, ?> checkInfoerTel(@RequestParam String tel) throws Exception
+	public Map<String, ?> checkInfoerTel(@RequestParam String tel, HttpSession session) throws Exception
 	{
 		Infoer infoer = null;
-		if(StringUtils.isNotEmpty(tel)){
-			infoer = infoerSvc.findByTel(tel);
-		}
+		if(StringUtils.isNotEmpty(tel))
+			infoer = infoerSvc.findByTel(tel, (User) session.getAttribute("loginUser"));
+		
 		if(infoer != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -217,11 +215,11 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/checkClientTel")
 	@ResponseBody
-	public Map<String, ?> checkClientTel(@RequestParam String tel) throws Exception
+	public Map<String, ?> checkClientTel(@RequestParam String tel, HttpSession session) throws Exception
 	{
 		Order order = null;
 		if(StringUtils.isNotEmpty(tel)){
-			order = orderSvc.findByTel(tel);
+			order = orderSvc.findByTel(tel, (User) session.getAttribute("loginUser"));
 		}
 		if(order != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));
@@ -240,7 +238,7 @@ public class InfoerCtrl
 	public DatagridVo<Order> getClientByInfoer(@RequestParam("infoerId") Integer infoerId,HttpSession session,Pagination pagination) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return orderSvc.getAllOrder(pagination, loginUser, infoerId, null);
+		return orderSvc.getAllOrder(pagination, loginUser, infoerId);
 	}
 	
 	@RequestMapping(value = "/getOrderByInfoer")
@@ -256,14 +254,14 @@ public class InfoerCtrl
 	@ResponseBody
 	public DatagridVo<InfoCost> getInfoCostByInfoer(@RequestParam("infoerId") Integer infoerId,Pagination pagination) throws BusinessException
 	{
-		return infoCostSvc.getAllInfoCost(pagination, infoerId,null);
+		return infoCostSvc.getAllInfoCost(pagination, infoerId, null);
 	}
 	
 	@RequestMapping(value = "/getCommissionCostByInfoer")
 	@ResponseBody
 	public DatagridVo<CommissionCost> getCommissionCostByInfoer(@RequestParam("infoerId") Integer infoerId,Pagination pagination) throws BusinessException
 	{
-		return commissionCostSvc.getAllCommissionCost(pagination, infoerId,null);
+		return commissionCostSvc.getAllCommissionCost(pagination, infoerId, null);
 	}
 	
 	@RequestMapping("/showAllSalesman")

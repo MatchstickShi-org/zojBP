@@ -8,13 +8,14 @@ import com.zoj.bp.common.vo.Pagination;
 
 public interface IInfoerService {
 
-	Infoer getInfoerByName(String InfoerName);
+	Infoer getInfoerByName(String InfoerName, User loginUser);
 
 	/**
 	 * @param id
+	 * @param loginUser TODO
 	 * @return
 	 */
-	Infoer getInfoerById(Integer id);
+	Infoer getInfoerById(Integer id, User loginUser);
 
 	/**
 	 * @param Infoer
@@ -38,17 +39,19 @@ public interface IInfoerService {
 	/**
 	 * 
 	 * @param tel
+	 * @param loginUser TODO
 	 * @return
 	 */
-	Infoer findByTel(String tel);
+	Infoer findByTel(String tel, User loginUser);
 	
 	/**
 	 * 根据业务员Id查询所有信息员
 	 * @param salesmanId
 	 * @param pagination 
+	 * @param loginUser TODO
 	 * @return
 	 */
-	DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination);
+	DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination, User loginUser);
 
 	/**
 	 * 信息员业务转移
