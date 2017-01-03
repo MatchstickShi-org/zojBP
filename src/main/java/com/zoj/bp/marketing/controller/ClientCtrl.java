@@ -109,7 +109,7 @@ public class ClientCtrl
 				statusArr = new String[]{"10","12","30","32","14"};
 		}else
 			statusArr = new String[]{"10","12","30","32","14"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
 	}
 	
 	@RequestMapping(value = "/getAllClientCheck")
@@ -123,7 +123,7 @@ public class ClientCtrl
 			statusArr = status.split(",");
 		else
 			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class ClientCtrl
 				statusArr = new String[]{"34","90","0","62","64","60"};
 		}else
 			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,"",statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

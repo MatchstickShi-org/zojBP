@@ -32,13 +32,14 @@ public interface IOrderService {
 
 	/**
 	 * 
-	 * @param pagination
-	 * @param loginUser
-	 * @param name
-	 * @param tel
-	 * @param infoerName
-	 * @param designerName
-	 * @param status
+	 * @param pagination 分页对象
+	 * @param salesmanId 业务员Id
+	 * @param designerId 设计师Id
+	 * @param name 客户名称
+	 * @param tel	客户电话
+	 * @param infoerName 信息员名称
+	 * @param designerName	设计师名称
+	 * @param status 状态
 	 * @return
 	 */
 	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId, String name, String tel, String infoerName,String designerName, String[] status);

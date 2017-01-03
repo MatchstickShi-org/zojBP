@@ -101,7 +101,7 @@ public class DesignClientCtrl
 			statusArr = status.split(",");
 		else
 			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,"",designerName,statusArr);
+		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,statusArr);
 	}
 	
 	/**
@@ -127,7 +127,7 @@ public class DesignClientCtrl
 				statusArr = new String[]{"34","90","0","62","64","60"};
 		}else
 			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,"",designerName,statusArr);
+		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,statusArr);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
