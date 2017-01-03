@@ -29,7 +29,7 @@
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
-		<div id="infoerMgrTab">
+		<div id="infoerMgrTab" data-options="tools:'#infoerMgrTab-tools'">
 			<div title="详情" border="false">
 				<form id="editInfoerForm" action="marketing/infoerMgr/editInfoer" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
@@ -73,56 +73,24 @@
 				</form>
 			</div>
 			<div title="回访记录" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="infoerVisitGrid"></table>
-				    		<div id="infoerVisitGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerVisitBtn">新增</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+	    		<table id="infoerVisitGrid" border="false"></table>
 			</div>
 			<div title="在谈单" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderGrid"></table>
-						</td>
-					</tr>
-				</table>
+	    		<table id="orderGrid" border="false"></table>
 			</div>
 			<div title="信息费" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="infoCostGrid"></table>
-						</td>
-					</tr>
-				</table>
+	    		<table id="infoCostGrid" border="false"></table>
 			</div>
 			<div title="提成" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="commissionCostGrid"></table>
-						</td>
-					</tr>
-				</table>
+	    		<table id="commissionCostGrid" border="false"></table>
 			</div>
 			<div title="客户" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="clientGrid"></table>
-				    		<div id="clientGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientBtn">新增</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+	    		<table id="clientGrid" border="false"></table>
 			</div>
+		</div>
+		<div id="infoerMgrTab-tools" style="border-top: 0px;">
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientBtn">新增客户</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoerVisitBtn">新增信息员回访记录</a>
 		</div>
 	</div>
 </div>
