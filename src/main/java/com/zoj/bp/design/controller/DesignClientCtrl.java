@@ -46,8 +46,8 @@ import com.zoj.bp.sysmgr.usermgr.service.IUserService;
  *
  */
 @Controller
-@RequestMapping("/marketing/clientMgr")
-public class ClientCtrl
+@RequestMapping("/design/clientMgr")
+public class DesignClientCtrl
 {
 	@Autowired
 	private IOrderService orderSvc;
@@ -73,49 +73,27 @@ public class ClientCtrl
 	@Autowired
 	private IUserService userSvc;
 	
-	@RequestMapping(value = "/toClientTraceView")
-	public String toClientTraceView() throws BusinessException
-	{
-		return "/marketing/clientTrace/index";
-	}
-	
 	
 	@RequestMapping(value = "/toClientNegotiationView")
 	public String toClientNegotiationView() throws BusinessException
 	{
-		return "/marketing/clientNegotiation/index";
+		return "/design/clientNegotiation/index";
 	}
 	
 	/**
-	 * 获取客户跟踪记录
+	 * 获取待审核的客户洽谈记录
 	 * @param pagination
 	 * @param name
 	 * @param tel
-	 * @param infoerName
+	 * @param designerName
 	 * @param status
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value = "/getAllClientTrace")
-	@ResponseBody
-	public DatagridVo<Order> getAllClientTrace(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
-	{
-		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status)){
-			statusArr = status.split(",");
-			if(Arrays.asList(statusArr).contains("-1"))
-				statusArr = new String[]{"10","12","30","32","14"};
-		}else
-			statusArr = new String[]{"10","12","30","32","14"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
-	}
-	
 	@RequestMapping(value = "/getAllClientCheck")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+			@RequestParam(required=false) String tel,@RequestParam(required=false) String designerName,@RequestParam(required=false) String status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		String[] statusArr = null;
@@ -123,7 +101,7 @@ public class ClientCtrl
 			statusArr = status.split(",");
 		else
 			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser,name,tel,"",designerName,statusArr);
 	}
 	
 	/**
@@ -139,7 +117,7 @@ public class ClientCtrl
 	@RequestMapping(value = "/getAllClientNegotiation")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+			@RequestParam(required=false) String tel,@RequestParam(required=false) String designerName,@RequestParam(required=false) String status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		String[] statusArr = null;
@@ -149,7 +127,7 @@ public class ClientCtrl
 				statusArr = new String[]{"34","90","0","62","64","60"};
 		}else
 			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,loginUser,name,tel,infoerName,statusArr);
+		return orderSvc.getAllOrder(pagination,loginUser,name,tel,"",designerName,statusArr);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -333,32 +311,12 @@ public class ClientCtrl
 		return commissionCostSvc.getAllCommissionCost(pagination,null,orderId);
 	}
 	
-	@RequestMapping("/showSelectInfoerWindow")
-	public String showSelectInfoerWindow()
-	{
-		return "marketing/clientTrace/selectInfoer";
-	}
-	
 	@RequestMapping(value = "/getAllDesigner")
 	@ResponseBody
 	public DatagridVo<User> getAllDesigner(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
 	{
 		String[] roles = {"4","5","6"};//4：设计部设计师；5：设计部主管；6：设计部经理
 		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
-	}
-	
-	@RequestMapping("/showAllSalesman")
-	public String showAllSalesman()
-	{
-		return "marketing/clientTrace/selectSalesman";
-	}
-	
-	@RequestMapping(value = "/getAllSalesman")
-	@ResponseBody
-	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
-	{
-		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
-		return userSvc.getAllUserByRole(pagination, "", "", roles);
 	}
 	
 	@RequestMapping(value = "/transferOrder")
@@ -372,7 +330,7 @@ public class ClientCtrl
 	@RequestMapping(value = "/showAddInfoCostWindow")
 	public ModelAndView showAddInfoCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
 	{
-		ModelAndView mv = new ModelAndView("marketing/clientNegotiation/addInfoCost", "errorMsg", null);
+		ModelAndView mv = new ModelAndView("design/clientNegotiation/addInfoCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");

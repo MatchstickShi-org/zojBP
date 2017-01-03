@@ -37,10 +37,11 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param designerName
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser, String name, String tel, String infoerName, String[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId, String name, String tel, String infoerName,String designerName, String[] status);
 	/**
 	 * @param order
 	 * @return 

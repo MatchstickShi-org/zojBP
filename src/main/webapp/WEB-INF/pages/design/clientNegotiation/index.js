@@ -2,10 +2,10 @@ $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
 	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
-	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
+	var $designerNameTextbox = $('#clientTrace\\.designerNameInput');
 	var $orderNameTextbox = $('#clientTrace\\.nameInput');
 	var $telTextbox = $('#clientTrace\\.telInput');
-	var $orderCheckInfoerNameTextbox = $('#order\\.infoerNameInput');
+	var $orderCheckDesignerNameTextbox = $('#order\\.designerNameInput');
 	var $orderCheckNameTextbox = $('#order\\.nameInput');
 	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
@@ -33,8 +33,8 @@ $(function()
 		$selectInfoerWindow.window('clear');
 		$selectInfoerWindow.window('open').window
 		({
-			title: '请选择信息员',
-		}).window('open').window('refresh', 'marketing/clientMgr/showSelectInfoerWindow');
+			title: '请选择设计师',
+		}).window('open').window('refresh', 'design/clientMgr/showSelectInfoerWindow');
 	}
 	
 	function init()
@@ -105,7 +105,7 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: 'marketing/clientMgr/getAllClientNegotiation',
+			url: 'design/clientMgr/getAllClientNegotiation',
 			onSelect: function(idx, row)
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
@@ -169,7 +169,7 @@ $(function()
 				}); 
 				$.ajax
 				({
-					url: 'marketing/clientMgr/getAllClientNegotiation',
+					url: 'design/clientMgr/getAllClientNegotiation',
 					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
@@ -272,7 +272,7 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: 'marketing/clientMgr/getAllClientCheck',
+			url: 'design/clientMgr/getAllClientCheck',
 			onSelect: function(idx, row)
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
@@ -290,7 +290,7 @@ $(function()
 				}); 
 				$.ajax
 				({
-					url: 'marketing/clientMgr/getAllClientCheck',
+					url: 'design/clientMgr/getAllClientCheck',
 					data: {name: $orderCheckNameTextbox.textbox('getValue'), tel: $orderCheckTelTextbox.textbox('getValue'),infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
@@ -335,9 +335,9 @@ $(function()
 			pagination: true
 		});
 
-		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
-		$infoCostGrid.datagrid('options').url = 'marketing/clientMgr/getInfoCostByOrder';
-		$commissionCostGrid.datagrid('options').url = 'marketing/clientMgr/getCommissionCostByOrder';
+		$orderVisitGrid.datagrid('options').url = 'design/clientMgr/getOrderVisitByOrder';
+		$infoCostGrid.datagrid('options').url = 'design/clientMgr/getInfoCostByOrder';
+		$commissionCostGrid.datagrid('options').url = 'design/clientMgr/getCommissionCostByOrder';
 		
 		$orderStylistVisitGrid.datagrid
 		({
@@ -351,14 +351,14 @@ $(function()
 				  pagination: true
 		});
 		
-		$orderStylistVisitGrid.datagrid('options').url = 'marketing/clientMgr/getStylistOrderVisitByOrder';
+		$orderStylistVisitGrid.datagrid('options').url = 'design/clientMgr/getStylistOrderVisitByOrder';
 		
 		function loadTabData(title, row)
 		{
 			switch (title)
 			{
 				case '详情':
-					$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
+					$editClientForm.form('clear').form('load', 'design/clientMgr/getOrderById?orderId=' + row.id);
 					break;
 				case '业务员回访记录':
 					$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
@@ -468,7 +468,7 @@ $(function()
 					return;
 				$.post
 				(
-					'marketing/clientMgr/deleteOrderByIds',
+					'design/clientMgr/deleteOrderByIds',
 					{delIds : selIds},
 					function(data, textStatus, jqXHR)
 					{
@@ -509,7 +509,7 @@ $(function()
 			$showAddInfoCostWindow.window('open').window
 			({
 				title: '新增信息费打款记录'
-			}).window('open').window('refresh', 'marketing/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
+			}).window('open').window('refresh', 'design/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
 		}});
 		
 		function showPermitOrderWindow()
@@ -529,7 +529,7 @@ $(function()
 		}
 		
 		var permitOrderWindowHtml = 
-			'<form id="permitOrderForm" action="marketing/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
+			'<form id="permitOrderForm" action="design/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>客户名称：</label></td>' + 
@@ -603,7 +603,7 @@ $(function()
 		}
 		
 		var rejectOrderWindowHtml = 
-			'<form id="rejectOrderForm" action="marketing/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
+			'<form id="rejectOrderForm" action="design/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>客户名称：</label></td>' + 
@@ -686,7 +686,7 @@ $(function()
 		}
 		
 		var addClientVisitWindowHtml = 
-			'<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
+			'<form id="addClientVisitForm" action="design/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
@@ -748,7 +748,7 @@ $(function()
 		}
 		
 		var addClientWindowHtml = 
-			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+			'<form id="addClientForm" action="design/infoerMgr/addClient" method="post" style="width: 100%;">' + 
 			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
 			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
@@ -848,7 +848,7 @@ $(function()
 			'   } '+
 			'	$.ajax'+
 			'	({'+
-			'		url: \'marketing/infoerMgr/checkClientTel\','+
+			'		url: \'design/infoerMgr/checkClientTel\','+
 			'		data: {tel:obj.value},'+
 			'		success: function(data, textStatus, jqXHR)'+
 			'		{'+

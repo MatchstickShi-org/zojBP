@@ -81,8 +81,8 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 	
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, String name, String tel,
-			String infoerName, String[] status) {
+	public DatagridVo<Order> getAllOrder(Pagination pagination, Integer salesmanId,Integer designerId, String name, String tel,
+			String infoerName,String designerName,String[] status) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
@@ -90,8 +90,14 @@ public class OrderDao extends BaseDao implements IOrderDao {
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
 				" WHERE 1 = 1 ";
-		if(loginUser != null)
-			sql +=" AND O.SALESMAN_ID="+loginUser.getId();
+		if(salesmanId != null){
+			sql +=" AND O.SALESMAN_ID= :salesmanId";
+			paramMap.put("salesmanId", salesmanId);
+		}
+		if(designerId != null){
+			sql +=" AND O.DESIGNER_ID= :designerId";
+			paramMap.put("designerId", designerId);
+		}
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND C.NAME LIKE :name";
@@ -110,6 +116,11 @@ public class OrderDao extends BaseDao implements IOrderDao {
 		{
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
+		}
+		if(StringUtils.isNotEmpty(designerName))
+		{
+			sql += " AND U2.ALIAS like :designerName";
+			paramMap.put("designerName", '%' + designerName + '%');
 		}
 		if(status != null)
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";

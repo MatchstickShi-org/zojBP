@@ -20,8 +20,8 @@
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.nameInput"/>
 					<label style="vertical-align: middle;">电话：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
-					<label style="vertical-align: middle;">信息员名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+					<label style="vertical-align: middle;">设计师名称：</label>
+					<input style="width:100px;" class="easyui-textbox" id="clientTrace.designerNameInput"/>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>
 					<label><input type="checkbox" value="34" name="statusInput"/>在谈单已批准</label>
@@ -42,8 +42,8 @@
 					<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
 					<label style="vertical-align: middle;">电话：</label>
 					<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
-					<label style="vertical-align: middle;">信息员名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.infoerNameInput"/>
+					<label style="vertical-align: middle;">设计师名称：</label>
+					<input style="width:100px;" class="easyui-textbox" id="order.designerNameInput"/>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>
 					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>

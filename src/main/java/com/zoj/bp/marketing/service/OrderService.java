@@ -42,9 +42,9 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser ,String name, String tel,
-			String infoerName, String[] status) {
-		return dao.getAllOrder(pagination, loginUser,name,tel,infoerName, status);
+	public DatagridVo<Order> getAllOrder(Pagination pagination, Integer salesmanId,Integer designerId,String name, String tel,
+			String infoerName,String designerName,String[] status) {
+		return dao.getAllOrder(pagination,salesmanId,designerId,name,tel,infoerName,designerName,status);
 	}
 	
 	@Override
