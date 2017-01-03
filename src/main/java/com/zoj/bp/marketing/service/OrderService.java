@@ -1,5 +1,7 @@
 package com.zoj.bp.marketing.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,9 +89,9 @@ public class OrderService implements IOrderService {
 	@Override
 	public Order findByTel(String tel, User loginUser)
 	{
-		Order o = clientDao.getClientByTel(tel);
-		o.hideAllTel(loginUser);
-		return o;
+		Order order = clientDao.getClientByTel(tel);
+		Optional.ofNullable(order).ifPresent(o -> o.hideAllTel(loginUser));
+		return order;
 	}
 
 	@Override

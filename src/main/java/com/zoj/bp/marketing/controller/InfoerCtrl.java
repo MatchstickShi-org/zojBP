@@ -150,11 +150,12 @@ public class InfoerCtrl
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
-		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId(), null);
+		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId(), loginUser);
 		/**
 		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
 		 */
-		if (infoer.getLevel() == 4) {
+		if (infoer.getLevel() == 4)
+		{
 			infoer.setLevel(3);
 			infoerSvc.updateInfoer(infoer);
 		}
@@ -170,7 +171,6 @@ public class InfoerCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(loginUser.getId() != infoerVisit.getSalesmanId())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是该信息员的业务员，无法新增。"));
-		infoerVisit.setSalesmanId(loginUser.getId());
 		infoerVisitSvc.addInfoerVisit(infoerVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

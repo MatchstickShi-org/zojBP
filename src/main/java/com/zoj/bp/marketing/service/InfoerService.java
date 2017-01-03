@@ -1,5 +1,7 @@
 package com.zoj.bp.marketing.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class InfoerService implements IInfoerService{
 	public Infoer getInfoerByName(String InfoerName, User loginUser)
 	{
 		Infoer infoer = infoerDao.getInfoerByName(InfoerName);
-		infoer.hideAllTel(loginUser);
+		Optional.ofNullable(infoer).ifPresent(i -> i.hideAllTel(loginUser));
 		return infoer;
 	}
 
@@ -33,7 +35,7 @@ public class InfoerService implements IInfoerService{
 	public Infoer getInfoerById(Integer id, User loginUser)
 	{
 		Infoer infoer = infoerDao.getInfoerById(id);
-		infoer.hideAllTel(loginUser);
+		Optional.ofNullable(infoer).ifPresent(i -> i.hideAllTel(loginUser));
 		return infoer;
 	}
 
@@ -63,9 +65,9 @@ public class InfoerService implements IInfoerService{
 	@Override
 	public Infoer findByTel(String tel, User loginUser)
 	{
-		Infoer i = infoerDao.findByTel(tel);
-		i.hideAllTel(loginUser);
-		return i;
+		Infoer infoer = infoerDao.findByTel(tel);
+		Optional.ofNullable(infoer).ifPresent(i -> i.hideAllTel(loginUser));
+		return infoer;
 	}
 
 	@Override

@@ -82,12 +82,14 @@ $(function()
 					$('#addInfoerVisitBtn').linkbutton('disable');
 					$('#addClientBtn').linkbutton('disable');
 					$infoerMgrTab.tabs('hideTool');
+					$submitUpdateInfoerFormBtn.linkbutton('disable');
 				}
 				else
 				{
 					$('#addInfoerVisitBtn').linkbutton('enable');
 					$('#addClientBtn').linkbutton('enable');
 					$infoerMgrTab.tabs('showTool');
+					$submitUpdateInfoerFormBtn.linkbutton('enable');
 				}
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
 			}
@@ -548,12 +550,13 @@ $(function()
 		
 		var addInfoerVisitWindowHtml = 
 			'<form id="addInfoerVisitForm" action="marketing/infoerMgr/addInfoerVisit" method="post" style="width: 100%;">' + 
+			'	<input id="infoerId" name="infoerId" type="hidden" value="" />' + 
+			'	<input id="salesmanId" name="salesmanId" type="hidden" value="" />' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
 			'			<td><input name="content" required="required" class="easyui-textbox" multiline="true" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
-			'		<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitaddInfoerVisitForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
@@ -566,8 +569,10 @@ $(function()
 			'var $addInfoerVisitWindow = $(\'div#addInfoerVisitWindow\');' +
 			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
 			'var $infoerVisitGrid = $("table#infoerVisitGrid");' +
+			'var $infoerMgrTab = $("div#infoerMgrTab");' +
 			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addInfoerVisitWindow.find(\'#infoerId\').val(selRows[0].id);' +
+			'$addInfoerVisitWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
 			'function submitaddInfoerVisitForm()' + 
 			'{' + 
 			'	$addInfoerVisitWindow.find(\'form#addInfoerVisitForm\').form(\'submit\',' + 
@@ -578,7 +583,7 @@ $(function()
 			'			if(selInfoerIds.length == 0)' + 
 			'			{' + 
 			'				$.messager.alert("提示", "请选择要回访的信息员。");' + 
-			'				return;' + 
+			'				return false;' + 
 			'			}' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
@@ -589,7 +594,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$infoerDatagrid.datagrid(\'reload\');' + 
-			'				$infoerVisitGrid.datagrid(\'reload\');' + 
+			'				if($infoerMgrTab.tabs("getSelected").panel("options").title == "回访记录")' + 
+			'					$infoerVisitGrid.datagrid(\'reload\');' + 
 			'				$addInfoerVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
@@ -665,6 +671,7 @@ $(function()
 			'var $addClientWindow = $(\'div#addClientWindow\');' +
 			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
 			'var $clientGrid = $("table#clientGrid");' +
+			'var $infoerMgrTab = $("div#infoerMgrTab");' +
 			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
@@ -708,7 +715,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$infoerDatagrid.datagrid(\'reload\');' + 
-			'				$clientGrid.datagrid(\'reload\');' + 
+			'				if($infoerMgrTab.tabs("getSelected").panel("options").title == "客户")' + 
+			'					$clientGrid.datagrid(\'reload\');' + 
 			'				$addClientWindow.window(\'close\');' + 
 			'			}else' + 
 			'				errortel.html(data.msg);' + 

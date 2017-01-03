@@ -37,6 +37,8 @@ $.ajaxSetup
 				window.location.href = '';
 			});
 		}
+		else
+			$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');
 	},
 	error : function(jqXHR, textStatus, errorThrown)
 	{
@@ -217,10 +219,7 @@ $(function()
 		iframe: false,
 		success : function(data)
 		{
-			data = $.parseJSON(data);
-			/*if(data.returnCode != 0)
-				$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');*/
-			return data;
+			return $.parseJSON(data);
 		}
 	});
 });
