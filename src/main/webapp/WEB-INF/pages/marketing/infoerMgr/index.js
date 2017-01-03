@@ -466,8 +466,11 @@ $(function()
 			'			if(errortel.html().length > 0){' + 
 			'				return false;' + 
 			'			}'+
+			'			var flag = true;'+
 			'			for(var i=1;i<6;i++){' +
-			'				checkTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				flag = checkTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				if(!flag)'+
+			'					return false;'+
 			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
@@ -493,7 +496,7 @@ $(function()
 		    '      		$(\'#errortel\').html("联系电话未填！"); '+
 		    '      		return false; '+
 		    '      	}'+
-		    '   }else{ '+
+		    '   }else{'+
 			'		var reg = /^1[0-9]{10}$/;'+
 			'		if(!(reg.test(obj.value))){'+
 			'			$(\'#errortel\').html("无效的手机号码！");'+
@@ -502,12 +505,12 @@ $(function()
 			'			$(\'#errortel\').html("");'+
 			'		}'+
 			'		if(errorId > 1) '+
-			' 		{ '+
+			' 		{'+
 			'			if($(\'#tel1\').val() == obj.value){' + 
-			'      			$(\'#errortel\').html("联系电话重复！"); '+
+			'      			$(\'#errortel\').html("联系电话重复！");'+
 			'      			return false;'+
-			'   		} '+
-			'   	} '+
+			'   		}'+
+			'   	}'+
 			'	}'+
 			'	$.ajax'+
 			'	({'+
@@ -517,11 +520,13 @@ $(function()
 			'		{'+
 			'			if(data.returnCode != 0){'+
 			'				$(\'#errortel\').html(data.msg); '+  
+			'				return false; '+  
 			'			}else{ '+  
-			'				$(\'#errortel\').html(""); '+  
-			'			} '+  
+			'				$(\'#errortel\').html("");'+  
+			'			}'+  
 			'		}'+
 			'	});'+
+			'   return true;'+
 			'} ' + 
 			'</script>';
 		
@@ -690,8 +695,11 @@ $(function()
 			'			if(errortel.html().length > 0){' + 
 			'				return false;' + 
 			'			}'+
+			'			var flag = true;'+
 			'			for(var i=1;i<6;i++){' +
-			'				checkClientTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				flag = checkClientTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				if(!flag)'+
+			'					return false;'+
 			'			}'+
 			'		},' + 
 			'		success: function(data)' + 
@@ -727,12 +735,12 @@ $(function()
 			'			$(\'#errorclienttel\').html("");'+
 			'		}'+
 			'		if(errorId > 1) '+
-			' 		{ '+
+			' 		{'+
 			'			if($(\'#tel1\').val() == obj.value){' + 
 			'      			$(\'#errorclienttel\').html("联系电话重复！"); '+
 			'      			return false; '+
 			'   		} '+
-			'   	} '+
+			'   	}'+
 			'	}'+
 			'	$.ajax'+
 			'	({'+
@@ -742,11 +750,13 @@ $(function()
 			'		{'+
 			'			if(data.returnCode != 0){'+
 			'				$(\'#errorclienttel\').html(data.msg); '+  
+			'				return false; '+  
 			'			}else{ '+  
 			'				$(\'#errorclienttel\').html(""); '+  
 			'			} '+  
 			'		}'+
 			'	});'+
+			'   return true;'+
 			'} ' + 
 			'</script>';
 	}

@@ -101,7 +101,7 @@ public class DesignClientCtrl
 			statusArr = status.split(",");
 		else
 			statusArr = new String[]{"32","60"};
-		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,statusArr, loginUser);
+		return orderSvc.getAllOrder(pagination, null,loginUser.getId(),name,tel,"",designerName,statusArr, loginUser);
 	}
 	
 	/**
