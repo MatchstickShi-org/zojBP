@@ -95,13 +95,13 @@ public class DesignClientCtrl
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,@RequestParam(required=false) String designerName,@RequestParam(required=false) String status, HttpSession session)
 	{
-		User loginUser = (User) session.getAttribute("loginUser");
+		//User loginUser = (User) session.getAttribute("loginUser");
 		String[] statusArr = null;
 		if (StringUtils.isNotEmpty(status))
 			statusArr = status.split(",");
 		else
-			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,statusArr);
+			statusArr = new String[]{"32","60"};
+		return orderSvc.getAllOrder(pagination,null,null,name,tel,"",designerName,statusArr);
 	}
 	
 	/**

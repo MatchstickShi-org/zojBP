@@ -30,7 +30,8 @@ public interface IOrderDao {
 	/**
 	 * 
 	 * @param pagination
-	 * @param loginUser
+	 * @param salesmanId
+	 * @param designerId
 	 * @param name
 	 * @param tel
 	 * @param infoerName

@@ -94,7 +94,7 @@ $(function()
 								return '死单';
 								break;
 							default:
-								return '未评级';
+								return '无状态';
 								break;
 						}
 					}
@@ -254,10 +254,10 @@ $(function()
 					{
 						switch (value)
 						{
-							case 30:
+							case 32:
 								return '在谈单审核中';
 								break;
-							case 62:
+							case 60:
 								return '不准单审核中';
 								break;
 							default:

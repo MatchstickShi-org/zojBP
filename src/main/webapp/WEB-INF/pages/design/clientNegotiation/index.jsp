@@ -22,6 +22,7 @@
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.designerNameInput"/>
+					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="-1" name="statusInput" checked="checked"/>全部</label>
 					<label><input type="checkbox" value="34" name="statusInput"/>在谈单已批准</label>
@@ -30,9 +31,10 @@
 					<label><input type="checkbox" value="60,62" name="statusInput"/>不准单审核中</label>
 					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
-					<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a> -->
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="permitOrderWindowBtn">已签单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderBtn">死单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="applyNotPerimitOrderBtn">申请不准单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="rejectOrderBtn">打回正跟踪</a>
 				</div>
 			</div>
 			<div title="审核" border=false>
@@ -155,6 +157,6 @@
 <div id="rejectOrderWindow"></div>
 <div id="selectInfoerWindow"></div>
 <div id="showAddInfoCostWindow"></div>
-<script type="text/javascript" src="pages/marketing/clientNegotiation/index.js"></script>
+<script type="text/javascript" src="pages/design/clientNegotiation/index.js"></script>
 </body>
 </html>
