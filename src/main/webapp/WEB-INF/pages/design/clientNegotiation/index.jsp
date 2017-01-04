@@ -37,6 +37,7 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="rejectOrderBtn">打回正跟踪</a>
 				</div>
 			</div>
+			<c:if test="${sessionScope.loginUser.role == 6}">
 			<div title="审核" border=false>
 				<table id="orderCheckDatagrid" border=false></table>
 				<div id="orderCheckDatagridToolbar">
@@ -54,6 +55,7 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
 				</div>
 			</div>
+			</c:if>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -131,6 +133,9 @@
 <div id="rejectOrderWindow"></div>
 <div id="selectDesignerWindow"></div>
 <div id="showAddInfoCostWindow"></div>
+<script type="text/javascript">
+var _session_loginUserRole = ${sessionScope.loginUser.role};
+</script>
 <script type="text/javascript" src="pages/design/clientNegotiation/index.js"></script>
 </body>
 </html>

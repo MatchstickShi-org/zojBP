@@ -130,7 +130,7 @@ public class ClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
 			status = new Integer[]{30,62};
-		return orderSvc.getOrdersByUser(loginUser,pagination,null,name,tel,infoerName,"",status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class ClientCtrl
 				status = ArrayUtils.remove(status, 0);
 		}else
 			status = new Integer[]{34,90,0,62,64,60};
-		return orderSvc.getOrdersByUser(loginUser,pagination,null,name,tel,infoerName,"",status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

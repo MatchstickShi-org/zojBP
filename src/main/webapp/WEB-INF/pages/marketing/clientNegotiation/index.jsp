@@ -35,23 +35,25 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a> -->
 				</div>
 			</div>
-			<div title="审核" border=false>
-				<table id="orderCheckDatagrid" border=false></table>
-				<div id="orderCheckDatagridToolbar">
-					<label style="vertical-align: middle;">名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
-					<label style="vertical-align: middle;">电话：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
-					<label style="vertical-align: middle;">信息员名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.infoerNameInput"/>
-					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>
-					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
+			<c:if test="${sessionScope.loginUser.role == 3}">
+				<div title="审核" border=false>
+					<table id="orderCheckDatagrid" border=false></table>
+					<div id="orderCheckDatagridToolbar">
+						<label style="vertical-align: middle;">名称：</label>
+						<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
+						<label style="vertical-align: middle;">电话：</label>
+						<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
+						<label style="vertical-align: middle;">信息员名称：</label>
+						<input style="width:100px;" class="easyui-textbox" id="order.infoerNameInput"/>
+						<label style="vertical-align: middle;">状态筛选：</label>
+						<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>
+						<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
+						<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
+						<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
+						<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
+					</div>
 				</div>
-			</div>
+			</c:if>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -155,6 +157,9 @@
 <div id="rejectOrderWindow"></div>
 <div id="selectInfoerWindow"></div>
 <div id="showAddInfoCostWindow"></div>
+<script type="text/javascript">
+var _session_loginUserRole = ${sessionScope.loginUser.role};
+</script>
 <script type="text/javascript" src="pages/marketing/clientNegotiation/index.js"></script>
 </body>
 </html>

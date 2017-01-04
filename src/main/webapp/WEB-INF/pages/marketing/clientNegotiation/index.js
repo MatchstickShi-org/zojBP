@@ -191,6 +191,8 @@ $(function()
 			}
 		});
 		$orderCheckMgrTab.tabs({});
+		if(_session_loginUserRole != 3)
+			$orderCheckMgrTab.tabs('hideHeader');
 		$clientMgrTab.tabs
 		({
 			border: false,
