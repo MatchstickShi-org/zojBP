@@ -158,7 +158,6 @@ $(function()
 		$infoerVisitGrid.datagrid
 		({
 			idField: 'id',
-			//toolbar: '#infoerVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -340,11 +339,6 @@ $(function()
 				{
 					if(!$(this).form('validate'))
 						return false;
-					/*if($(this).find('[name="pwd"]').val() != $(this).find('[name="confirmPwd"]').val())
-					{
-						$.messager.alert('提示', '两次密码输入不一致，请重新输入密码。');
-						return false;
-					}*/
 				},
 				success: function(data)
 				{

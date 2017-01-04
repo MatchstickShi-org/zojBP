@@ -100,7 +100,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
 			status = new Integer[]{32,60};
-		return orderSvc.getAllOrder(pagination, null,null,name,tel,"",designerName,loginUser,status);
+		return orderSvc.getOrdersByUser(loginUser, pagination,null,name,tel,"",designerName,status);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public class DesignClientCtrl
 		}else
 			status = new Integer[]{32,34,90,0,62,64,60};
 		Integer designerId = loginUser.isSuperAdmin() ? null:loginUser.getId();
-		return orderSvc.getAllOrder(pagination,null,designerId,name,tel,"",designerName,loginUser,status);
+		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",designerName,status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

@@ -29,22 +29,21 @@ public interface IOrderService {
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer... status);
+	DatagridVo<Order> getOrdersByInfoer(Pagination pagination,User loginUser,Integer infoerId,Integer... status);
 
 	/**
 	 * 
+	 * @param loginUser TODO
 	 * @param pagination 分页对象
-	 * @param salesmanId 业务员Id
 	 * @param designerId 设计师Id
 	 * @param name 客户名称
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
 	 * @param designerName	设计师名称
-	 * @param loginUser TODO
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId, String name, String tel, String infoerName,String designerName,User loginUser,Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,Integer designerId, String name, String tel, String infoerName,String designerName,Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -91,4 +90,17 @@ public interface IOrderService {
 	 * @return
 	 */
 	Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId);
+
+	/**
+	 * @param salesman
+	 * @param pagination
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param empty
+	 * @param status
+	 * @return
+	 */
+	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
+			String name, String tel, String infoerName, String empty, Integer... status);
 }

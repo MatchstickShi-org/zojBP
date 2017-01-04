@@ -18,8 +18,8 @@ import com.zoj.bp.marketing.dao.IOrderApproveDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
 
 @Service
-public class OrderService implements IOrderService {
-	
+public class OrderService implements IOrderService
+{
 	@Autowired
 	private IOrderDao dao;
 	
@@ -48,24 +48,31 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser, Integer infoerId, Integer... status)
+	public DatagridVo<Order> getOrdersByInfoer(Pagination pagination, User loginUser, Integer infoerId, Integer... status)
 	{
-		DatagridVo<Order> os = dao.getAllOrder(pagination, loginUser, infoerId, status);
+		DatagridVo<Order> os = dao.getOrdersByInfoer(pagination, infoerId, status);
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, Integer salesmanId, Integer designerId, String name, String tel,
-			String infoerName, String designerName, User loginUser,Integer... status)
+	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, Integer designerId, String name, String tel,
+			String infoerName, String designerName, Integer... status)
 	{
-		DatagridVo<Order> os = dao.getAllOrder(pagination, salesmanId, designerId, name, tel, infoerName, designerName, status);
+		DatagridVo<Order> os = dao.getOrdersByUser(pagination, loginUser, designerId, name, tel, infoerName, designerName, status);
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;
 	}
 	
+	@Override
+	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
+			String name, String tel, String infoerName, String empty, Integer... status)
+	{
+		return dao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, status);
+	}
+
 	@Override
 	public Integer addOrder(Order order)
 	{

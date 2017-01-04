@@ -28,17 +28,20 @@ $.ajaxSetup
 			}
 			catch (e){}
 		}
-		if(data.returnCode == 0)
-			$.messager.show({title: '提示', msg: data.msg || '操作成功。'})
-		else if(data.sessionTimeout == true)
+		if(typeof data == Object)
 		{
-			$.messager.alert('警告', '你已长时间未操作，请重新登录。', function()
+			if(data.returnCode == 0)
+				$.messager.show({title: '提示', msg: data.msg || '操作成功。'})
+			else if(data.sessionTimeout == true)
 			{
-				window.location.href = '';
-			});
+				$.messager.alert('警告', '你已长时间未操作，请重新登录。', function()
+				{
+					window.location.href = '';
+				});
+			}
+			else
+				$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');
 		}
-		else
-			$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');
 	},
 	error : function(jqXHR, textStatus, errorThrown)
 	{
@@ -109,6 +112,7 @@ $(function()
 		striped: true,
 		onLoadError: function(jqXHR, textStatus, errorThrown)
 		{
+			$(this).datagrid('loaded');
 			var msg = jqXHR.responseJSON ? jqXHR.responseJSON.msg : $.parseJSON(jqXHR.responseText).msg;
 			$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。');
 		},

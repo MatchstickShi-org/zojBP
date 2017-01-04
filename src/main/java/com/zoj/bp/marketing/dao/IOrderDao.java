@@ -20,26 +20,25 @@ public interface IOrderDao {
 
 	/**
 	 * @param pagination
-	 * @param loginUser 业务员
 	 * @param infoerId	信息员Id
 	 * @param status	状态
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,User loginUser,Integer infoerId,Integer[] status);
+	DatagridVo<Order> getOrdersByInfoer(Pagination pagination,Integer infoerId,Integer[] status);
 
 	/**
 	 * 
 	 * @param pagination
-	 * @param salesmanId
+	 * @param user TODO
 	 * @param designerId
 	 * @param name
 	 * @param tel
 	 * @param infoerName
 	 * @param designerName
-	 * @param status
+	 * @param statuses
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId,String name, String tel, String infoerName,String designerName,Integer... status);
+	DatagridVo<Order> getOrdersByUser(Pagination pagination,User user,Integer designerId,String name, String tel, String infoerName,String designerName, Integer... statuses);
 	/**
 	 * @param order
 	 * @return 
@@ -81,4 +80,16 @@ public interface IOrderDao {
 	 * @return
 	 */
 	Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId);
+
+	/**
+	 * @param pagination
+	 * @param salesman
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param statuses
+	 * @return
+	 */
+	DatagridVo<Order> getOrdersBySalesman(Pagination pagination, User salesman,
+			String name, String tel, String infoerName, Integer... statuses);
 }

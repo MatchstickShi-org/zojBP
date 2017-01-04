@@ -4,3 +4,7 @@
 {
 	vertical-align: middle;
 }
+.datagrid-toolbar input[type='radio']
+{
+	vertical-align: sub;
+}

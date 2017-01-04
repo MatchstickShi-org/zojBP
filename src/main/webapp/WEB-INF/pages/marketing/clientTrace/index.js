@@ -32,7 +32,6 @@ $(function()
 		({
 			idField: 'id',
 			toolbar: '#orderDatagridToolbar',
-			border: false,
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -71,6 +70,7 @@ $(function()
 				},
 				{field:'insertTime', title:'录入日期', width: 5}
 			]],
+			border: false,
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
@@ -78,6 +78,22 @@ $(function()
 			url: 'marketing/clientMgr/getAllClientTrace',
 			onSelect: function(idx, row)
 			{
+				if(row.salesmanId != _session_loginUserId)
+				{
+					$('#addOrderVisitBtn').linkbutton('disable');
+					$clientMgrTab.tabs('hideTool');
+					$submitUpdateClientFormBtn.linkbutton('disable');
+					$('#removeOrderBtn').linkbutton('disable');
+					$('#applyOrderBtn').linkbutton('disable');
+				}
+				else
+				{
+					$('#addOrderVisitBtn').linkbutton('enable');
+					$clientMgrTab.tabs('showTool');
+					$submitUpdateClientFormBtn.linkbutton('enable');
+					$('#removeOrderBtn').linkbutton('enable');
+					$('#applyOrderBtn').linkbutton('enable');
+				}
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 		});
@@ -102,7 +118,14 @@ $(function()
 				$.ajax
 				({
 					url: 'marketing/clientMgr/getAllClientTrace',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
+					data:
+					{
+						name: $orderNameTextbox.textbox('getValue'),
+						tel: $telTextbox.textbox('getValue'),
+						infoerName: $infoerNameTextbox.textbox('getValue'),
+						filter: $(':radio[name="clientTrace\.infoerFilterInput"]:checked').val(),
+						status:chk_value
+					},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -128,6 +151,7 @@ $(function()
 					clearTabData(title);
 			}
 		});
+		$clientMgrTab.tabs('hideTool');
 		
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
@@ -142,7 +166,6 @@ $(function()
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#orderVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -420,7 +443,8 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($infoerMgrTab.tabs("getSelected").panel("options").title == "回访记录")' + 
+			'					$clientMgrTab.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 

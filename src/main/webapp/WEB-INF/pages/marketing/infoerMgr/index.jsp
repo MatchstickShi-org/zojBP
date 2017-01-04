@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -25,7 +26,9 @@
 			<label><input type="checkbox" value="4" name="levelInput"/>铁牌</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>
+			<c:if test="${sessionScope.loginUser.role == 3}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>
+			</c:if>
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
@@ -72,19 +75,19 @@
 					</table>
 				</form>
 			</div>
-			<div title="回访记录" border="false">
+			<div title="回访记录">
 	    		<table id="infoerVisitGrid" border="false"></table>
 			</div>
-			<div title="在谈单" border="false">
+			<div title="在谈单">
 	    		<table id="orderGrid" border="false"></table>
 			</div>
-			<div title="信息费" border="false">
+			<div title="信息费">
 	    		<table id="infoCostGrid" border="false"></table>
 			</div>
-			<div title="提成" border="false">
+			<div title="提成">
 	    		<table id="commissionCostGrid" border="false"></table>
 			</div>
-			<div title="客户" border="false">
+			<div title="客户">
 	    		<table id="clientGrid" border="false"></table>
 			</div>
 		</div>

@@ -3,6 +3,7 @@ package com.zoj.bp.marketing.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,8 +20,8 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class OrderDao extends BaseDao implements IOrderDao {
-
+public class OrderDao extends BaseDao implements IOrderDao
+{
 	@Override
 	public Order getOrderById(Integer id) {
 		try
@@ -59,7 +60,8 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, User loginUser,Integer infoerId,Integer[] status) {
+	public DatagridVo<Order> getOrdersByInfoer(Pagination pagination, Integer infoerId,Integer[] status)
+	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
@@ -67,8 +69,6 @@ public class OrderDao extends BaseDao implements IOrderDao {
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
 				" WHERE 1 = 1 ";
-		if(loginUser != null)
-			sql +=" AND O.SALESMAN_ID="+loginUser.getId();
 		if(infoerId != null && infoerId > 0)
 			sql +=" AND O.INFOER_ID="+infoerId;
 		if(status != null && status.length > 0)
@@ -83,20 +83,24 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	}
 	
 	@Override
-	public DatagridVo<Order> getAllOrder(Pagination pagination, Integer salesmanId,Integer designerId, String name, String tel,
-			String infoerName,String designerName,Integer... status) {
+	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
+			Integer designerId, String name, String tel, String infoerName, String designerName, Integer... statuses)
+	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
-				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
-				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
-				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
-				" WHERE 1 = 1 ";
-		if(salesmanId != null){
-			sql +=" AND O.SALESMAN_ID= :salesmanId";
-			paramMap.put("salesmanId", salesmanId);
-		}
-		if(designerId != null){
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
+		if(user.isMarketingSalesman())
+			sql += " WHERE U.ID = :userId ";
+		else if(user.isMarketingLeader())
+			sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
+		else
+			sql += " WHERE 1=1 ";
+		paramMap.put("userId", user.getId());
+		if(designerId != null)
+		{
 			sql +=" AND O.DESIGNER_ID= :designerId";
 			paramMap.put("designerId", designerId);
 		}
@@ -124,8 +128,50 @@ public class OrderDao extends BaseDao implements IOrderDao {
 			sql += " AND U2.ALIAS like :designerName";
 			paramMap.put("designerName", '%' + designerName + '%');
 		}
-		if(status != null)
-			sql +=" AND O.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
+		if(ArrayUtils.isNotEmpty(statuses))
+			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
+		sql +=" ORDER BY O.INSERT_TIME DESC";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Order.class)), count);
+	}
+
+	@Override
+	public DatagridVo<Order> getOrdersBySalesman(Pagination pagination,
+			User salesman, String name, String tel, String infoerName, Integer... statuses)
+	{
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
+				" WHERE U.ID = :userId ";
+		paramMap.put("userId", salesman.getId());
+		if(StringUtils.isNotEmpty(name))
+		{
+			sql += " AND C.NAME LIKE :name";
+			paramMap.put("name", '%' + name + '%');
+		}
+		if (StringUtils.isNotEmpty(tel))
+		{
+			sql += " AND (C.TEL1 LIKE :tel1 OR C.TEL2 LIKE :tel2 OR C.TEL3 LIKE :tel3 OR C.TEL4 LIKE :tel4 OR C.TEL5 LIKE :tel5)";
+			paramMap.put("tel1", '%' + tel + '%');
+			paramMap.put("tel2", '%' + tel + '%');
+			paramMap.put("tel3", '%' + tel + '%');
+			paramMap.put("tel4", '%' + tel + '%');
+			paramMap.put("tel5", '%' + tel + '%');
+		}
+		if(StringUtils.isNotEmpty(infoerName))
+		{
+			sql += " AND I.NAME like :infoerName";
+			paramMap.put("infoerName", '%' + infoerName + '%');
+		}
+		if(ArrayUtils.isNotEmpty(statuses))
+			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
@@ -166,5 +212,4 @@ public class OrderDao extends BaseDao implements IOrderDao {
 		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
 				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
-
 }

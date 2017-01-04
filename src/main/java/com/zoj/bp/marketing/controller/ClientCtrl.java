@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -101,6 +102,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -108,9 +110,13 @@ public class ClientCtrl
 		{
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
-		}else
+		}
+		else
 			status = new Integer[]{10,12,30,32,14};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
+		if (filter == null || filter == 0)
+			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
+		else
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, StringUtils.EMPTY, status);
 	}
 	
 	@RequestMapping(value = "/getAllClientCheck")
@@ -124,7 +130,7 @@ public class ClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
 			status = new Integer[]{30,62};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
+		return orderSvc.getOrdersByUser(loginUser,pagination,null,name,tel,infoerName,"",status);
 	}
 	
 	/**
@@ -152,7 +158,7 @@ public class ClientCtrl
 				status = ArrayUtils.remove(status, 0);
 		}else
 			status = new Integer[]{34,90,0,62,64,60};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
+		return orderSvc.getOrdersByUser(loginUser,pagination,null,name,tel,infoerName,"",status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -179,6 +185,8 @@ public class ClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
 		orderVisit.setVisitorId(loginUser.getId());
 		orderVisitSvc.addOrderVisit(orderVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -199,6 +207,8 @@ public class ClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(2);
 		orderSvc.addOrderApprove(orderApprove);
@@ -317,24 +327,24 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/findInfoerBySalesmanId")
 	@ResponseBody
-	public Map<String, ?> findInfoerBySalesmanId(HttpSession session,Pagination pagination) throws Exception
+	public Map<String, ?> findInfoerBySalesmanId(HttpSession session,Pagination pagination)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		if (loginUser == null)
-			return ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT);
 		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination, null));
 	}
 	
 	@RequestMapping(value = "/getInfoCostByOrder")
 	@ResponseBody
-	public DatagridVo<InfoCost> getInfoCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
+	public DatagridVo<InfoCost> getInfoCostByOrder(
+			@RequestParam("orderId") Integer orderId,Pagination pagination)
 	{
 		return infoCostSvc.getAllInfoCost(pagination,null,orderId);
 	}
 	
 	@RequestMapping(value = "/getCommissionCostByOrder")
 	@ResponseBody
-	public DatagridVo<CommissionCost> getCommissionCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
+	public DatagridVo<CommissionCost> getCommissionCostByOrder(
+			@RequestParam("orderId") Integer orderId,Pagination pagination)
 	{
 		return commissionCostSvc.getAllCommissionCost(pagination,null,orderId);
 	}
@@ -356,13 +366,17 @@ public class ClientCtrl
 	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
 	{
 		Integer[] roles = {Role.marketingSalesman.value(),Role.marketingLeader.value(),Role.marketingManager.value()};//1：市场部业务员；2：市场部主管；3：市场部经理
-		return userSvc.getAllUserByRole(pagination, "", "", roles);
+		return userSvc.getAllUserByRole(pagination, StringUtils.EMPTY, StringUtils.EMPTY, roles);
 	}
 	
 	@RequestMapping(value = "/transferOrder")
 	@ResponseBody
-	public Map<String, ?> transferOrder(@RequestParam("orderIds[]") Integer[] orderIds,@RequestParam("salesmanId") Integer salesmanId) throws Exception
+	public Map<String, ?> transferOrder(HttpSession session,
+			@RequestParam("orderIds[]") Integer[] orderIds,@RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法进行业务转移。"));
 		orderSvc.updateOrderSalesmanId(orderIds,salesmanId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

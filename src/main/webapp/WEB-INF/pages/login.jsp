@@ -43,7 +43,7 @@
 								</tr>
 								<tr>
 									<td id="pwdLabelTd"></td>
-									<td class="valueTd"><input type="text" name="pwd" maxlength="20" onfocus="this.type='password'" autocomplete="off"/></td>
+									<td class="valueTd"><input type="text" name="pwd" maxlength="20" onfocus="this.type='password'" onkeypress="return doLogin(event)" autocomplete="off"/></td>
 								</tr>
 								<tr>
 									<td height="52px" id="button" colspan="2"><div id="loginBtn"></div></td>
@@ -57,6 +57,13 @@
 		</div>
 	</div>
 <script type="text/javascript">
+function doLogin(e)
+{
+	var keynum = window.event ? e.keyCode : e.which;
+	if(keynum == 13)
+		$('input#loginNameInput').submit();
+}
+
 $(function()
 {
 	var $form = $('form#loginForm');

@@ -215,19 +215,19 @@ public class InfoerCtrl
 	
 	@RequestMapping(value = "/getClientByInfoer")
 	@ResponseBody
-	public DatagridVo<Order> getClientByInfoer(@RequestParam("infoerId") Integer infoerId,HttpSession session,Pagination pagination) throws BusinessException
+	public DatagridVo<Order> getClientByInfoer(@RequestParam("infoerId") Integer infoerId, HttpSession session, Pagination pagination) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return orderSvc.getAllOrder(pagination, loginUser, infoerId);
+		return orderSvc.getOrdersByInfoer(pagination, loginUser, infoerId);
 	}
 	
 	@RequestMapping(value = "/getOrderByInfoer")
 	@ResponseBody
-	public DatagridVo<Order> getOrderByInfoer(@RequestParam("infoerId") Integer infoerId,HttpSession session,Pagination pagination) throws BusinessException
+	public DatagridVo<Order> getOrderByInfoer(@RequestParam("infoerId") Integer infoerId, HttpSession session, Pagination pagination) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		Integer[] status = {14,30,32,34};  //在谈单状态：14：在谈单-设计师已打回；30：在谈单-市场部经理审核中；32：在谈单-设计部经理审核中；34：在谈单-设计师跟踪中
-		return orderSvc.getAllOrder(pagination, loginUser, infoerId, status);
+		return orderSvc.getOrdersByInfoer(pagination, loginUser, infoerId, status);
 	}
 	
 	@RequestMapping(value = "/getInfoCostByInfoer")
