@@ -1,28 +1,27 @@
 $(function()
 {
-	var $addClientWindow = $('div#addClientWindow');
-	var $selInfoerWindow = $('div#selectInfoerWindow');
-	var $selInfoerGrid = $("table#selInfoerDatagrid");
-	var $infoerSearchbox = $('input#addClientForm_infoerSearchbox');
-	var $infoerIdInput = $('input#addClientForm_infoerIdInput');
-	var $selectInfoerBtn = $('a#selectInfoerBtn');
+	var $selDesignerWindow = $('div#selectDesignerWindow');
+	var $selDesignerGrid = $("table#selDesignerDatagrid");
+	var $designerSearchbox = $('input#permitOrderForm_designerNameSearchbox');
+	var $designerIdInput = $('input#permitOrderForm_designerIdInput');
+	var $selectDesignerBtn = $('a#selectDesignerBtn');
 	
-	$selectInfoerBtn.linkbutton({'onClick': selectInfoer});
+	$selectDesignerBtn.linkbutton({'onClick': selectDesigner});
 	
-	function selectInfoer()
+	function selectDesigner()
 	{
-		var selRs = $selInfoerGrid.datagrid('getSelections');
+		var selRs = $selDesignerGrid.datagrid('getSelections');
 		if(selRs.length == 0)
 		{
-			$.messager.alert("提示", "请选择要添加的客户的信息员");
+			$.messager.alert("提示", "请选择要分配的设计师！");
 			return;
 		}
-		$infoerSearchbox.searchbox("setValue", selRs[0].name);
-		$infoerIdInput.val(selRs[0].id); 
-		$selInfoerWindow.window("close"); 
+		$designerSearchbox.searchbox("setValue", selRs[0].name);
+		$designerIdInput.val(selRs[0].id); 
+		$selDesignerWindow.window("close"); 
 	}
 	
-	$selInfoerGrid.datagrid
+	$selDesignerGrid.datagrid
 	({
 		singleSelect: true,
 		idField: "id",
@@ -33,6 +32,6 @@ $(function()
 			{field: "name", title:"姓名", width: 5},
 		]],
 		pagination: true,
-		url: "marketing/clientMgr/findInfoerBySalesmanId",
+		url: "design/clientMgr/getAllDesigner",
 	});
 });

@@ -27,6 +27,7 @@ import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -99,7 +100,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
 			status = new Integer[]{32,60};
-		return orderSvc.getAllOrder(pagination, null,loginUser.getId(),name,tel,"",designerName,loginUser,status);
+		return orderSvc.getAllOrder(pagination, null,null,name,tel,"",designerName,loginUser,status);
 	}
 	
 	/**
@@ -126,8 +127,9 @@ public class DesignClientCtrl
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
 		}else
-			status = new Integer[]{34,90,0,62,64,60};
-		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,loginUser,status);
+			status = new Integer[]{32,34,90,0,62,64,60};
+		Integer designerId = loginUser.isSuperAdmin() ? null:loginUser.getId();
+		return orderSvc.getAllOrder(pagination,null,designerId,name,tel,"",designerName,loginUser,status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -244,7 +246,8 @@ public class DesignClientCtrl
 	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		return orderVisitSvc.getAllOrderVisit(pagination, loginUser.getId(), orderId);
+		Order order = orderSvc.getOrderById(orderId, loginUser);
+		return orderVisitSvc.getAllOrderVisit(pagination,order.getSalesmanId(), orderId);
 	}
 	
 	/**
@@ -312,12 +315,18 @@ public class DesignClientCtrl
 		return commissionCostSvc.getAllCommissionCost(pagination,null,orderId);
 	}
 	
+	@RequestMapping("/showSelectDesignerWindow")
+	public String showSelectDesignerWindow()
+	{
+		return "design/clientNegotiation/selectDesigner";
+	}
+	
 	@RequestMapping(value = "/getAllDesigner")
 	@ResponseBody
-	public DatagridVo<User> getAllDesigner(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
+	public DatagridVo<User> getAllDesigner(Pagination pagination) throws BusinessException
 	{
-		String[] roles = {"4","5","6"};//4：设计部设计师；5：设计部主管；6：设计部经理
-		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
+		Integer[] roles = {Role.designDesigner.value(),Role.designLeader.value(),Role.designManager.value()};//4：设计部设计师；5：设计部主管；6：设计部经理
+		return userSvc.getAllUserByRole(pagination, "", "", roles);
 	}
 	
 	@RequestMapping(value = "/transferOrder")
@@ -341,4 +350,5 @@ public class DesignClientCtrl
 		mv.addObject("infoCost", infoCost);
 		return mv;
 	}
+	
 }

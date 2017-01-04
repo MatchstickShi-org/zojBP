@@ -43,7 +43,7 @@ public interface IUserService
 	 * @param roles
 	 * @return
 	 */
-	DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,String[] roles);
+	DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,Integer... roles);
 
 	/**
 	 * @param user

@@ -18,6 +18,8 @@ public class OrderApprove implements Serializable{
 	@NotNull
 	private Integer orderId;
 	
+	private Integer designerId;
+	
 	private Integer claimer;
 	
 	private Integer approver;
@@ -84,5 +86,12 @@ public class OrderApprove implements Serializable{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
+
+	public Integer getDesignerId() {
+		return designerId;
+	}
+
+	public void setDesignerId(Integer designerId) {
+		this.designerId = designerId;
+	}
 }

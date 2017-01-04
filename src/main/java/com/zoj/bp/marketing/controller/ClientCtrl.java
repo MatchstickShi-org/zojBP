@@ -27,6 +27,7 @@ import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -344,14 +345,6 @@ public class ClientCtrl
 		return "marketing/clientTrace/selectInfoer";
 	}
 	
-	@RequestMapping(value = "/getAllDesigner")
-	@ResponseBody
-	public DatagridVo<User> getAllDesigner(@RequestParam("userName") String userName,@RequestParam("alias") String alias,Pagination pagination) throws BusinessException
-	{
-		String[] roles = {"4","5","6"};//4：设计部设计师；5：设计部主管；6：设计部经理
-		return userSvc.getAllUserByRole(pagination, userName, alias, roles);
-	}
-	
 	@RequestMapping("/showAllSalesman")
 	public String showAllSalesman()
 	{
@@ -362,7 +355,7 @@ public class ClientCtrl
 	@ResponseBody
 	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
 	{
-		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
+		Integer[] roles = {Role.marketingSalesman.value(),Role.marketingLeader.value(),Role.marketingManager.value()};//1：市场部业务员；2：市场部主管；3：市场部经理
 		return userSvc.getAllUserByRole(pagination, "", "", roles);
 	}
 	

@@ -11,13 +11,13 @@
 <body>
 <table style="width: 100%;">
 	<tr><td height="300">
-		<table id="selInfoerDatagrid" style="height: 300px;"></table>
+		<table id="selDesignerDatagrid" style="height: 300px;"></table>
 	</td></tr> 
 	<tr><td style="text-align: center;">
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="selectInfoerBtn">选择</a> 
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('div#selectInfoerWindow').window('close');">取消</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="selectDesignerBtn">选择</a> 
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="$('div#selectDesignerWindow').window('close');">取消</a>
 	</td></tr>
 </table>
-<script type="text/javascript" src="pages/marketing/clientTrace/selectInfoer.js"></script>
+<script type="text/javascript" src="pages/design/clientNegotiation/selectDesigner.js"></script>
 </body>
 </html>

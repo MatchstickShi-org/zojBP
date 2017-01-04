@@ -27,6 +27,7 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 		}
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY DATE DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());

@@ -17,7 +17,7 @@ $(function()
 	var $addClientWindow = $('div#addClientWindow');
 	var $permitOrderWindow = $('div#permitOrderWindow');
 	var $rejectOrderWindow = $('div#rejectOrderWindow');
-	var $selectInfoerWindow = $('div#selectInfoerWindow');
+	var $selectDesignerWindow = $('div#selectDesignerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
 	var $editClientForm = $('form#editOrderForm');
@@ -25,16 +25,14 @@ $(function()
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
 	var $orderStylistVisitGrid = $('table#orderStylistVisitGrid');
-	var $infoCostGrid = $('table#infoCostGrid');
-	var $commissionCostGrid = $('table#commissionCostGrid');
 	
-	showSelectInfoerWindow = function()
+	showSelectDesignerWindow = function()
 	{
-		$selectInfoerWindow.window('clear');
-		$selectInfoerWindow.window('open').window
+		$selectDesignerWindow.window('clear');
+		$selectDesignerWindow.window('open').window
 		({
 			title: '请选择设计师',
-		}).window('open').window('refresh', 'design/clientMgr/showSelectInfoerWindow');
+		}).window('open').window('refresh', 'design/clientMgr/showSelectDesignerWindow');
 	}
 	
 	function init()
@@ -110,52 +108,6 @@ $(function()
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
-		});
-		
-		$infoCostGrid.datagrid
-		({
-			idField: 'id',
-			toolbar: '#infoCostGridToolbar',
-			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'orderId', title:'单号', width: 3},
-				  {field:'projectName', title:'项目名称', width: 6},
-				  {field:'infoerName', title:'信息员', width: 3},
-				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'designerName', title:'设计师', width: 3},
-				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
-						{
-					  		return value = value +' ￥';
-						}
-				  },
-				  {field:'date', title:'打款日期', width: 3},
-				  {field:'remark', title:'备注', width: 8}
-				  ]],
-				  pagination: true
-		});
-		
-		$commissionCostGrid.datagrid
-		({
-			idField: 'id',
-			toolbar: '#commissionCostGridToolbar',
-			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'orderId', title:'单号', width: 3},
-				  {field:'projectName', title:'项目名称', width: 6},
-				  {field:'infoerName', title:'信息员', width: 3},
-				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'designerName', title:'设计师', width: 3},
-				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
-					  {
-					  return value = value +' ￥';
-					  }
-				  },
-				  {field:'date', title:'打款日期', width: 3},
-				  {field:'remark', title:'备注', width: 8}
-				  ]],
-				  pagination: true
 		});
 		
 		$('#orderDatagridToolbar :checkbox').click(function()
@@ -324,15 +276,12 @@ $(function()
 				$editClientForm.form('clear');
 				$orderVisitGrid.datagrid('loadData', []);
 				$orderStylistVisitGrid.datagrid('loadData', []);
-				$infoCostGrid.datagrid('loadData', []);
-				$commissionCostGrid.datagrid('loadData', []);
 			}
 		});
 		
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#orderVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -343,12 +292,11 @@ $(function()
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'design/clientMgr/getOrderVisitByOrder';
-		$infoCostGrid.datagrid('options').url = 'design/clientMgr/getInfoCostByOrder';
-		$commissionCostGrid.datagrid('options').url = 'design/clientMgr/getCommissionCostByOrder';
 		
 		$orderStylistVisitGrid.datagrid
 		({
 			idField: 'id',
+			toolbar: '#orderVisitGridToolbar',
 			columns:
 				[[
 				  {field:'id', hidden: true},
@@ -373,12 +321,6 @@ $(function()
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
-				case '信息费':
-					$infoCostGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
-					break;
-				case '提成':
-					$commissionCostGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
-					break;
 			}
 		}
 		
@@ -394,12 +336,6 @@ $(function()
 					break;
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('loadData', []);
-					break;
-				case '信息费':
-					$infoCostGrid.datagrid('loadData', []);
-					break;
-				case '提成':
-					$commissionCostGrid.datagrid('loadData', []);
 					break;
 			}
 		}
@@ -495,7 +431,7 @@ $(function()
 		$addClientWindow.window({width: 450});
 		$permitOrderWindow.window({width: 340});
 		$rejectOrderWindow.window({width: 340});
-		$selectInfoerWindow.window({width: 350});
+		$selectDesignerWindow.window({width: 350});
 		$showAddInfoCostWindow.window({width: 500});
 		
 		$addInfoCostBtn.linkbutton({onClick: function()
@@ -550,6 +486,11 @@ $(function()
 			'			<td align="right"><label>申 请 人：</label></td>' + 
 			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
 			'		</tr>' + 
+			'		<input type="hidden" name="designerId" id="permitOrderForm_designerIdInput" type="hidden" value="1" />' +
+			'		<tr>' + 
+			'			<td align="right"><label>分配设计师：</label></td>' + 
+			'			<td><input id="permitOrderForm_designerNameSearchbox"  required="required" name="desingerName" prompt="请选择设计师" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
+			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
@@ -572,6 +513,8 @@ $(function()
 			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
 			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'var $designerNameSearchbox = $permitOrderWindow.find("#permitOrderForm_designerNameSearchbox");' +
+			'$designerNameSearchbox.searchbox({searcher: function(){showSelectDesignerWindow();}});' + 
 			'function submitPermitOrderForm()' + 
 			'{' + 
 			'	$permitOrderWindow.find(\'form#permitOrderForm\').form(\'submit\',' + 
@@ -712,7 +655,7 @@ $(function()
 			'var $addClientVisitWindow = $(\'div#addClientVisitWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
-			'var $orderVisitGrid = $(\'table#orderVisitGrid\');' +
+			'var $orderStylistVisitGrid = $(\'table#orderStylistVisitGrid\');' +
 			'var $orderCheckMgrTab = $(\'div#orderCheckMgrTab\');' +
 			'var selTab = $orderCheckMgrTab.tabs("getSelected");' +
 			'var index = $orderCheckMgrTab.tabs("getTabIndex",selTab);' +
@@ -736,7 +679,7 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 

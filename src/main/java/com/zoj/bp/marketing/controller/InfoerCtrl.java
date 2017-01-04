@@ -25,6 +25,7 @@ import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.InfoerVisit;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -253,7 +254,7 @@ public class InfoerCtrl
 	@ResponseBody
 	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
 	{
-		String[] roles = {"1","2","3"};//1：市场部业务员；2：市场部主管；3：市场部经理
+		Integer[] roles = {Role.marketingSalesman.value(),Role.marketingLeader.value(),Role.marketingManager.value()};//1：市场部业务员；2：市场部主管；3：市场部经理
 		return userSvc.getAllUserByRole(pagination, "", "", roles);
 	}
 }

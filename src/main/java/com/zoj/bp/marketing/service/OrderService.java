@@ -119,6 +119,8 @@ public class OrderService implements IOrderService {
 	{
 		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
+		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
+			order.setDesignerId(orderApprove.getDesignerId());
 		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
 		switch (orderApprove.getOperate())
 		{

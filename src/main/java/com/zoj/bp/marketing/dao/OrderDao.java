@@ -50,8 +50,10 @@ public class OrderDao extends BaseDao implements IOrderDao {
 	
 	@Override
 	public Integer updateOrderStatus(Order order) {
-		String sql = "UPDATE `ORDER` SET STATUS = :status";
-		sql += " WHERE ID = :id";
+		String sql = "UPDATE `ORDER` SET STATUS = :status ";
+		if(order.getDesignerId() != null && order.getDesignerId() > 0)
+			sql +=",DESIGNER_ID = :designerId ";
+		sql += "WHERE ID = :id";
 		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
 		
 	}

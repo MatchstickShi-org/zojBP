@@ -95,7 +95,7 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
-	public DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,String[] roles)
+	public DatagridVo<User> getAllUserByRole(Pagination pagination, String userName, String alias,Integer... roles)
 	{
 		String sql = "SELECT U.*, G.NAME GROUP_NAME, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME FROM USER U "
 				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
