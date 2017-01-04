@@ -514,20 +514,22 @@ $(function()
 			'   		}'+
 			'   	}'+
 			'	}'+
-			'	$.ajax'+
-			'	({'+
-			'		url: \'marketing/infoerMgr/checkInfoerTel\','+
-			'		data: {tel:obj.value},'+
-			'		success: function(data, textStatus, jqXHR)'+
-			'		{'+
-			'			if(data.returnCode != 0){'+
-			'				$(\'#errortel\').html(data.msg); '+  
-			'				return false; '+  
-			'			}else{ '+  
-			'				$(\'#errortel\').html("");'+  
-			'			}'+  
-			'		}'+
-			'	});'+
+			'	if(obj.value.length >0){'+
+			'		$.ajax'+
+			'		({'+
+			'			url: \'marketing/infoerMgr/checkInfoerTel\','+
+			'			data: {tel:obj.value},'+
+			'			success: function(data, textStatus, jqXHR)'+
+			'			{'+
+			'				if(data.returnCode != 0){'+
+			'					$(\'#errortel\').html(data.msg); '+  
+			'					return false; '+  
+			'				}else{ '+  
+			'					$(\'#errortel\').html("");'+  
+			'				}'+  
+			'			}'+
+			'		});'+
+			'	}'+
 			'   return true;'+
 			'} ' + 
 			'</script>';
@@ -750,20 +752,22 @@ $(function()
 			'   		} '+
 			'   	}'+
 			'	}'+
-			'	$.ajax'+
-			'	({'+
-			'		url: \'marketing/infoerMgr/checkClientTel\','+
-			'		data: {tel:obj.value},'+
-			'		success: function(data, textStatus, jqXHR)'+
-			'		{'+
-			'			if(data.returnCode != 0){'+
-			'				$(\'#errorclienttel\').html(data.msg); '+  
-			'				return false; '+  
-			'			}else{ '+  
-			'				$(\'#errorclienttel\').html(""); '+  
-			'			} '+  
-			'		}'+
-			'	});'+
+			'	if(obj.value.length >0){'+
+			'		$.ajax'+
+			'		({'+
+			'			url: \'marketing/infoerMgr/checkClientTel\','+
+			'			data: {tel:obj.value},'+
+			'			success: function(data, textStatus, jqXHR)'+
+			'			{'+
+			'				if(data.returnCode != 0){'+
+			'					$(\'#errorclienttel\').html(data.msg); '+  
+			'					return false; '+  
+			'				}else{ '+  
+			'					$(\'#errorclienttel\').html(""); '+  
+			'				} '+  
+			'			}'+
+			'		});'+
+			'	}'+
 			'   return true;'+
 			'} ' + 
 			'</script>';

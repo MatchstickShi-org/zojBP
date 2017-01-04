@@ -48,7 +48,7 @@ public interface IInfoerDao
 	 * @param tel
 	 * @return
 	 */
-	Infoer findByTel(String tel);
+	Infoer findByTel(Infoer infoer);
 
 	/**
 	 * 根据业务员Id查询所有信息员

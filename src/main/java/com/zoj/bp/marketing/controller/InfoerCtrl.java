@@ -108,20 +108,13 @@ public class InfoerCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法新增信息员。"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您不是商务部人员，无法新增信息员。"));
 		Infoer infoerTel = null;
-		if(StringUtils.isNotEmpty(infoer.getTel1()))
-			infoerTel = infoerSvc.findByTel(infoer.getTel1(), loginUser);
-		if(StringUtils.isNotEmpty(infoer.getTel2()) && infoerTel == null)
-			infoerTel = infoerSvc.findByTel(infoer.getTel2(), loginUser);
-		if(StringUtils.isNotEmpty(infoer.getTel3()) && infoerTel == null)
-			infoerTel = infoerSvc.findByTel(infoer.getTel3(), loginUser);
-		if(StringUtils.isNotEmpty(infoer.getTel4()) && infoerTel == null)
-			infoerTel = infoerSvc.findByTel(infoer.getTel4(), loginUser);
-		if(StringUtils.isNotEmpty(infoer.getTel5()) && infoerTel == null)
-			infoerTel = infoerSvc.findByTel(infoer.getTel5(), loginUser);
-		if(infoerTel != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
+		if(infoer != null){
+			infoerTel = infoerSvc.findByTel(infoer, loginUser);
+			if(infoerTel != null)
+				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoerTel.getInsertTime()+" 被业务员 "+infoerTel.getSalesmanName()+" 录入！"));
+		}
 		infoer.setSalesmanId(loginUser.getId());
 		infoerSvc.addInfoer(infoer);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -135,30 +128,14 @@ public class InfoerCtrl
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		Order orderTel = null;
-		if(StringUtils.isNotEmpty(order.getTel1()))
-			orderTel = orderSvc.findByTel(order.getTel1(), loginUser);
-		if(StringUtils.isNotEmpty(order.getTel2()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel2(), loginUser);
-		if(StringUtils.isNotEmpty(order.getTel3()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel3(), loginUser);
-		if(StringUtils.isNotEmpty(order.getTel4()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel4(), loginUser);
-		if(StringUtils.isNotEmpty(order.getTel5()) && orderTel == null)
-			orderTel = orderSvc.findByTel(order.getTel5(), loginUser);
-		if(orderTel != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS);
+		if(order != null){
+			orderTel = orderSvc.findByTel(order, loginUser);
+			if(orderTel != null)
+				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+orderTel.getInsertTime()+" 被业务员 "+orderTel.getSalesmanName()+" 录入！"));
+		}
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
-		Infoer infoer = infoerSvc.getInfoerById(order.getInfoerId(), loginUser);
-		/**
-		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
-		 */
-		if (infoer.getLevel() == 4)
-		{
-			infoer.setLevel(3);
-			infoerSvc.updateInfoer(infoer);
-		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -204,12 +181,13 @@ public class InfoerCtrl
 	@ResponseBody
 	public Map<String, ?> checkInfoerTel(@RequestParam String tel, HttpSession session) throws Exception
 	{
-		Infoer infoer = null;
-		if(StringUtils.isNotEmpty(tel))
-			infoer = infoerSvc.findByTel(tel, (User) session.getAttribute("loginUser"));
-		
-		if(infoer != null)
+		if(StringUtils.isNotEmpty(tel)){
+			Infoer infoer = new Infoer();
+			infoer.setTel1(tel);
+			infoer = infoerSvc.findByTel(infoer, (User) session.getAttribute("loginUser"));
+			if(infoer != null && infoer.getId() >0)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
+		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -217,9 +195,10 @@ public class InfoerCtrl
 	@ResponseBody
 	public Map<String, ?> checkClientTel(@RequestParam String tel, HttpSession session) throws Exception
 	{
-		Order order = null;
+		Order order = new Order();
 		if(StringUtils.isNotEmpty(tel)){
-			order = orderSvc.findByTel(tel, (User) session.getAttribute("loginUser"));
+			order.setTel1(tel);
+			order = orderSvc.findByTel(order, (User) session.getAttribute("loginUser"));
 		}
 		if(order != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));

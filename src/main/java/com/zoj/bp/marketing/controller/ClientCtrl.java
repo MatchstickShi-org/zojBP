@@ -4,14 +4,12 @@
 package com.zoj.bp.marketing.controller;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -98,32 +96,34 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/getAllClientTrace")
 	@ResponseBody
-	public DatagridVo<Order> getAllClientTrace(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+	public DatagridVo<Order> getAllClientTrace(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) String infoerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status)){
-			statusArr = status.split(",");
-			if(Arrays.asList(statusArr).contains("-1"))
-				statusArr = new String[]{"10","12","30","32","14"};
+		if(ArrayUtils.isNotEmpty(status))
+		{
+			while(status[0] == null)
+				status = ArrayUtils.remove(status, 0);
 		}else
-			statusArr = new String[]{"10","12","30","32","14"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
+			status = new Integer[]{10,12,30,32,14};
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
 	}
 	
 	@RequestMapping(value = "/getAllClientCheck")
 	@ResponseBody
-	public DatagridVo<Order> getAllClientCheck(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) String infoerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status))
-			statusArr = status.split(",");
-		else
-			statusArr = new String[]{"30","62"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
+		if(ArrayUtils.isEmpty(status))
+			status = new Integer[]{30,62};
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
 	}
 	
 	/**
@@ -138,18 +138,20 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/getAllClientNegotiation")
 	@ResponseBody
-	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String infoerName,@RequestParam(required=false) String status, HttpSession session)
+	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) String infoerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status)){
-			statusArr = status.split(",");
-			if(Arrays.asList(statusArr).contains("-1"))
-				statusArr = new String[]{"34","90","0","62","64","60"};
+		if(ArrayUtils.isNotEmpty(status))
+		{
+			while(status[0] == null)
+				status = ArrayUtils.remove(status, 0);
 		}else
-			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",statusArr, loginUser);
+			status = new Integer[]{34,90,0,62,64,60};
+		return orderSvc.getAllOrder(pagination,loginUser.getId(),null,name,tel,infoerName,"",loginUser,status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -209,6 +211,8 @@ public class ClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
 		orderApprove.setOperate(1);
 		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);
@@ -223,7 +227,7 @@ public class ClientCtrl
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是经理职务，无法执行此操作。"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
 		orderApprove.setOperate(0);
 		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);

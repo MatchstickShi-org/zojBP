@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.model.Client;
+import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
+import com.zoj.bp.marketing.dao.IInfoerDao;
 import com.zoj.bp.marketing.dao.IOrderApproveDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
 
@@ -26,6 +28,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	private IOrderApproveDao approveDao;
+	
+	@Autowired
+	private IInfoerDao infoerDao;
 	
 	@Override
 	public Order getOrderById(Integer id, User loginUser)
@@ -53,7 +58,7 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public DatagridVo<Order> getAllOrder(Pagination pagination, Integer salesmanId, Integer designerId, String name, String tel,
-			String infoerName, String designerName, String[] status, User loginUser)
+			String infoerName, String designerName, User loginUser,Integer... status)
 	{
 		DatagridVo<Order> os = dao.getAllOrder(pagination, salesmanId, designerId, name, tel, infoerName, designerName, status);
 		if(loginUser.isLeader())
@@ -84,12 +89,21 @@ public class OrderService implements IOrderService {
 			client.setOrderId(orderId);
 			clientDao.addClient(client);
 		}
+		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
+		/**
+		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
+		 */
+		if (infoer.getLevel() == 4)
+		{
+			infoer.setLevel(3);
+			infoerDao.updateInfoer(infoer);
+		}
 	}
 
 	@Override
-	public Order findByTel(String tel, User loginUser)
+	public Order findByTel(Order order, User loginUser)
 	{
-		Order order = clientDao.getClientByTel(tel);
+		order = clientDao.getClientByTel(order);
 		Optional.ofNullable(order).ifPresent(o -> o.hideAllTel(loginUser));
 		return order;
 	}
@@ -105,6 +119,7 @@ public class OrderService implements IOrderService {
 	{
 		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
+		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
 		switch (orderApprove.getOperate())
 		{
 			case 0:		//驳回
@@ -128,9 +143,17 @@ public class OrderService implements IOrderService {
 						order.setStatus(32);
 						break;
 					case 32:
+						/**
+						 * 如果客户为在谈单，则更新该客户的信息员等级为银牌
+						 */
+						infoer.setLevel(2);
 						order.setStatus(34);
 						break;
 					case 34:
+						/**
+						 * 如果客户为已签单，则更新该客户的信息员等级为金牌
+						 */
+						infoer.setLevel(1);
 						order.setStatus(90);
 						break;
 					case 60:
@@ -156,7 +179,10 @@ public class OrderService implements IOrderService {
 				order.setStatus(14);
 				break;
 		}
-		return dao.updateOrderStatus(order);
+		int status = dao.updateOrderStatus(order);
+		if(status > 0)
+			infoerDao.updateInfoer(infoer);
+		return status;
 	}
 
 	@Override

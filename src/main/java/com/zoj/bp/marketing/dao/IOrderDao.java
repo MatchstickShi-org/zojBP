@@ -39,7 +39,7 @@ public interface IOrderDao {
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId,String name, String tel, String infoerName,String designerName,String[] status);
+	DatagridVo<Order> getAllOrder(Pagination pagination,Integer salesmanId,Integer designerId,String name, String tel, String infoerName,String designerName,Integer... status);
 	/**
 	 * @param order
 	 * @return 

@@ -42,7 +42,7 @@ public interface IInfoerService {
 	 * @param loginUser TODO
 	 * @return
 	 */
-	Infoer findByTel(String tel, User loginUser);
+	Infoer findByTel(Infoer infoer, User loginUser);
 	
 	/**
 	 * 根据业务员Id查询所有信息员

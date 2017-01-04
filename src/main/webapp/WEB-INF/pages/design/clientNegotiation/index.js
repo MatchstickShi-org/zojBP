@@ -158,14 +158,21 @@ $(function()
 				  pagination: true
 		});
 		
+		$('#orderDatagridToolbar :checkbox').click(function()
+		{
+			if($(this).attr('value') == '')		//全选
+				$('#orderDatagridToolbar :checkbox[value!=""]').attr("checked", false);
+			else
+				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
+		});
 		$queryOrderBtn.linkbutton
 		({
 			'onClick': function()
 			{
 				$orderDatagrid.datagrid('loading');
-				var chk_value =''; 
-				$('input[name="statusInput"]:checked').each(function(){ 
-					chk_value = chk_value+$(this).val()+","; 
+				var chk_value =[]; 
+				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
+					chk_value.push($(this).val());   
 				}); 
 				$.ajax
 				({
@@ -284,9 +291,9 @@ $(function()
 			'onClick': function()
 			{
 				$orderCheckDatagrid.datagrid('loading');
-				var chk_value =''; 
-				$('input[name="orderStatusInput"]:checked').each(function(){ 
-					chk_value = chk_value+$(this).val()+","; 
+				var chk_value =[]; 
+				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
+					chk_value.push($(this).val());   
 				}); 
 				$.ajax
 				({

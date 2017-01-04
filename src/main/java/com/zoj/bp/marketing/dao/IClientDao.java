@@ -49,7 +49,7 @@ public interface IClientDao
 	 * @param tel
 	 * @return
 	 */
-	Order getClientByTel(String tel);
+	Order getClientByTel(Order order);
 
 	/**
 	 * 根据订单Id查询客户

@@ -1,8 +1,11 @@
 package com.zoj.bp.marketing.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -114,11 +117,31 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 
 	@Override
-	public Infoer findByTel(String tel) {
+	public Infoer findByTel(Infoer infoer) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID WHERE tel1 = :tel or tel2 =:tel or tel3 =:tel or tel4 =:tel or tel5 =:tel",
-					new MapSqlParameterSource("tel", tel), BeanPropertyRowMapper.newInstance(Infoer.class));
+			String sql ="SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
+					+ "WHERE 1=1 ";
+			List<String> telList = new ArrayList<String>();
+			if(StringUtils.isNotEmpty(infoer.getTel1()))
+				telList.add(infoer.getTel1());
+			if(StringUtils.isNotEmpty(infoer.getTel2()))
+				telList.add(infoer.getTel2());
+			if(StringUtils.isNotEmpty(infoer.getTel3()))
+				telList.add(infoer.getTel3());
+			if(StringUtils.isNotEmpty(infoer.getTel4()))
+				telList.add(infoer.getTel4());
+			if(StringUtils.isNotEmpty(infoer.getTel5()))
+				telList.add(infoer.getTel5());
+			if(CollectionUtils.isNotEmpty(telList)){
+				String[] tels = telList.toArray(new String[telList.size()]);
+				sql += "AND ( tel1 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel2 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel3 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel4 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel5 IN(" + StringUtils.join(tels, ',') + "))";
+			}
+			return jdbcOps.queryForObject(sql,new BeanPropertySqlParameterSource(infoer), BeanPropertyRowMapper.newInstance(Infoer.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{

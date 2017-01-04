@@ -63,9 +63,9 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public Infoer findByTel(String tel, User loginUser)
+	public Infoer findByTel(Infoer infoer, User loginUser)
 	{
-		Infoer infoer = infoerDao.findByTel(tel);
+		infoer = infoerDao.findByTel(infoer);
 		Optional.ofNullable(infoer).ifPresent(i -> i.hideAllTel(loginUser));
 		return infoer;
 	}

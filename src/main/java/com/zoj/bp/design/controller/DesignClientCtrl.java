@@ -4,14 +4,12 @@
 package com.zoj.bp.design.controller;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -92,16 +90,16 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/getAllClientCheck")
 	@ResponseBody
-	public DatagridVo<Order> getAllClientCheck(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String designerName,@RequestParam(required=false) String status, HttpSession session)
+	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) String designerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status))
-			statusArr = status.split(",");
-		else
-			statusArr = new String[]{"32","60"};
-		return orderSvc.getAllOrder(pagination, null,loginUser.getId(),name,tel,"",designerName,statusArr, loginUser);
+		if(ArrayUtils.isEmpty(status))
+			status = new Integer[]{32,60};
+		return orderSvc.getAllOrder(pagination, null,loginUser.getId(),name,tel,"",designerName,loginUser,status);
 	}
 	
 	/**
@@ -116,18 +114,20 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/getAllClientNegotiation")
 	@ResponseBody
-	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,@RequestParam(required=false) String designerName,@RequestParam(required=false) String status, HttpSession session)
+	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,
+			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) String designerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		String[] statusArr = null;
-		if (StringUtils.isNotEmpty(status)){
-			statusArr = status.split(",");
-			if(Arrays.asList(statusArr).contains("-1"))
-				statusArr = new String[]{"34","90","0","62","64","60"};
+		if(ArrayUtils.isNotEmpty(status))
+		{
+			while(status[0] == null)
+				status = ArrayUtils.remove(status, 0);
 		}else
-			statusArr = new String[]{"34","90","0","62","64","60"};
-		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,statusArr, loginUser);
+			status = new Integer[]{34,90,0,62,64,60};
+		return orderSvc.getAllOrder(pagination,null,loginUser.getId(),name,tel,"",designerName,loginUser,status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

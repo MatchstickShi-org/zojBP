@@ -1,8 +1,12 @@
 package com.zoj.bp.marketing.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -89,14 +93,33 @@ public class ClientDao extends BaseDao implements IClientDao {
 	}
 
 	@Override
-	public Order getClientByTel(String tel) {
+	public Order getClientByTel(Order order) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT O.*,U.ALIAS AS salesmanName FROM CLIENT C "+
+			String sql ="SELECT O.*,U.ALIAS AS salesmanName FROM CLIENT C "+
 					"LEFT JOIN `order` O ON O.ID = C.ORDER_ID "+
 					"LEFT JOIN `user` U ON U.ID = O.SALESMAN_ID "+
-					"WHERE C.TEL1 = :tel OR C.TEL1 = :tel OR C.TEL2 = :tel OR C.TEL3 = :tel OR C.TEL4 = :tel OR C.TEL5 = :tel",
-					new MapSqlParameterSource("tel", tel), BeanPropertyRowMapper.newInstance(Order.class));
+					"WHERE 1=1 ";
+			List<String> telList = new ArrayList<String>();
+			if(StringUtils.isNotEmpty(order.getTel1()))
+				telList.add(order.getTel1());
+			if(StringUtils.isNotEmpty(order.getTel2()))
+				telList.add(order.getTel2());
+			if(StringUtils.isNotEmpty(order.getTel3()))
+				telList.add(order.getTel3());
+			if(StringUtils.isNotEmpty(order.getTel4()))
+				telList.add(order.getTel4());
+			if(StringUtils.isNotEmpty(order.getTel5()))
+				telList.add(order.getTel5());
+			if(CollectionUtils.isNotEmpty(telList)){
+				String[] tels = telList.toArray(new String[telList.size()]);
+				sql += "AND ( tel1 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel2 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel3 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel4 IN(" + StringUtils.join(tels, ',') + ") ";
+				sql += "OR tel5 IN(" + StringUtils.join(tels, ',') + "))";
+			}
+			return jdbcOps.queryForObject(sql,new BeanPropertySqlParameterSource(order), BeanPropertyRowMapper.newInstance(Order.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{
