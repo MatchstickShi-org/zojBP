@@ -170,6 +170,18 @@ $(function()
 			return lastRow;
 		}
 	});
+
+	$.extend($.fn.linkbutton.methods,
+	{
+		hide: function(jq)
+		{
+			$(jq).linkbutton().hide();
+		},
+		show: function(jq)
+		{
+			$(jq).linkbutton().show();
+		}
+	});
 	
 	$.extend($.fn.datagrid.methods,
 	{

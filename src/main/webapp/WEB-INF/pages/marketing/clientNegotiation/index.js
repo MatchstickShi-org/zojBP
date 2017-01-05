@@ -10,7 +10,7 @@ $(function()
 	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
-	var $addInfoCostBtn = $('a#addInfoCostBtn');
+	var $addInfoCostBtn = $('a#clientNegotiationMgr-addInfoCostBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
 	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
@@ -94,7 +94,7 @@ $(function()
 								return '死单';
 								break;
 							default:
-								return '未评级';
+								return '未知状态';
 								break;
 						}
 					}
@@ -108,6 +108,23 @@ $(function()
 			url: 'marketing/clientMgr/getAllClientNegotiation',
 			onSelect: function(idx, row)
 			{
+				if(row.salesmanId != _session_loginUserId)
+					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+				else
+					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+
+				if(_session_loginUserRole == 3)
+				{
+					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
+					$('#clientNegotiationMgr-addCommissionCostBtn').linkbutton('enable').linkbutton('show');
+				}
+				else
+				{
+					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
+					$('#clientNegotiationMgr-addCommissionCostBtn').linkbutton('disable').linkbutton('hide');
+				}
+				
+				$clientMgrTab.tabs('showTool');
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 		});
@@ -115,7 +132,6 @@ $(function()
 		$infoCostGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#infoCostGridToolbar',
 			columns:
 				[[
 				  {field:'id', hidden: true},
@@ -126,7 +142,7 @@ $(function()
 				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
 						{
-					  		return value = value +' ￥';
+					  		return '￥' + value;
 						}
 				  },
 				  {field:'date', title:'打款日期', width: 3},
@@ -138,7 +154,6 @@ $(function()
 		$commissionCostGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#commissionCostGridToolbar',
 			columns:
 				[[
 				  {field:'id', hidden: true},
@@ -149,7 +164,7 @@ $(function()
 				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
 					  {
-					  return value = value +' ￥';
+					  return '￥' + value;
 					  }
 				  },
 				  {field:'date', title:'打款日期', width: 3},
@@ -211,6 +226,7 @@ $(function()
 					clearTabData(title);
 			}
 		});
+		$clientMgrTab.tabs('hideTool');
 		
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
@@ -228,7 +244,7 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
 		$reloadInfoCostBtn.linkbutton({'onClick': function()
-			{
+		{
 			var selTab = $orderCheckMgrTab.tabs('getSelected');
 			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
 			var selRows = null;
@@ -240,7 +256,7 @@ $(function()
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
 				$.messager.alert('提示', '请选中一个客户。');
-			}});
+		}});
 		
 		$orderCheckDatagrid.datagrid
 		({
@@ -335,7 +351,6 @@ $(function()
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#orderVisitGridToolbar',
 			columns:
 			[[
 				{field:'id', hidden: true},
@@ -353,12 +368,12 @@ $(function()
 		({
 			idField: 'id',
 			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'content', title:'回访内容', width: 5},
-				  {field:'date', title:'回访日期', width: 5}
-				  ]],
-				  pagination: true
+			[[
+			  {field:'id', hidden: true},
+			  {field:'content', title:'回访内容', width: 5},
+			  {field:'date', title:'回访日期', width: 5}
+			]],
+			pagination: true
 		});
 		
 		$orderStylistVisitGrid.datagrid('options').url = 'marketing/clientMgr/getStylistOrderVisitByOrder';

@@ -17,14 +17,11 @@
 				<table id="orderDatagrid" border=false></table>
 				<div id="orderDatagridToolbar">
 					<label style="vertical-align: middle;">名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientTrace.nameInput"/>
+					<input class="easyui-textbox" id="clientTrace.nameInput"/>
 					<label style="vertical-align: middle;">电话：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
+					<input class="easyui-textbox" id="clientTrace.telInput"/>
 					<label style="vertical-align: middle;">信息员名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientTrace.infoerNameInput"/>
-					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" checked="checked"/>全部客户</label>
-					<label><input type="radio" value="1" name="clientTrace.orderFilterInput"/>我的客户</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+					<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="" name="statusInput" checked="checked"/>全部</label>
@@ -33,6 +30,9 @@
 					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
 					<label><input type="checkbox" value="62" name="statusInput"/>不准单审核中</label>
 					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
+					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" checked="checked"/>全部客户</label>
+					<label><input type="radio" value="1" name="clientTrace.orderFilterInput"/>我的客户</label>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a> -->
@@ -63,7 +63,7 @@
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
-		<div id="clientMgrTab">
+		<div id="clientMgrTab" data-options="tools:'#clientNegotiationMgrTab-tools'">
 			<div title="详情" border=false>
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
@@ -107,53 +107,23 @@
 					</table>
 				</form>
 			</div>
-			<div title="业务员回访记录" border=false>
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderVisitGrid"></table>
-				    		<div id="orderVisitGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+			<div title="业务员回访记录">
+	    		<table id="orderVisitGrid" border="false"></table>
 			</div>
-			<div title="设计师回访记录" border=false>
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderStylistVisitGrid"></table>
-						</td>
-					</tr>
-				</table>
+			<div title="设计师回访记录">
+	    		<table id="orderStylistVisitGrid" border="false"></table>
 			</div>
-				<div title="信息费" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="infoCostGrid"></table>
-				    		<div id="infoCostGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addInfoCostBtn">新增</a>
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="reloadInfoCostBtn">刷新</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+			<div title="信息费">
+	    		<table id="infoCostGrid" border="false"></table>
 			</div>
-			<div title="提成" border="false">
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="commissionCostGrid"></table>
-				    		<div id="commissionCostGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addCommissionCostBtn">新增</a>
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="reloadCommissionCostBtn">刷新</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+			<div title="提成">
+	    		<table id="commissionCostGrid" border="false"></table>
 			</div>
+		</div>
+   		<div id="clientNegotiationMgrTab-tools" style="border-top: 0px;">
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="clientNegotiationMgr-addOrderVisitBtn">新增回访记录</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="clientNegotiationMgr-addInfoCostBtn">新增信息费</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="clientNegotiationMgr-addCommissionCostBtn">新增提成</a>
 		</div>
 	</div>
 </div>
@@ -164,6 +134,7 @@
 <div id="selectInfoerWindow"></div>
 <div id="showAddInfoCostWindow"></div>
 <script type="text/javascript">
+var _session_loginUserId = ${sessionScope.loginUser.id};
 var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>
 <script type="text/javascript" src="pages/marketing/clientNegotiation/index.js"></script>

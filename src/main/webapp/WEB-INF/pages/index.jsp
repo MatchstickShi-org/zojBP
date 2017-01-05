@@ -152,7 +152,7 @@ $(function()
 				try
 				{
 					$('.window-body').window('destroy');
-					$idxCenterDiv.panel('setTitle', row[opts.textField]).panel('refresh', href);
+					$idxCenterDiv.panel('clear').panel('setTitle', row[opts.textField]).panel('refresh', href);
 				}
 				catch (e)
 				{

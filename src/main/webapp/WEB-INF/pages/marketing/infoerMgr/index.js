@@ -79,17 +79,17 @@ $(function()
 			{
 				if(row.salesmanId != _session_loginUserId)
 				{
-					$('#addInfoerVisitBtn').linkbutton('disable');
-					$('#addClientBtn').linkbutton('disable');
+					$('#addInfoerVisitBtn').linkbutton('disable').linkbutton('hide');
+					$('#addClientBtn').linkbutton('disable').linkbutton('hide');
 					$infoerMgrTab.tabs('hideTool');
-					$submitUpdateInfoerFormBtn.linkbutton('disable');
+					$submitUpdateInfoerFormBtn.linkbutton('disable').linkbutton('hide');
 				}
 				else
 				{
-					$('#addInfoerVisitBtn').linkbutton('enable');
-					$('#addClientBtn').linkbutton('enable');
+					$('#addInfoerVisitBtn').linkbutton('enable').linkbutton('show');
+					$('#addClientBtn').linkbutton('enable').linkbutton('show');
 					$infoerMgrTab.tabs('showTool');
-					$submitUpdateInfoerFormBtn.linkbutton('enable');
+					$submitUpdateInfoerFormBtn.linkbutton('enable').linkbutton('show');
 				}
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
 			}
@@ -219,7 +219,7 @@ $(function()
 				  {field:'designerName', title:'设计师', width: 3},
 				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
 						{
-					  		return value = value +' ￥';
+					  		return '￥' + value;
 						}
 				  },
 				  {field:'date', title:'打款日期', width: 3},
@@ -232,21 +232,21 @@ $(function()
 		({
 			idField: 'id',
 			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'orderId', title:'单号', width: 3},
-				  {field:'projectName', title:'项目名称', width: 6},
-				  {field:'infoerName', title:'信息员', width: 3},
-				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'designerName', title:'设计师', width: 3},
-				  {field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
-					  {
-					  return value = value +' ￥';
-					  }
-				  },
-				  {field:'date', title:'打款日期', width: 3},
-				  {field:'remark', title:'备注', width: 8}
-				  ]],
+			[[
+				{field:'id', hidden: true},
+				{field:'orderId', title:'单号', width: 3},
+				{field:'projectName', title:'项目名称', width: 6},
+				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'designerName', title:'设计师', width: 3},
+				{field:'amount', title:'金额', width: 3, formatter: function(value, row, index)
+					{
+						return '￥' + value;
+					}
+				},
+				{field:'date', title:'打款日期', width: 3},
+				{field:'remark', title:'备注', width: 8}
+			]],
 				  pagination: true
 		});
 		
