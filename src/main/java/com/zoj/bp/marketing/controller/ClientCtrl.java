@@ -25,6 +25,7 @@ import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.CommissionCost;
 import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
@@ -112,7 +113,14 @@ public class ClientCtrl
 				status = ArrayUtils.remove(status, 0);
 		}
 		else
-			status = new Integer[]{10,12,30,32,14};
+			status = new Integer[]
+					{
+					Status.tracing.value(),
+					Status.abandoned.value(),
+					Status.designerRejected.value(),
+					Status.talkingMarketingManagerAuditing.value(),
+					Status.talkingDesignManagerAuditing.value()
+					};
 		if (filter == null || filter == 0)
 			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 		else
@@ -129,7 +137,11 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
-			status = new Integer[]{30,62};
+			status = new Integer[]
+					{
+					Status.talkingMarketingManagerAuditing.value(),
+					Status.disagreeMarketingManagerAuditing.value()
+					};
 		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 	}
 	
@@ -157,7 +169,15 @@ public class ClientCtrl
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
 		}else
-			status = new Integer[]{34,90,0,62,64,60};
+			status = new Integer[]
+					{
+					Status.talkingDesignerTracing.value(),
+					Status.deal.value(),
+					Status.dead.value(),
+					Status.disagree.value(),
+					Status.disagreeDesignManagerAuditing.value(),
+					Status.disagreeMarketingManagerAuditing.value()
+					};
 		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 	}
 	

@@ -54,8 +54,8 @@ $(function()
 							case 5:
 								return '主案部主管';
 								break;
-							case 2:
-								return '主案部部经理';
+							case 6:
+								return '主案部经理';
 								break;
 							default:
 								return '未知';

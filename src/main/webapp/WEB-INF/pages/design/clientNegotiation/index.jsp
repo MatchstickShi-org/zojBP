@@ -22,6 +22,9 @@
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.designerNameInput"/>
+					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" checked="checked"/>全部客户</label>
+					<label><input type="radio" value="1" name="clientTrace.orderFilterInput"/>我的客户</label>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="" name="statusInput" checked="checked"/>全部</label>
@@ -30,7 +33,6 @@
 					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
 					<label><input type="checkbox" value="60" name="statusInput"/>不准单审核中</label>
 					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="permitOrderWindowBtn">已签单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderBtn">死单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="applyNotPerimitOrderBtn">申请不准单</a>
@@ -47,10 +49,13 @@
 					<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="order.designerNameInput"/>
+					<label><input type="radio" value="0" name="order.orderFilterInput" checked="checked"/>全部客户</label>
+					<label><input type="radio" value="1" name="order.orderFilterInput"/>我的客户</label>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
+					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>
 					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
 				</div>

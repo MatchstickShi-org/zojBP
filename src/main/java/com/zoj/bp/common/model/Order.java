@@ -2,6 +2,7 @@ package com.zoj.bp.common.model;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
@@ -73,6 +74,49 @@ public class Order implements Serializable{
 			Optional.ofNullable(tel3).ifPresent(tel -> that.setTel3("******"));
 			Optional.ofNullable(tel4).ifPresent(tel -> that.setTel4("******"));
 			Optional.ofNullable(tel5).ifPresent(tel -> that.setTel5("******"));
+		}
+	}
+	
+	public enum Status
+	{
+		/**正跟踪*/
+		tracing(10),
+		/**已放弃*/
+		abandoned(12),
+		/**在谈单-设计师已打回*/
+		designerRejected(14),
+		/**在谈单-商务部经理审核中*/
+		talkingMarketingManagerAuditing(30),
+		/**在谈单-主案部经理审核中*/
+		talkingDesignManagerAuditing(32),
+		/**在谈单-设计师跟踪中*/
+		talkingDesignerTracing(34),
+		/**已签单*/
+		deal(90),
+		/**死单*/
+		dead(0),
+		/**不准单-主案部经理审核中*/
+		disagreeDesignManagerAuditing(60),
+		/**不准单-商务部经理审核中*/
+		disagreeMarketingManagerAuditing(62),
+		/**不准单*/
+		disagree(64);
+		
+		private Status(Integer value)
+		{
+			this.value = value;
+		}
+		
+		private Integer value;
+		
+		public Integer value()
+		{
+			return this.value;
+		}
+		
+		public static Status valueOf(Integer status)
+		{
+			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
 		}
 	}
 	

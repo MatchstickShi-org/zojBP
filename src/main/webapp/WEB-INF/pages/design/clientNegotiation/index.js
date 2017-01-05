@@ -629,6 +629,11 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
 			}
+			if(selRows.designerName == null || selRows.designerName == '')
+			{
+				$.messager.alert('提示', '请先分配设计师。');
+				return;
+			}
 			$addClientVisitWindow.window('clear');
 			$addClientVisitWindow.window('open').window
 			({

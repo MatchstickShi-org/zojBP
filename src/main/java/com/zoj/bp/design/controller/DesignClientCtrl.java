@@ -24,6 +24,7 @@ import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.CommissionCost;
 import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
@@ -99,7 +100,11 @@ public class DesignClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
-			status = new Integer[]{32,60};
+			status = new Integer[]
+					{
+					Status.talkingDesignManagerAuditing.value(),
+					Status.disagreeDesignManagerAuditing.value()
+					};
 		return orderSvc.getOrdersByUser(loginUser, pagination,null,name,tel,"",designerName,status);
 	}
 	
@@ -127,7 +132,17 @@ public class DesignClientCtrl
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
 		}else
-			status = new Integer[]{32,34,90,0,62,64,60};
+			status = new Integer[]
+					{
+						Status.designerRejected.value(),
+						Status.talkingDesignManagerAuditing.value(),
+						Status.talkingDesignerTracing.value(),
+						Status.deal.value(),
+						Status.dead.value(),
+						Status.disagree.value(),
+						Status.disagreeDesignManagerAuditing.value(),
+						Status.disagreeMarketingManagerAuditing.value()
+					};
 		Integer designerId = loginUser.isSuperAdmin() ? null:loginUser.getId();
 		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",designerName,status);
 	}
