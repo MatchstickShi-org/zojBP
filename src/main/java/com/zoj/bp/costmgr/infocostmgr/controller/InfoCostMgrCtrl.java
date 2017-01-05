@@ -74,6 +74,10 @@ public class InfoCostMgrCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法新增信息费。"));
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("输入参数有误，请检查后重新输入。"));
+		InfoCost dbCost = infoCostSvc.getInfoCostByOrder(infoCost.getOrderId());
+		if(dbCost.getCost() != null)		//已打款
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(
+					MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName())));
 		infoCostSvc.addInfoCostRecord(infoCost);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

@@ -1,6 +1,7 @@
 $(function()
 {
 	var $infoCostGrid = $('table#infoCostGrid');
+	var $clientMgrTab = $('div#clientMgrTab');
 	$('a#addInfoCostRecordBtn').linkbutton({'onClick': function()
 	{
 		$showAddInfoCostWindow.find('form#addInfoCostForm').form('submit',
