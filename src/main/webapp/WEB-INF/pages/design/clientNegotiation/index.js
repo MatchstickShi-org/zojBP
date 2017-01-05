@@ -10,13 +10,14 @@ $(function()
 	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
-	var $addInfoCostBtn = $('a#addInfoCostBtn');
-	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
-	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $permitOrderWindow = $('div#permitOrderWindow');
 	var $rejectOrderWindow = $('div#rejectOrderWindow');
+	var $dealOrderWindow = $('div#dealOrderWindow');
+	var $deadOrderWindow = $('div#deadOrderWindow');
+	var $disagreeOrderWindow = $('div#disagreeOrderWindow');
+	var $repulseOrderWindow = $('div#repulseOrderWindow');
 	var $selectDesignerWindow = $('div#selectDesignerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
@@ -178,20 +179,6 @@ $(function()
 			else
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
-		$reloadInfoCostBtn.linkbutton({'onClick': function()
-			{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var selRows = null;
-			if(index == 0)
-				selRows = $orderDatagrid.datagrid('getSelections');
-			else
-				selRows = $orderCheckDatagrid.datagrid('getSelections');
-			if(selRows.length == 1)
-				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
-			else
-				$.messager.alert('提示', '请选中一个客户。');
-			}});
 		
 		$orderCheckDatagrid.datagrid
 		({
@@ -381,6 +368,10 @@ $(function()
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
+		$('#dealOrderWindowBtn').linkbutton({onClick: showDealOrderWindow});
+		$('#deadOrderWindowBtn').linkbutton({onClick: showDeadOrderWindow});
+		$('#disagreeOrderWindowBtn').linkbutton({onClick: showDisagreeOrderWindow});
+		$('#repulseOrderWindowBtn').linkbutton({onClick: showRepulseOrderWindow});
 		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
 		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 		
@@ -433,29 +424,11 @@ $(function()
 		$addClientWindow.window({width: 450});
 		$permitOrderWindow.window({width: 340});
 		$rejectOrderWindow.window({width: 340});
+		$dealOrderWindow.window({width: 340});
+		$deadOrderWindow.window({width: 340});
+		$disagreeOrderWindow.window({width: 340});
+		$repulseOrderWindow.window({width: 340});
 		$selectDesignerWindow.window({width: 350});
-		$showAddInfoCostWindow.window({width: 500});
-		
-		$addInfoCostBtn.linkbutton({onClick: function()
-		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var orderIds = null;
-			if(index == 0)
-				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
-			else
-				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
-			if(orderIds.length == 0)
-			{
-				$.messager.alert('提示', '请选择要打款的客户。');
-				return;
-			}
-			$showAddInfoCostWindow.window('clear');
-			$showAddInfoCostWindow.window('open').window
-			({
-				title: '新增信息费打款记录'
-			}).window('open').window('refresh', 'design/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
-		}});
 		
 		function showPermitOrderWindow()
 		{
@@ -469,7 +442,7 @@ $(function()
 			$permitOrderWindow.window('open').window
 			({
 				title: '批准',
-				content: permitOrderWindowHtml
+				content: selIds[0].status ==32 ? permitOrderWindowHtml:permitDisagreeOrderWindowHtml
 			}).window('open').window('center');
 		}
 		
@@ -538,6 +511,65 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
+		var permitDisagreeOrderWindowHtml = 
+			'<form id="permitOrderForm" action="design/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$permitOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $permitOrderWindow = $(\'div#permitOrderWindow\');' +
+			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
+			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitPermitOrderForm()' + 
+			'{' + 
+			'	$permitOrderWindow.find(\'form#permitOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$permitOrderWindow.window(\'close\');' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
 		function showRejectOrderWindow()
 		{
 			var selIds = $orderCheckDatagrid.datagrid('getSelections');
@@ -607,6 +639,333 @@ $(function()
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$rejectOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showDealOrderWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要签单的客户。');
+				return;
+			}
+			if(selIds[0].status != 34)
+			{
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				return;
+			}
+			$dealOrderWindow.window('clear');
+			$dealOrderWindow.window('open').window
+			({
+				title: '签单',
+				content: dealOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var dealOrderWindowHtml = 
+			'<form id="dealOrderForm" action="design/clientMgr/dealOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitDealOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$dealOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $dealOrderWindow = $(\'div#dealOrderWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$dealOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$dealOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$dealOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$dealOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$dealOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitDealOrderForm()' + 
+			'{' + 
+			'	$dealOrderWindow.find(\'form#dealOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$dealOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showDeadOrderWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中申请死单的客户。');
+				return;
+			}
+			if(selIds[0].status != 34)
+			{
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				return;
+			}
+			$deadOrderWindow.window('clear');
+			$deadOrderWindow.window('open').window
+			({
+				title: '申请死单',
+				content: deadOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var deadOrderWindowHtml = 
+			'<form id="deadOrderForm" action="design/clientMgr/deadOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitDeadOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$deadOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $deadOrderWindow = $(\'div#deadOrderWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$deadOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$deadOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$deadOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$deadOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$deadOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitDeadOrderForm()' + 
+			'{' + 
+			'	$deadOrderWindow.find(\'form#deadOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$deadOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showDisagreeOrderWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要申请不准单的客户。');
+				return;
+			}
+			if(selIds[0].status != 34)
+			{
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				return;
+			}
+			$disagreeOrderWindow.window('clear');
+			$disagreeOrderWindow.window('open').window
+			({
+				title: '申请不准单',
+				content: disagreeOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var disagreeOrderWindowHtml = 
+			'<form id="disagreeOrderForm" action="design/clientMgr/disagreeOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitDisagreeOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$disagreeOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $disagreeOrderWindow = $(\'div#disagreeOrderWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$disagreeOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$disagreeOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$disagreeOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$disagreeOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$disagreeOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitDisagreeOrderForm()' + 
+			'{' + 
+			'	$disagreeOrderWindow.find(\'form#disagreeOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$disagreeOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		function showRepulseOrderWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要打回正跟踪的客户。');
+				return;
+			}
+			if(selIds[0].status != 34)
+			{
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				return;
+			}
+			$repulseOrderWindow.window('clear');
+			$repulseOrderWindow.window('open').window
+			({
+				title: '打回正跟踪',
+				content: repulseOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var repulseOrderWindowHtml = 
+			'<form id="repulseOrderForm" action="design/clientMgr/repulseOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitRepulseOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$repulseOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $repulseOrderWindow = $(\'div#repulseOrderWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$repulseOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$repulseOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$repulseOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$repulseOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$repulseOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitRepulseOrderForm()' + 
+			'{' + 
+			'	$repulseOrderWindow.find(\'form#repulseOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$repulseOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 

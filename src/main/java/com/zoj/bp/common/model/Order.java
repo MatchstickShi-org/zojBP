@@ -79,27 +79,27 @@ public class Order implements Serializable{
 	
 	public enum Status
 	{
-		/**正跟踪*/
+		/**正跟踪:10*/
 		tracing(10),
-		/**已放弃*/
+		/**已放弃:12*/
 		abandoned(12),
-		/**在谈单-设计师已打回*/
+		/**在谈单-设计师已打回:14*/
 		designerRejected(14),
-		/**在谈单-商务部经理审核中*/
+		/**在谈单-商务部经理审核中:30*/
 		talkingMarketingManagerAuditing(30),
-		/**在谈单-主案部经理审核中*/
+		/**在谈单-主案部经理审核中:32*/
 		talkingDesignManagerAuditing(32),
-		/**在谈单-设计师跟踪中*/
+		/**在谈单-设计师跟踪中:34*/
 		talkingDesignerTracing(34),
-		/**已签单*/
+		/**已签单:90*/
 		deal(90),
-		/**死单*/
+		/**死单:0*/
 		dead(0),
-		/**不准单-主案部经理审核中*/
+		/**不准单-主案部经理审核中:60*/
 		disagreeDesignManagerAuditing(60),
-		/**不准单-商务部经理审核中*/
+		/**不准单-商务部经理审核中:62*/
 		disagreeMarketingManagerAuditing(62),
-		/**不准单*/
+		/**不准单:64*/
 		disagree(64);
 		
 		private Status(Integer value)

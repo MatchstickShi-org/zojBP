@@ -4,6 +4,7 @@ package com.zoj.bp.common.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.zoj.bp.common.model.Order.Status;
 
 /**
  * @author wangw
@@ -57,10 +59,39 @@ public class Infoer implements Serializable
 	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date insertTime;
 	
-	private Integer leftVisitDays;  //剩余回访天数
+	private Integer leftVisitDays;  //未回访天数
 	
 	@SuppressWarnings("unused")
 	private String telAll;
+	
+	public enum Level
+	{
+		/**金牌*/
+		gold(1),
+		/**银牌*/
+		silver(2),
+		/**铜牌*/
+		bronze(3),
+		/**铁牌*/
+		iron(4);
+		
+		private Level(Integer value)
+		{
+			this.value = value;
+		}
+		
+		private Integer value;
+		
+		public Integer value()
+		{
+			return this.value;
+		}
+		
+		public static Status valueOf(Integer status)
+		{
+			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
+		}
+	}
 	
 	public Integer getId()
 	{

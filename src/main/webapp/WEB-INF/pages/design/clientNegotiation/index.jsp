@@ -33,10 +33,10 @@
 					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
 					<label><input type="checkbox" value="60" name="statusInput"/>不准单审核中</label>
 					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="permitOrderWindowBtn">已签单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderBtn">死单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="applyNotPerimitOrderBtn">申请不准单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="rejectOrderBtn">打回正跟踪</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="dealOrderWindowBtn">已签单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="repulseOrderWindowBtn">打回正跟踪</a>
 				</div>
 			</div>
 			<c:if test="${sessionScope.loginUser.role == 6}">
@@ -124,6 +124,7 @@
 				    		<table id="orderStylistVisitGrid"></table>
 				    		<div id="orderVisitGridToolbar">
 								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addOrderCommentBtn">批示</a>
 							</div>
 						</td>
 					</tr>
@@ -133,11 +134,13 @@
 	</div>
 </div>
 <div id="addClientVisitWindow"></div>
-<div id="addClientWindow"></div>
 <div id="permitOrderWindow"></div>
 <div id="rejectOrderWindow"></div>
+<div id="dealOrderWindow"></div>
+<div id="deadOrderWindow"></div>
+<div id="disagreeOrderWindow"></div>
+<div id="repulseOrderWindow"></div>
 <div id="selectDesignerWindow"></div>
-<div id="showAddInfoCostWindow"></div>
 <script type="text/javascript">
 var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>

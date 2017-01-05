@@ -26,6 +26,7 @@ import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
+import com.zoj.bp.common.model.OrderApprove.Operate;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
@@ -177,26 +178,95 @@ public class DesignClientCtrl
 	}
 	
 	/**
-	 * 申请在谈单
+	 * 已签单
 	 * @param orderApprove
 	 * @param errors
 	 * @param session
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/applyOrder")
+	@RequestMapping(value = "/dealOrder")
 	@ResponseBody
-	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> dealOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
-		orderApprove.setOperate(2);
+		orderApprove.setOperate(Operate.permit.value());
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	/**
+	 * 死单
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deadOrder")
+	@ResponseBody
+	public Map<String, ?> deadOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setOperate(Operate.reject.value());
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	/**
+	 * 不准单
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/disagreeOrder")
+	@ResponseBody
+	public Map<String, ?> disagreeOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setOperate(Operate.apply.value());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 打回正跟踪
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/repulseOrder")
+	@ResponseBody
+	public Map<String, ?> repulseOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setOperate(Operate.repulse.value());
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
+	/**
+	 * 审核通过
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/permitOrder")
 	@ResponseBody
 	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
@@ -204,12 +274,20 @@ public class DesignClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		orderApprove.setOperate(1);
+		orderApprove.setOperate(Operate.permit.value());
 		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 审核驳回
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/rejectOrder")
 	@ResponseBody
 	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
@@ -219,7 +297,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是经理职务，无法执行此操作。"));
-		orderApprove.setOperate(0);
+		orderApprove.setOperate(Operate.reject.value());
 		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);

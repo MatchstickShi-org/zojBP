@@ -24,6 +24,9 @@ public class OrderVisit implements Serializable
 	
 	private String content;
 	
+	private String comment;
+	
+	private Integer notVisitDays;//未回访天数
 	
 	public Integer getId()
 	{
@@ -65,5 +68,21 @@ public class OrderVisit implements Serializable
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public Integer getNotVisitDays() {
+		return notVisitDays;
+	}
+
+	public void setNotVisitDays(Integer notVisitDays) {
+		this.notVisitDays = notVisitDays;
 	}
 }

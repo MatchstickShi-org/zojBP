@@ -1,8 +1,11 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
+
+import com.zoj.bp.common.model.Order.Status;
 
 /**
  * @author wangw
@@ -31,6 +34,34 @@ public class OrderApprove implements Serializable{
 	@NotNull
 	private String remark;
 
+	public enum Operate
+	{
+		/**驳回:0*/
+		reject(0),
+		/**批准:1*/
+		permit(1),
+		/**申请:2*/
+		apply(2),
+		/**打回:3*/
+		repulse(3);
+		
+		private Operate(Integer value)
+		{
+			this.value = value;
+		}
+		
+		private Integer value;
+		
+		public Integer value()
+		{
+			return this.value;
+		}
+		
+		public static Status valueOf(Integer status)
+		{
+			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
+		}
+	}
 	public Integer getId() {
 		return id;
 	}

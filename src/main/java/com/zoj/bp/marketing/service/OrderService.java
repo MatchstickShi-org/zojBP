@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Infoer;
+import com.zoj.bp.common.model.Infoer.Level;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
@@ -129,19 +131,26 @@ public class OrderService implements IOrderService
 		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
 			order.setDesignerId(orderApprove.getDesignerId());
 		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
+		boolean updateInfoerFlag = false;
 		switch (orderApprove.getOperate())
 		{
 			case 0:		//驳回
 				switch (order.getStatus())
 				{
 					case 30:
-						order.setStatus(10);
+						order.setStatus(Status.tracing.value());
 						break;
 					case 32:
-						order.setStatus(30);
+						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
 					case 34:
-						order.setStatus(0);
+						order.setStatus(Status.dead.value());
+						break;
+					case 60:
+						order.setStatus(Status.talkingDesignerTracing.value());
+						break;
+					case 62:
+						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
@@ -149,27 +158,29 @@ public class OrderService implements IOrderService
 				switch (order.getStatus())
 				{
 					case 30:
-						order.setStatus(32);
+						order.setStatus(Status.talkingDesignManagerAuditing.value());
 						break;
 					case 32:
 						/**
 						 * 如果客户为在谈单，则更新该客户的信息员等级为银牌
 						 */
-						infoer.setLevel(2);
-						order.setStatus(34);
+						infoer.setLevel(Level.silver.value());
+						updateInfoerFlag = true;
+						order.setStatus(Status.talkingDesignerTracing.value());
 						break;
 					case 34:
 						/**
 						 * 如果客户为已签单，则更新该客户的信息员等级为金牌
 						 */
-						infoer.setLevel(1);
-						order.setStatus(90);
+						infoer.setLevel(Level.gold.value());
+						updateInfoerFlag = true;
+						order.setStatus(Status.deal.value());
 						break;
 					case 60:
-						order.setStatus(62);
+						order.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						break;
 					case 62:
-						order.setStatus(64);
+						order.setStatus(Status.disagree.value());
 						break;
 				}
 				break;
@@ -177,19 +188,19 @@ public class OrderService implements IOrderService
 				switch (order.getStatus())
 				{
 					case 10:
-						order.setStatus(30);
+						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
 					case 34:
-						order.setStatus(60);
+						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
 			case 3:		//打回
-				order.setStatus(14);
+				order.setStatus(Status.designerRejected.value());
 				break;
 		}
 		int status = dao.updateOrderStatus(order);
-		if(status > 0)
+		if(status > 0 && updateInfoerFlag)
 			infoerDao.updateInfoer(infoer);
 		return status;
 	}
