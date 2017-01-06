@@ -290,7 +290,8 @@ $(function()
 				[[
 				  {field:'id', hidden: true},
 				  {field:'content', title:'回访内容', width: 5},
-				  {field:'date', title:'回访日期', width: 5}
+				  {field:'date', title:'回访日期', width: 5},
+				  {field:'comment', title:'批示', width: 5}
 				  ]],
 				  pagination: true
 		});
@@ -988,7 +989,7 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
 			}
-			if(selRows.designerName == null || selRows.designerName == '')
+			if(selRows[0].designerName == null || selRows[0].designerName == '')
 			{
 				$.messager.alert('提示', '请先分配设计师。');
 				return;
@@ -1023,6 +1024,7 @@ $(function()
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
 			'var $orderStylistVisitGrid = $(\'table#orderStylistVisitGrid\');' +
 			'var $orderCheckMgrTab = $(\'div#orderCheckMgrTab\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selTab = $orderCheckMgrTab.tabs("getSelected");' +
 			'var index = $orderCheckMgrTab.tabs("getTabIndex",selTab);' +
 			'var selRows = null;' +
@@ -1045,7 +1047,8 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs(\'getSelected\').panel(\'options\').title == "设计师回访记录")' + 
+			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
