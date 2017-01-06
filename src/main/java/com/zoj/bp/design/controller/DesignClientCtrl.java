@@ -158,7 +158,7 @@ public class DesignClientCtrl
 	}
 	
 	/**
-	 * 新增客户的回访记录
+	 * 新增设计师的回访记录
 	 * @param orderVisit
 	 * @param errors
 	 * @param session

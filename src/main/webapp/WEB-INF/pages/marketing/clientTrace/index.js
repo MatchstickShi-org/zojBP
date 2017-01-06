@@ -427,6 +427,7 @@ $(function()
 			'var $addClientVisitWindow = $(\'div#addClientVisitWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
 			'var $orderVisitGrid = $(\'table#orderVisitGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'function submitAddClientVisitForm()' + 
@@ -443,8 +444,8 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				if($infoerMgrTab.tabs("getSelected").panel("options").title == "回访记录")' + 
-			'					$clientMgrTab.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "回访记录")' + 
+			'					$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 

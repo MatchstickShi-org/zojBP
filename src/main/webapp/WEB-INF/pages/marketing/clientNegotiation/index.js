@@ -11,6 +11,7 @@ $(function()
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $addInfoCostBtn = $('a#clientNegotiationMgr-addInfoCostBtn');
+	var $addCommissionCostBtn = $('a#clientNegotiationMgr-addCommissionCostBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
 	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
@@ -116,12 +117,15 @@ $(function()
 				if(_session_loginUserRole == 3)
 				{
 					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
-					$('#clientNegotiationMgr-addCommissionCostBtn').linkbutton('enable').linkbutton('show');
+					if(row.status == 90)
+						$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
+					else
+						$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
 				}
 				else
 				{
 					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
-					$('#clientNegotiationMgr-addCommissionCostBtn').linkbutton('disable').linkbutton('hide');
+					$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
 				}
 				
 				$clientMgrTab.tabs('showTool');
