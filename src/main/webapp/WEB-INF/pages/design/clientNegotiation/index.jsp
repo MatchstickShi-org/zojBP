@@ -37,6 +37,7 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="repulseOrderWindowBtn">打回正跟踪</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="transferOrderWindowBtn">业务转移</a>
 				</div>
 			</div>
 			<c:if test="${sessionScope.loginUser.role == 6}">
@@ -49,8 +50,6 @@
 					<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="order.designerNameInput"/>
-					<label><input type="radio" value="0" name="order.orderFilterInput" checked="checked"/>全部客户</label>
-					<label><input type="radio" value="1" name="order.orderFilterInput"/>我的客户</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
@@ -58,7 +57,7 @@
 					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="showDeadOrderWindowBtn">死单</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="showCheckDeadOrderWindowBtn">死单</a>
 				</div>
 			</div>
 			</c:if>
@@ -125,7 +124,8 @@
 				    		<table id="orderStylistVisitGrid"></table>
 				    		<div id="orderVisitGridToolbar">
 								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addOrderCommentBtn">批示</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addVisitCommentBtn">批示</a>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyVisitBtn">回访申请</a>
 							</div>
 						</td>
 					</tr>
@@ -135,10 +135,12 @@
 	</div>
 </div>
 <div id="addClientVisitWindow"></div>
+<div id="addVisitCommentWindow"></div>
 <div id="permitOrderWindow"></div>
 <div id="rejectOrderWindow"></div>
 <div id="dealOrderWindow"></div>
 <div id="deadOrderWindow"></div>
+<div id="checkDeadOrderWindow"></div>
 <div id="disagreeOrderWindow"></div>
 <div id="repulseOrderWindow"></div>
 <div id="selectDesignerWindow"></div>

@@ -24,4 +24,14 @@ public class OrderVisitService implements IOrderVisitService{
 		return dao.addOrderVisit(orderVisit);
 	}
 
+	@Override
+	public OrderVisit getOrderVisitById(Integer id) {
+		return dao.getOrderVisitById(id);
+	}
+
+	@Override
+	public void updateOrderVisit(OrderVisit orderVisit) {
+		dao.updateOrderVisit(orderVisit);
+	}
+
 }

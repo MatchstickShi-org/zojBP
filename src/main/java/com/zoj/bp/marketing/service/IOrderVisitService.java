@@ -18,4 +18,16 @@ public interface IOrderVisitService {
 	 * @return 
 	 */
 	Integer addOrderVisit(OrderVisit orderVisit);
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	OrderVisit getOrderVisitById(Integer id);
+
+	/**
+	 * @param orderVisit
+	 */
+	void updateOrderVisit(OrderVisit orderVisit);
 }

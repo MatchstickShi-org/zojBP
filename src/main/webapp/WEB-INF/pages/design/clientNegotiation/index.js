@@ -11,11 +11,13 @@ $(function()
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
+	var $addVisitCommentWindow = $('div#addVisitCommentWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $permitOrderWindow = $('div#permitOrderWindow');
 	var $rejectOrderWindow = $('div#rejectOrderWindow');
 	var $dealOrderWindow = $('div#dealOrderWindow');
 	var $deadOrderWindow = $('div#deadOrderWindow');
+	var $checkDeadOrderWindow = $('div#checkDeadOrderWindow');
 	var $disagreeOrderWindow = $('div#disagreeOrderWindow');
 	var $repulseOrderWindow = $('div#repulseOrderWindow');
 	var $selectDesignerWindow = $('div#selectDesignerWindow');
@@ -130,7 +132,7 @@ $(function()
 				$.ajax
 				({
 					url: 'design/clientMgr/getAllClientNegotiation',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
+					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),designerName: $designerNameTextbox.textbox('getValue'),status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -277,7 +279,10 @@ $(function()
 				{field:'content', title:'回访内容', width: 5},
 				{field:'date', title:'回访日期', width: 5}
 			]],
-			pagination: true
+			pagination: true,
+			singleSelect: true,
+			selectOnCheck: false,
+			checkOnSelect: false
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'design/clientMgr/getOrderVisitByOrder';
@@ -291,9 +296,20 @@ $(function()
 				  {field:'id', hidden: true},
 				  {field:'content', title:'回访内容', width: 5},
 				  {field:'date', title:'回访日期', width: 5},
-				  {field:'comment', title:'批示', width: 5}
+				  {field:'comment', title:'批示', width: 5},
+				  {field:'notVisitDays', title:'未回访天数', hidden: true,
+					  formatter: function(value,row,index){
+							if (index == 0 && value >1){
+								$('#addOrderVisitBtn').linkbutton('disable');
+								return value;
+							}
+						}
+				  }
 				  ]],
-				  pagination: true
+			pagination: true,
+			singleSelect: true,
+			selectOnCheck: false,
+			checkOnSelect: false
 		});
 		
 		$orderStylistVisitGrid.datagrid('options').url = 'design/clientMgr/getStylistOrderVisitByOrder';
@@ -368,6 +384,7 @@ $(function()
 		
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
+		$('#addVisitCommentBtn').linkbutton({onClick: showAddVisitCommentWindow});
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
 		$('#dealOrderWindowBtn').linkbutton({onClick: showDealOrderWindow});
 		$('#deadOrderWindowBtn').linkbutton({onClick: showDeadOrderWindow});
@@ -375,6 +392,7 @@ $(function()
 		$('#repulseOrderWindowBtn').linkbutton({onClick: showRepulseOrderWindow});
 		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
 		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
+		$('#showCheckDeadOrderWindowBtn').linkbutton({onClick: showCheckDeadOrderWindow});
 		
 		
 		function removeOrder()
@@ -422,10 +440,12 @@ $(function()
 		}
 		
 		$addClientVisitWindow.window({width: 350});
+		$addVisitCommentWindow.window({width: 350});
 		$addClientWindow.window({width: 450});
 		$permitOrderWindow.window({width: 340});
 		$rejectOrderWindow.window({width: 340});
 		$dealOrderWindow.window({width: 340});
+		$checkDeadOrderWindow.window({width: 340});
 		$deadOrderWindow.window({width: 340});
 		$disagreeOrderWindow.window({width: 340});
 		$repulseOrderWindow.window({width: 340});
@@ -812,6 +832,88 @@ $(function()
 			'}' + 
 			'</script>';
 		
+		function showCheckDeadOrderWindow()
+		{
+			var selIds = $orderCheckDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中一个客户。');
+				return;
+			}
+			if(selIds[0].status != 32)
+			{
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单审核中</span>的客户。');
+				return;
+			}
+			$checkDeadOrderWindow.window('clear');
+			$checkDeadOrderWindow.window('open').window
+			({
+				title: '申请死单',
+				content: checkDeadOrderWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var checkDeadOrderWindowHtml = 
+			'<form id="checkDeadOrderForm" action="design/clientMgr/checkDeadOrder" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
+			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitCheckDeadOrderForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$checkDeadOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $checkDeadOrderWindow = $(\'div#checkDeadOrderWindow\');' +
+			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
+			'$checkDeadOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$checkDeadOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$checkDeadOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$checkDeadOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
+			'$checkDeadOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitCheckDeadOrderForm()' + 
+			'{' + 
+			'	$checkDeadOrderWindow.find(\'form#checkDeadOrderForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$checkDeadOrderWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
 		function showDisagreeOrderWindow()
 		{
 			var selIds = $orderDatagrid.datagrid('getSelections');
@@ -1050,6 +1152,68 @@ $(function()
 			'				if($clientMgrTab.tabs(\'getSelected\').panel(\'options\').title == "设计师回访记录")' + 
 			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
+		
+		function showAddVisitCommentWindow()
+		{
+			var selRows = $orderStylistVisitGrid.datagrid('getSelections');
+			if(selRows.length == 0)
+			{
+				$.messager.alert('提示', '请选中一条回访记录。');
+				return;
+			}
+			$addVisitCommentWindow.window('clear');
+			$addVisitCommentWindow.window('open').window
+			({
+				title: '批示',
+				content: addVisitCommentWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var addVisitCommentWindowHtml = 
+			'<form id="addVisitCommentForm" action="design/clientMgr/addVisitComment" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>批示内容：</label></td>' + 
+			'			<td><input id="comment" name="comment" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="id"  name="id" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitAddVisitCommentForm();" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $addVisitCommentWindow = $(\'div#addVisitCommentWindow\');' +
+			'var $orderStylistVisitGrid = $(\'table#orderStylistVisitGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
+			'var selRows = $orderStylistVisitGrid.datagrid("getSelections");' +
+			'$addVisitCommentWindow.find(\'#id\').val(selRows[0].id);' +
+			'$addVisitCommentWindow.find(\'#comment\').val(selRows[0].comment);' +
+			'function submitAddVisitCommentForm()' + 
+			'{' + 
+			'	$addVisitCommentWindow.find(\'form#addVisitCommentForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				if($clientMgrTab.tabs(\'getSelected\').panel(\'options\').title == "设计师回访记录")' + 
+			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$addVisitCommentWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

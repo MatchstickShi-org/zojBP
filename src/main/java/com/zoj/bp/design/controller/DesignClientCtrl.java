@@ -144,7 +144,7 @@ public class DesignClientCtrl
 						Status.disagreeDesignManagerAuditing.value(),
 						Status.disagreeMarketingManagerAuditing.value()
 					};
-		Integer designerId = loginUser.isSuperAdmin() ? null:loginUser.getId();
+		Integer designerId = (loginUser.isSuperAdmin() || loginUser.isDesignManager()) ? null:loginUser.getId();
 		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",designerName,status);
 	}
 	
@@ -174,6 +174,23 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderVisit.setVisitorId(loginUser.getId());
 		orderVisitSvc.addOrderVisit(orderVisit);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	/**
+	 * 新增设计师回访记录批示
+	 * @param orderVisit
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addVisitComment")
+	@ResponseBody
+	public Map<String, ?> addVisitComment(@RequestParam Integer id,@RequestParam String comment,HttpSession session) throws Exception
+	{
+		OrderVisit orderVisit = orderVisitSvc.getOrderVisitById(id);
+		orderVisit.setComment(comment);
+		orderVisitSvc.updateOrderVisit(orderVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -214,6 +231,26 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.reject.value());
+		orderSvc.addOrderApprove(orderApprove);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	/**
+	 * 审核时申请死单
+	 * @param orderApprove
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/checkDeadOrder")
+	@ResponseBody
+	public Map<String, ?> checkDeadOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setOperate(Operate.apply.value());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

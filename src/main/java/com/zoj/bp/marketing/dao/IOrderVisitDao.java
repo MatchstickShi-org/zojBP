@@ -25,6 +25,15 @@ public interface IOrderVisitDao
 	 * @return
 	 */
 	DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,Integer visitorId,Integer orderId);
-
 	
+	/**
+	 * @param id
+	 * @return
+	 */
+	OrderVisit getOrderVisitById(Integer id);
+
+	/**
+	 * @param orderVisit
+	 */
+	void updateOrderVisit(OrderVisit orderVisit);
 }
