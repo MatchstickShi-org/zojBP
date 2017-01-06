@@ -19,7 +19,8 @@ $(function()
 					if($clientMgrTab.tabs("getSelected").panel("options").title == "信息费")
 						$infoCostGrid.datagrid('reload');
 					$showAddInfoCostWindow.window('close');
-				}  
+				}else
+					$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});
 			}
 		});
 	}});

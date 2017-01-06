@@ -58,6 +58,7 @@
 					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="showDeadOrderWindowBtn">死单</a>
 				</div>
 			</div>
 			</c:if>

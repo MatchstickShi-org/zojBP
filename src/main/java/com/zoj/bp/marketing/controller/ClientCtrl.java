@@ -300,8 +300,8 @@ public class ClientCtrl
 	@ResponseBody
 	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
 	{
-		User loginUser = (User) session.getAttribute("loginUser");
-		return orderVisitSvc.getAllOrderVisit(pagination, loginUser.getId(), orderId);
+		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
+		return orderVisitSvc.getAllOrderVisit(pagination, order.getSalesmanId(), orderId);
 	}
 	
 	/**
@@ -396,7 +396,7 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法进行业务转移。"));
+			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法进行业务转移。"));
 		orderSvc.updateOrderSalesmanId(orderIds,salesmanId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

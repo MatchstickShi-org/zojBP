@@ -134,33 +134,33 @@ public class OrderService implements IOrderService
 		boolean updateInfoerFlag = false;
 		switch (orderApprove.getOperate())
 		{
-			case 0:		//驳回
+			case 0:		//驳回操作
 				switch (order.getStatus())
 				{
-					case 30:
+					case 30://状态为：在谈单-商务部经理审核中
 						order.setStatus(Status.tracing.value());
 						break;
-					case 32:
+					case 32://状态为：在谈单-主案部经理审核中
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
-					case 34:
+					case 34://状态为：在谈单-设计师跟踪中
 						order.setStatus(Status.dead.value());
 						break;
-					case 60:
+					case 60://状态为：不准单-主案部经理审核中
 						order.setStatus(Status.talkingDesignerTracing.value());
 						break;
-					case 62:
+					case 62://状态为：不准单-商务部经理审核中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
-			case 1:		//批准
+			case 1:		//批准操作
 				switch (order.getStatus())
 				{
-					case 30:
+					case 30://状态为：在谈单-商务部经理审核中
 						order.setStatus(Status.talkingDesignManagerAuditing.value());
 						break;
-					case 32:
+					case 32://状态为：在谈单-主案部经理审核中
 						/**
 						 * 如果客户为在谈单，则更新该客户的信息员等级为银牌
 						 */
@@ -168,7 +168,7 @@ public class OrderService implements IOrderService
 						updateInfoerFlag = true;
 						order.setStatus(Status.talkingDesignerTracing.value());
 						break;
-					case 34:
+					case 34://状态为：在谈单-设计师跟踪中
 						/**
 						 * 如果客户为已签单，则更新该客户的信息员等级为金牌
 						 */
@@ -176,26 +176,29 @@ public class OrderService implements IOrderService
 						updateInfoerFlag = true;
 						order.setStatus(Status.deal.value());
 						break;
-					case 60:
+					case 60://状态为：不准单-主案部经理审核中
 						order.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						break;
-					case 62:
+					case 62://状态为：不准单-商务部经理审核中
 						order.setStatus(Status.disagree.value());
 						break;
 				}
 				break;
-			case 2:		//申请
+			case 2:		//申请操作
 				switch (order.getStatus())
 				{
-					case 10:
+					case 10://状态为：正跟踪
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
-					case 34:
+					case 32://状态为：在谈单-主案部经理审核中
+						order.setStatus(Status.dead.value());
+						break;
+					case 34://状态为：在谈单-设计师跟踪中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
-			case 3:		//打回
+			case 3:		//打回操作
 				order.setStatus(Status.designerRejected.value());
 				break;
 		}

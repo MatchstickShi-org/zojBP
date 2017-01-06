@@ -33,8 +33,8 @@
 					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" checked="checked"/>全部客户</label>
 					<label><input type="radio" value="1" name="clientTrace.orderFilterInput"/>我的客户</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
-					<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showNewOrderWindowBtn">新生成客户</a>
+					<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a> -->
 				</div>
 			</div>

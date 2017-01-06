@@ -57,7 +57,7 @@ public class InfoCostMgrCtrl
 		ModelAndView mv = new ModelAndView("costMgr/infoCostMgr/addInfoCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
+			mv.addObject("errorMsg", "对不起，您不是商务部经理，无法新增信息费。");
 		InfoCost infoCost = infoCostSvc.getInfoCostByOrder(orderId);
 		if(infoCost.getCost() != null)		//已打款
 			mv.addObject("errorMsg", MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName()));
@@ -71,7 +71,7 @@ public class InfoCostMgrCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法新增信息费。"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法新增信息费。"));
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("输入参数有误，请检查后重新输入。"));
 		InfoCost dbCost = infoCostSvc.getInfoCostByOrder(infoCost.getOrderId());

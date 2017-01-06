@@ -388,7 +388,7 @@ $(function()
 		
 		var addInfoerWindowHtml = 
 			'<form id="addInfoerForm" action="marketing/infoerMgr/addInfoer" method="post" style="width: 100%;">' + 
-			'	<table width="100%">' + 
+			'	<table width="100%" id="infoerTable">' + 
 			'		<tr>' + 
 			'			<td style="min-width: 70px;" align="right"><label>名称：</label></td>' + 
 			'			<td><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
@@ -435,19 +435,19 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addInfoerWindow = $(\'div#addInfoerWindow\');' +
 			'var $infoerDatagrid = $(\'table#infoerDatagrid\');' +
-			'var $tel1Input = $(\'table input#tel1\');' +
+			'var $tel1Input = $(\'table#infoerTable input#tel1\');' +
 			'$tel1Input.textbox({});' +
 			'$tel1Input.textbox("textbox").bind("blur", function(){checkTelValue($tel1Input.get(0));});' +
-			'var $tel2Input = $(\'table input#tel2\');' +
+			'var $tel2Input = $(\'table#infoerTable input#tel2\');' +
 			'$tel2Input.textbox({});' +
 			'$tel2Input.textbox("textbox").bind("blur", function(){checkTelValue($tel2Input.get(0));});' +
-			'var $tel3Input = $(\'table input#tel3\');' +
+			'var $tel3Input = $(\'table#infoerTable input#tel3\');' +
 			'$tel3Input.textbox({});' +
 			'$tel3Input.textbox("textbox").bind("blur", function(){checkTelValue($tel3Input.get(0));});' +
-			'var $tel4Input = $(\'table input#tel4\');' +
+			'var $tel4Input = $(\'table#infoerTable input#tel4\');' +
 			'$tel4Input.textbox({});' +
 			'$tel4Input.textbox("textbox").bind("blur", function(){checkTelValue($tel4Input.get(0));});' +
-			'var $tel5Input = $(\'table input#tel5\');' +
+			'var $tel5Input = $(\'table#infoerTable input#tel5\');' +
 			'$tel5Input.textbox({});' +
 			'$tel5Input.textbox("textbox").bind("blur", function(){checkTelValue($tel5Input.get(0));});' +
 			'function submitaddInfoerForm()' + 
@@ -464,7 +464,7 @@ $(function()
 			'			}'+
 			'			var flag = true;'+
 			'			for(var i=1;i<6;i++){' +
-			'				flag = checkTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				flag = checkTelValue($(\'table#infoerTable input#tel\'+i+\'\').get(0));'+
 			'				if(!flag)'+
 			'					return false;'+
 			'			}'+
@@ -671,19 +671,19 @@ $(function()
 			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
-			'var $tel1Input = $(\'table input#tel1\');' +
+			'var $tel1Input = $(\'table#clientTab input#tel1\');' +
 			'$tel1Input.textbox({});' +
 			'$tel1Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel1Input.get(0));});' +
-			'var $tel2Input = $(\'table input#tel2\');' +
+			'var $tel2Input = $(\'table#clientTab input#tel2\');' +
 			'$tel2Input.textbox({});' +
 			'$tel2Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel2Input.get(0));});' +
-			'var $tel3Input = $(\'table input#tel3\');' +
+			'var $tel3Input = $(\'table#clientTab input#tel3\');' +
 			'$tel3Input.textbox({});' +
 			'$tel3Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel3Input.get(0));});' +
-			'var $tel4Input = $(\'table input#tel4\');' +
+			'var $tel4Input = $(\'table#clientTab input#tel4\');' +
 			'$tel4Input.textbox({});' +
 			'$tel4Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel4Input.get(0));});' +
-			'var $tel5Input = $(\'table input#tel5\');' +
+			'var $tel5Input = $(\'table#clientTab input#tel5\');' +
 			'$tel5Input.textbox({});' +
 			'$tel5Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel5Input.get(0));});' +
 			'function submitaddClientForm()' + 
@@ -700,7 +700,7 @@ $(function()
 			'			}'+
 			'			var flag = true;'+
 			'			for(var i=1;i<6;i++){' +
-			'				flag = checkClientTelValue($(\'table input#tel\'+i+\'\').get(0));'+
+			'				flag = checkClientTelValue($(\'table#clientTab input#tel\'+i+\'\').get(0));'+
 			'				if(!flag)'+
 			'					return false;'+
 			'			}'+
