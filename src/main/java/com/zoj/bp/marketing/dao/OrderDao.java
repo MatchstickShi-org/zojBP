@@ -89,19 +89,25 @@ public class OrderDao extends BaseDao implements IOrderDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
-				" CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "+ 
+				" CASE O.ID WHEN NULL THEN NULL "+ 
+				" ELSE "+ 
+				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
 				" END AS notVisitDays, "+ 
 				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus "+ 
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+
-				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
-		if(user.isMarketingSalesman())
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
+		if(user.isBelongMarketing()){
+			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
+		}else if(user.isBelongDesign()){
+			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID ";
+		}
+		if(user.isMarketingSalesman() || user.isDesignDesigner())
 			sql += " WHERE U.ID = :userId ";
-		else if(user.isMarketingLeader())
+		else if(user.isMarketingLeader() || user.isDesignLeader())
 			sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 		else
 			sql += " WHERE 1=1 ";
@@ -137,6 +143,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
+		sql +=" GROUP BY O.ID";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
@@ -152,8 +159,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
-				" CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "+ 
+				" CASE O.ID WHEN NULL THEN NULL "+ 
+				" ELSE "+ 
+				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
 				" END AS notVisitDays, "+ 
 				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
@@ -184,6 +193,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
+		sql +=" GROUP BY O.ID";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);

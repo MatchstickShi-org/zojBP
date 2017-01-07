@@ -112,6 +112,13 @@ public class User implements Serializable
 	{
 		return this.isSuperAdmin() || this.isMarketingLeader() || this.isMarketingSalesman() || this.isMarketingManager();
 	}
+	
+	/**是否属于主案部人员*/
+	@Transient
+	public boolean isBelongDesign()
+	{
+		return this.isSuperAdmin() || this.isDesignLeader() || this.isDesignDesigner() || this.isDesignManager();
+	}
 
 	@Transient
 	public boolean isMarketingManager()
