@@ -94,7 +94,9 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
 				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
 				" END AS notVisitDays, "+ 
-				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus "+ 
+				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
+				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
@@ -164,7 +166,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
 				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
 				" END AS notVisitDays, "+ 
-				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
+				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
+				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
+				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
