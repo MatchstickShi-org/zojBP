@@ -57,5 +57,4 @@ public interface IClientDao
 	 * @return
 	 */
 	Client getClientByOrderId(Integer id);
-
 }

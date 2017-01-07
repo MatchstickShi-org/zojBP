@@ -385,7 +385,8 @@ public class ClientCtrl
 	@ResponseBody
 	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException
 	{
-		Integer[] roles = {Role.marketingSalesman.value(),Role.marketingLeader.value(),Role.marketingManager.value()};//1：市场部业务员；2：市场部主管；3：市场部经理
+		//1：市场部业务员；2：市场部主管；3：市场部经理
+		Integer[] roles = {Role.marketingSalesman.value(),Role.marketingLeader.value(),Role.marketingManager.value()};
 		return userSvc.getAllUserByRole(pagination, StringUtils.EMPTY, StringUtils.EMPTY, roles);
 	}
 	

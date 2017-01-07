@@ -10,8 +10,8 @@ import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
 
 @Service
-public class ClientService implements IClientService{
-
+public class ClientService implements IClientService
+{
 	@Autowired
 	private IClientDao dao;
 	@Override
@@ -43,5 +43,4 @@ public class ClientService implements IClientService{
 	public Client getClientByOrderId(Integer orderId) {
 		return dao.getClientByOrderId(orderId);
 	}
-
 }

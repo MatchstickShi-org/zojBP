@@ -1,5 +1,6 @@
 $(function()
 {
+	var $showNewOrderWindowBtn = $('a#showNewOrderWindowBtn')
 	var $orderDatagrid = $('table#orderDatagrid');
 	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
 	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
@@ -122,6 +123,7 @@ $(function()
 
 				if(_session_loginUserRole == 3)
 				{
+					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
 					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
 					if(row.status == 90)
 						$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
@@ -130,6 +132,7 @@ $(function()
 				}
 				else
 				{
+					$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
 					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
 					$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
 				}
@@ -215,9 +218,16 @@ $(function()
 				});
 			}
 		});
+		
+		if(_session_loginUserRole == 3)
+			$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
+		else
+			$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
+		
 		$orderCheckMgrTab.tabs({});
 		if(_session_loginUserRole != 3)
 			$orderCheckMgrTab.tabs('hideHeader');
+		
 		$clientMgrTab.tabs
 		({
 			border: false,

@@ -22,10 +22,11 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class ClientDao extends BaseDao implements IClientDao {
-
+public class ClientDao extends BaseDao implements IClientDao
+{
 	@Override
-	public Client getClientByName(String name) {
+	public Client getClientByName(String name)
+	{
 		try
 		{
 			return jdbcOps.queryForObject("SELECT * FROM CLIENT WHERE NAME = :name",
@@ -100,7 +101,7 @@ public class ClientDao extends BaseDao implements IClientDao {
 					"LEFT JOIN `order` O ON O.ID = C.ORDER_ID "+
 					"LEFT JOIN `user` U ON U.ID = O.SALESMAN_ID "+
 					"WHERE 1=1 ";
-			List<String> telList = new ArrayList<String>();
+			List<String> telList = new ArrayList<>();
 			if(StringUtils.isNotEmpty(order.getTel1()))
 				telList.add(order.getTel1());
 			if(StringUtils.isNotEmpty(order.getTel2()))
@@ -126,5 +127,4 @@ public class ClientDao extends BaseDao implements IClientDao {
 			return null;
 		}
 	}
-
 }
