@@ -30,7 +30,6 @@ public interface IOrderDao {
 	 * 
 	 * @param pagination
 	 * @param user TODO
-	 * @param designerId
 	 * @param name
 	 * @param tel
 	 * @param infoerName
@@ -38,7 +37,7 @@ public interface IOrderDao {
 	 * @param statuses
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(Pagination pagination,User user,Integer designerId,String name, String tel, String infoerName,String designerName, Integer... statuses);
+	DatagridVo<Order> getOrdersByUser(Pagination pagination,User user,String name,String tel, String infoerName, String designerName,Integer... statuses);
 	/**
 	 * @param order
 	 * @return 

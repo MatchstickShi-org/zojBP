@@ -63,7 +63,7 @@ public class OrderService implements IOrderService
 	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, Integer designerId, String name, String tel,
 			String infoerName, String designerName, Integer... status)
 	{
-		DatagridVo<Order> os = dao.getOrdersByUser(pagination, loginUser, designerId, name, tel, infoerName, designerName, status);
+		DatagridVo<Order> os = dao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, designerName, status);
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;

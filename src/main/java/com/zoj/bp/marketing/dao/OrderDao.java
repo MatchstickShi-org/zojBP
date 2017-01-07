@@ -86,7 +86,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			Integer designerId, String name, String tel, String infoerName, String designerName, Integer... statuses)
+			String name, String tel, String infoerName, String designerName, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -103,23 +103,26 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
-		if(user.isBelongMarketing())
+		if(user.isBelongMarketing()){
 			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
-		else if(user.isBelongDesign())
-			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID ";
-		
-		if(user.isMarketingSalesman() || user.isDesignDesigner())
-			sql += " WHERE U.ID = :userId ";
-		else if(user.isMarketingLeader() || user.isDesignLeader())
-			sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
-		else
-			sql += " WHERE 1=1 ";
-		paramMap.put("userId", user.getId());
-		if(designerId != null)
-		{
-			sql +=" AND O.DESIGNER_ID= :designerId";
-			paramMap.put("designerId", designerId);
+			if(user.isMarketingSalesman())
+				sql += " WHERE U.ID = :userId ";
+			else if(user.isMarketingLeader())
+				sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
+			else
+				sql += " WHERE 1=1 ";
 		}
+		else if(user.isBelongDesign()){
+			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID ";
+			if(user.isDesignDesigner())
+				sql += " WHERE U2.ID = :userId ";
+			else if(user.isDesignLeader())
+				sql += " WHERE U2.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
+			else
+				sql += " WHERE 1=1 ";
+		}
+		
+		paramMap.put("userId", user.getId());
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND C.NAME LIKE :name";
