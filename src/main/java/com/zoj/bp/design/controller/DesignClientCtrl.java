@@ -30,6 +30,7 @@ import com.zoj.bp.common.model.OrderApprove.Operate;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
+import com.zoj.bp.common.service.IOrderApproveService;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -74,6 +75,8 @@ public class DesignClientCtrl
 	@Autowired
 	private IUserService userSvc;
 	
+	@Autowired
+	private IOrderApproveService orderApproveSvc;
 	
 	@RequestMapping(value = "/toClientNegotiationView")
 	public String toClientNegotiationView() throws BusinessException
@@ -155,6 +158,19 @@ public class DesignClientCtrl
 		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
 		Map<String, Object> map = ResponseUtils.buildRespMapByBean(order);
 		return map;
+	}
+	
+	/**
+	 * 获取当前订单的审批流程
+	 * @param pagination
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/getOrderApproveByOrderId")
+	@ResponseBody
+	public DatagridVo<OrderApprove> getOrderApproveByOrderId(Pagination pagination,@RequestParam(required=false) Integer orderId,HttpSession session)
+	{
+		return orderApproveSvc.getAllOrderApprove(pagination, null, orderId);
 	}
 	
 	/**

@@ -144,6 +144,16 @@ public class ClientCtrl
 		return orderApproveSvc.getAllOrderApprove(pagination, null, orderId);
 	}
 	
+	/**
+	 * 获取客户跟踪记录
+	 * @param pagination
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping(value = "/getAllClientCheck")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
@@ -188,6 +198,7 @@ public class ClientCtrl
 		}else
 			status = new Integer[]
 					{
+					Status.talkingDesignManagerAuditing.value(),
 					Status.talkingDesignerTracing.value(),
 					Status.deal.value(),
 					Status.dead.value(),

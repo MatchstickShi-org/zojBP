@@ -28,6 +28,7 @@ $(function()
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
 	var $orderStylistVisitGrid = $('table#orderStylistVisitGrid');
+	var $orderApproveGrid = $('table#orderApproveGrid');
 	
 	showSelectDesignerWindow = function()
 	{
@@ -203,6 +204,7 @@ $(function()
 				{field:'projectAddr', title:'工程地址', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'designerId', hidden: true},
 				{field:'designerName', title:'设计师', width: 3},
 				{field:'salesmanStatus', hidden: true},
 				{
@@ -319,6 +321,88 @@ $(function()
 		});
 		
 		$orderStylistVisitGrid.datagrid('options').url = 'design/clientMgr/getStylistOrderVisitByOrder';
+		$orderApproveGrid.datagrid
+		({
+			idField: 'id',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'claimerName', title:'申请人', width: 2},
+				  {field:'approverName', title:'审核人', width: 2},
+				  {
+						field:'operate', title:'操作', width: 1, formatter: function(value, row, index)
+						{
+							switch (value)
+							{
+								case 0:
+									return '驳回';
+									break;
+								case 1:
+									return '批准';
+									break;
+								case 2:
+									return '申请';
+									break;
+								case 3:
+									return '打回';
+									break;
+								default:
+									return '无操作';
+									break;
+							}
+						}
+					},
+				  {
+						field:'status', title:'状态', width: 4, formatter: function(value, row, index)
+						{
+							switch (value)
+							{
+								case 10:
+									return '正跟踪';
+									break;
+								case 12:
+									return '已放弃';
+									break;
+								case 14:
+									return '在谈单-设计师已打回';
+									break;
+								case 30:
+									return '在谈单-商务部经理审核中';
+									break;
+								case 32:
+									return '在谈单-主案部经理审核中';
+									break;
+								case 34:
+									return '在谈单-设计师跟踪中';
+									break;
+								case 90:
+									return '已签单';
+									break;
+								case 0:
+									return '死单';
+									break;
+								case 60:
+									return '不准单-主案部经理审核中';
+									break;
+								case 62:
+									return '不准单-商务部经理审核中';
+									break;
+								case 64:
+									return '不准单';
+									break;
+								default:
+									return '无状态';
+									break;
+							}
+						}
+					},
+			  {field:'remark', title:'备注', width: 6},
+			  {field:'operateTime', title:'操作日期', width: 5}
+			  ]],
+			  pagination: true
+		});
+		
+		$orderApproveGrid.datagrid('options').url = 'design/clientMgr/getOrderApproveByOrderId';
 		
 		function loadTabData(title, row)
 		{
@@ -332,6 +416,9 @@ $(function()
 					break;
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+					break;
+				case '审核流程':
+					$orderApproveGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
 			}
 		}
@@ -348,6 +435,9 @@ $(function()
 					break;
 				case '设计师回访记录':
 					$orderStylistVisitGrid.datagrid('loadData', []);
+					break;
+				case '设计师回访记录':
+					$orderApproveGrid.datagrid('loadData', []);
 					break;
 			}
 		}
@@ -509,10 +599,14 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $permitOrderWindow = $(\'div#permitOrderWindow\');' +
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
+			'$permitOrderWindow.find(\'#permitOrderForm_designerNameSearchbox\').val(selRows[0].desingerName);' +
+			'$permitOrderWindow.find(\'#permitOrderForm_designerIdInput\').val(selRows[0].desingerId);' +
 			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
 			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
 			'var $designerNameSearchbox = $permitOrderWindow.find("#permitOrderForm_designerNameSearchbox");' +
@@ -532,6 +626,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$permitOrderWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
@@ -569,6 +665,8 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $permitOrderWindow = $(\'div#permitOrderWindow\');' +
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -590,6 +688,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$permitOrderWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
@@ -644,6 +744,8 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $rejectOrderWindow = $(\'div#rejectOrderWindow\');' +
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$rejectOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$rejectOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -665,6 +767,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$rejectOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -726,6 +830,8 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $dealOrderWindow = $(\'div#dealOrderWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$dealOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$dealOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -747,6 +853,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$dealOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -807,7 +915,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $deadOrderWindow = $(\'div#deadOrderWindow\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$deadOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$deadOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -829,6 +939,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$deadOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -889,7 +1001,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $checkDeadOrderWindow = $(\'div#checkDeadOrderWindow\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$checkDeadOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$checkDeadOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -911,6 +1025,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$checkDeadOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -971,7 +1087,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $disagreeOrderWindow = $(\'div#disagreeOrderWindow\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$disagreeOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$disagreeOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -993,6 +1111,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$disagreeOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -1052,7 +1172,9 @@ $(function()
 			'</form>' +
 			'<script type="text/javascript">' + 
 			'var $repulseOrderWindow = $(\'div#repulseOrderWindow\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$repulseOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$repulseOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -1074,6 +1196,8 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$repulseOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 

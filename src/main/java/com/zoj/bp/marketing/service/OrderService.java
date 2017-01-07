@@ -205,6 +205,10 @@ public class OrderService implements IOrderService
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
+					case 14://状态为：在谈单-设计师已打回
+						order.setStatus(Status.talkingMarketingManagerAuditing.value());
+						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
+						break;
 					case 32://状态为：在谈单-主案部经理审核中
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
@@ -217,7 +221,7 @@ public class OrderService implements IOrderService
 				break;
 			case 3:		//打回操作
 				order.setStatus(Status.designerRejected.value());
-				order.setStatus(Status.designerRejected.value());
+				orderApprove.setStatus(Status.designerRejected.value());
 				break;
 		}
 		approveDao.addOrderApprove(orderApprove);

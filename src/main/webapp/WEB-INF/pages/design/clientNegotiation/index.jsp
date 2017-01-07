@@ -131,6 +131,15 @@
 					</tr>
 				</table>
 			</div>
+			<div title="审核流程" border=false>
+				<table style="height: 100%; width: 100%;">
+					<tr>
+						<td>
+				    		<table id="orderApproveGrid"></table>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

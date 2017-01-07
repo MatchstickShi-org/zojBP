@@ -190,10 +190,10 @@ $(function()
 			columns:
 				[[
 				  {field:'id', hidden: true},
-				  {field:'claimerName', title:'申请人', width: 5},
-				  {field:'approverName', title:'审核人', width: 5},
+				  {field:'claimerName', title:'申请人', width: 2},
+				  {field:'approverName', title:'审核人', width: 2},
 				  {
-						field:'operate', title:'操作', width: 3, formatter: function(value, row, index)
+						field:'operate', title:'操作', width: 1, formatter: function(value, row, index)
 						{
 							switch (value)
 							{
@@ -216,10 +216,13 @@ $(function()
 						}
 					},
 				  {
-						field:'status', title:'状态', width: 3, formatter: function(value, row, index)
+						field:'status', title:'状态', width: 4, formatter: function(value, row, index)
 						{
 							switch (value)
 							{
+								case 10:
+									return '正跟踪';
+									break;
 								case 12:
 									return '已放弃';
 									break;
@@ -256,9 +259,10 @@ $(function()
 							}
 						}
 					},
-				  {field:'operateTime', title:'操作日期', width: 5}
-				  ]],
-				  pagination: true
+			  {field:'remark', title:'备注', width: 6},
+			  {field:'operateTime', title:'操作日期', width: 5}
+			  ]],
+			  pagination: true
 		});
 		
 		$orderApproveGrid.datagrid('options').url = 'marketing/clientMgr/getOrderApproveByOrderId';
@@ -273,7 +277,7 @@ $(function()
 				case '回访记录':
 					$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
-				case '审批流程':
+				case '审核流程':
 					$orderApproveGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
 			}
@@ -289,7 +293,7 @@ $(function()
 				case '回访记录':
 					$orderVisitGrid.datagrid('loadData', []);
 					break;
-				case '审批流程':
+				case '审核流程':
 					$orderApproveGrid.datagrid('loadData', []);
 					break;
 			}
@@ -414,12 +418,12 @@ $(function()
 			var selIds = $orderDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中状态为<span style="color: red;">正跟踪</span>的客户。');
+				$.messager.alert('提示', '请选中状态为<span style="color: red;">正跟踪</span>或<span style="color: red;">已打回</span>的客户。');
 				return;
 			}
 			var selRows = $orderDatagrid.datagrid("getSelections");
-			if(selRows[0].status !=10){
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">正跟踪</span>的客户。');
+			if(selRows[0].status !=10 && selRows[0].status !=14){
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">正跟踪</span>或<span style="color: red;">已打回</span>的客户。');
 				return;
 			}
 			$applyOrderWindow.window('clear');
@@ -457,6 +461,8 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $applyOrderWindow = $(\'div#applyOrderWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
+			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$applyOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$applyOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
@@ -475,7 +481,9 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' +
+			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$applyOrderWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 

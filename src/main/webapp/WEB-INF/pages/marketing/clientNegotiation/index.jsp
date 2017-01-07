@@ -113,6 +113,9 @@
 			<div title="设计师回访记录">
 	    		<table id="orderStylistVisitGrid" border="false"></table>
 			</div>
+			<div title="审核流程">
+	    		<table id="orderApproveGrid" border="false"></table>
+			</div>
 			<div title="信息费">
 	    		<table id="infoCostGrid" border="false"></table>
 			</div>
