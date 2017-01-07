@@ -1,10 +1,12 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.zoj.bp.common.model.Order.Status;
 
 /**
@@ -35,7 +37,8 @@ public class OrderApprove implements Serializable{
 	
 	private Integer status;
 	
-	private String oprateTime;
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
+	private Date operateTime;
 	
 	@NotNull
 	private String remark;
@@ -116,12 +119,12 @@ public class OrderApprove implements Serializable{
 		this.operate = operate;
 	}
 
-	public String getOprateTime() {
-		return oprateTime;
+	public Date getOperateTime() {
+		return operateTime;
 	}
 
-	public void setOprateTime(String oprateTime) {
-		this.oprateTime = oprateTime;
+	public void setOperateTime(Date operateTime) {
+		this.operateTime = operateTime;
 	}
 
 	public String getRemark() {

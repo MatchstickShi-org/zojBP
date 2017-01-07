@@ -256,7 +256,7 @@ $(function()
 							}
 						}
 					},
-				  {field:'oprateTime', title:'操作日期', width: 5}
+				  {field:'operateTime', title:'操作日期', width: 5}
 				  ]],
 				  pagination: true
 		});
