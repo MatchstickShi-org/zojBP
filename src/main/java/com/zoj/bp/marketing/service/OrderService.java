@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zoj.bp.common.dao.IOrderApproveDao;
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.Infoer.Level;
@@ -17,7 +18,6 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
 import com.zoj.bp.marketing.dao.IInfoerDao;
-import com.zoj.bp.marketing.dao.IOrderApproveDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
 
 @Service
@@ -131,7 +131,6 @@ public class OrderService implements IOrderService
 	@Override
 	public Integer addOrderApprove(OrderApprove orderApprove)
 	{
-		approveDao.addOrderApprove(orderApprove);
 		Order order = dao.getOrderById(orderApprove.getOrderId());
 		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
 			order.setDesignerId(orderApprove.getDesignerId());
@@ -144,18 +143,23 @@ public class OrderService implements IOrderService
 				{
 					case 30://状态为：在谈单-商务部经理审核中
 						order.setStatus(Status.tracing.value());
+						orderApprove.setStatus(Status.tracing.value());
 						break;
 					case 32://状态为：在谈单-主案部经理审核中
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
+						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
 					case 34://状态为：在谈单-设计师跟踪中
 						order.setStatus(Status.dead.value());
+						orderApprove.setStatus(Status.dead.value());
 						break;
 					case 60://状态为：不准单-主案部经理审核中
 						order.setStatus(Status.talkingDesignerTracing.value());
+						orderApprove.setStatus(Status.talkingDesignerTracing.value());
 						break;
 					case 62://状态为：不准单-商务部经理审核中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
+						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
@@ -164,6 +168,7 @@ public class OrderService implements IOrderService
 				{
 					case 30://状态为：在谈单-商务部经理审核中
 						order.setStatus(Status.talkingDesignManagerAuditing.value());
+						orderApprove.setStatus(Status.talkingDesignManagerAuditing.value());
 						break;
 					case 32://状态为：在谈单-主案部经理审核中
 						/**
@@ -172,6 +177,7 @@ public class OrderService implements IOrderService
 						infoer.setLevel(Level.silver.value());
 						updateInfoerFlag = true;
 						order.setStatus(Status.talkingDesignerTracing.value());
+						orderApprove.setStatus(Status.talkingDesignerTracing.value());
 						break;
 					case 34://状态为：在谈单-设计师跟踪中
 						/**
@@ -180,12 +186,15 @@ public class OrderService implements IOrderService
 						infoer.setLevel(Level.gold.value());
 						updateInfoerFlag = true;
 						order.setStatus(Status.deal.value());
+						orderApprove.setStatus(Status.deal.value());
 						break;
 					case 60://状态为：不准单-主案部经理审核中
 						order.setStatus(Status.disagreeMarketingManagerAuditing.value());
+						orderApprove.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						break;
 					case 62://状态为：不准单-商务部经理审核中
 						order.setStatus(Status.disagree.value());
+						orderApprove.setStatus(Status.disagree.value());
 						break;
 				}
 				break;
@@ -194,19 +203,24 @@ public class OrderService implements IOrderService
 				{
 					case 10://状态为：正跟踪
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
+						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
 						break;
 					case 32://状态为：在谈单-主案部经理审核中
 						order.setStatus(Status.dead.value());
+						orderApprove.setStatus(Status.dead.value());
 						break;
 					case 34://状态为：在谈单-设计师跟踪中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
+						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
 						break;
 				}
 				break;
 			case 3:		//打回操作
 				order.setStatus(Status.designerRejected.value());
+				order.setStatus(Status.designerRejected.value());
 				break;
 		}
+		approveDao.addOrderApprove(orderApprove);
 		int status = dao.updateOrderStatus(order);
 		if(status > 0 && updateInfoerFlag)
 			infoerDao.updateInfoer(infoer);

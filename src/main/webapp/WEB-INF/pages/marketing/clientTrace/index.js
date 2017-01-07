@@ -16,6 +16,7 @@ $(function()
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
+	var $orderApproveGrid = $('table#orderApproveGrid');
 	
 	showSelectInfoerWindow = function()
 	{
@@ -63,7 +64,7 @@ $(function()
 								return '已打回';
 								break;
 							default:
-								return '未评级';
+								return '无状态';
 								break;
 						}
 					}
@@ -183,6 +184,85 @@ $(function()
 
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
 		
+		$orderApproveGrid.datagrid
+		({
+			idField: 'id',
+			columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'claimerName', title:'申请人', width: 5},
+				  {field:'approverName', title:'审核人', width: 5},
+				  {
+						field:'operate', title:'操作', width: 3, formatter: function(value, row, index)
+						{
+							switch (value)
+							{
+								case 0:
+									return '驳回';
+									break;
+								case 1:
+									return '批准';
+									break;
+								case 2:
+									return '申请';
+									break;
+								case 3:
+									return '打回';
+									break;
+								default:
+									return '无操作';
+									break;
+							}
+						}
+					},
+				  {
+						field:'status', title:'状态', width: 3, formatter: function(value, row, index)
+						{
+							switch (value)
+							{
+								case 12:
+									return '已放弃';
+									break;
+								case 14:
+									return '在谈单-设计师已打回';
+									break;
+								case 30:
+									return '在谈单-商务部经理审核中';
+									break;
+								case 32:
+									return '在谈单-主案部经理审核中';
+									break;
+								case 34:
+									return '在谈单-设计师跟踪中';
+									break;
+								case 90:
+									return '已签单';
+									break;
+								case 0:
+									return '死单';
+									break;
+								case 60:
+									return '不准单-主案部经理审核中';
+									break;
+								case 62:
+									return '不准单-商务部经理审核中';
+									break;
+								case 64:
+									return '不准单';
+									break;
+								default:
+									return '无状态';
+									break;
+							}
+						}
+					},
+				  {field:'oprateTime', title:'操作日期', width: 5}
+				  ]],
+				  pagination: true
+		});
+		
+		$orderApproveGrid.datagrid('options').url = 'marketing/clientMgr/getOrderApproveByOrderId';
+		
 		function loadTabData(title, row)
 		{
 			switch (title)
@@ -192,6 +272,9 @@ $(function()
 					break;
 				case '回访记录':
 					$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+					break;
+				case '审批流程':
+					$orderApproveGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 					break;
 			}
 		}
@@ -205,6 +288,9 @@ $(function()
 					break;
 				case '回访记录':
 					$orderVisitGrid.datagrid('loadData', []);
+					break;
+				case '审批流程':
+					$orderApproveGrid.datagrid('loadData', []);
 					break;
 			}
 		}

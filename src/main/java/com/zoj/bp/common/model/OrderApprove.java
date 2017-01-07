@@ -25,9 +25,15 @@ public class OrderApprove implements Serializable{
 	
 	private Integer claimer;
 	
+	private String claimerName;//申请人名称
+	
 	private Integer approver;
 	
+	private String approverName;//审核人名称
+	
 	private Integer operate;
+	
+	private Integer status;
 	
 	private String oprateTime;
 	
@@ -94,6 +100,14 @@ public class OrderApprove implements Serializable{
 		this.approver = approver;
 	}
 
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Integer getOperate() {
 		return operate;
 	}
@@ -124,5 +138,21 @@ public class OrderApprove implements Serializable{
 
 	public void setDesignerId(Integer designerId) {
 		this.designerId = designerId;
+	}
+
+	public String getClaimerName() {
+		return claimerName;
+	}
+
+	public void setClaimerName(String claimerName) {
+		this.claimerName = claimerName;
+	}
+
+	public String getApproverName() {
+		return approverName;
+	}
+
+	public void setApproverName(String approverName) {
+		this.approverName = approverName;
 	}
 }

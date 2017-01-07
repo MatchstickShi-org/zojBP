@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zoj.bp.marketing.dao;
+package com.zoj.bp.common.dao;
 
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;

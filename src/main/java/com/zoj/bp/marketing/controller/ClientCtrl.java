@@ -30,6 +30,7 @@ import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
+import com.zoj.bp.common.service.IOrderApproveService;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -52,6 +53,9 @@ public class ClientCtrl
 {
 	@Autowired
 	private IOrderService orderSvc;
+	
+	@Autowired
+	private IOrderApproveService orderApproveSvc;
 	
 	@Autowired
 	private IOrderVisitService orderVisitSvc;
@@ -125,6 +129,19 @@ public class ClientCtrl
 			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
 		else
 			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, StringUtils.EMPTY, status);
+	}
+	
+	/**
+	 * 获取当前订单的审批流程
+	 * @param pagination
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/getOrderApproveByOrderId")
+	@ResponseBody
+	public DatagridVo<OrderApprove> getOrderApproveByOrderId(Pagination pagination,@RequestParam(required=false) Integer orderId,HttpSession session)
+	{
+		return orderApproveSvc.getAllOrderApprove(pagination, null, orderId);
 	}
 	
 	@RequestMapping(value = "/getAllClientCheck")

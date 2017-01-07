@@ -80,6 +80,9 @@
 			<div title="回访记录">
 	    		<table id="orderVisitGrid" border="false"></table>
 			</div>
+			<div title="审批流程">
+	    		<table id="orderApproveGrid" border="false"></table>
+			</div>
 		</div>
 		<div id="infoerMgrTab-tools" style="border-top: 0px;">
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增回访记录</a>
