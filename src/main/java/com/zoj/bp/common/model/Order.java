@@ -1,6 +1,8 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -121,9 +123,6 @@ public class Order implements Serializable{
 			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
 		}
 	}
-	
-	@SuppressWarnings("unused")
-	private String telAll;
 
 	public Integer getId() {
 		return id;
@@ -277,23 +276,28 @@ public class Order implements Serializable{
 		this.notVisitDays = notVisitDays;
 	}
 
-	public String getTelAll() {
-		String telAll = StringUtils.EMPTY;
-		if(StringUtils.isNotEmpty(tel1))
-			telAll +=tel1;
-		if(StringUtils.isNotEmpty(tel2))
-			telAll = telAll+", "+tel2;
-		if(StringUtils.isNotEmpty(tel3))
-			telAll = telAll+", "+tel3;
-		if(StringUtils.isNotEmpty(tel4))
-			telAll = telAll+", "+tel4;
-		if(StringUtils.isNotEmpty(tel5))
-			telAll = telAll+", "+tel5;
-		return telAll;
+	public String getTelAll()
+	{
+		return StringUtils.join(getTels(), ", ");
 	}
 
-	public void setTelAll(String telAll) {
-		this.telAll = telAll;
+	/**
+	 * @return
+	 */
+	public List<String> getTels()
+	{
+		List<String> tels = new ArrayList<>();
+		if(StringUtils.isNotEmpty(tel1))
+			tels.add(tel1);
+		if(StringUtils.isNotEmpty(tel2))
+			tels.add(tel2);
+		if(StringUtils.isNotEmpty(tel3))
+			tels.add(tel3);
+		if(StringUtils.isNotEmpty(tel4))
+			tels.add(tel4);
+		if(StringUtils.isNotEmpty(tel5))
+			tels.add(tel5);
+		return tels;
 	}
 
 	public Integer getSalesmanStatus() {

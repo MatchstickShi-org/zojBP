@@ -3,6 +3,8 @@
  */
 package com.zoj.bp.marketing.dao;
 
+import java.util.List;
+
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
@@ -49,7 +51,7 @@ public interface IClientDao
 	 * @param tel
 	 * @return
 	 */
-	Order getClientByTel(Order order);
+	List<Order> getClientByTels(String... tels);
 
 	/**
 	 * 根据订单Id查询客户

@@ -119,18 +119,15 @@ $(function()
 					}
 				},
 				{field:'insertTime', title:'录入日期', width: 5},
-				{field:'notVisitDays', title:'未回访天数', width: 2,
-					styler: function (value, row, index) {
-						if(value > 5)
-							return 'background-color:red';
-		           }
+				{
+					field:'notVisitDays', title:'未回访天数', width: 2,
+					styler: function (value, row, index){if(value > 5) return 'background-color:red';}
 				}
 			]],
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: 'marketing/clientMgr/getAllClientNegotiation',
 			onSelect: function(idx, row)
 			{
 				if(row.salesmanId != _session_loginUserId)
@@ -142,6 +139,8 @@ $(function()
 				{
 					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
 					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
+					$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
+					$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
 					if(row.status == 90)
 						$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
 					else
@@ -152,12 +151,15 @@ $(function()
 					$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
 					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
 					$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
+					$('#showPermitOrderWindowBtn').linkbutton('disable').linkbutton('hide');
+					$('#showRejectOrderWindowBtn').linkbutton('disable').linkbutton('hide');
 				}
 				
 				$clientMgrTab.tabs('showTool');
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 		});
+		$orderDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientNegotiation';
 		
 		$infoCostGrid.datagrid
 		({
@@ -243,12 +245,12 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: 'marketing/clientMgr/getAllClientCheck',
 			onSelect: function(idx, row)
 			{
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 		});
+		
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
@@ -261,6 +263,8 @@ $(function()
 			pagination: true
 		});
 
+		if($orderCheckDatagrid.length > 0)
+			$orderCheckDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientCheck';
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
 		$infoCostGrid.datagrid('options').url = 'marketing/clientMgr/getInfoCostByOrder';
 		$commissionCostGrid.datagrid('options').url = 'marketing/clientMgr/getCommissionCostByOrder';
@@ -298,13 +302,15 @@ $(function()
 			{
 				$orderDatagrid.datagrid('loading');
 				var chk_value =[]; 
-				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
+				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function()
+				{ 
 					chk_value.push($(this).val());  
 				}); 
+				
 				$.ajax
 				({
 					url: 'marketing/clientMgr/getAllClientNegotiation',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'),status:chk_value},
+					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'), status:chk_value},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -396,6 +402,27 @@ $(function()
 			({
 				title: '新增信息费打款记录'
 			}).window('open').window('refresh', 'marketing/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
+		}});
+		
+		$addCommissionCostBtn.linkbutton({onClick: function()
+		{
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var orderIds = null;
+			if(index == 0)
+				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
+			else
+				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			if(orderIds.length == 0)
+			{
+				$.messager.alert('提示', '请选择要打款的客户。');
+				return;
+			}
+			$showAddCommissionCostWindow.window('clear');
+			$showAddCommissionCostWindow.window('open').window
+			({
+				title: '新增提成打款记录'
+			}).window('open').window('refresh', 'marketing/clientMgr/showAddCommissionCostWindow?orderId=' + orderIds[0]);
 		}});
 		
 		$addCommissionCostBtn.linkbutton({onClick: function()
@@ -607,11 +634,12 @@ $(function()
 		$permitOrderWindow.window('open').window
 		({
 			title: '批准',
-			content: permitOrderWindowHtml
+			content: getPermitOrderWindowHtml()
 		}).window('open').window('center');
 		
-		var permitOrderWindowHtml = 
-			'<form id="permitOrderForm" action="marketing/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
+		function getPermitOrderWindowHtml()
+		{
+			return '<form id="permitOrderForm" action="marketing/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>客户名称：</label></td>' + 
@@ -668,6 +696,7 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
+		}
 	}
 
 	function showRejectOrderWindow()
@@ -682,11 +711,12 @@ $(function()
 		$rejectOrderWindow.window('open').window
 		({
 			title: '驳回',
-			content: rejectOrderWindowHtml
+			content: getRejectOrderWindowHtml()
 		}).window('open').window('center');
 		
-		var rejectOrderWindowHtml = 
-			'<form id="rejectOrderForm" action="marketing/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
+		function getRejectOrderWindowHtml()
+		{
+			return '<form id="rejectOrderForm" action="marketing/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>客户名称：</label></td>' + 
@@ -745,6 +775,7 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
+		}
 	}
 
 
@@ -766,11 +797,12 @@ $(function()
 		$addClientVisitWindow.window('open').window
 		({
 			title: '新增回访记录',
-			content: addClientVisitWindowHtml
+			content: getAddClientVisitWindowHtml()
 		}).window('open').window('center');
 		
-		var addClientVisitWindowHtml = 
-			'<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
+		function getAddClientVisitWindowHtml()
+		{
+			return '<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
@@ -813,17 +845,18 @@ $(function()
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
-			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\', {orderId: selRows[0].id});' + 
 			'				if(index == 0)' + 
-			'					$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'					$orderDatagrid.datagrid(\'reload\');' + 
 			'				else' + 
-			'					$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'					$orderCheckDatagrid.datagrid("reload");' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
 			'}' + 
 			'</script>';
+		}
 	}
 	
 	function showAddClientWindow()
@@ -832,11 +865,12 @@ $(function()
 		$addClientWindow.window('open').window
 		({
 			title: '新增客户',
-			content: addClientWindowHtml
+			content: getAddClientWindowHtml()
 		}).window('open').window('center');
 		
-		var addClientWindowHtml = 
-			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
+		function getAddClientWindowHtml()
+		{
+			return '<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
 			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
 			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
@@ -977,5 +1011,6 @@ $(function()
 			'	}' +   
 			'});' + 
 			'</script>';
+		}
 	}
 });

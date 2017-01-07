@@ -1,15 +1,15 @@
 package com.zoj.bp.marketing.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -94,33 +94,23 @@ public class ClientDao extends BaseDao implements IClientDao
 	}
 
 	@Override
-	public Order getClientByTel(Order order) {
+	public List<Order> getClientByTels(String... tels)
+	{
 		try
 		{
 			String sql ="SELECT O.*,U.ALIAS AS salesmanName FROM CLIENT C "+
 					"LEFT JOIN `order` O ON O.ID = C.ORDER_ID "+
 					"LEFT JOIN `user` U ON U.ID = O.SALESMAN_ID "+
 					"WHERE 1=1 ";
-			List<String> telList = new ArrayList<>();
-			if(StringUtils.isNotEmpty(order.getTel1()))
-				telList.add(order.getTel1());
-			if(StringUtils.isNotEmpty(order.getTel2()))
-				telList.add(order.getTel2());
-			if(StringUtils.isNotEmpty(order.getTel3()))
-				telList.add(order.getTel3());
-			if(StringUtils.isNotEmpty(order.getTel4()))
-				telList.add(order.getTel4());
-			if(StringUtils.isNotEmpty(order.getTel5()))
-				telList.add(order.getTel5());
-			if(CollectionUtils.isNotEmpty(telList)){
-				String[] tels = telList.toArray(new String[telList.size()]);
+			if(ArrayUtils.isNotEmpty(tels))
+			{
 				sql += "AND ( tel1 IN(" + StringUtils.join(tels, ',') + ") ";
 				sql += "OR tel2 IN(" + StringUtils.join(tels, ',') + ") ";
 				sql += "OR tel3 IN(" + StringUtils.join(tels, ',') + ") ";
 				sql += "OR tel4 IN(" + StringUtils.join(tels, ',') + ") ";
 				sql += "OR tel5 IN(" + StringUtils.join(tels, ',') + "))";
 			}
-			return jdbcOps.queryForObject(sql,new BeanPropertySqlParameterSource(order), BeanPropertyRowMapper.newInstance(Order.class));
+			return jdbcOps.query(sql, EmptySqlParameterSource.INSTANCE, BeanPropertyRowMapper.newInstance(Order.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{

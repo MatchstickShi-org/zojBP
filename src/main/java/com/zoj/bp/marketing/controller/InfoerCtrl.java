@@ -3,6 +3,7 @@
  */
 package com.zoj.bp.marketing.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -129,10 +130,13 @@ public class InfoerCtrl
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		Order orderTel = null;
-		if(order != null){
-			orderTel = orderSvc.findByTel(order, loginUser);
+		if(order != null)
+		{
+			List<String> tels = order.getTels();
+			orderTel = orderSvc.findByTels(loginUser, tels.toArray(new String[tels.size()]));
 			if(orderTel != null)
-				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+orderTel.getInsertTime()+" 被业务员 "+orderTel.getSalesmanName()+" 录入！"));
+				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
+						"重复！该客户[" + order.getId() + "]于 "+orderTel.getInsertTime()+" 被业务员["+orderTel.getSalesmanName()+"]录入。"));
 		}
 		order.setSalesmanId(loginUser.getId());
 		order.setStatus(10);//状态为正跟踪
@@ -187,7 +191,8 @@ public class InfoerCtrl
 			infoer.setTel1(tel);
 			infoer = infoerSvc.findByTel(infoer, (User) session.getAttribute("loginUser"));
 			if(infoer != null && infoer.getId() >0)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoer.getInsertTime()+" 被业务员 "+infoer.getSalesmanName()+" 录入！"));
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
+					"重复！该信息员于"+infoer.getInsertTime()+" 被业务员["+infoer.getSalesmanName()+"]录入。"));
 		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -196,13 +201,12 @@ public class InfoerCtrl
 	@ResponseBody
 	public Map<String, ?> checkClientTel(@RequestParam String tel, HttpSession session) throws Exception
 	{
-		Order order = new Order();
-		if(StringUtils.isNotEmpty(tel)){
-			order.setTel1(tel);
-			order = orderSvc.findByTel(order, (User) session.getAttribute("loginUser"));
-		}
+		Order order = null;
+		if(StringUtils.isNotEmpty(tel))
+			order = orderSvc.findByTels((User) session.getAttribute("loginUser"), tel);
 		if(order != null)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该客户于 "+order.getInsertTime()+" 被业务员 "+order.getSalesmanName()+" 录入！"));
+			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
+					"重复！该客户[" + order.getId() + "]于 "+order.getInsertTime()+" 被业务员["+order.getSalesmanName()+"]录入。"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

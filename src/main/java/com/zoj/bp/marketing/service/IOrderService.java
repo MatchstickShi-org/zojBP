@@ -52,7 +52,7 @@ public interface IOrderService {
 
 	void addOrderAndClient(Order order);
 
-	Order findByTel(Order order, User loginUser);
+	Order findByTels(User loginUser, String... tels);
 
 	/**
 	 * 放弃客户

@@ -1,15 +1,16 @@
 package com.zoj.bp.marketing.service;
 
-import java.util.Optional;
+import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.Infoer.Level;
-import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -110,11 +111,15 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public Order findByTel(Order order, User loginUser)
+	public Order findByTels(User loginUser, String... tels)
 	{
-		order = clientDao.getClientByTel(order);
-		Optional.ofNullable(order).ifPresent(o -> o.hideAllTel(loginUser));
-		return order;
+		List<Order> os = clientDao.getClientByTels(tels);
+		if(CollectionUtils.isNotEmpty(os))
+		{
+			os.get(0).hideAllTel(loginUser);
+			return os.get(0);
+		}
+		return null;
 	}
 
 	@Override
