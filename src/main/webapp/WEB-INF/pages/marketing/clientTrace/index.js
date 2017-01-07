@@ -68,7 +68,13 @@ $(function()
 						}
 					}
 				},
-				{field:'insertTime', title:'录入日期', width: 5}
+				{field:'insertTime', title:'录入日期', width: 5},
+				{field:'notVisitDays', title:'未回访天数', width: 3,
+					styler: function (value, row, index) {
+						if(value > 5)
+							return 'background-color:red';
+		           }
+				}
 			]],
 			border: false,
 			pagination: true,

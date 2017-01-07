@@ -59,6 +59,8 @@ public class Order implements Serializable{
 	
 	private String tel5;
 	
+	private Integer notVisitDays;//未回访天数
+	
 	public boolean canLookTel(User user)
 	{
 		return !user.isLeader() || (user.isLeader() && user.getId() == this.getSalesmanId());
@@ -267,6 +269,14 @@ public class Order implements Serializable{
 		this.tel5 = tel5;
 	}
 	
+	public Integer getNotVisitDays() {
+		return notVisitDays;
+	}
+
+	public void setNotVisitDays(Integer notVisitDays) {
+		this.notVisitDays = notVisitDays;
+	}
+
 	public String getTelAll() {
 		String telAll = StringUtils.EMPTY;
 		if(StringUtils.isNotEmpty(tel1))

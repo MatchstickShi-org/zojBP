@@ -100,7 +100,13 @@ $(function()
 						}
 					}
 				},
-				{field:'insertTime', title:'录入日期', width: 5}
+				{field:'insertTime', title:'录入日期', width: 5},
+				{field:'notVisitDays', title:'未回访天数', width: 2,
+					styler: function (value, row, index) {
+						if(value > 5)
+							return 'background-color:red';
+		           }
+				}
 			]],
 			pagination: true,
 			singleSelect: true,
@@ -464,7 +470,7 @@ $(function()
 		
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
-		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
+		$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
 		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
 		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 		
@@ -759,6 +765,10 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				if(index == 0)' + 
+			'					$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				else' + 
+			'					$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 

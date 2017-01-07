@@ -63,7 +63,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 	public DatagridVo<Order> getOrdersByInfoer(Pagination pagination, Integer infoerId,Integer[] status)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName "+ 
+				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
@@ -87,11 +88,17 @@ public class OrderDao extends BaseDao implements IOrderDao
 			Integer designerId, String name, String tel, String infoerName, String designerName, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
+		String sql = "SELECT O.*, "+ 
+				" CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "+ 
+				" END AS notVisitDays, "+ 
+				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus "+ 
+				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+
+				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
 		if(user.isMarketingSalesman())
 			sql += " WHERE U.ID = :userId ";
 		else if(user.isMarketingLeader())
@@ -144,11 +151,16 @@ public class OrderDao extends BaseDao implements IOrderDao
 			User salesman, String name, String tel, String infoerName, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
+		String sql = "SELECT O.*, "+ 
+				" CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "+ 
+				" END AS notVisitDays, "+ 
+				" C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U.STATUS AS salesmanStatus,U2.ALIAS AS designerName,U2.STATUS AS designerStatus FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
+				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "+
 				" WHERE U.ID = :userId ";
 		paramMap.put("userId", salesman.getId());
 		if(StringUtils.isNotEmpty(name))
