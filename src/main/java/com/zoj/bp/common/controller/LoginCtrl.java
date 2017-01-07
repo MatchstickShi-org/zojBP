@@ -63,6 +63,7 @@ public class LoginCtrl
 	{
 		if(session.getAttribute("loginUser") != null)
 			session.removeAttribute("loginUser");
+		session.invalidate();
 		return "redirect:/toLoginView";
 	}
 }
