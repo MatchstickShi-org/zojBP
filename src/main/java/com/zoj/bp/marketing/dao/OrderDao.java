@@ -103,7 +103,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
-		if(user.isBelongMarketing()){
+		if(user.isBelongMarketing())
+		{
 			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
 			if(user.isMarketingSalesman())
 				sql += " WHERE U.ID = :userId ";
@@ -112,7 +113,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 			else
 				sql += " WHERE 1=1 ";
 		}
-		else if(user.isBelongDesign()){
+		else if(user.isBelongDesign())
+		{
 			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID ";
 			if(user.isDesignDesigner())
 				sql += " WHERE U2.ID = :userId ";

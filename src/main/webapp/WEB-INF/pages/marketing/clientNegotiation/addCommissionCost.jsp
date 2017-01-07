@@ -34,7 +34,7 @@
 		</tr>
 		<tr>
 			<td align="right"><label>打款金额：</label></td>
-			<td><input name="cost" value="" required="required" class="easyui-numberbox" style="width: 160px;" data-options="min: 0, precision: 2, prefix: '￥'"/></td>
+			<td><input name="cost" value="500.00" required="required" class="easyui-numberbox" style="width: 160px;" data-options="min: 0, precision: 2, prefix: '￥'"/></td>
 			<td align="right"><label>备注：</label></td>
 			<td><input name="remark" class="easyui-textbox" style="width: 160px;"/></td>
 		</tr>
