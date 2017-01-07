@@ -26,7 +26,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 	public Order getOrderById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName FROM `ORDER` O"+
+			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
+				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+

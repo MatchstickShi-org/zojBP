@@ -20,15 +20,15 @@ public interface ICommissionCostMgrDao
 	DatagridVo<CommissionCost> getAllCommissionCosts(User user, String clientName, String orderId, Pagination pagination);
 
 	/**
-	 * @param orderId
-	 * @return
-	 */
-//	InfoCost getInfoCostByOrder(Integer orderId);
-
-	/**
 	 * @param infoCost
 	 * @return
 	 */
-//	Integer addInfoCostRecord(InfoCost infoCost);
+	Integer addCommissionCostRecord(CommissionCost commissionCost);
+
+	/**
+	 * @param orderId
+	 * @return
+	 */
+	CommissionCost getCommissionCostByOrder(Integer orderId);
 
 }

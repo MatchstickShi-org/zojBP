@@ -133,6 +133,7 @@
 <div id="rejectOrderWindow"></div>
 <div id="selectInfoerWindow"></div>
 <div id="showAddInfoCostWindow"></div>
+<div id="showAddCommissionCostWindow"></div>
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
 var _session_loginUserRole = ${sessionScope.loginUser.role};

@@ -415,4 +415,16 @@ public class ClientCtrl
 		mv.addObject("infoCost", infoCost);
 		return mv;
 	}
+	
+	@RequestMapping(value = "/showAddCommissionCostWindow")
+	public ModelAndView showAddCommissionCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
+	{
+		ModelAndView mv = new ModelAndView("marketing/clientNegotiation/addCommissionCost", "errorMsg", null);
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
+		Order order = orderSvc.getOrderById(orderId, loginUser);
+		mv.addObject("order", order);
+		return mv;
+	}
 }

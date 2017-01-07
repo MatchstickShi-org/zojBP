@@ -10,7 +10,7 @@ import com.zoj.bp.costmgr.commissionmgr.vo.CommissionCost;
 /**
  * @author MatchstickShi
  */
-public interface ICommissionMgrService
+public interface ICommissionCostMgrService
 {
 	/**
 	 * @param user
@@ -22,4 +22,16 @@ public interface ICommissionMgrService
 	 */
 	DatagridVo<CommissionCost> getAllCommissionCosts(User user, String clientName, String orderId, Pagination pagination)
 			throws BusinessException;
+	
+	/**
+	 * @param commissionCost
+	 * @return
+	 */
+	Integer addCommissionCostRecord(CommissionCost commissionCost);
+	
+	/**
+	 * @param orderId
+	 * @return
+	 */
+	CommissionCost getCommissionCostByOrder(Integer orderId);
 }

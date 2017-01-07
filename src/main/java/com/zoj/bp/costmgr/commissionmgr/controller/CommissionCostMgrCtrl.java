@@ -1,19 +1,24 @@
 package com.zoj.bp.costmgr.commissionmgr.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
+import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
-import com.zoj.bp.costmgr.commissionmgr.service.ICommissionMgrService;
+import com.zoj.bp.costmgr.commissionmgr.service.ICommissionCostMgrService;
 import com.zoj.bp.costmgr.commissionmgr.vo.CommissionCost;
 
 /**
@@ -25,7 +30,7 @@ import com.zoj.bp.costmgr.commissionmgr.vo.CommissionCost;
 public class CommissionCostMgrCtrl
 {
 	@Autowired
-	private ICommissionMgrService commissionCostSvc;
+	private ICommissionCostMgrService commissionCostSvc;
 	
 	@RequestMapping(value = "/toIndexView")
 	public ModelAndView toIndexView() throws BusinessException
@@ -44,30 +49,16 @@ public class CommissionCostMgrCtrl
 		return commissionCostSvc.getAllCommissionCosts(loginUser, clientName, orderId, pagination);
 	}
 	
-	/*@RequestMapping(value = "/showAddInfoCostWindow")
-	public ModelAndView showAddInfoCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
-	{
-		ModelAndView mv = new ModelAndView("costMgr/infoCostMgr/addInfoCost", "errorMsg", null);
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isDesignManager() && !loginUser.isSuperAdmin())
-			mv.addObject("errorMsg", "对不起，你不是市场部经理，无法新增信息费。");
-		InfoCost infoCost = infoCostSvc.getInfoCostByOrder(orderId);
-		if(infoCost.getCost() != null)		//已打款
-			mv.addObject("errorMsg", MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName()));
-		mv.addObject("infoCost", infoCost);
-		return mv;
-	}
-	
-	@RequestMapping(value = "/addInfoCost")
+	@RequestMapping(value = "/addCommissionCost")
 	@ResponseBody
-	public Map<String, ?> addInfoCost(HttpSession session, InfoCost infoCost, Errors errors)
+	public Map<String, ?> addCommissionCost(HttpSession session, CommissionCost commissionCost, Errors errors)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isDesignManager() && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部经理，无法新增信息费。"));
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法新增提成。"));
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("输入参数有误，请检查后重新输入。"));
-		infoCostSvc.addInfoCostRecord(infoCost);
+		commissionCostSvc.addCommissionCostRecord(commissionCost);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}*/
+	}
 }

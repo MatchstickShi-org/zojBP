@@ -15,6 +15,7 @@ $(function()
 	var $addCommissionCostBtn = $('a#clientNegotiationMgr-addCommissionCostBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
 	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
+	var $showAddCommissionCostWindow = $('div#showAddCommissionCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
 	var $permitOrderWindow = $('div#permitOrderWindow');
@@ -52,6 +53,7 @@ $(function()
 		$rejectOrderWindow.window({width: 340});
 		$selectInfoerWindow.window({width: 350});
 		$showAddInfoCostWindow.window({width: 500});
+		$showAddCommissionCostWindow.window({width: 500});
 	}
 	
 	function initGrid()
@@ -394,6 +396,27 @@ $(function()
 			({
 				title: '新增信息费打款记录'
 			}).window('open').window('refresh', 'marketing/clientMgr/showAddInfoCostWindow?orderId=' + orderIds[0]);
+		}});
+		
+		$addCommissionCostBtn.linkbutton({onClick: function()
+		{
+			var selTab = $orderCheckMgrTab.tabs('getSelected');
+			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
+			var orderIds = null;
+			if(index == 0)
+				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
+			else
+				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			if(orderIds.length == 0)
+			{
+				$.messager.alert('提示', '请选择要打款的客户。');
+				return;
+			}
+			$showAddCommissionCostWindow.window('clear');
+			$showAddCommissionCostWindow.window('open').window
+			({
+				title: '新增提成打款记录'
+			}).window('open').window('refresh', 'marketing/clientMgr/showAddCommissionCostWindow?orderId=' + orderIds[0]);
 		}});
 
 		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
