@@ -3,6 +3,8 @@
  */
 package com.zoj.bp.sysmgr.usermgr.dao;
 
+import java.util.List;
+
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -101,4 +103,10 @@ public interface IUserDao
 	 * @return
 	 */
 	Integer removeUnderling(Integer[] underlingIds);
+
+	/**
+	 * @param role
+	 * @return
+	 */
+	List<User> getUsersByRole(Integer role);
 }

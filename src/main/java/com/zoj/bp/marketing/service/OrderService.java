@@ -1,30 +1,37 @@
 package com.zoj.bp.marketing.service;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zoj.bp.common.dao.IMsgLogDao;
 import com.zoj.bp.common.dao.IOrderApproveDao;
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.Infoer.Level;
+import com.zoj.bp.common.model.MsgLog;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
+import com.zoj.bp.common.msg.MsgManager;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
 import com.zoj.bp.marketing.dao.IInfoerDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
+import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 @Service
 public class OrderService implements IOrderService
 {
 	@Autowired
-	private IOrderDao dao;
+	private IOrderDao orderDao;
 	
 	@Autowired
 	private IClientDao clientDao;
@@ -35,10 +42,16 @@ public class OrderService implements IOrderService
 	@Autowired
 	private IInfoerDao infoerDao;
 	
+	@Autowired
+	private IUserDao userDao;
+	
+	@Autowired
+	private IMsgLogDao msgDao;
+	
 	@Override
 	public Order getOrderById(Integer id, User loginUser)
 	{
-		 Order o = dao.getOrderById(id);
+		 Order o = orderDao.getOrderById(id);
 		 o.hideAllTel(loginUser);
 		 return o;
 	}
@@ -46,14 +59,14 @@ public class OrderService implements IOrderService
 	@Override
 	public void updateOrder(Order order, Client client)
 	{
-		dao.updateOrder(order);
+		orderDao.updateOrder(order);
 		clientDao.updateClient(client);
 	}
 
 	@Override
 	public DatagridVo<Order> getOrdersByInfoer(Pagination pagination, User loginUser, Integer infoerId, Integer... status)
 	{
-		DatagridVo<Order> os = dao.getOrdersByInfoer(pagination, infoerId, status);
+		DatagridVo<Order> os = orderDao.getOrdersByInfoer(pagination, infoerId, status);
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;
@@ -63,7 +76,7 @@ public class OrderService implements IOrderService
 	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, Integer designerId, String name, String tel,
 			String infoerName, String designerName, Integer... status)
 	{
-		DatagridVo<Order> os = dao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, designerName, status);
+		DatagridVo<Order> os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, designerName, status);
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;
@@ -73,13 +86,13 @@ public class OrderService implements IOrderService
 	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
 			String name, String tel, String infoerName, String empty, Integer... status)
 	{
-		return dao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, status);
+		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, status);
 	}
 
 	@Override
 	public Integer addOrder(Order order)
 	{
-		return dao.addOrder(order);
+		return orderDao.addOrder(order);
 	}
 
 	@Override
@@ -125,76 +138,114 @@ public class OrderService implements IOrderService
 	@Override
 	public Integer deleteOrderByIds(Integer[] orderIds)
 	{
-		return dao.updateOrderByIds(orderIds);
+		return orderDao.updateOrderByIds(orderIds);
 	}
 
 	@Override
 	public Integer addOrderApprove(OrderApprove orderApprove)
 	{
-		Order order = dao.getOrderById(orderApprove.getOrderId());
+		Order order = orderDao.getOrderById(orderApprove.getOrderId());
 		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
 			order.setDesignerId(orderApprove.getDesignerId());
 		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
 		boolean updateInfoerFlag = false;
+		List<MsgLog> msgs = new ArrayList<>();
+		
 		switch (orderApprove.getOperate())
 		{
 			case 0:		//驳回操作
 				switch (order.getStatus())
 				{
-					case 30://状态为：在谈单-商务部经理审核中
+					case 30://状态为：在谈单-商务部经理审核中：驳回-更新为正跟踪
 						order.setStatus(Status.tracing.value());
 						orderApprove.setStatus(Status.tracing.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你提交的在谈单[{0}]申请被商务部经理打回，请知悉。", order.getId())));
 						break;
-					case 32://状态为：在谈单-主案部经理审核中
+					case 32://状态为：在谈单-主案部经理审核中：驳回-打回到商务部经理
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
+						List<User> mgrs = userDao.getUsersByRole(Role.marketingManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(order.getSalesmanId(), 
+									MessageFormat.format("你提交的在谈单[{0}]申请被主案部经理打回，请尽快审核。", order.getId()))));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中
+					case 34://状态为：在谈单-设计师跟踪中：判定为死单
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你的在谈单[{0}]被设计师[{1}]判定为死单，请知悉。",
+										order.getId(), order.getDesignerId())));
 						break;
-					case 60://状态为：不准单-主案部经理审核中
+					case 60://状态为：不准单-主案部经理审核中：驳回->设计师跟踪中
 						order.setStatus(Status.talkingDesignerTracing.value());
 						orderApprove.setStatus(Status.talkingDesignerTracing.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你提交的不准单[{0}]申请被主案部经理驳回，请知悉。", order.getId())));
 						break;
-					case 62://状态为：不准单-商务部经理审核中
+					case 62://状态为：不准单-商务部经理审核中：驳回->主案部经理审核中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
+						mgrs = userDao.getUsersByRole(Role.designManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
+									MessageFormat.format("你提交的不准单[{0}]申请被商务部经理驳回，请知悉。", order.getId()))));
 						break;
 				}
 				break;
 			case 1:		//批准操作
 				switch (order.getStatus())
 				{
-					case 30://状态为：在谈单-商务部经理审核中
+					case 30://状态为：在谈单-商务部经理审核中：提交主案部经理审核
 						order.setStatus(Status.talkingDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingDesignManagerAuditing.value());
+						List<User> mgrs = userDao.getUsersByRole(Role.designManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+						{
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(orderApprove.getClaimer(),
+									MessageFormat.format("市场部经理批准了在谈单[{0}]的申请，请尽快审核。", order.getId()))));
+						}
 						break;
-					case 32://状态为：在谈单-主案部经理审核中
-						/**
-						 * 如果客户为在谈单，则更新该客户的信息员等级为银牌
-						 */
+					case 32://状态为：在谈单-主案部经理审核中：分配设计师跟踪
+						/** 如果客户为在谈单，则更新该客户的信息员等级为银牌 */
 						infoer.setLevel(Level.silver.value());
 						updateInfoerFlag = true;
 						order.setStatus(Status.talkingDesignerTracing.value());
 						orderApprove.setStatus(Status.talkingDesignerTracing.value());
+						msgs.add(new MsgLog(order.getDesignerId(), 
+								MessageFormat.format("主案部经理批准了在谈单[{0}]的申请，并分配你为设计师，请尽快跟踪。", order.getId())));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中
-						/**
-						 * 如果客户为已签单，则更新该客户的信息员等级为金牌
-						 */
+					case 34://状态为：在谈单-设计师跟踪中：更新为已签单
+						/** 如果客户为已签单，则更新该客户的信息员等级为金牌 */
 						infoer.setLevel(Level.gold.value());
 						updateInfoerFlag = true;
 						order.setStatus(Status.deal.value());
 						orderApprove.setStatus(Status.deal.value());
+						String msg = MessageFormat.format(
+								"在谈单[{0}]已被设计师[{1}]签单，请知悉。", order.getId(), order.getDesignerName());
+						msgs.add(new MsgLog(order.getSalesmanId(), msg));
+						mgrs = userDao.getUsersByRole(Role.marketingManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), msg)));
+						mgrs = userDao.getUsersByRole(Role.designManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(orderApprove.getClaimer(), msg)));
 						break;
-					case 60://状态为：不准单-主案部经理审核中
+					case 60://状态为：不准单-主案部经理审核中：提交商务部经理审核
 						order.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeMarketingManagerAuditing.value());
+						mgrs = userDao.getUsersByRole(Role.marketingManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), 
+									MessageFormat.format("主案部经理批准了在谈单[{0}]的不准单申请，请尽快审核。", order.getId()))));
 						break;
-					case 62://状态为：不准单-商务部经理审核中
+					case 62://状态为：不准单-商务部经理审核中：通过-更新为不准单
 						order.setStatus(Status.disagree.value());
 						orderApprove.setStatus(Status.disagree.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你的在谈单[{0}]被商务部经理判定为不准单，请知悉。", order.getId())));
+						msgs.add(new MsgLog(order.getDesignerId(), 
+								MessageFormat.format("你提交的不准单[{0}]申请已通过，请知悉。", order.getId())));
 						break;
 				}
 				break;
@@ -202,50 +253,76 @@ public class OrderService implements IOrderService
 				switch (order.getStatus())
 				{
 					case 10://状态为：正跟踪
-						order.setStatus(Status.talkingMarketingManagerAuditing.value());
-						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
-						break;
 					case 14://状态为：在谈单-设计师已打回
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
+						List<User> mgrs = userDao.getUsersByRole(Role.marketingManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+						{
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), 
+									MessageFormat.format("业务员[{0}]申请了在谈单，请尽快审核。", orderApprove.getClaimerName()))));
+						}
 						break;
-					case 32://状态为：在谈单-主案部经理审核中
+					/*case 32://状态为：在谈单-主案部经理审核中		//在谈单-主案部经理审核中只有通过和驳回，没有判定死单
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
+						break;*/
+					case 60://状态为：不准单-主案部经理审核中：判定为死单
+						order.setStatus(Status.dead.value());
+						orderApprove.setStatus(Status.dead.value());
+						msgs.add(new MsgLog(order.getSalesmanId(),
+								MessageFormat.format("你的在谈单[{0}]被主案部经理判定为死单，请知悉。", order.getId())));
+						msgs.add(new MsgLog(orderApprove.getClaimer(),
+								MessageFormat.format("你提交的不准单申请[{0}]被主案部经理判定为死单，请知悉。", order.getId())));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中
+					case 34://状态为：在谈单-设计师跟踪中：申请不准单
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
+						mgrs = userDao.getUsersByRole(Role.designManager.value());
+						if(CollectionUtils.isNotEmpty(mgrs))
+						{
+							mgrs.stream().forEach(u -> msgs.add(new MsgLog(orderApprove.getClaimer(),
+									MessageFormat.format("设计师[{0}]对在谈单[{1}]申请了不准单，请尽快审核。", 
+											orderApprove.getClaimer(), order.getId()))));
+						}
 						break;
 				}
 				break;
 			case 3:		//打回操作
 				order.setStatus(Status.designerRejected.value());
 				orderApprove.setStatus(Status.designerRejected.value());
+				msgs.add(new MsgLog(order.getSalesmanId(), 
+						MessageFormat.format("你的在谈单[{0}]被设计师[{1}]打回，请知悉。", order.getId(), orderApprove.getDesignerName())));
 				break;
 		}
 		approveDao.addOrderApprove(orderApprove);
-		int status = dao.updateOrderStatus(order);
+		int status = orderDao.updateOrderStatus(order);
 		if(status > 0 && updateInfoerFlag)
 			infoerDao.updateInfoer(infoer);
+		if(CollectionUtils.isNotEmpty(msgs))		//发送消息
+			msgs.stream().forEach(m ->
+			{
+				msgDao.addMsgLog(m);
+				MsgManager.instance().addMsg(m);
+			});
 		return status;
 	}
 
 	@Override
 	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId)
 	{
-		return dao.updateOrderSalesmanId(orderIds, salesmanId);
+		return orderDao.updateOrderSalesmanId(orderIds, salesmanId);
 	}
 
 	@Override
 	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId)
 	{
-		return dao.updateOrderDesigerId(orderIds, designerId);
+		return orderDao.updateOrderDesigerId(orderIds, designerId);
 	}
 
 	@Override
 	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId)
 	{
-		return dao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
+		return orderDao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
 	}
 }

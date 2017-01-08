@@ -231,7 +231,7 @@ public class ClientCtrl
 	public Map<String, ?> addOrderVisit(@Valid OrderVisit orderVisit,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
@@ -253,11 +253,12 @@ public class ClientCtrl
 	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
 		orderApprove.setClaimer(loginUser.getId());
+		orderApprove.setClaimerName(loginUser.getAlias());
 		orderApprove.setOperate(2);
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -268,7 +269,7 @@ public class ClientCtrl
 	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
@@ -283,7 +284,7 @@ public class ClientCtrl
 	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
@@ -305,7 +306,7 @@ public class ClientCtrl
 	public Map<String, ?> editOrder(@Valid Order orderForm, Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL);
 		Client client = clientSvc.getClientByOrderId(orderForm.getId());
 		client.setName(orderForm.getName());
 		client.setOrgAddr(orderForm.getOrgAddr());

@@ -145,7 +145,7 @@ public class User implements Serializable
 	}
 	
 	/**
-	 * 是否是市场部业务员
+	 * 是否是商务部业务员
 	 * @return
 	 */
 	@Transient
@@ -155,7 +155,7 @@ public class User implements Serializable
 	}
 	
 	/**
-	 * 是否是市场部主管
+	 * 是否是商务部主管
 	 * @return
 	 */
 	@Transient
@@ -185,7 +185,7 @@ public class User implements Serializable
 	}
 	
 	/**
-	 * 是否是设计部设计师
+	 * 是否是主案部设计师
 	 * @return
 	 */
 	@Transient
@@ -195,7 +195,7 @@ public class User implements Serializable
 	}
 	
 	/**
-	 * 是否是设计部主管
+	 * 是否是主案部主管
 	 * @return
 	 */
 	@Transient
@@ -205,7 +205,7 @@ public class User implements Serializable
 	}
 	
 	/**
-	 * 是否是设计部经理
+	 * 是否是主案部经理
 	 * @return
 	 */
 	@Transient
@@ -220,17 +220,17 @@ public class User implements Serializable
 		superAdmin(-1),
 		/**管理员*/
 		admin(0),
-		/**市场部-业务员*/
+		/**商务部-业务员*/
 		marketingSalesman(1),
-		/**市场部-主管*/
+		/**商务部-主管*/
 		marketingLeader(2),
-		/**市场部-经理*/
+		/**商务部-经理*/
 		marketingManager(3),
-		/**设计部-设计师*/
+		/**主案部-设计师*/
 		designDesigner(4),
-		/**设计部-主管*/
+		/**主案部-主管*/
 		designLeader(5),
-		/**设计部-经理*/
+		/**主案部-经理*/
 		designManager(6);
 		
 		private Role(Integer value)

@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.User;
-import com.zoj.bp.common.msg.BroadcastMsgManager;
+import com.zoj.bp.common.msg.MsgManager;
 
 /**
  * @author MatchstickShi
@@ -28,12 +28,13 @@ public class IndexCtrl
 		return new ModelAndView("index").addObject("loginUserMenus", JSON.toJSONString(loginUser.getMenus()));
 	}
 	
-	@RequestMapping("/getLastBroadcastMsg")
+	@RequestMapping("/getLastMsg")
 	@ResponseBody
-	public DeferredResult<Map<String, ?>> getLastBroadcastMsg(HttpSession session) throws Exception
+	public DeferredResult<Map<String, ?>> getLastMsg(HttpSession session) throws Exception
 	{
 		DeferredResult<Map<String, ?>> result = new DeferredResult<>(0L);
-		BroadcastMsgManager.instance().addMonitor(session.getId(), result);
+		User loginUser = (User) session.getAttribute("loginUser");
+		MsgManager.instance().addMonitor(loginUser.getId(), result);
 		return result;
 	}
 }

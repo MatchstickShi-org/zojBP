@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.zoj.bp.common.model.MsgLog;
-import com.zoj.bp.common.msg.BroadcastMsgManager;
+import com.zoj.bp.common.msg.MsgManager;
 import com.zoj.bp.common.service.IMsgLogService;
 
 /**
@@ -23,6 +23,6 @@ public class SystemInitializer implements ApplicationContextAware
 	{
 		IMsgLogService msgSvc = applicationContext.getBean(IMsgLogService.class);
 		List<MsgLog> ms = msgSvc.getLast24hoursBroadcastMsgs();
-		BroadcastMsgManager.instance().setMsgs(ms.toArray(new MsgLog[ms.size()]));
+		MsgManager.instance().setMsgs(ms.toArray(new MsgLog[ms.size()]));
 	}
 }

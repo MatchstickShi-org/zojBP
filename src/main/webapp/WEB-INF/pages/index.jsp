@@ -77,28 +77,38 @@ $(function()
 {
 	var $broadcastMsgDiv = $('#broadcastMsgDiv');
 		
-	function getBroadcastMsgs()
+	function getLastMsg()
 	{
 		$.ajax
 		({
-			url: 'getLastBroadcastMsg',
+			url: 'getLastMsg',
 			success: function(data, textStatus, jqXHR)
 			{
 				if(data.returnCode == 0)
 				{
-					var $lastSpan = $broadcastMsgDiv.find('span:last');
-					var $tmpSpan = $('<span id="' + data.newestMsg.id + '">' + data.newestMsg.content + '</span>');
-					if($lastSpan.length == 0)		//之前没有消息
-						$broadcastMsgDiv.append($tmpSpan);
+					if(data.newestMsg.targetUser == null)
+					{
+						var $lastSpan = $broadcastMsgDiv.find('span:last');
+						var $tmpSpan = $('<span id="' + data.newestMsg.id + '">' + data.newestMsg.content + '</span>');
+						if($lastSpan.length == 0)		//之前没有消息
+							$broadcastMsgDiv.append($tmpSpan);
+						else
+							$lastSpan.after($tmpSpan);
+					}
 					else
-						$lastSpan.after($tmpSpan);
-					getBroadcastMsgs();
+						$.messager.show({title: '你有新的消息', msg: data.newestMsg.content, timeout: 0, style:
+						{
+		                    right:'',
+		                    top:document.body.scrollTop+document.documentElement.scrollTop,
+		                    bottom:''
+		                }});
+					getLastMsg();
 				}
 			},
 			timeout: 0
 		});
 	}
-	getBroadcastMsgs();
+	getLastMsg();
 	
 	var req_userMenus = ${requestScope.loginUserMenus};
 	var $westMenuAccordion = $('div#westMenuAccordion');

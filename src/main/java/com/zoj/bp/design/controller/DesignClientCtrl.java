@@ -308,6 +308,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.repulse.value());
+		orderApprove.setDesignerName(loginUser.getAlias());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

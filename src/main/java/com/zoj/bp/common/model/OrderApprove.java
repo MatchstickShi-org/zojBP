@@ -25,6 +25,8 @@ public class OrderApprove implements Serializable{
 	
 	private Integer designerId;
 	
+	private String designerName;
+	
 	private Integer claimer;
 	
 	private String claimerName;//申请人名称
@@ -157,5 +159,15 @@ public class OrderApprove implements Serializable{
 
 	public void setApproverName(String approverName) {
 		this.approverName = approverName;
+	}
+
+	public String getDesignerName()
+	{
+		return designerName;
+	}
+
+	public void setDesignerName(String designerName)
+	{
+		this.designerName = designerName;
 	}
 }

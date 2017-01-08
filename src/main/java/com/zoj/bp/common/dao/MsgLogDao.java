@@ -68,4 +68,17 @@ public class MsgLogDao extends BaseDao implements IMsgLogDao
 		params.addValue("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(MsgLog.class)), count);
 	}
+
+	/**
+	 * @param m
+	 */
+	@Override
+	public Integer addMsgLog(MsgLog msg)
+	{
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcOps.update(
+				"INSERT INTO MSG_LOG(TARGET_USER, CONTENT) VALUES(:targetUser, :content)",
+				new MapSqlParameterSource("targetUser", msg.getTargetUser()).addValue("content", msg.getContent()), keyHolder);
+		return keyHolder.getKey().intValue();
+	}
 }

@@ -1,5 +1,7 @@
 package com.zoj.bp.sysmgr.usermgr.dao;
 
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -124,6 +126,14 @@ public class UserDao extends BaseDao implements IUserDao
 		params.addValue("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class)), count);
 	}
+	
+	@Override
+	public List<User> getUsersByRole(Integer role)
+	{
+		return jdbcOps.query("SELECT U.* FROM USER U WHERE U.ROLE = :role",
+				new MapSqlParameterSource("role", role), BeanPropertyRowMapper.newInstance(User.class));
+	}
+	
 	@Override
 	public Integer addUser(User user)
 	{
