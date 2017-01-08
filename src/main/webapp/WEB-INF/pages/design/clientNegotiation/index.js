@@ -21,11 +21,13 @@ $(function()
 	var $disagreeOrderWindow = $('div#disagreeOrderWindow');
 	var $repulseOrderWindow = $('div#repulseOrderWindow');
 	var $selectDesignerWindow = $('div#selectDesignerWindow');
+	var $businessTransferWindow = $('div#businessTransferWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
+	var $applyVisitBtn = $('a#applyVisitBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
 	var $orderStylistVisitGrid = $('table#orderStylistVisitGrid');
 	var $orderApproveGrid = $('table#orderApproveGrid');
@@ -36,7 +38,7 @@ $(function()
 		$selectDesignerWindow.window('open').window
 		({
 			title: '请选择设计师',
-		}).window('open').window('refresh', 'design/clientMgr/showSelectDesignerWindow');
+		}).window('open').window('refresh', 'design/clientMgr/showDesignerForPermit');
 	}
 	
 	function init()
@@ -290,7 +292,10 @@ $(function()
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
-			checkOnSelect: false
+			checkOnSelect: false,
+			onDblClickRow: function(index, row){
+				$.messager.alert('回访内容', row.content);
+			}
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'design/clientMgr/getOrderVisitByOrder';
@@ -317,7 +322,10 @@ $(function()
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
-			checkOnSelect: false
+			checkOnSelect: false,
+			onDblClickRow: function(index, row){
+				$.messager.alert('回访内容', row.content);
+			}
 		});
 		
 		$orderStylistVisitGrid.datagrid('options').url = 'design/clientMgr/getStylistOrderVisitByOrder';
@@ -489,6 +497,38 @@ $(function()
 		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
 		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 		$('#showCheckDeadOrderWindowBtn').linkbutton({onClick: showCheckDeadOrderWindow});
+		$('#transferOrderWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
+		
+		function showBusinessTransferWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getCheckedRowPkValues');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>需要业务转移的客户。');
+				return;
+			}
+			var selRows = $orderDatagrid.datagrid('getChecked');
+			if(selRows.length > 0){
+				var flag = false;
+				$.each(selRows,function(index,obj){
+					if(obj.designerStatus ==1){
+						if(obj.status ==90 || obj.status ==0 || obj.status ==64){
+							flag = true;
+							return;
+						}
+					}
+				});
+				if(flag){
+					$.messager.alert('提示', '在职设计师的客户状态为<span style="color: red;">已签单、死单、不准单</span>的不能转移。');
+					return;
+				}
+			}
+			$businessTransferWindow.window('clear');
+			$businessTransferWindow.window('open').window
+			({
+				title: '请选择设计师',
+			}).window('open').window('refresh', 'design/clientMgr/showDesignerForTransfer');
+		}
 		
 		
 		function removeOrder()
@@ -546,6 +586,7 @@ $(function()
 		$disagreeOrderWindow.window({width: 340});
 		$repulseOrderWindow.window({width: 340});
 		$selectDesignerWindow.window({width: 350});
+		$businessTransferWindow.window({width: 500});
 		
 		function showPermitOrderWindow()
 		{

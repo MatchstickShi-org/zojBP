@@ -22,13 +22,13 @@
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.designerNameInput"/>
-					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" checked="checked"/>全部客户</label>
-					<label><input type="radio" value="1" name="clientTrace.orderFilterInput"/>我的客户</label>
+					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" />全部客户</label>
+					<label><input type="radio" value="1" name="clientTrace.orderFilterInput" checked="checked"/>我的客户</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="" name="statusInput" checked="checked"/>全部</label>
-					<label><input type="checkbox" value="34" name="statusInput"/>在谈单已批准</label>
+					<label><input type="checkbox" value="" name="statusInput" />全部</label>
+					<label><input type="checkbox" value="34" name="statusInput" checked="checked"/>在谈单已批准</label>
 					<label><input type="checkbox" value="90" name="statusInput"/>已签单</label>
 					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
 					<label><input type="checkbox" value="60" name="statusInput"/>不准单审核中</label>
@@ -37,7 +37,9 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="repulseOrderWindowBtn">打回正跟踪</a>
+					<c:if test="${sessionScope.loginUser.role == 6}">
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="transferOrderWindowBtn">业务转移</a>
+					</c:if>
 				</div>
 			</div>
 			<c:if test="${sessionScope.loginUser.role == 6}">
@@ -153,6 +155,7 @@
 <div id="disagreeOrderWindow"></div>
 <div id="repulseOrderWindow"></div>
 <div id="selectDesignerWindow"></div>
+<div id="businessTransferWindow"></div>
 <script type="text/javascript">
 var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>

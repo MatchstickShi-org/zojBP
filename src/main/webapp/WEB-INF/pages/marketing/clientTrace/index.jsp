@@ -20,13 +20,13 @@
 			<input class="easyui-textbox" id="clientTrace.telInput" style="width: 120px;"/>
 			<label>信息员名称：</label>
 			<input class="easyui-textbox" id="clientTrace.infoerNameInput" style="width: 120px;"/>
-			<label><input type="radio" value="0" name="clientTrace.infoerFilterInput" checked="checked"/>全部信息员</label>
-			<label><input type="radio" value="1" name="clientTrace.infoerFilterInput"/>我的信息员</label>
+			<label><input type="radio" value="0" name="clientTrace.infoerFilterInput" />全部客户</label>
+			<label><input type="radio" value="1" name="clientTrace.infoerFilterInput" checked="checked"/>我的客户</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<br>
 			<label>状态：</label>
-			<label><input type="checkbox" value="" name="statusInput" checked="checked"/>全部</label>
-			<label><input type="checkbox" value="10" name="statusInput"/>正跟踪</label>
+			<label><input type="checkbox" value="" name="statusInput" />全部</label>
+			<label><input type="checkbox" value="10" name="statusInput" checked="checked" />正跟踪</label>
 			<label><input type="checkbox" value="12" name="statusInput"/>已放弃</label>
 			<label><input type="checkbox" value="30" name="statusInput"/>在谈单审核中</label>
 			<label><input type="checkbox" value="14" name="statusInput"/>在谈单已打回</label>
@@ -80,7 +80,7 @@
 			<div title="回访记录">
 	    		<table id="orderVisitGrid" border="false"></table>
 			</div>
-			<div title="审批流程">
+			<div title="审核流程">
 	    		<table id="orderApproveGrid" border="false"></table>
 			</div>
 		</div>

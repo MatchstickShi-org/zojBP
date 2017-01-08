@@ -179,7 +179,10 @@ $(function()
 				{field:'content', title:'回访内容', width: 5},
 				{field:'date', title:'回访日期', width: 5}
 			]],
-			pagination: true
+			pagination: true,
+			onDblClickRow: function(index, row){
+				$.messager.alert('回访内容', row.content);
+			}
 		});
 
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';

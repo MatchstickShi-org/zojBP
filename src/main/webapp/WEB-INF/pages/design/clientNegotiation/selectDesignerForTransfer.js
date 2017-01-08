@@ -1,25 +1,25 @@
 $(function()
 {
-	var $orderDatagrid = $('table#orderDatagrid');
 	var $businessTransferWindow = $('div#businessTransferWindow');
-	var $selSalesmanGrid = $("table#selSalesmanDatagrid");
-	var $selectSalesmanBtn = $('a#selectSalesmanBtn');
+	var $selDesignerGrid = $("table#selDesignerDatagrid");
+	var $orderDatagrid = $('table#orderDatagrid');
+	var $selectDesignerTransferBtn = $('a#selectDesignerTransferBtn');
 	
-	$selectSalesmanBtn.linkbutton({'onClick': selectSalesman});
+	$selectDesignerTransferBtn.linkbutton({'onClick': selectDesignerTransfer});
 	
-	function selectSalesman()
+	function selectDesignerTransfer()
 	{
 		var selIds = $orderDatagrid.datagrid('getCheckedRowPkValues');
-		var selRs = $selSalesmanGrid.datagrid('getSelections');
+		var selRs = $selDesignerGrid.datagrid('getSelections');
 		if(selRs.length == 0)
 		{
-			$.messager.alert("提示", "请选中一个业务员。");
+			$.messager.alert("提示", "请选中一个设计师！");
 			return;
 		}
 		$.ajax
 		({
-			url: 'marketing/clientMgr/transferOrder',
-			data: {orderIds:selIds, salesmanId:selRs[0].id },
+			url: 'design/clientMgr/transferOrder',
+			data: {orderIds:selIds, designerId:selRs[0].id },
 			success: function(data, textStatus, jqXHR)
 			{
 				if(data.returnCode == 0)
@@ -34,7 +34,7 @@ $(function()
 		});
 	}
 	
-	$selSalesmanGrid.datagrid
+	$selDesignerGrid.datagrid
 	({
 		singleSelect: true,
 		idField: "id",
@@ -101,6 +101,6 @@ $(function()
 			}
 		]],
 		pagination: true,
-		url: "marketing/clientMgr/getAllSalesman",
+		url: "design/clientMgr/getAllDesigner",
 	});
 });

@@ -117,6 +117,7 @@ public class UserDao extends BaseDao implements IUserDao
 		}
 		if(ArrayUtils.isNotEmpty(roles))
 			sql +=" AND U.ROLE IN(" + StringUtils.join(roles, ',') + ")";
+		sql +=" AND U.STATUS = 1";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
 		sql += " LIMIT :start, :rows";

@@ -1,40 +1,27 @@
 $(function()
 {
-	var $orderDatagrid = $('table#orderDatagrid');
-	var $businessTransferWindow = $('div#businessTransferWindow');
-	var $selSalesmanGrid = $("table#selSalesmanDatagrid");
-	var $selectSalesmanBtn = $('a#selectSalesmanBtn');
+	var $selDesignerWindow = $('div#selectDesignerWindow');
+	var $selDesignerGrid = $("table#selDesignerDatagrid");
+	var $designerSearchbox = $('input#permitOrderForm_designerNameSearchbox');
+	var $designerIdInput = $('input#permitOrderForm_designerIdInput');
+	var $selectDesignerBtn = $('a#selectDesignerBtn');
 	
-	$selectSalesmanBtn.linkbutton({'onClick': selectSalesman});
+	$selectDesignerBtn.linkbutton({'onClick': selectDesigner});
 	
-	function selectSalesman()
+	function selectDesigner()
 	{
-		var selIds = $orderDatagrid.datagrid('getCheckedRowPkValues');
-		var selRs = $selSalesmanGrid.datagrid('getSelections');
+		var selRs = $selDesignerGrid.datagrid('getSelections');
 		if(selRs.length == 0)
 		{
-			$.messager.alert("提示", "请选中一个业务员。");
+			$.messager.alert("提示", "请选择要分配的设计师！");
 			return;
 		}
-		$.ajax
-		({
-			url: 'marketing/clientMgr/transferOrder',
-			data: {orderIds:selIds, salesmanId:selRs[0].id },
-			success: function(data, textStatus, jqXHR)
-			{
-				if(data.returnCode == 0)
-				{
-					$.messager.show({title:'提示',msg:'操作成功。'});
-					$orderDatagrid.datagrid('reload');
-					$businessTransferWindow.window("close"); 
-				}
-				else
-					$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-			}
-		});
+		$designerSearchbox.searchbox("setValue", selRs[0].name);
+		$designerIdInput.val(selRs[0].id); 
+		$selDesignerWindow.window("close"); 
 	}
 	
-	$selSalesmanGrid.datagrid
+	$selDesignerGrid.datagrid
 	({
 		singleSelect: true,
 		idField: "id",
@@ -101,6 +88,6 @@ $(function()
 			}
 		]],
 		pagination: true,
-		url: "marketing/clientMgr/getAllSalesman",
+		url: "design/clientMgr/getAllDesigner",
 	});
 });

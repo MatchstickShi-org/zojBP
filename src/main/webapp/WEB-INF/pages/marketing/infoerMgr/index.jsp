@@ -24,8 +24,8 @@
 			<label><input type="checkbox" value="2" name="levelInput"/>银牌</label>
 			<label><input type="checkbox" value="3" name="levelInput"/>铜牌</label>
 			<label><input type="checkbox" value="4" name="levelInput"/>铁牌</label>
-			<label><input type="radio" value="0" name="infoerMgr.infoerFilterInput" checked="checked"/>全部信息员</label>
-			<label><input type="radio" value="1" name="infoerMgr.infoerFilterInput"/>我的信息员</label>
+			<label><input type="radio" value="0" name="infoerMgr.infoerFilterInput" />全部信息员</label>
+			<label><input type="radio" value="1" name="infoerMgr.infoerFilterInput" checked="checked"/>我的信息员</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 			<c:if test="${sessionScope.loginUser.role == 3}">
