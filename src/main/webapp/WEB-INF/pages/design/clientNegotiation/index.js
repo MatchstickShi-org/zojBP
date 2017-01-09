@@ -869,7 +869,7 @@ $(function()
 			var selIds = $orderDatagrid.datagrid('getSelections');
 			if(selIds.length == 0)
 			{
-				$.messager.alert('提示', '请选中申请死单的客户。');
+				$.messager.alert('提示', '请选中要申请死单的客户。');
 				return;
 			}
 			if(selIds[0].status != 34)
@@ -958,9 +958,9 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
 			}
-			if(selIds[0].status != 32)
+			if(selIds[0].status != 60)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单审核中</span>的客户。');
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">不准单审核中</span>的客户。');
 				return;
 			}
 			$checkDeadOrderWindow.window('clear');

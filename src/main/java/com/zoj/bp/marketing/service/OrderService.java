@@ -116,9 +116,9 @@ public class OrderService implements IOrderService
 		/**
 		 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
 		 */
-		if (infoer.getLevel() == 4)
+		if (infoer.getLevel() == Level.iron.value())
 		{
-			infoer.setLevel(3);
+			infoer.setLevel(Level.bronze.value());
 			infoerDao.updateInfoer(infoer);
 		}
 	}
