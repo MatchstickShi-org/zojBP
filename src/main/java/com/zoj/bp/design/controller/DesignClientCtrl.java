@@ -3,6 +3,7 @@
  */
 package com.zoj.bp.design.controller;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -32,6 +34,7 @@ import com.zoj.bp.common.service.IOrderApproveService;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
+import com.zoj.bp.costmgr.infocostmgr.service.IInfoCostMgrService;
 import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.ICommissionCostService;
 import com.zoj.bp.marketing.service.IInfoCostService;
@@ -62,6 +65,9 @@ public class DesignClientCtrl
 	
 	@Autowired
 	private IInfoCostService infoCostSvc;
+	
+	@Autowired
+	private IInfoCostMgrService infoCostMgrSvc;
 	
 	@Autowired
 	private ICommissionCostService commissionCostSvc;
@@ -302,6 +308,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.repulse.value());
+		orderApprove.setDesignerName(loginUser.getAlias());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -441,13 +448,6 @@ public class DesignClientCtrl
 		return ResponseUtils.buildRespMapByBean(infoerSvc.findBySalesmanId(loginUser.getId(),pagination, null));
 	}
 	
-	/**
-	 * 获取信息费打款记录
-	 * @param orderId
-	 * @param pagination
-	 * @return
-	 * @throws BusinessException
-	 */
 	@RequestMapping(value = "/getInfoCostByOrder")
 	@ResponseBody
 	public DatagridVo<InfoCost> getInfoCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
@@ -514,22 +514,17 @@ public class DesignClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	/**
-	 * 设计部业务转移
-	 * @param orderIds
-	 * @param designerId
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/applyVisit")
-	@ResponseBody
-	public Map<String, ?> applyVisit(HttpSession session,
-			@RequestParam("orderId") Integer orderId,@RequestParam("designerId") Integer designerId) throws Exception
+	@RequestMapping(value = "/showAddInfoCostWindow")
+	public ModelAndView showAddInfoCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
 	{
+		ModelAndView mv = new ModelAndView("design/clientNegotiation/addInfoCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isBelongDesign() && !loginUser.isSuperAdmin())
-			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是主案部人员，无法进行回访申请操作。"));
-		//orderSvc.updateOrderDesigerId(orderIds,designerId);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
+		com.zoj.bp.costmgr.infocostmgr.vo.InfoCost infoCost = infoCostMgrSvc.getInfoCostByOrder(orderId);
+		if(infoCost.getCost() != null)		//已打款
+			mv.addObject("errorMsg", MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName()));
+		mv.addObject("infoCost", infoCost);
+		return mv;
 	}
 }
