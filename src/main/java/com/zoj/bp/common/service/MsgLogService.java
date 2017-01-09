@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.dao.IMsgLogDao;
 import com.zoj.bp.common.model.MsgLog;
-import com.zoj.bp.common.msg.BroadcastMsgManager;
+import com.zoj.bp.common.msg.MsgManager;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -42,7 +42,7 @@ public class MsgLogService implements IMsgLogService
 			{
 				try
 				{
-					BroadcastMsgManager.instance().addMsg(msgLogDao.getMgsById(msgId));
+					MsgManager.instance().addMsg(msgLogDao.getMgsById(msgId));
 				}
 				catch (Exception e)
 				{

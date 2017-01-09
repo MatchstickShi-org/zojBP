@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
-import com.zoj.bp.common.msg.BroadcastMsgManager;
+import com.zoj.bp.common.msg.MsgManager;
 import com.zoj.bp.common.util.EncryptUtil;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.sysmgr.usermgr.service.IMenuService;
@@ -53,7 +53,7 @@ public class LoginCtrl
 		
 		u.setMenus(menuSvc.getMenusByUser(u));
 		
-		session.setAttribute("broadcastMsgs", BroadcastMsgManager.instance().getAllMsgs());
+		session.setAttribute("broadcastMsgs", MsgManager.instance().getAllMsgs());
 		session.setAttribute("loginUser", u);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -61,8 +61,12 @@ public class LoginCtrl
 	@RequestMapping(value="/logout")
 	public String logout(HttpSession session)
 	{
-		if(session.getAttribute("loginUser") != null)
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(loginUser != null)
+		{
+			MsgManager.instance().removeMonitor(loginUser.getId());
 			session.removeAttribute("loginUser");
+		}
 		session.invalidate();
 		return "redirect:/toLoginView";
 	}

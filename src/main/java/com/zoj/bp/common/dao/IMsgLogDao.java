@@ -33,4 +33,10 @@ public interface IMsgLogDao
 	 * @return
 	 */
 	DatagridVo<MsgLog> getMsgsByUser(Integer userId, Pagination pagination);
+
+	/**
+	 * @param msg
+	 * @return
+	 */
+	Integer addMsgLog(MsgLog msg);
 }

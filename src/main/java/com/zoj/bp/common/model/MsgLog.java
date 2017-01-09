@@ -13,6 +13,15 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 public class MsgLog implements Serializable
 {
 	private static final long serialVersionUID = 8288607008180366038L;
+	
+	public MsgLog(){}
+	
+	public MsgLog(Integer targetUser, String content)
+	{
+		super();
+		this.targetUser = targetUser;
+		this.content = content;
+	}
 
 	private Integer id;
 	

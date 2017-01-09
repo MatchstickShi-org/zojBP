@@ -36,7 +36,7 @@
 								</tr>
 								<tr>
 									<td id="userNameLabelTd"></td>
-									<td class="valueTd"><input type="text" id="loginNameInput" name="name" maxlength="20"/></td>
+									<td class="valueTd"><input type="text" id="loginNameInput" name="name" maxlength="20" onkeypress="return doLogin(event)"/></td>
 								</tr>
 								<tr>
 									<td height="5px"></td>
