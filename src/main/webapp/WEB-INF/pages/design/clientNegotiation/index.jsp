@@ -126,8 +126,10 @@
 				    		<table id="orderStylistVisitGrid"></table>
 				    		<div id="orderVisitGridToolbar">
 								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
+								<c:if test="${sessionScope.loginUser.role == 6}">
 								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addVisitCommentBtn">批示</a>
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyVisitBtn">回访申请</a>
+								</c:if>
+								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyVisitBtn">申请回访</a>
 							</div>
 						</td>
 					</tr>
@@ -156,6 +158,7 @@
 <div id="repulseOrderWindow"></div>
 <div id="selectDesignerWindow"></div>
 <div id="businessTransferWindow"></div>
+<div id="applyVisitWindow"></div>
 <script type="text/javascript">
 var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>

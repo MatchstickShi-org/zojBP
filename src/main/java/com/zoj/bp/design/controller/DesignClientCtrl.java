@@ -3,12 +3,13 @@
  */
 package com.zoj.bp.design.controller;
 
-import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -34,7 +34,8 @@ import com.zoj.bp.common.service.IOrderApproveService;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
-import com.zoj.bp.costmgr.infocostmgr.service.IInfoCostMgrService;
+import com.zoj.bp.design.service.IDesignerVisitApplyService;
+import com.zoj.bp.design.vo.DesignerVisitApply;
 import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.ICommissionCostService;
 import com.zoj.bp.marketing.service.IInfoCostService;
@@ -67,7 +68,7 @@ public class DesignClientCtrl
 	private IInfoCostService infoCostSvc;
 	
 	@Autowired
-	private IInfoCostMgrService infoCostMgrSvc;
+	private IDesignerVisitApplyService visitApplySvc;
 	
 	@Autowired
 	private ICommissionCostService commissionCostSvc;
@@ -514,17 +515,88 @@ public class DesignClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	@RequestMapping(value = "/showAddInfoCostWindow")
-	public ModelAndView showAddInfoCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
+	/**
+	 * 设计师回访申请
+	 * @param session
+	 * @param designerVisitApply
+	 * @param errors
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/visitApply")
+	@ResponseBody
+	public Map<String, ?> visitApply(HttpSession session,@Valid DesignerVisitApply designerVisitApply, Errors errors) throws Exception
 	{
-		ModelAndView mv = new ModelAndView("design/clientNegotiation/addInfoCost", "errorMsg", null);
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
-		com.zoj.bp.costmgr.infocostmgr.vo.InfoCost infoCost = infoCostMgrSvc.getInfoCostByOrder(orderId);
-		if(infoCost.getCost() != null)		//已打款
-			mv.addObject("errorMsg", MessageFormat.format("客户[{0}]已打款，无法再次打款，请刷新后重试。", infoCost.getClientName()));
-		mv.addObject("infoCost", infoCost);
-		return mv;
+		if(!loginUser.isBelongDesign())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是主案部人员，无法进行回访申请操作。"));
+		List<DesignerVisitApply> deApplies = visitApplySvc.getDesignerVisitApplyByOrderId(designerVisitApply.getOrderId());
+		if(CollectionUtils.isNotEmpty(deApplies))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("该客户已经申请过回访，无法再次进行回访申请操作。"));
+		designerVisitApply.setDesigner(loginUser.getId());
+		designerVisitApply.setStatus(0);//未审核
+		visitApplySvc.addDesignerVisitApply(designerVisitApply);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
+	
+	/**
+	 * 审核回访申请
+	 * @param session
+	 * @param designerVisitApply
+	 * @param errors
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/checkVisitApply")
+	@ResponseBody
+	public Map<String, ?> checkVisitApply(HttpSession session,@RequestParam("id") Integer id) throws Exception
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isBelongDesign())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是主案部经理，无法进行此操作。"));
+		DesignerVisitApply designerVisitApply = visitApplySvc.getDesignerVisitApplyById(id);
+		if(designerVisitApply.getStatus() == 1)
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，该客户回访申请已同意，无需再次操作。"));
+		designerVisitApply.setApprover(loginUser.getId());
+		designerVisitApply.setStatus(1);//已审核
+		visitApplySvc.updateVisitApply(designerVisitApply);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
+	@RequestMapping(value = "/toDesignerVisitApplyView")
+	public String toDesignerVisitApplyView() throws BusinessException
+	{
+		return "/design/applyVisit/index";
+	}
+	
+	/**
+	 * 获取所有设计师回访申请
+	 * @param orderId
+	 * @param pagination
+	 * @param session
+	 * @return
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/getAllDesignerVisitApply")
+	@ResponseBody
+	public DatagridVo<DesignerVisitApply> getAllDesignerVisitApply(Pagination pagination,HttpSession session,
+			@RequestParam(required=false) Integer orderId,
+			@RequestParam(required=false) String designerName,
+			@RequestParam(value = "status[]",required=false) Integer[] status) throws BusinessException
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isDesignManager() && !loginUser.isSuperAdmin())
+			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是主案部经理，无法查看回访申请。"));
+		if(ArrayUtils.isNotEmpty(status))
+		{
+			while(status[0] == null)
+				status = ArrayUtils.remove(status, 0);
+		}
+		else
+			status = new Integer[]{0,1};
+		return visitApplySvc.getAllDesignerVisitApply(pagination, designerName, orderId,status);
+	}
+	
 }

@@ -68,9 +68,9 @@ public class OrderApprove implements Serializable{
 			return this.value;
 		}
 		
-		public static Status valueOf(Integer status)
+		public static Operate valueOf(Integer operate)
 		{
-			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
+			return Stream.of(Operate.values()).filter(r -> r.value() == operate).findFirst().orElse(null);
 		}
 	}
 	public Integer getId() {

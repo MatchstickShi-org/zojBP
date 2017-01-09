@@ -17,6 +17,7 @@ import com.zoj.bp.common.model.MsgLog;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
+import com.zoj.bp.common.model.OrderApprove.Operate;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.msg.MsgManager;
@@ -151,9 +152,9 @@ public class OrderService implements IOrderService
 		boolean updateInfoerFlag = false;
 		List<MsgLog> msgs = new ArrayList<>();
 		
-		switch (orderApprove.getOperate())
+		switch (Operate.valueOf(3))
 		{
-			case 0:		//驳回操作
+			case reject:		//驳回操作
 				switch (order.getStatus())
 				{
 					case 30://状态为：在谈单-商务部经理审核中：驳回-更新为正跟踪
@@ -193,7 +194,7 @@ public class OrderService implements IOrderService
 						break;
 				}
 				break;
-			case 1:		//批准操作
+			case permit:		//批准操作
 				switch (order.getStatus())
 				{
 					case 30://状态为：在谈单-商务部经理审核中：提交主案部经理审核
@@ -249,7 +250,7 @@ public class OrderService implements IOrderService
 						break;
 				}
 				break;
-			case 2:		//申请操作
+			case apply:		//申请操作
 				switch (order.getStatus())
 				{
 					case 10://状态为：正跟踪
@@ -288,7 +289,7 @@ public class OrderService implements IOrderService
 						break;
 				}
 				break;
-			case 3:		//打回操作
+			case repulse:		//打回操作
 				order.setStatus(Status.designerRejected.value());
 				orderApprove.setStatus(Status.designerRejected.value());
 				msgs.add(new MsgLog(order.getSalesmanId(), 

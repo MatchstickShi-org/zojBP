@@ -22,6 +22,7 @@ $(function()
 	var $repulseOrderWindow = $('div#repulseOrderWindow');
 	var $selectDesignerWindow = $('div#selectDesignerWindow');
 	var $businessTransferWindow = $('div#businessTransferWindow');
+	var $applyVisitWindow = $('div#applyVisitWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
 	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
 	var $editClientForm = $('form#editOrderForm');
@@ -498,6 +499,7 @@ $(function()
 		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 		$('#showCheckDeadOrderWindowBtn').linkbutton({onClick: showCheckDeadOrderWindow});
 		$('#transferOrderWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
+		$applyVisitBtn.linkbutton({onClick: showApplyVisitWindow});
 		
 		function showBusinessTransferWindow()
 		{
@@ -585,8 +587,86 @@ $(function()
 		$deadOrderWindow.window({width: 340});
 		$disagreeOrderWindow.window({width: 340});
 		$repulseOrderWindow.window({width: 340});
-		$selectDesignerWindow.window({width: 350});
+		$selectDesignerWindow.window({width: 500});
 		$businessTransferWindow.window({width: 500});
+		$applyVisitWindow.window({width: 340});
+		
+		function showApplyVisitWindow()
+		{
+			var selIds = $orderDatagrid.datagrid('getSelections');
+			if(selIds.length == 0)
+			{
+				$.messager.alert('提示', '请选中要申请回访的客户。');
+				return;
+			}
+			if(selIds[0].notVisitDays < 1)
+			{
+				$.messager.alert('提示', '只能申请未回访天数大于<span style="color: red;">1</span>天的客户。');
+				return;
+			}
+			$applyVisitWindow.window('clear');
+			$applyVisitWindow.window('open').window
+			({
+				title: '申请回访',
+				content: applyVisitWindowHtml
+			}).window('open').window('center');
+		}
+		
+		var applyVisitWindowHtml = 
+			'<form id="applyVisitForm" action="design/clientMgr/visitApply" method="post" style="width: 100%;">' + 
+			'	<table width="100%">' + 
+			'		<tr>' + 
+			'			<td align="right"><label>客户名称：</label></td>' + 
+			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>联系电话：</label></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>申 请 人：</label></td>' + 
+			'			<td><input id="designerName" name="designerName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'		</tr>' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<tr>' + 
+			'			<td align="center" colspan="4">' + 
+			'				<a class="easyui-linkbutton" onclick="submitApplyVisitForm();" href="javascript:void(0)">提交</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$applyVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'			</td>' + 
+			'		</tr>' +
+			'	</table>' + 
+			'</form>' +
+			'<script type="text/javascript">' + 
+			'var $applyVisitWindow = $(\'div#applyVisitWindow\');' +
+			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
+			'$applyVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$applyVisitWindow.find(\'#clientName\').val(selRows[0].name);' +
+			'$applyVisitWindow.find(\'#designerName\').val(selRows[0].designerName);' +
+			'$applyVisitWindow.find(\'#telAll\').val(selRows[0].telAll);' +
+			'function submitApplyVisitForm()' + 
+			'{' + 
+			'	$applyVisitWindow.find(\'form#applyVisitForm\').form(\'submit\',' + 
+			'	{' + 
+			'		onSubmit: function()' + 
+			'		{' + 
+			'			if(!$(this).form(\'validate\'))' + 
+			'				return false;' + 
+			'		},' + 
+			'		success: function(data)' + 
+			'		{' + 
+			'			data = $.fn.form.defaults.success(data);' + 
+			'			if(data.returnCode == 0)' + 
+			'			{' + 
+			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'				$applyVisitWindow.window(\'close\');' + 
+			'			}else{' + 
+			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
+			'			}' + 
+			'		}' + 
+			'	});' + 
+			'}' + 
+			'</script>';
 		
 		function showPermitOrderWindow()
 		{

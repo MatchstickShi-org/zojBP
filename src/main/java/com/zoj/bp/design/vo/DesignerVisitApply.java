@@ -22,10 +22,11 @@ public class DesignerVisitApply implements Serializable{
 	@NotNull
 	private Integer orderId;
 	
-	@NotNull
 	private Integer designer;
 	
 	private String designerName;
+	
+	private String salesmanName;
 	
 	private Integer approver;
 	
@@ -33,9 +34,15 @@ public class DesignerVisitApply implements Serializable{
 	
 	private Integer status;
 	
+	private Integer orderStatus;
+	
+	private Integer notVisitDays;//未回访天数
+	
 	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
-
+	
+	private String name;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -98,5 +105,37 @@ public class DesignerVisitApply implements Serializable{
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSalesmanName() {
+		return salesmanName;
+	}
+
+	public void setSalesmanName(String salesmanName) {
+		this.salesmanName = salesmanName;
+	}
+
+	public Integer getNotVisitDays() {
+		return notVisitDays;
+	}
+
+	public void setNotVisitDays(Integer notVisitDays) {
+		this.notVisitDays = notVisitDays;
+	}
+
+	public Integer getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Integer orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 }
