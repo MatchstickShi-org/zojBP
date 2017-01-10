@@ -15,6 +15,7 @@ $(function()
 	var $addCommissionCostBtn = $('a#clientNegotiationMgr-addCommissionCostBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
 	var $showAddInfoCostWindow = $('div#showAddInfoCostWindow');
+	var $showAddNewOrderWindow = $('div#showAddNewOrderWindow');
 	var $showAddCommissionCostWindow = $('div#showAddCommissionCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addClientWindow = $('div#addClientWindow');
@@ -55,6 +56,7 @@ $(function()
 		$selectInfoerWindow.window({width: 350});
 		$showAddInfoCostWindow.window({width: 500});
 		$showAddCommissionCostWindow.window({width: 500});
+		$showAddNewOrderWindow.window({width: 500});
 	}
 	
 	function initGrid()
@@ -138,7 +140,8 @@ $(function()
 
 				if(_session_loginUserRole == 3)
 				{
-					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
+					if(row.status == 0 || row.status == 90 || row.status == 64)
+						$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
 					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
 					$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
 					$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
@@ -384,7 +387,27 @@ $(function()
 				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
 		});
 		
-		$showNewOrderWindowBtn.linkbutton({});
+		$showNewOrderWindowBtn.linkbutton
+		({
+			'onClick': function()
+			{
+				var orderIds = $orderDatagrid.datagrid('getSelections');
+				if(orderIds.length == 0)
+				{
+					$.messager.alert('提示', '请选择要新生成的客户。');
+					return;
+				}
+				if(orderIds[0].status != 90 && orderIds[0].status != 0 && orderIds[0].status != 64){
+					$.messager.alert('提示', '只能新生成状态为<span style="color: red;">已签单、死单、不准单</span>的客户。');
+					return;
+				}
+				$showAddNewOrderWindow.window('clear');
+				$showAddNewOrderWindow.window('open').window
+				({
+					title: '新生成客户'
+				}).window('open').window('refresh', 'marketing/clientMgr/showAddNewOrderWindow?orderId='+ orderIds[0].id);
+			}
+		});
 		
 		$queryOrderBtn.linkbutton
 		({

@@ -404,6 +404,12 @@ public class ClientCtrl
 		return "marketing/clientTrace/selectInfoer";
 	}
 	
+	@RequestMapping("/showSelectSalesmanWindow")
+	public String showSelectSalesmanWindow()
+	{
+		return "marketing/clientNegotiation/selectSalesman";
+	}
+	
 	@RequestMapping("/showAllSalesman")
 	public String showAllSalesman()
 	{
@@ -426,7 +432,7 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法进行业务转移。"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法进行业务转移。"));
 		orderSvc.updateOrderSalesmanId(orderIds,salesmanId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -451,9 +457,47 @@ public class ClientCtrl
 		ModelAndView mv = new ModelAndView("marketing/clientNegotiation/addCommissionCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
-			mv.addObject("errorMsg", "对不起，你不是商务部经理，无法新增信息费。");
+			mv.addObject("errorMsg", "对不起，您不是商务部经理，无法新增信息费。");
 		Order order = orderSvc.getOrderById(orderId, loginUser);
 		mv.addObject("order", order);
 		return mv;
+	}
+	/**
+	 * 跳转新生成客户界面
+	 * @param session
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/showAddNewOrderWindow")
+	public ModelAndView showAddNewOrderWindow(HttpSession session, @RequestParam Integer orderId)
+	{
+		ModelAndView mv = new ModelAndView("marketing/clientNegotiation/addNewOrder", "errorMsg", null);
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			mv.addObject("errorMsg", "对不起，您不是商务部经理，无法新生成客户。");
+		Order order = orderSvc.getOrderById(orderId, loginUser);
+		mv.addObject("order", order);
+		return mv;
+	}
+	/**
+	 * 新生成客户
+	 * @param order
+	 * @param errors
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addNewOrder")
+	@ResponseBody
+	public Map<String, ?> addNewOrder(@Valid Order order, Errors errors, HttpSession session) throws Exception
+	{
+		if(errors.hasErrors())
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法新生成客户。"));
+		order.setStatus(Status.tracing.value());//状态为正跟踪
+		orderSvc.addOrderAndClient(order);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

@@ -25,6 +25,7 @@ import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.InfoerVisit;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.util.ResponseUtils;
@@ -139,7 +140,7 @@ public class InfoerCtrl
 						"重复！该客户[" + order.getId() + "]于 "+orderTel.getInsertTime()+" 被业务员["+orderTel.getSalesmanName()+"]录入。"));
 		}
 		order.setSalesmanId(loginUser.getId());
-		order.setStatus(10);//状态为正跟踪
+		order.setStatus(Status.tracing.value());//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
