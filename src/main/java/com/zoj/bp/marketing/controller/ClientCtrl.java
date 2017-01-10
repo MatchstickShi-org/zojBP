@@ -118,17 +118,17 @@ public class ClientCtrl
 		}
 		else
 			status = new Integer[]
-					{
-					Status.tracing.value(),
-					Status.abandoned.value(),
-					Status.designerRejected.value(),
-					Status.talkingMarketingManagerAuditing.value(),
-					Status.talkingDesignManagerAuditing.value()
-					};
-		if (filter == null || filter == 0)
-			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
+			{
+				Status.tracing.value(),
+				Status.abandoned.value(),
+				Status.designerRejected.value(),
+				Status.talkingMarketingManagerAuditing.value(),
+				Status.talkingDesignManagerAuditing.value()
+			};
+		if (filter == null || filter == 1)
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, status);
 		else
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, StringUtils.EMPTY, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public class ClientCtrl
 					Status.talkingMarketingManagerAuditing.value(),
 					Status.disagreeMarketingManagerAuditing.value()
 					};
-		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
 	}
 	
 	/**
@@ -206,7 +206,7 @@ public class ClientCtrl
 					Status.disagreeDesignManagerAuditing.value(),
 					Status.disagreeMarketingManagerAuditing.value()
 					};
-		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, StringUtils.EMPTY, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

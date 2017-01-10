@@ -117,4 +117,18 @@ public class ClientDao extends BaseDao implements IClientDao
 			return null;
 		}
 	}
+
+	@Override
+	public Integer deleteBySalesmans(Integer... userIds)
+	{
+		return jdbcOps.update("DELETE C FROM CLIENT C LEFT JOIN `ORDER` O ON C.ORDER_ID = O.ID "
+				+ " WHERE O.SALESMAN_ID IN (" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
+	public Integer deleteByDesigners(Integer... userIds)
+	{
+		return jdbcOps.update("DELETE C FROM CLIENT C LEFT JOIN `ORDER` O ON C.ORDER_ID = O.ID"
+				+ " WHERE O.DESIGNER_ID IN (" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	}
 }

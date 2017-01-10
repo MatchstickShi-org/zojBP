@@ -19,6 +19,7 @@
 			<input class="easyui-textbox" id="userMgr.alias"/>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryUserBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddUserWindowBtn">新增</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deleteUserBtn">删除</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeUsersBtn">设为离职</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="revertUsersBtn">设为在职</a>
 		</div>
@@ -37,7 +38,7 @@
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>电话：</label></td>
-							<td><input name="tel" class="easyui-textbox" data-options="required:true, validType:'length[11, 11]'"/></td>
+							<td><input name="tel" class="easyui-numberbox" data-options="min:10000000000, precision:0, required:true, validType:'length[11, 11]'"/></td>
 							<td align="right"><label>上级：</label></td>
 							<td><input name="leaderName" class="easyui-textbox" readonly="readonly"/></td>
 						</tr>

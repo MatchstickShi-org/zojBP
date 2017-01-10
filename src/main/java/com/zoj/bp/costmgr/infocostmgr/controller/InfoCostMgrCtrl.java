@@ -67,7 +67,7 @@ public class InfoCostMgrCtrl
 	
 	@RequestMapping(value = "/addInfoCost")
 	@ResponseBody
-	public Map<String, ?> addInfoCost(HttpSession session, InfoCost infoCost, Errors errors)
+	public Map<String, ?> addInfoCost(HttpSession session, InfoCost infoCost, Errors errors) throws BusinessException
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())

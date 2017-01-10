@@ -19,12 +19,15 @@ public class InfoCostDao extends BaseDao implements IInfoCostDao {
 	@Override
 	public DatagridVo<InfoCost> getAllInfoCost(Pagination pagination,Integer infoerId,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT IC.*,O.PROJECT_NAME,I.`NAME` AS infoerName,U.ALIAS AS salesmanName,U2.ALIAS AS designerName FROM INFO_COST IC "+
-						"LEFT JOIN `ORDER` O ON O.ID = IC.ORDER_ID "+
-						"LEFT JOIN INFOER I ON I.ID = IC.INFOER_ID "+
-						"LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
-						"LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
-						"WHERE 1=1 ";
+		String sql = 
+				"SELECT IC.*, O.PROJECT_NAME, O.STATUS orderStatus "
+				+ " 	I.`NAME` AS infoerName,U.ALIAS AS salesmanName, U2.ALIAS AS designerName "
+				+ " FROM INFO_COST IC "
+				+ " LEFT JOIN `ORDER` O ON O.ID = IC.ORDER_ID "
+				+ " LEFT JOIN INFOER I ON I.ID = IC.INFOER_ID "
+				+ " LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "
+				+ " LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "
+				+ " WHERE 1=1 ";
 		if(infoerId != null)
 		{
 			sql += "AND IC.INFOER_ID= :infoerId ";

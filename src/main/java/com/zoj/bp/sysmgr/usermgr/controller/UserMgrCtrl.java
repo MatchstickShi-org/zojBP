@@ -65,6 +65,16 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	@RequestMapping(value = "/deleteUsers")
+	@ResponseBody
+	public Map<String, ?> deleteUsers(@RequestParam("userIds[]") Integer[] userIds) throws Exception
+	{
+		if(ArrayUtils.isEmpty(userIds))
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("没有可以删除的用户。")));
+		userSvc.deleteUsers(userIds);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
 	@RequestMapping(value = "/editUser")
 	@ResponseBody
 	public Map<String, ?> editUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws BusinessException, Exception
@@ -93,7 +103,7 @@ public class UserMgrCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.contains(userIds, loginUser.getId()))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("不能删除你自己。"));
-		userSvc.deleteUserByIds(userIds);
+		userSvc.setUserToDimission(userIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

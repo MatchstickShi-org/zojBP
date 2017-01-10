@@ -66,4 +66,17 @@ public interface IInfoerDao
 	 */
 	Integer updateInfoerSalesmanId(Integer[] infoerId, Integer salesmanId);
 
+	/**
+	 * @param userIds
+	 */
+	Integer deleteBySalesmans(Integer... userIds);
+
+	/**
+	 * @param salesman
+	 * @param name
+	 * @param tel
+	 * @param levels
+	 * @return
+	 */
+	DatagridVo<Infoer> getInfoersBySalesman(User salesman, String name, String tel, Integer[] levels, Pagination pagination);
 }

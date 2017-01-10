@@ -26,12 +26,14 @@ public class OrderDao extends BaseDao implements IOrderDao
 	public Order getOrderById(Integer id) {
 		try
 		{
-			return jdbcOps.queryForObject("SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
-				" FROM `ORDER` O"+
-				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
-				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
-				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID"+
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID"+
+			return jdbcOps.queryForObject(
+				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, I.`NAME` AS infoerName, "
+				+ " 	U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
+				" FROM `ORDER` O "+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "+
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+
 				" WHERE O.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
 		}
@@ -86,7 +88,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			String name, String tel, String infoerName, String designerName, Integer... statuses)
+			String clientName, String tel, String infoerName, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -125,10 +127,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		
 		paramMap.put("userId", user.getId());
-		if(StringUtils.isNotEmpty(name))
+		if(StringUtils.isNotEmpty(clientName))
 		{
 			sql += " AND C.NAME LIKE :name";
-			paramMap.put("name", '%' + name + '%');
+			paramMap.put("name", '%' + clientName + '%');
 		}
 		if (StringUtils.isNotEmpty(tel))
 		{
@@ -143,11 +145,6 @@ public class OrderDao extends BaseDao implements IOrderDao
 		{
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
-		}
-		if(StringUtils.isNotEmpty(designerName))
-		{
-			sql += " AND U2.ALIAS like :designerName";
-			paramMap.put("designerName", '%' + designerName + '%');
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
@@ -244,5 +241,19 @@ public class OrderDao extends BaseDao implements IOrderDao
 	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
 				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
+	}
+
+	@Override
+	public Integer deleteBySalesmans(Integer... salesmanIds)
+	{
+		return jdbcOps.update("DELETE FROM `ORDER` WHERE SALESMAN_ID IN (" + StringUtils.join(salesmanIds, ',') + ")", 
+				EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
+	public Integer deleteByDesigners(Integer... designerIds)
+	{
+		return jdbcOps.update("DELETE FROM `ORDER` WHERE DESIGNER_ID IN (" + StringUtils.join(designerIds, ',') + ")", 
+				EmptySqlParameterSource.INSTANCE);
 	}
 }

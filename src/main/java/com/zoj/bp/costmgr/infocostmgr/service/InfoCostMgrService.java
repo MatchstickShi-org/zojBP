@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
+import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.costmgr.infocostmgr.dao.IInfoCostMgrDao;
 import com.zoj.bp.costmgr.infocostmgr.vo.InfoCost;
+import com.zoj.bp.marketing.dao.IOrderDao;
 
 /**
  * @author MatchstickShi
@@ -19,6 +22,9 @@ public class InfoCostMgrService implements IInfoCostMgrService
 {
 	@Autowired
 	private IInfoCostMgrDao infoCostDao;
+	
+	@Autowired
+	private IOrderDao orderDao;
 	
 	@Override
 	public DatagridVo<InfoCost> getAllInfoCosts(
@@ -36,8 +42,11 @@ public class InfoCostMgrService implements IInfoCostMgrService
 	}
 	
 	@Override
-	public Integer addInfoCostRecord(InfoCost infoCost)
+	public Integer addInfoCostRecord(InfoCost infoCost) throws BusinessException
 	{
-		return infoCostDao.addInfoCostRecord(infoCost);
+		Order order = orderDao.getOrderById(infoCost.getOrderId());
+		if(order.getStatus() == Status.abandoned.value() || order.getStatus() >= Status.talkingDesignerTracing.value())
+			return infoCostDao.addInfoCostRecord(infoCost);
+		throw new BusinessException(ReturnCode.ILLEGALITY_OPERATION.setMsg("操作失败，只有在谈单才能新增信息费。"));
 	}
 }

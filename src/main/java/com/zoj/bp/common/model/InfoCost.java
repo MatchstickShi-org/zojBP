@@ -21,6 +21,8 @@ public class InfoCost implements Serializable
 	
 	private Integer orderId;
 	
+	private Integer orderStatus;
+	
 	private String date;
 	
 	private BigDecimal amount;
@@ -116,5 +118,15 @@ public class InfoCost implements Serializable
 
 	public void setDesignerName(String designerName) {
 		this.designerName = designerName;
+	}
+
+	public Integer getOrderStatus()
+	{
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Integer orderStatus)
+	{
+		this.orderStatus = orderStatus;
 	}
 }

@@ -39,11 +39,10 @@ public interface IOrderService {
 	 * @param name 客户名称
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
-	 * @param designerName	设计师名称
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,Integer designerId, String name, String tel, String infoerName,String designerName,Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,Integer designerId, String name, String tel, String infoerName,Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -97,10 +96,9 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
-	 * @param empty
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, String empty, Integer... status);
+			String name, String tel, String infoerName, Integer... status);
 }

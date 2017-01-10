@@ -75,9 +75,15 @@ public class OrderService implements IOrderService
 
 	@Override
 	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, Integer designerId, String name, String tel,
-			String infoerName, String designerName, Integer... status)
+			String infoerName, Integer... status)
 	{
-		DatagridVo<Order> os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, designerName, status);
+		User dbUser = userDao.getUserById(loginUser.getId());
+		DatagridVo<Order> os = null;
+		if(dbUser.isLeader() && dbUser.getGroupId() == null)		//主管，尚未分配组
+			os = this.getOrdersBySalesman(dbUser, pagination, name, tel, infoerName, status);
+		else
+			os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, status);
+		
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
 		return os;
@@ -85,7 +91,7 @@ public class OrderService implements IOrderService
 	
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, String empty, Integer... status)
+			String name, String tel, String infoerName, Integer... status)
 	{
 		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, status);
 	}

@@ -75,6 +75,7 @@ public class InfoerCtrl
 	public DatagridVo<Infoer> getAllInfoers(Pagination pagination,
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(value = "level[]", required=false) Integer[] levels, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -85,7 +86,7 @@ public class InfoerCtrl
 		}
 		try
 		{
-			return infoerSvc.getAllInfoer(pagination, loginUser, name, tel, levels);
+			return infoerSvc.getAllInfoer(pagination, loginUser, name, tel, (filter == null || filter == 1) ? false : true, levels);
 		}
 		catch (BusinessException e)
 		{

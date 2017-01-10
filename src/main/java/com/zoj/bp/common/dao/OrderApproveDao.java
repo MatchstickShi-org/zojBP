@@ -3,8 +3,10 @@ package com.zoj.bp.common.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +16,8 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class OrderApproveDao extends BaseDao implements IOrderApproveDao {
-
+public class OrderApproveDao extends BaseDao implements IOrderApproveDao
+{
 	@Override
 	public DatagridVo<OrderApprove> getAllOrderApprove(Pagination pagination,User loginUser,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
@@ -48,5 +50,19 @@ public class OrderApproveDao extends BaseDao implements IOrderApproveDao {
 				"INSERT INTO ORDER_APPROVE(ORDER_ID,CLAIMER,APPROVER,OPERATE,STATUS,OPERATE_TIME,REMARK) VALUES(:orderId,:claimer,:approver,:operate,:status,now(),:remark)",
 				new BeanPropertySqlParameterSource(orderApprove), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public Integer deleteBySalesmans(Integer... salesmanIds)
+	{
+		return jdbcOps.update("DELETE A FROM ORDER_APPROVE A LEFT JOIN `ORDER` O ON A.ORDER_ID = O.ID"
+				+ " WHERE O.SALESMAN_ID IN (" + StringUtils.join(salesmanIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
+	public Integer deleteByDesigners(Integer... designerIds)
+	{
+		return jdbcOps.update("DELETE A FROM ORDER_APPROVE A LEFT JOIN `ORDER` O ON A.ORDER_ID = O.ID"
+				+ " WHERE O.DESIGNER_ID IN (" + StringUtils.join(designerIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 }

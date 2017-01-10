@@ -55,7 +55,7 @@ public interface IUserService
 	 * @param userIds
 	 * @return 
 	 */
-	Integer deleteUserByIds(Integer[] userIds);
+	Integer setUserToDimission(Integer[] userIds);
 
 	/**
 	 * @param id
@@ -95,4 +95,9 @@ public interface IUserService
 	 * @throws BusinessException
 	 */
 	Integer removeUnderlingFromLeader(Integer userId, Integer[] underlingIds) throws BusinessException;
+
+	/**
+	 * @param userIds
+	 */
+	void deleteUsers(Integer[] userIds);
 }

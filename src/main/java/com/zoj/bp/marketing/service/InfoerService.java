@@ -13,6 +13,7 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IInfoerDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
+import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 @Service
 public class InfoerService implements IInfoerService{
@@ -22,6 +23,9 @@ public class InfoerService implements IInfoerService{
 	
 	@Autowired
 	private IOrderDao orderDao;
+	
+	@Autowired
+	private IUserDao userDao;
 	
 	@Override
 	public Infoer getInfoerByName(String InfoerName, User loginUser)
@@ -47,11 +51,21 @@ public class InfoerService implements IInfoerService{
 
 	@Override
 	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,
-			User loginUser, String name, String tel, Integer... levels) throws BusinessException
+			User loginUser, String name, String tel, boolean containsUnderling, Integer... levels) throws BusinessException
 	{
 		if(!loginUser.isBelongMarketing())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部人员，无法查看信息员。"));
-		DatagridVo<Infoer> is = infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
+		User dbUser = userDao.getUserById(loginUser.getId());
+		DatagridVo<Infoer> is;
+		if(dbUser.isLeader() && dbUser.getGroupId() == null)		//主管，尚未分配组
+			is = infoerDao.getInfoersBySalesman(dbUser, name, tel, levels, pagination);
+		else
+		{
+			if(containsUnderling)
+				is = infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
+			else
+				is = infoerDao.getInfoersBySalesman(dbUser, name, tel, levels, pagination);
+		}
 		if(loginUser.isLeader())
 			is.getRows().stream().forEach(i -> i.hideAllTel(loginUser));
 		return is;

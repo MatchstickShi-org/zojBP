@@ -59,4 +59,14 @@ public interface IClientDao
 	 * @return
 	 */
 	Client getClientByOrderId(Integer id);
+
+	/**
+	 * @param userIds
+	 */
+	Integer deleteBySalesmans(Integer... userIds);
+
+	/**
+	 * @param userIds
+	 */
+	Integer deleteByDesigners(Integer... userIds);
 }

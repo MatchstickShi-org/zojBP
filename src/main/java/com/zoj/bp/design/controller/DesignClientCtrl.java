@@ -110,7 +110,7 @@ public class DesignClientCtrl
 					Status.talkingDesignManagerAuditing.value(),
 					Status.disagreeDesignManagerAuditing.value()
 					};
-		return orderSvc.getOrdersByUser(loginUser, pagination,null,name,tel,"",designerName,status);
+		return orderSvc.getOrdersByUser(loginUser, pagination,null,name,tel,"",status);
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class DesignClientCtrl
 						Status.disagreeMarketingManagerAuditing.value()
 					};
 		Integer designerId = (loginUser.isSuperAdmin() || loginUser.isDesignManager()) ? null:loginUser.getId();
-		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",designerName,status);
+		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

@@ -36,4 +36,15 @@ public interface IOrderVisitDao
 	 * @param orderVisit
 	 */
 	void updateOrderVisit(OrderVisit orderVisit);
+	
+	/**
+	 * @param salesmanIds
+	 */
+	Integer deleteBySalesmanId(Integer... salesmanIds);
+	
+	/**
+	 * @param designerIds
+	 * @return
+	 */
+	Integer deleteByDesignerId(Integer... designerIds);
 }

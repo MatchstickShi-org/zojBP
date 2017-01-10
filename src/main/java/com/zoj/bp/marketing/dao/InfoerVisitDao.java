@@ -3,8 +3,10 @@ package com.zoj.bp.marketing.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +16,8 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao {
-
+public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao
+{
 	@Override
 	public DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId) {
 		Map<String, Object> paramMap = new HashMap<>();
@@ -35,5 +37,12 @@ public class InfoerVisitDao extends BaseDao implements IInfoerVisitDao {
 				"INSERT INTO INFOER_VISIT(INFOER_ID,SALESMAN_ID,DATE,CONTENT) VALUES(:infoerId,:salesmanId,now(),:content)",
 				new BeanPropertySqlParameterSource(infoerVisit), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public Integer deleteBySalesmans(Integer... salesmanIds)
+	{
+		return jdbcOps.update("DELETE V FROM INFOER_VISIT V LEFT JOIN INFOER I ON V.INFOER_ID = I.ID"
+				+ " WHERE I.SALESMAN_ID IN (" + StringUtils.join(salesmanIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 }

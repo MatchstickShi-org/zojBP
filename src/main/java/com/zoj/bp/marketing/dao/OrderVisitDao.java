@@ -3,9 +3,11 @@ package com.zoj.bp.marketing.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,8 +18,8 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
-	
+public class OrderVisitDao extends BaseDao implements IOrderVisitDao
+{
 	@Override
 	public OrderVisit getOrderVisitById(Integer id) {
 		try
@@ -64,5 +66,19 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao {
 				"INSERT INTO ORDER_VISIT(ORDER_ID,VISITOR_ID,DATE,CONTENT) VALUES(:orderId,:visitorId,now(),:content)",
 				new BeanPropertySqlParameterSource(orderVisit), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public Integer deleteBySalesmanId(Integer... salesmanIds)
+	{
+		return jdbcOps.update("DELETE V FROM ORDER_VISIT V LEFT JOIN `ORDER` O ON V.VISITOR_ID = O.ID "
+				+ " WHERE O.SALESMAN_ID IN (" + StringUtils.join(salesmanIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	}
+	
+	@Override
+	public Integer deleteByDesignerId(Integer... designerIds)
+	{
+		return jdbcOps.update("DELETE V FROM ORDER_VISIT V LEFT JOIN `ORDER` O ON V.VISITOR_ID = O.ID"
+				+ " WHERE O.DESIGNER_ID IN (" + StringUtils.join(designerIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
 }

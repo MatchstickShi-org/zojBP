@@ -24,6 +24,8 @@ public class InfoCost implements Serializable
 	@NotNull
 	private Integer orderId;
 	
+	private Integer orderStatus;
+	
 	@NotNull
 	private Integer clientId;
 	
@@ -194,5 +196,15 @@ public class InfoCost implements Serializable
 	public void setId(Integer id)
 	{
 		this.id = id;
+	}
+
+	public Integer getOrderStatus()
+	{
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Integer orderStatus)
+	{
+		this.orderStatus = orderStatus;
 	}
 }

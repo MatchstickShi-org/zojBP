@@ -74,10 +74,10 @@ public class Order implements Serializable{
 		{
 			Order that = this;
 			Optional.ofNullable(tel1).ifPresent(tel -> that.setTel1("******"));
-			Optional.ofNullable(tel2).ifPresent(tel -> that.setTel2("******"));
-			Optional.ofNullable(tel3).ifPresent(tel -> that.setTel3("******"));
-			Optional.ofNullable(tel4).ifPresent(tel -> that.setTel4("******"));
-			Optional.ofNullable(tel5).ifPresent(tel -> that.setTel5("******"));
+			Optional.ofNullable(tel2).ifPresent(tel -> that.setTel2(null));
+			Optional.ofNullable(tel3).ifPresent(tel -> that.setTel3(null));
+			Optional.ofNullable(tel4).ifPresent(tel -> that.setTel4(null));
+			Optional.ofNullable(tel5).ifPresent(tel -> that.setTel5(null));
 		}
 	}
 	

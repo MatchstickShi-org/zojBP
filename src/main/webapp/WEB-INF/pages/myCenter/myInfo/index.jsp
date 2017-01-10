@@ -53,22 +53,22 @@ $('form#editUserForm').find('[name=roleName]').val(function()
 			return '管理员';
 			break;
 		case 1:
-			return '市场部业务员';
+			return '商务部业务员';
 			break;
 		case 2:
-			return '市场部主管';
+			return '商务部主管';
 			break;
 		case 3:
-			return '市场部经理';
+			return '商务部经理';
 			break;
 		case 4:
-			return '设计部设计师';
+			return '主案部设计师';
 			break;
 		case 5:
-			return '设计部主管';
+			return '主案部主管';
 			break;
 		case 2:
-			return '设计部部经理';
+			return '主案部部经理';
 			break;
 		default:
 			return '未知';

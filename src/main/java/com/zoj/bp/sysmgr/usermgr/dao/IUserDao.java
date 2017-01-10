@@ -57,7 +57,7 @@ public interface IUserDao
 	 * @param userIds
 	 * @return
 	 */
-	Integer deleteUserByIds(Integer[] userIds);
+	Integer setUserToDimission(Integer[] userIds);
 
 	/**
 	 * @param userId
@@ -109,4 +109,9 @@ public interface IUserDao
 	 * @return
 	 */
 	List<User> getUsersByRole(Integer role);
+
+	/**
+	 * @param userIds
+	 */
+	Integer deleteByUsers(Integer... userIds);
 }

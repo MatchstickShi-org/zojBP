@@ -20,6 +20,45 @@ $(function()
 			{field:'infoer', title:'信息员', width: 5},
 			{field:'designer', title:'设计师', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
 			{field:'salesman', title:'业务员', width: 5},
+			{field:'orderStatus', title:'状态', width: 5, formatter: function(val, row, index)
+				{
+					switch (val)
+					{
+						case 10:
+							return '正跟踪';
+							break;
+						case 12:
+							return '已放弃';
+							break;
+						case 30:
+						case 32:
+							return '在谈单审核中';
+							break;
+						case 34:
+							return '在谈单-设计师跟踪中';
+							break;
+						case 60:
+						case 62:
+							return '不准单审核中';
+							break;
+						case 64:
+							return '不准单';
+							break;
+						case 14:
+							return '已打回';
+							break;
+						case 90:
+							return '已签单';
+							break;
+						case 0:
+							return '死单';
+							break;
+						default:
+							return '未知';
+							break;
+					}
+				}
+			},
 			{field:'remitDate', title:'打款日期', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
 			{field:'cost', title:'金额', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
 			{field:'remark', title:'备注', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}}
@@ -29,7 +68,15 @@ $(function()
 		url: 'costMgr/infoCostMgr/getAllInfoCosts',
 		onSelect: function(index, row)
 		{
-			$showAddInfoCostWindowBtn.linkbutton(row.cost != null ? 'disable' : 'enable');
+			if(row.cost != null)
+				$showAddInfoCostWindowBtn.linkbutton('disable');
+			else
+			{
+				if(row.orderStatus == 12 || row.orderStatus >= 34)
+					$showAddInfoCostWindowBtn.linkbutton('enable');
+				else
+					$showAddInfoCostWindowBtn.linkbutton('disable');
+			}
 		}
 	});
 	

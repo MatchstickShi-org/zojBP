@@ -64,7 +64,7 @@ $(function()
 								return '已打回';
 								break;
 							default:
-								return '无状态';
+								return '未知';
 								break;
 						}
 					}

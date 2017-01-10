@@ -24,6 +24,9 @@ public interface IInfoerVisitDao
 	 * @return
 	 */
 	DatagridVo<InfoerVisit> getAllInfoerVisit(Pagination pagination,Integer infoerId);
-
 	
+	/**
+	 * @param salesmanIds
+	 */
+	Integer deleteBySalesmans(Integer... salesmanIds);
 }

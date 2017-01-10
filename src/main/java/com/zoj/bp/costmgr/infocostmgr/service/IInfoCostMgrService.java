@@ -32,6 +32,7 @@ public interface IInfoCostMgrService
 	/**
 	 * @param infoCost
 	 * @return
+	 * @throws BusinessException 
 	 */
-	Integer addInfoCostRecord(InfoCost infoCost);
+	Integer addInfoCostRecord(InfoCost infoCost) throws BusinessException;
 }

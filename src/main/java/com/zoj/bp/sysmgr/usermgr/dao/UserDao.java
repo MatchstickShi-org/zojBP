@@ -146,7 +146,7 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
-	public Integer deleteUserByIds(Integer[] userIds)
+	public Integer setUserToDimission(Integer[] userIds)
 	{
 		return jdbcOps.update("UPDATE USER SET STATUS = 0 "
 				+ " WHERE ID IN(" + StringUtils.join(userIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
@@ -231,5 +231,12 @@ public class UserDao extends BaseDao implements IUserDao
 				+ " (SELECT A.GROUP_ID FROM (SELECT U.GROUP_ID FROM `USER` U WHERE U.ID = :leaderId) A) "
 				+ " WHERE ID IN (" + StringUtils.join(underlingIds, ',') + ")");
 		return jdbcOps.update(sql.toString(), new MapSqlParameterSource("leaderId", userId));
+	}
+
+	@Override
+	public Integer deleteByUsers(Integer... userIds)
+	{
+		return jdbcOps.update("DELETE FROM USER WHERE ID IN (" + StringUtils.join(userIds, ',') + ")",
+				EmptySqlParameterSource.INSTANCE);
 	}
 }

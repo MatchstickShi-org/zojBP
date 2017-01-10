@@ -15,6 +15,7 @@ $(function()
 	var $assignedUnderlingGrid = $('table#assignedUnderlingGrid');
 	var $showAddUnderlingWindowBtn = $('a#showAddUnderlingWindowBtn');
 	var $removeUnderlingBtn = $('a#removeUnderlingBtn');
+	var $deleteUserBtn = $('a#deleteUserBtn');
 	
 	function init()
 	{
@@ -153,6 +154,33 @@ $(function()
 			var selRows = $userDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($userMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+		}});
+		$deleteUserBtn.linkbutton({onClick: function()
+		{
+			var chkIds = $userDatagrid.datagrid('getCheckedRowPkValues');
+			if(chkIds.length == 0)
+			{
+				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户');
+				return;
+			}
+			var msg = '确定要删除<span style="color: red;">勾选</span>的用户吗？'
+				+ '<br><span style="color: red;">被删除用户的所有数据（信息员、客户、在谈单等等）将会一并删除<span>，请在删除前确认该用户的所有业务数据均已转移！';
+			$.messager.confirm('警告', msg, function(r)
+			{
+				if (r)
+				{
+					$.ajax
+					({
+						url: 'sysMgr/userMgr/deleteUsers',
+						data: {userIds: chkIds},
+						success: function(data, textStatus, jqXHR)
+						{
+							if(data.returnCode == 0)
+								$userDatagrid.datagrid('uncheckAll').datagrid('reload');
+						}
+					});
+				}
+			});
 		}});
 		
 		$assignedUnderlingGrid.datagrid
@@ -472,7 +500,7 @@ $(function()
 			'			<td align="right"><label>密码：</label></td>' + 
 			'			<td><input name="pwd" class="easyui-textbox" type="password" data-options="required:true, validType:\'length[6, 24]\'" style="width: 160px;"/></td>' + 
 			'			<td align="right"><label>电话：</label></td>' + 
-			'			<td style="vertical-align: top"><input name="tel" class="easyui-textbox" required="required" style="width: 160px;"/></td>' + 
+			'			<td style="vertical-align: top"><input name="tel" class="easyui-numberbox" data-options="min:10000000000, precision:0, required:true, validType:\'length[11, 11]\'" style="width: 160px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>密码确认：</label></td>' + 

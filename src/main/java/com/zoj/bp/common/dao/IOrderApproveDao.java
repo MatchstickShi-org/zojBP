@@ -26,6 +26,14 @@ public interface IOrderApproveDao
 	 * @return
 	 */
 	DatagridVo<OrderApprove> getAllOrderApprove(Pagination pagination,User loginUser,Integer orderId);
-
 	
+	/**
+	 * @param salesmanIds
+	 */
+	Integer deleteBySalesmans(Integer... salesmanIds);
+	/**
+	 * @param designerIds
+	 * @return
+	 */
+	Integer deleteByDesigners(Integer... designerIds);
 }

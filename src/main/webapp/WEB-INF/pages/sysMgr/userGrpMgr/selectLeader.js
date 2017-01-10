@@ -23,7 +23,7 @@ $(function()
 		{
 			$addGroupWindow.find("[searchboxname='leaderName']").searchbox("setValue", selRs[0].alias); 
 			$addGroupWindow.find(":hidden[name='leaderId']").val(selRs[0].id); 
-			$addGroupWindow.find("#addGroupWin_deptInput").textbox("setValue", selRs[0].role == 2 ? "市场部" : "设计部"); 
+			$addGroupWindow.find("#addGroupWin_deptInput").textbox("setValue", selRs[0].role == 2 ? "商务部" : "主案部"); 
 			$addGroupWindow.find(":hidden[name='type']").val(selRs[0].role == 2 ? "0" : "1"); 
 		}
 		else
@@ -46,7 +46,7 @@ $(function()
 			{
 				field: "role", title: "部门", width: 5, formatter: function(value, row, index)
 				{
-					return value == 2 ? "市场部" : "设计部";
+					return value == 2 ? "商务部" : "主案部";
 				}
 			},
 			{

@@ -5,11 +5,17 @@ import java.text.MessageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zoj.bp.common.dao.IOrderApproveDao;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
+import com.zoj.bp.marketing.dao.IClientDao;
+import com.zoj.bp.marketing.dao.IInfoerDao;
+import com.zoj.bp.marketing.dao.IInfoerVisitDao;
+import com.zoj.bp.marketing.dao.IOrderDao;
+import com.zoj.bp.marketing.dao.IOrderVisitDao;
 import com.zoj.bp.sysmgr.groupmgr.dao.IGroupDao;
 import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
@@ -24,6 +30,24 @@ public class UserService implements IUserService
 	
 	@Autowired
 	private IGroupDao grpDao;
+	
+	@Autowired
+	private IInfoerDao infoerDao;
+	
+	@Autowired
+	private IClientDao clientDao;
+	
+	@Autowired
+	private IOrderDao orderDao;
+	
+	@Autowired
+	private IOrderApproveDao approveDao;
+	
+	@Autowired
+	private IInfoerVisitDao infoerVisitDao;
+	
+	@Autowired
+	private IOrderVisitDao orderVisitDao;
 
 	@Override
 	public User getUserByName(String userName)
@@ -97,9 +121,9 @@ public class UserService implements IUserService
 	}
 
 	@Override
-	public Integer deleteUserByIds(Integer[] userIds)
+	public Integer setUserToDimission(Integer[] userIds)
 	{
-		return userDao.deleteUserByIds(userIds);
+		return userDao.setUserToDimission(userIds);
 	}
 	
 	@Override
@@ -143,5 +167,21 @@ public class UserService implements IUserService
 		if(!leader.isLeader() && !leader.isSuperAdmin())
 			return DatagridVo.<User>emptyVo(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是主管，不能查询下属。"));
 		return userDao.getNotAssignUnderling(leader, pagination);
+	}
+
+	@Override
+	public void deleteUsers(Integer[] userIds)
+	{
+		infoerDao.deleteBySalesmans(userIds);
+		infoerVisitDao.deleteBySalesmans(userIds);
+		clientDao.deleteBySalesmans(userIds);
+		clientDao.deleteByDesigners(userIds);
+		approveDao.deleteBySalesmans(userIds);
+		approveDao.deleteByDesigners(userIds);
+		orderVisitDao.deleteBySalesmanId(userIds);
+		orderVisitDao.deleteByDesignerId(userIds);
+		orderDao.deleteBySalesmans(userIds);
+		orderDao.deleteByDesigners(userIds);
+		userDao.deleteByUsers(userIds);
 	}
 }

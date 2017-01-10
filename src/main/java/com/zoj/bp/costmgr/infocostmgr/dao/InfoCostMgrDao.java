@@ -33,9 +33,10 @@ public class InfoCostMgrDao extends BaseDao implements IInfoCostMgrDao
 	public DatagridVo<InfoCost> getAllInfoCosts(User user, Integer status, String clientName, String orderId, Pagination pagination)
 	{
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		String sql = "SELECT O.ID ORDER_ID, C.ID CLIENT_ID, C.NAME CLIENT_NAME, O.PROJECT_ADDR, O.INFOER_ID, I.NAME INFOER, "
-				+ " O.DESIGNER_ID, D.ALIAS DESIGNER, O.SALESMAN_ID, S.ALIAS SALESMAN, "
-				+ " IC.DATE REMIT_DATE, IC.AMOUNT COST, IC.REMARK FROM `ORDER` O "
+		String sql = "SELECT O.ID ORDER_ID, O.STATUS ORDER_STATUS, C.ID CLIENT_ID, C.NAME CLIENT_NAME, "
+				+ " 	O.PROJECT_ADDR, O.INFOER_ID, I.NAME INFOER, O.DESIGNER_ID, D.ALIAS DESIGNER, O.SALESMAN_ID, "
+				+ " 	S.ALIAS SALESMAN, IC.DATE REMIT_DATE, IC.AMOUNT COST, IC.REMARK "
+				+ " FROM `ORDER` O "
 				+ " LEFT JOIN INFO_COST IC ON IC.ORDER_ID = O.ID "
 				+ " LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "
 				+ " LEFT JOIN INFOER I ON O.INFOER_ID = I.ID "

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -22,8 +23,8 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
 @Repository
-public class InfoerDao extends BaseDao implements IInfoerDao {
-
+public class InfoerDao extends BaseDao implements IInfoerDao
+{
 	@Override
 	public Infoer getInfoerByName(String infoerName) {
 		try
@@ -107,6 +108,46 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	}
 	
 	@Override
+	public DatagridVo<Infoer> getInfoersBySalesman(User salesman, String name, String tel, Integer[] levels, Pagination pagination)
+	{
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT I.*, "
+			+ " CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
+			+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
+			+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
+			+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
+			+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
+			+ " WHERE U.ID = :userId ";
+		
+		paramMap.put("userId", salesman.getId());
+		if(StringUtils.isNotEmpty(name))
+		{
+			sql += " AND I.NAME LIKE :name";
+			paramMap.put("name", '%' + name + '%');
+		}
+		
+		if (StringUtils.isNotEmpty(tel))
+		{
+			sql += " AND (I.TEL1 LIKE :tel1 OR I.TEL2 LIKE :tel2 OR I.TEL3 LIKE :tel3 OR I.TEL4 LIKE :tel4 OR I.TEL5 LIKE :tel5)";
+			paramMap.put("tel1", '%' + tel + '%');
+			paramMap.put("tel2", '%' + tel + '%');
+			paramMap.put("tel3", '%' + tel + '%');
+			paramMap.put("tel4", '%' + tel + '%');
+			paramMap.put("tel5", '%' + tel + '%');
+		}
+		if(ArrayUtils.isNotEmpty(levels))
+			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
+		
+		sql +=" GROUP BY I.ID";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
+	}
+
+	@Override
 	public Integer addInfoer(Infoer infoer)
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -122,7 +163,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 		{
 			String sql ="SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
 					+ "WHERE 1=1 ";
-			List<String> telList = new ArrayList<String>();
+			List<String> telList = new ArrayList<>();
 			if(StringUtils.isNotEmpty(infoer.getTel1()))
 				telList.add(infoer.getTel1());
 			if(StringUtils.isNotEmpty(infoer.getTel2()))
@@ -168,5 +209,12 @@ public class InfoerDao extends BaseDao implements IInfoerDao {
 	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE INFOER SET SALESMAN_ID = :salesmanId "
 				+ " WHERE ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
+	}
+
+	@Override
+	public Integer deleteBySalesmans(Integer... userIds)
+	{
+		return jdbcOps.update("DELETE FROM INFOER WHERE SALESMAN_ID IN (" + StringUtils.join(userIds, ',') + ")",
+				EmptySqlParameterSource.INSTANCE);
 	}
 }

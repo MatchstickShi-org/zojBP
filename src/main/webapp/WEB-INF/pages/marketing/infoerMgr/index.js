@@ -2,6 +2,7 @@ $(function()
 {
 	var $infoerDatagrid = $('table#infoerDatagrid');
 	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
+	var $infoerFilterInput = $('[name="infoerMgr\\.infoerFilterInput"]');
 	var $telTextbox = $('#infoerMgr\\.telInput');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
@@ -116,7 +117,13 @@ $(function()
 				$.ajax
 				({
 					url: 'marketing/infoerMgr/getAllInfoers',
-					data: {name: $infoerNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'), level: chkLevels},
+					data:
+					{
+						name: $infoerNameTextbox.textbox('getValue'), 
+						tel: $telTextbox.textbox('getValue'), 
+						level: chkLevels,
+						filter: $infoerFilterInput.filter(':checked').val()
+					},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -191,10 +198,10 @@ $(function()
 								return '在谈单-设计师已打回';
 								break;
 							case 30:
-								return '在谈单-市场部经理审核中';
+								return '在谈单-商务部经理审核中';
 								break;
 							case 32:
-								return '在谈单-设计部经理审核中';
+								return '在谈单-主案部经理审核中';
 								break;
 							case 34:
 								return '在谈单-设计师跟踪中';
