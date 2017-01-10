@@ -152,7 +152,7 @@ public class OrderService implements IOrderService
 		boolean updateInfoerFlag = false;
 		List<MsgLog> msgs = new ArrayList<>();
 		
-		switch (Operate.valueOf(3))
+		switch (Operate.valueOf(orderApprove.getOperate()))
 		{
 			case reject:		//驳回操作
 				switch (order.getStatus())

@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import javax.validation.constraints.NotNull;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.zoj.bp.common.model.Order.Status;
 
 /**
  * @author wangw
