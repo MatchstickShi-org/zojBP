@@ -129,12 +129,14 @@ $(function()
 							$lastSpan.after($tmpSpan);
 					}
 					else
+					{
 						$.messager.show({title: '你有新的消息', msg: data.newestMsg.content, timeout: 0, style:
 						{
 		                    right:'',
 		                    top:document.body.scrollTop+document.documentElement.scrollTop,
 		                    bottom:''
 		                }});
+					}
 					getLastMsg();
 				}
 			},

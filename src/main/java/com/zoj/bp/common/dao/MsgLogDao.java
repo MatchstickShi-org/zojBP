@@ -49,8 +49,9 @@ public class MsgLogDao extends BaseDao implements IMsgLogDao
 	@Override
 	public List<MsgLog> getLast24hoursBroadcastMsgs()
 	{
-		String sql = "SELECT * FROM MSG_LOG WHERE SEND_TIME >= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -1 DAY) "
-				+ "ORDER BY SEND_TIME DESC ";
+		String sql = "SELECT * FROM MSG_LOG "
+				+ " WHERE TARGET_USER IS NULL AND SEND_TIME >= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -1 DAY) "
+				+ " ORDER BY SEND_TIME DESC ";
 		List<MsgLog> ms = jdbcOps.query(sql, BeanPropertyRowMapper.newInstance(MsgLog.class));
 		while(ms.size() > 50)
 			ms.remove(0);
