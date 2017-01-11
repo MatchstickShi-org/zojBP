@@ -125,6 +125,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 			else
 				sql += " WHERE 1=1 ";
 		}
+		else
+			sql += " WHERE 1=1 ";
 		
 		paramMap.put("userId", user.getId());
 		if(StringUtils.isNotEmpty(clientName))
@@ -180,6 +182,59 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "+
 				" WHERE U.ID = :userId ";
 		paramMap.put("userId", salesman.getId());
+		if(StringUtils.isNotEmpty(name))
+		{
+			sql += " AND C.NAME LIKE :name";
+			paramMap.put("name", '%' + name + '%');
+		}
+		if (StringUtils.isNotEmpty(tel))
+		{
+			sql += " AND (C.TEL1 LIKE :tel1 OR C.TEL2 LIKE :tel2 OR C.TEL3 LIKE :tel3 OR C.TEL4 LIKE :tel4 OR C.TEL5 LIKE :tel5)";
+			paramMap.put("tel1", '%' + tel + '%');
+			paramMap.put("tel2", '%' + tel + '%');
+			paramMap.put("tel3", '%' + tel + '%');
+			paramMap.put("tel4", '%' + tel + '%');
+			paramMap.put("tel5", '%' + tel + '%');
+		}
+		if(StringUtils.isNotEmpty(infoerName))
+		{
+			sql += " AND I.NAME like :infoerName";
+			paramMap.put("infoerName", '%' + infoerName + '%');
+		}
+		if(ArrayUtils.isNotEmpty(statuses))
+			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
+		sql +=" GROUP BY O.ID";
+		sql +=" ORDER BY O.INSERT_TIME DESC";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Order.class)), count);
+	}
+	
+	@Override
+	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination,
+			User designer, String name, String tel, String infoerName, Integer... statuses)
+	{
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT O.*, "+ 
+				" CASE O.ID WHEN NULL THEN NULL "+ 
+				" ELSE "+ 
+				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
+				" END AS notVisitDays, "+ 
+				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
+				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
+				" FROM `ORDER` O"+
+				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
+				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
+				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "+
+				" WHERE U2.ID = :userId ";
+		paramMap.put("userId", designer.getId());
 		if(StringUtils.isNotEmpty(name))
 		{
 			sql += " AND C.NAME LIKE :name";

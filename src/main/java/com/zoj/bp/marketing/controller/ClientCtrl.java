@@ -117,6 +117,7 @@ public class ClientCtrl
 				status = ArrayUtils.remove(status, 0);
 		}
 		else
+		{
 			status = new Integer[]
 			{
 				Status.tracing.value(),
@@ -125,10 +126,11 @@ public class ClientCtrl
 				Status.talkingMarketingManagerAuditing.value(),
 				Status.talkingDesignManagerAuditing.value()
 			};
+		}
 		if (filter == null || filter == 1)
 			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
 	}
 	
 	/**
@@ -164,12 +166,14 @@ public class ClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
+		{
 			status = new Integer[]
 					{
 					Status.talkingMarketingManagerAuditing.value(),
 					Status.disagreeMarketingManagerAuditing.value()
 					};
-		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
+		}
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
 	}
 	
 	/**
@@ -188,6 +192,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -195,18 +200,24 @@ public class ClientCtrl
 		{
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
-		}else
+		}
+		else
+		{
 			status = new Integer[]
-					{
-					Status.talkingDesignManagerAuditing.value(),
-					Status.talkingDesignerTracing.value(),
-					Status.deal.value(),
-					Status.dead.value(),
-					Status.disagree.value(),
-					Status.disagreeDesignManagerAuditing.value(),
-					Status.disagreeMarketingManagerAuditing.value()
-					};
-		return orderSvc.getOrdersByUser(loginUser, pagination, null, name, tel, infoerName, status);
+			{
+				Status.talkingDesignManagerAuditing.value(),
+				Status.talkingDesignerTracing.value(),
+				Status.deal.value(),
+				Status.dead.value(),
+				Status.disagree.value(),
+				Status.disagreeDesignManagerAuditing.value(),
+				Status.disagreeMarketingManagerAuditing.value()
+			};
+		}
+		if (filter == null || filter == 1)
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, status);
+		else
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

@@ -27,7 +27,7 @@ public interface IDesignerVisitApplyDao
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<DesignerVisitApply> getAllDesignerVisitApply(Pagination pagination,String designerName,Integer orderId,Integer... status);
+	DatagridVo<DesignerVisitApply> getTodayDesignerVisitApplys(Pagination pagination,String designerName,Integer orderId,Integer... status);
 	
 	/**
 	 * 更新回访申请
@@ -40,7 +40,7 @@ public interface IDesignerVisitApplyDao
 	 * @param orderId
 	 * @return
 	 */
-	List<DesignerVisitApply> getDesignerVisitApplyByOrderId(Integer orderId);
+	List<DesignerVisitApply> getTodayApplysByOrder(Integer orderId);
 	/**
 	 * @param id
 	 * @return

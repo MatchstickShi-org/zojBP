@@ -102,4 +102,16 @@ public interface IOrderDao {
 	 * @return
 	 */
 	Integer deleteByDesigners(Integer... designerIds);
+
+	/**
+	 * @param pagination
+	 * @param designer
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param statuses
+	 * @return
+	 */
+	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
+			Integer... statuses);
 }

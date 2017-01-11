@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
-		<div id="clientMgrTab"  data-options="tools:'#infoerMgrTab-tools'">
+		<div id="clientMgrTab" data-options="tools:'#infoerMgrTab-tools'">
 			<div title="详情">
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
 					<input type="hidden" name="id">

@@ -5,6 +5,7 @@ $(function()
 	var $designerNameTextbox = $('#clientTrace\\.designerNameInput');
 	var $orderNameTextbox = $('#clientTrace\\.nameInput');
 	var $telTextbox = $('#clientTrace\\.telInput');
+	var $orderFilterInput = $(':radio[name="clientTrace\\.orderFilterInput"]');
 	var $orderCheckDesignerNameTextbox = $('#order\\.designerNameInput');
 	var $orderCheckNameTextbox = $('#order\\.nameInput');
 	var $orderCheckTelTextbox = $('#order\\.telInput');
@@ -105,13 +106,13 @@ $(function()
 					}
 				},
 				{field:'insertTime', title:'录入日期', width: 5},
-				{field:'notVisitDays', title:'未回访天数', width: 3,
-					styler: function (value, row, index) {
-						if(value > 1){
-							$('#addOrderVisitBtn').linkbutton('disable');
+				{
+					field:'notVisitDays', title:'未回访天数', width: 3,
+					styler: function (value, row, index)
+					{
+						if(value > 1)
 							return 'background-color:red';
-						}
-		           }
+					}
 				}
 			]],
 			pagination: true,
@@ -119,8 +120,42 @@ $(function()
 			selectOnCheck: false,
 			checkOnSelect: false,
 			url: 'design/clientMgr/getAllClientNegotiation',
+			queryParams:
+			{
+				filter: $orderFilterInput.filter(':checked').val(),
+				status: function()
+				{
+					var status =[]; 
+					$('#orderDatagridToolbar :input[name="clientTrace\\.statusInput"]:checked').each(function()
+					{ 
+						status.push($(this).val());   
+					});
+					return status;
+				}()
+			},
 			onSelect: function(idx, row)
 			{
+				if(row.designerId != _session_loginUserId)
+				{
+					$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+					$applyVisitBtn.linkbutton('disable').linkbutton('hide');
+					$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
+				}
+				else
+				{
+					if(row.notVisitDays > 1)
+					{
+						$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+						$applyVisitBtn.linkbutton('enable').linkbutton('show');	
+					}
+					else
+					{
+						$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+						$applyVisitBtn.linkbutton('disable').linkbutton('hide');
+					}
+					$submitUpdateClientFormBtn.linkbutton('enable').linkbutton('show');
+				}
+				$clientMgrTab.tabs('showTool');
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
 		});
@@ -132,19 +167,28 @@ $(function()
 			else
 				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
 		});
+		
 		$queryOrderBtn.linkbutton
 		({
 			'onClick': function()
 			{
 				$orderDatagrid.datagrid('loading');
-				var chk_value =[]; 
-				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
-					chk_value.push($(this).val());   
-				}); 
+				var status =[]; 
+				$('#orderDatagridToolbar :input[name="clientTrace\\.statusInput"]:checked').each(function()
+				{ 
+					status.push($(this).val());   
+				});
 				$.ajax
 				({
 					url: 'design/clientMgr/getAllClientNegotiation',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),designerName: $designerNameTextbox.textbox('getValue'),status:chk_value},
+					data:
+					{
+						name: $orderNameTextbox.textbox('getValue'), 
+						tel: $telTextbox.textbox('getValue'),
+						designerName: $designerNameTextbox.textbox('getValue'),
+						filter: $orderFilterInput.filter(':checked').val(),
+						status: status
+					},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -156,6 +200,7 @@ $(function()
 				});
 			}
 		});
+		
 		$orderCheckMgrTab.tabs({});
 		if(_session_loginUserRole != 6)
 			$orderCheckMgrTab.tabs('hideHeader');
@@ -177,6 +222,7 @@ $(function()
 					clearTabData(title);
 			}
 		});
+		$clientMgrTab.tabs('hideTool');
 		
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
@@ -247,14 +293,21 @@ $(function()
 			'onClick': function()
 			{
 				$orderCheckDatagrid.datagrid('loading');
-				var chk_value =[]; 
-				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
-					chk_value.push($(this).val());   
+				var status =[];
+				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function()
+				{ 
+					status.push($(this).val());   
 				}); 
 				$.ajax
 				({
 					url: 'design/clientMgr/getAllClientCheck',
-					data: {name: $orderCheckNameTextbox.textbox('getValue'), tel: $orderCheckTelTextbox.textbox('getValue'),infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),status:chk_value},
+					data:
+					{
+						name: $orderCheckNameTextbox.textbox('getValue'),
+						tel: $orderCheckTelTextbox.textbox('getValue'),
+						infoerName: $orderCheckDesignerNameTextbox.textbox('getValue'),
+						status: status
+					},
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -306,7 +359,6 @@ $(function()
 		$orderStylistVisitGrid.datagrid
 		({
 			idField: 'id',
-			toolbar: '#orderVisitGridToolbar',
 			columns:
 				[[
 				  {field:'id', hidden: true},

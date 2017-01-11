@@ -13,8 +13,8 @@
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
 		<div id="orderCheckMgrTab">
-			<div title="在谈单查询" border=false>
-				<table id="orderDatagrid" border=false></table>
+			<div title="在谈单查询">
+				<table id="orderDatagrid" border="false"></table>
 				<div id="orderDatagridToolbar">
 					<label style="vertical-align: middle;">名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.nameInput"/>
@@ -22,17 +22,19 @@
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.telInput"/>
 					<label style="vertical-align: middle;">设计师名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="clientTrace.designerNameInput"/>
-					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" />全部客户</label>
-					<label><input type="radio" value="1" name="clientTrace.orderFilterInput" checked="checked"/>我的客户</label>
+					<c:if test="${sessionScope.loginUser.role <= 0 || sessionScope.loginUser.role >= 5}">
+						<label><input type="radio" value="0" name="clientTrace.orderFilterInput" />全部客户</label>
+						<label><input type="radio" value="1" name="clientTrace.orderFilterInput" checked="checked"/>我的客户</label>
+					</c:if>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="" name="statusInput" />全部</label>
-					<label><input type="checkbox" value="34" name="statusInput" checked="checked"/>在谈单已批准</label>
-					<label><input type="checkbox" value="90" name="statusInput"/>已签单</label>
-					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
-					<label><input type="checkbox" value="60" name="statusInput"/>不准单审核中</label>
-					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
+					<label><input type="checkbox" value="" name="clientTrace.statusInput" />全部</label>
+					<label><input type="checkbox" value="34" name="clientTrace.statusInput" checked="checked"/>在谈单已批准</label>
+					<label><input type="checkbox" value="90" name="clientTrace.statusInput"/>已签单</label>
+					<label><input type="checkbox" value="0" name="clientTrace.statusInput"/>死单</label>
+					<label><input type="checkbox" value="60" name="clientTrace.statusInput"/>不准单审核中</label>
+					<label><input type="checkbox" value="64" name="clientTrace.statusInput"/>不准单</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="dealOrderWindowBtn">已签单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
@@ -43,8 +45,8 @@
 				</div>
 			</div>
 			<c:if test="${sessionScope.loginUser.role == 6}">
-			<div title="审核" border=false>
-				<table id="orderCheckDatagrid" border=false></table>
+			<div title="审核">
+				<table id="orderCheckDatagrid" border="false"></table>
 				<div id="orderCheckDatagridToolbar">
 					<label style="vertical-align: middle;">名称：</label>
 					<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
@@ -55,8 +57,8 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>
-					<label><input type="checkbox" value="62" name="orderStatusInput"/>不准单申请</label>
+					<label><input type="checkbox" value="32" name="orderStatusInput" />在谈单申请</label>
+					<label><input type="checkbox" value="60" name="orderStatusInput"/>不准单申请</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="showCheckDeadOrderWindowBtn">死单</a>
@@ -66,8 +68,8 @@
 		</div>
 	</div>
 	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
-		<div id="clientMgrTab">
-			<div title="详情" border=false>
+		<div id="clientMgrTab" data-options="tools:'#clientMgrTab-tools'">
+			<div title="详情">
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
 					<table style="width: 100%; min-width: 700px;">
@@ -110,40 +112,22 @@
 					</table>
 				</form>
 			</div>
-			<div title="业务员回访记录" border=false>
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderVisitGrid"></table>
-						</td>
-					</tr>
-				</table>
+			<div title="业务员回访记录">
+	    		<table id="orderVisitGrid" border="false"></table>
 			</div>
-			<div title="设计师回访记录" border=false>
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderStylistVisitGrid"></table>
-				    		<div id="orderVisitGridToolbar">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增</a>
-								<c:if test="${sessionScope.loginUser.role == 6}">
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addVisitCommentBtn">批示</a>
-								</c:if>
-								<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyVisitBtn">申请回访</a>
-							</div>
-						</td>
-					</tr>
-				</table>
+			<div title="设计师回访记录">
+	    		<table id="orderStylistVisitGrid" border="false"></table>
 			</div>
-			<div title="审核流程" border=false>
-				<table style="height: 100%; width: 100%;">
-					<tr>
-						<td>
-				    		<table id="orderApproveGrid"></table>
-						</td>
-					</tr>
-				</table>
+			<div title="审核流程">
+	    		<table id="orderApproveGrid" border="false"></table>
 			</div>
+		</div>
+		<div id="clientMgrTab-tools" style="border-top: 0px;">
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addOrderVisitBtn">新增回访记录</a>
+			<c:if test="${sessionScope.loginUser.role == 6}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="addVisitCommentBtn">批示</a>
+			</c:if>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyVisitBtn">申请回访</a>
 		</div>
 	</div>
 </div>
@@ -161,6 +145,7 @@
 <div id="applyVisitWindow"></div>
 <script type="text/javascript">
 var _session_loginUserRole = ${sessionScope.loginUser.role};
+var _session_loginUserId = ${sessionScope.loginUser.id};
 </script>
 <script type="text/javascript" src="pages/design/clientNegotiation/index.js"></script>
 </body>

@@ -3,14 +3,13 @@
  */
 package com.zoj.bp.design.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -105,12 +104,14 @@ public class DesignClientCtrl
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(status))
+		{
 			status = new Integer[]
-					{
-					Status.talkingDesignManagerAuditing.value(),
-					Status.disagreeDesignManagerAuditing.value()
-					};
-		return orderSvc.getOrdersByUser(loginUser, pagination,null,name,tel,"",status);
+			{
+				Status.talkingDesignManagerAuditing.value(),
+				Status.disagreeDesignManagerAuditing.value()
+			};
+		}
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,status);
 	}
 	
 	/**
@@ -129,6 +130,7 @@ public class DesignClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String designerName,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -136,20 +138,25 @@ public class DesignClientCtrl
 		{
 			while(status[0] == null)
 				status = ArrayUtils.remove(status, 0);
-		}else
+		}
+		else
+		{
 			status = new Integer[]
-					{
-						Status.designerRejected.value(),
-						Status.talkingDesignManagerAuditing.value(),
-						Status.talkingDesignerTracing.value(),
-						Status.deal.value(),
-						Status.dead.value(),
-						Status.disagree.value(),
-						Status.disagreeDesignManagerAuditing.value(),
-						Status.disagreeMarketingManagerAuditing.value()
-					};
-		Integer designerId = (loginUser.isSuperAdmin() || loginUser.isDesignManager()) ? null:loginUser.getId();
-		return orderSvc.getOrdersByUser(loginUser,pagination,designerId,name,tel,"",status);
+			{
+				Status.designerRejected.value(),
+				Status.talkingDesignManagerAuditing.value(),
+				Status.talkingDesignerTracing.value(),
+				Status.deal.value(),
+				Status.dead.value(),
+				Status.disagree.value(),
+				Status.disagreeDesignManagerAuditing.value(),
+				Status.disagreeMarketingManagerAuditing.value()
+			};
+		}
+		if (filter == null || filter == 1)
+			return orderSvc.getOrdersByDesigner(loginUser, pagination, name, tel, StringUtils.EMPTY, status);
+		else
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -532,9 +539,6 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongDesign())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是主案部人员，无法进行回访申请操作。"));
-		List<DesignerVisitApply> deApplies = visitApplySvc.getDesignerVisitApplyByOrderId(designerVisitApply.getOrderId());
-		if(CollectionUtils.isNotEmpty(deApplies))
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("该客户已经申请过回访，无法再次进行回访申请操作。"));
 		designerVisitApply.setDesigner(loginUser.getId());
 		designerVisitApply.setStatus(0);//未审核
 		visitApplySvc.addDesignerVisitApply(designerVisitApply);
@@ -596,7 +600,7 @@ public class DesignClientCtrl
 		}
 		else
 			status = new Integer[]{0,1};
-		return visitApplySvc.getAllDesignerVisitApply(pagination, designerName, orderId,status);
+		return visitApplySvc.getTodayDesignerVisitApplys(pagination, designerName, orderId, status);
 	}
 	
 }

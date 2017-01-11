@@ -35,14 +35,13 @@ public interface IOrderService {
 	 * 
 	 * @param loginUser TODO
 	 * @param pagination 分页对象
-	 * @param designerId 设计师Id
 	 * @param name 客户名称
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,Integer designerId, String name, String tel, String infoerName,Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -101,4 +100,16 @@ public interface IOrderService {
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
 			String name, String tel, String infoerName, Integer... status);
+
+	/**
+	 * @param designer
+	 * @param pagination
+	 * @param name
+	 * @param tel
+	 * @param infoerName
+	 * @param status
+	 * @return
+	 */
+	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
+			Integer... status);
 }
