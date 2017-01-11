@@ -161,15 +161,15 @@ public class OrderService implements IOrderService
 		switch (Operate.valueOf(orderApprove.getOperate()))
 		{
 			case reject:		//驳回操作
-				switch (order.getStatus())
+				switch (Status.valueOf(order.getStatus()))
 				{
-					case 30://状态为：在谈单-商务部经理审核中：驳回-更新为正跟踪
+					case talkingMarketingManagerAuditing://状态为：在谈单-商务部经理审核中：驳回-更新为正跟踪
 						order.setStatus(Status.tracing.value());
 						orderApprove.setStatus(Status.tracing.value());
 						msgs.add(new MsgLog(order.getSalesmanId(), 
 								MessageFormat.format("你提交的在谈单[{0}]申请被商务部经理打回，请知悉。", order.getId())));
 						break;
-					case 32://状态为：在谈单-主案部经理审核中：驳回-打回到商务部经理
+					case talkingDesignManagerAuditing://状态为：在谈单-主案部经理审核中：驳回-打回到商务部经理
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
 						List<User> targetUsers = userDao.getUsersByRole(Role.marketingManager.value());
@@ -177,20 +177,20 @@ public class OrderService implements IOrderService
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), 
 									MessageFormat.format("你提交的在谈单[{0}]申请被主案部经理打回，请知悉。", order.getId()))));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中：判定为死单
+					case talkingDesignerTracing://状态为：在谈单-设计师跟踪中：判定为死单
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
 						msgs.add(new MsgLog(order.getSalesmanId(), 
 								MessageFormat.format("你的在谈单[{0}]被设计师[{1}]判定为死单，请知悉。",
 										order.getId(), order.getDesignerId())));
 						break;
-					case 60://状态为：不准单-主案部经理审核中：驳回->设计师跟踪中
+					case disagreeDesignManagerAuditing://状态为：不准单-主案部经理审核中：驳回->设计师跟踪中
 						order.setStatus(Status.talkingDesignerTracing.value());
 						orderApprove.setStatus(Status.talkingDesignerTracing.value());
 						msgs.add(new MsgLog(order.getDesignerId(), 
 								MessageFormat.format("你提交的不准单[{0}]申请被主案部经理驳回，请知悉。", order.getId())));
 						break;
-					case 62://状态为：不准单-商务部经理审核中：驳回->主案部经理审核中
+					case disagreeMarketingManagerAuditing://状态为：不准单-商务部经理审核中：驳回->主案部经理审核中
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
 						targetUsers = userDao.getUsersByRole(Role.designManager.value());
@@ -198,12 +198,14 @@ public class OrderService implements IOrderService
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
 									MessageFormat.format("你提交的不准单[{0}]申请被商务部经理驳回，请知悉。", order.getId()))));
 						break;
+				default:
+					break;
 				}
 				break;
 			case permit:		//批准操作
-				switch (order.getStatus())
+				switch (Status.valueOf(order.getStatus()))
 				{
-					case 30://状态为：在谈单-商务部经理审核中：提交主案部经理审核
+					case talkingMarketingManagerAuditing://状态为：在谈单-商务部经理审核中：提交主案部经理审核
 						order.setStatus(Status.talkingDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingDesignManagerAuditing.value());
 						List<User> targetUsers = userDao.getUsersByRole(Role.designManager.value());
@@ -213,7 +215,7 @@ public class OrderService implements IOrderService
 									MessageFormat.format("市场部经理批准了在谈单[{0}]的申请，请尽快审核。", order.getId()))));
 						}
 						break;
-					case 32://状态为：在谈单-主案部经理审核中：分配设计师跟踪
+					case talkingDesignManagerAuditing://状态为：在谈单-主案部经理审核中：分配设计师跟踪
 						/** 如果客户为在谈单，则更新该客户的信息员等级为银牌 */
 						infoer.setLevel(Level.silver.value());
 						updateInfoerFlag = true;
@@ -222,7 +224,7 @@ public class OrderService implements IOrderService
 						msgs.add(new MsgLog(order.getDesignerId(), 
 								MessageFormat.format("主案部经理批准了在谈单[{0}]的申请，并分配你为设计师，请尽快跟踪。", order.getId())));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中：更新为已签单
+					case talkingDesignerTracing://状态为：在谈单-设计师跟踪中：更新为已签单
 						/** 如果客户为已签单，则更新该客户的信息员等级为金牌 */
 						infoer.setLevel(Level.gold.value());
 						updateInfoerFlag = true;
@@ -238,7 +240,7 @@ public class OrderService implements IOrderService
 						if(CollectionUtils.isNotEmpty(targetUsers))
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), msg)));
 						break;
-					case 60://状态为：不准单-主案部经理审核中：提交商务部经理审核
+					case disagreeDesignManagerAuditing://状态为：不准单-主案部经理审核中：提交商务部经理审核
 						order.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeMarketingManagerAuditing.value());
 						targetUsers = userDao.getUsersByRole(Role.marketingManager.value());
@@ -246,7 +248,7 @@ public class OrderService implements IOrderService
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(), 
 									MessageFormat.format("主案部经理批准了在谈单[{0}]的不准单申请，请尽快审核。", order.getId()))));
 						break;
-					case 62://状态为：不准单-商务部经理审核中：通过-更新为不准单
+					case disagreeMarketingManagerAuditing://状态为：不准单-商务部经理审核中：通过-更新为不准单
 						order.setStatus(Status.disagree.value());
 						orderApprove.setStatus(Status.disagree.value());
 						msgs.add(new MsgLog(order.getSalesmanId(), 
@@ -254,13 +256,15 @@ public class OrderService implements IOrderService
 						msgs.add(new MsgLog(order.getDesignerId(), 
 								MessageFormat.format("你提交的不准单[{0}]申请已通过，请知悉。", order.getId())));
 						break;
+				default:
+					break;
 				}
 				break;
 			case apply:		//申请操作
-				switch (order.getStatus())
+				switch (Status.valueOf(order.getStatus()))
 				{
-					case 10://状态为：正跟踪
-					case 14://状态为：在谈单-设计师已打回
+					case tracing://状态为：正跟踪
+					case designerRejected://状态为：在谈单-设计师已打回
 						order.setStatus(Status.talkingMarketingManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingMarketingManagerAuditing.value());
 						List<User> targetUsers = userDao.getUsersByRole(Role.marketingManager.value());
@@ -274,7 +278,7 @@ public class OrderService implements IOrderService
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
 						break;*/
-					case 60://状态为：不准单-主案部经理审核中：判定为死单
+					case disagreeDesignManagerAuditing://状态为：不准单-主案部经理审核中：判定为死单
 						order.setStatus(Status.dead.value());
 						orderApprove.setStatus(Status.dead.value());
 						msgs.add(new MsgLog(order.getSalesmanId(),
@@ -282,7 +286,7 @@ public class OrderService implements IOrderService
 						msgs.add(new MsgLog(order.getDesignerId(),
 								MessageFormat.format("你提交的不准单申请[{0}]被主案部经理判定为死单，请知悉。", order.getId())));
 						break;
-					case 34://状态为：在谈单-设计师跟踪中：申请不准单
+					case talkingDesignerTracing://状态为：在谈单-设计师跟踪中：申请不准单
 						order.setStatus(Status.disagreeDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.disagreeDesignManagerAuditing.value());
 						targetUsers = userDao.getUsersByRole(Role.designManager.value());
@@ -293,6 +297,8 @@ public class OrderService implements IOrderService
 											orderApprove.getClaimerName(), order.getId()))));
 						}
 						break;
+				default:
+					break;
 				}
 				break;
 			case repulse:		//打回操作
