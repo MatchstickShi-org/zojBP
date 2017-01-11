@@ -107,8 +107,10 @@ $(function()
 				{field:'insertTime', title:'录入日期', width: 5},
 				{field:'notVisitDays', title:'未回访天数', width: 3,
 					styler: function (value, row, index) {
-						if(value > 1)
+						if(value > 1){
+							$('#addOrderVisitBtn').linkbutton('disable');
 							return 'background-color:red';
+						}
 		           }
 				}
 			]],
@@ -310,15 +312,7 @@ $(function()
 				  {field:'id', hidden: true},
 				  {field:'content', title:'回访内容', width: 5},
 				  {field:'date', title:'回访日期', width: 5},
-				  {field:'comment', title:'批示', width: 5},
-				  {field:'notVisitDays', title:'未回访天数', hidden: true,
-					  formatter: function(value,row,index){
-							if (index == 0 && value >1){
-								$('#addOrderVisitBtn').linkbutton('disable');
-								return value;
-							}
-						}
-				  }
+				  {field:'comment', title:'批示', width: 5}
 				  ]],
 			pagination: true,
 			singleSelect: true,

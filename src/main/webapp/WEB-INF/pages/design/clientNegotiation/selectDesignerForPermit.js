@@ -16,7 +16,7 @@ $(function()
 			$.messager.alert("提示", "请选择要分配的设计师！");
 			return;
 		}
-		$designerSearchbox.searchbox("setValue", selRs[0].name);
+		$designerSearchbox.searchbox("setValue", selRs[0].alias);
 		$designerIdInput.val(selRs[0].id); 
 		$selDesignerWindow.window("close"); 
 	}

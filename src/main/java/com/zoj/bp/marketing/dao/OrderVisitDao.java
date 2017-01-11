@@ -44,7 +44,10 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 	@Override
 	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,Integer visitorId,Integer orderId) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT OV.*,DATEDIFF(NOW(),OV.DATE) AS notVisitDays FROM ORDER_VISIT OV WHERE VISITOR_ID="+visitorId;
+		String sql = "SELECT OV.* "
+				+ "FROM ORDER_VISIT OV "
+				+ "WHERE OV.VISITOR_ID= :visitorId ";
+		paramMap.put("visitorId", visitorId);
 		if(orderId != null && orderId > 0)
 		{
 			sql += " AND ORDER_ID = :orderId";

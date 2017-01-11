@@ -28,6 +28,8 @@ public class OrderVisit implements Serializable
 	
 	private Integer notVisitDays;//未回访天数
 	
+	private Integer applyStatus;//回访申请状态
+	
 	public Integer getId()
 	{
 		return id;
@@ -84,5 +86,13 @@ public class OrderVisit implements Serializable
 
 	public void setNotVisitDays(Integer notVisitDays) {
 		this.notVisitDays = notVisitDays;
+	}
+
+	public Integer getApplyStatus() {
+		return applyStatus;
+	}
+
+	public void setApplyStatus(Integer applyStatus) {
+		this.applyStatus = applyStatus;
 	}
 }
