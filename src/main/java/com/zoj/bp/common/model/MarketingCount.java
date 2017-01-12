@@ -13,7 +13,7 @@ public class MarketingCount implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8872584269064727058L;
+	private static final long serialVersionUID = -6404533723061984832L;
 
 	/**id INT(20) not null AUTO_INCREMENT*/
 	private Integer id;
@@ -22,11 +22,27 @@ public class MarketingCount implements Serializable
 	
 	private Date countDate;
 	
-	private Integer talkingVistiAmount;
+	private Integer infoerVisitAmount;   //当日信息员回访数
 	
-	private Integer talkingAmount;
+	private Integer talkingVistiAmount;  //当日在谈单回访数
 	
-	private Integer dealTotal;
+	private Integer infoerAddAmount;  	//当日信息员录入数
+	
+	private Integer infoerTracingTotal;	//正跟踪信息员总数
+		
+	private Integer clientAddAmount;	//当日客户录入数
+	
+	private Integer contactingClinetTotal;//联系中的客户总数
+	
+	private Integer talkingAmount;		//当前在谈单数量
+	
+	private Integer dealTotal;			//已签单数
+	
+	private Integer monthTalkingAmount;	//本月提单数量（已申请在谈单）
+	
+	private Integer salesmanId;			//业务员Id
+	
+	private Integer salesmanName;			//业务员姓名
 	
 	public Integer getId()
 	{
@@ -54,12 +70,68 @@ public class MarketingCount implements Serializable
 		this.countDate = countDate;
 	}
 
+	public Integer getInfoerVisitAmount() {
+		return infoerVisitAmount;
+	}
+
+	public void setInfoerVisitAmount(Integer infoerVisitAmount) {
+		this.infoerVisitAmount = infoerVisitAmount;
+	}
+
+	public Integer getInfoerAddAmount() {
+		return infoerAddAmount;
+	}
+
+	public void setInfoerAddAmount(Integer infoerAddAmount) {
+		this.infoerAddAmount = infoerAddAmount;
+	}
+
+	public Integer getInfoerTracingTotal() {
+		return infoerTracingTotal;
+	}
+
+	public void setInfoerTracingTotal(Integer infoerTracingTotal) {
+		this.infoerTracingTotal = infoerTracingTotal;
+	}
+
+	public Integer getContactingClinetTotal() {
+		return contactingClinetTotal;
+	}
+
+	public void setContactingClinetTotal(Integer contactingClinetTotal) {
+		this.contactingClinetTotal = contactingClinetTotal;
+	}
+
+	public Integer getMonthTalkingAmount() {
+		return monthTalkingAmount;
+	}
+
+	public void setMonthTalkingAmount(Integer monthTalkingAmount) {
+		this.monthTalkingAmount = monthTalkingAmount;
+	}
+
+	public Integer getSalesmanId() {
+		return salesmanId;
+	}
+
+	public void setSalesmanId(Integer salesmanId) {
+		this.salesmanId = salesmanId;
+	}
+
 	public Integer getTalkingVistiAmount() {
 		return talkingVistiAmount;
 	}
 
 	public void setTalkingVistiAmount(Integer talkingVistiAmount) {
 		this.talkingVistiAmount = talkingVistiAmount;
+	}
+
+	public Integer getClientAddAmount() {
+		return clientAddAmount;
+	}
+
+	public void setClientAddAmount(Integer clientAddAmount) {
+		this.clientAddAmount = clientAddAmount;
 	}
 
 	public Integer getTalkingAmount() {
@@ -76,5 +148,13 @@ public class MarketingCount implements Serializable
 
 	public void setDealTotal(Integer dealTotal) {
 		this.dealTotal = dealTotal;
+	}
+
+	public Integer getSalesmanName() {
+		return salesmanName;
+	}
+
+	public void setSalesmanName(Integer salesmanName) {
+		this.salesmanName = salesmanName;
 	}
 }
