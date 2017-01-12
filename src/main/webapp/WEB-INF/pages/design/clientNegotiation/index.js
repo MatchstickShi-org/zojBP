@@ -143,15 +143,23 @@ $(function()
 				}
 				else
 				{
-					if(row.notVisitDays > 1)
-					{
-						$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
-						$applyVisitBtn.linkbutton('enable').linkbutton('show');	
-					}
-					else
+					if(_session_loginUserRole == 6)		//主案部经理
 					{
 						$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
 						$applyVisitBtn.linkbutton('disable').linkbutton('hide');
+					}
+					else
+					{
+						if(row.notVisitDays > 1 && (row.visitApplyStatus == null || row.visitApplyStatus == 0))
+						{
+							$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+							$applyVisitBtn.linkbutton('enable').linkbutton('show');	
+						}
+						else
+						{
+							$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+							$applyVisitBtn.linkbutton('disable').linkbutton('hide');
+						}
 					}
 					$submitUpdateClientFormBtn.linkbutton('enable').linkbutton('show');
 				}
@@ -192,7 +200,10 @@ $(function()
 					success: function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
-							$orderDatagrid.datagrid('loadData', data);
+						{
+							$orderDatagrid.datagrid('clearSelections').datagrid('clearChecked').datagrid('loadData', data);
+							clearTabData($clientMgrTab.tabs('getSelected').panel('options').title);
+						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
 						$orderDatagrid.datagrid('loaded');

@@ -63,6 +63,9 @@ public class Order implements Serializable
 
 	/** 未回访天数 */
 	private Integer notVisitDays;
+	
+	/** 设计师回访申请状态 */
+	private Integer visitApplyStatus;
 
 	public boolean canLookTel(User user)
 	{
@@ -351,5 +354,15 @@ public class Order implements Serializable
 	public void setDesignerStatus(Integer designerStatus)
 	{
 		this.designerStatus = designerStatus;
+	}
+
+	public Integer getVisitApplyStatus()
+	{
+		return visitApplyStatus;
+	}
+
+	public void setVisitApplyStatus(Integer visitApplyStatus)
+	{
+		this.visitApplyStatus = visitApplyStatus;
 	}
 }

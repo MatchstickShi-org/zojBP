@@ -96,15 +96,17 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" ELSE "+ 
 				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
 				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
-				" END AS notVisitDays, "+ 
-				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
-				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" END notVisitDays, "
+				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
+				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
+				" C.TEL4 TEL4, C.TEL5 TEL5, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
 				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
+				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "
+				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) ";
 		if(user.isBelongMarketing())
 		{
 			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
@@ -150,7 +152,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
-		sql +=" GROUP BY O.ID";
+		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
@@ -223,16 +225,18 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" ELSE "+ 
 				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
 				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
-				" END AS notVisitDays, "+ 
-				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
-				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" END notVisitDays, "
+				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
+				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
+				" C.TEL4 TEL4, C.TEL5 TEL5, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
 				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
-				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "+
+				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "
+				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) "+
 				" WHERE U2.ID = :userId ";
 		paramMap.put("userId", designer.getId());
 		if(StringUtils.isNotEmpty(name))
@@ -256,7 +260,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
-		sql +=" GROUP BY O.ID";
+		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
 		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
