@@ -22,35 +22,33 @@ public class MarketingCount implements Serializable
 	
 	private Date countDate;
 	
-	private Integer infoerVisitAmount;   //当日信息员回访数
+	private Integer todayInfoerVisitCount;  //当日信息员回访数
 	
-	private Integer talkingVistiAmount;  //当日在谈单回访数
+	private Integer todayOrderVisitCount;  	//当日在谈单回访数
 	
-	private Integer infoerAddAmount;  	//当日信息员录入数
+	private Integer todayInfoerAddCount;  	//当日信息员录入数
 	
-	private Integer infoerTracingTotal;	//正跟踪信息员总数
+	private Integer tracingInfoerCount;		//正跟踪信息员总数
 		
-	private Integer clientAddAmount;	//当日客户录入数
+	private Integer todayClientAddCount;	//当日客户录入数
 	
-	private Integer contactingClinetTotal;//联系中的客户总数
+	private Integer contactingClientCount;	//联系中的客户总数
 	
-	private Integer talkingAmount;		//当前在谈单数量
+	private Integer talkingOrderCount;		//当前在谈单数量
 	
-	private Integer dealTotal;			//已签单数
+	private Integer dealOrderCount;			//已签单数
 	
-	private Integer monthTalkingAmount;	//本月提单数量（已申请在谈单）
+	private Integer monthTalkingOrderCount;	//本月提单数量（已申请在谈单）
 	
-	private Integer salesmanId;			//业务员Id
+	private Integer salesmanId;				//业务员Id
 	
-	private Integer salesmanName;			//业务员姓名
-	
-	public Integer getId()
-	{
+	private String salesmanName;			//业务员姓名
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id)
-	{
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -70,44 +68,36 @@ public class MarketingCount implements Serializable
 		this.countDate = countDate;
 	}
 
-	public Integer getInfoerVisitAmount() {
-		return infoerVisitAmount;
+	public Integer getTodayInfoerVisitCount() {
+		return todayInfoerVisitCount;
 	}
 
-	public void setInfoerVisitAmount(Integer infoerVisitAmount) {
-		this.infoerVisitAmount = infoerVisitAmount;
+	public void setTodayInfoerVisitCount(Integer todayInfoerVisitCount) {
+		this.todayInfoerVisitCount = todayInfoerVisitCount;
 	}
 
-	public Integer getInfoerAddAmount() {
-		return infoerAddAmount;
+	public Integer getTodayOrderVisitCount() {
+		return todayOrderVisitCount;
 	}
 
-	public void setInfoerAddAmount(Integer infoerAddAmount) {
-		this.infoerAddAmount = infoerAddAmount;
+	public void setTodayOrderVisitCount(Integer todayOrderVisitCount) {
+		this.todayOrderVisitCount = todayOrderVisitCount;
 	}
 
-	public Integer getInfoerTracingTotal() {
-		return infoerTracingTotal;
+	public Integer getTodayInfoerAddCount() {
+		return todayInfoerAddCount;
 	}
 
-	public void setInfoerTracingTotal(Integer infoerTracingTotal) {
-		this.infoerTracingTotal = infoerTracingTotal;
+	public void setTodayInfoerAddCount(Integer todayInfoerAddCount) {
+		this.todayInfoerAddCount = todayInfoerAddCount;
 	}
 
-	public Integer getContactingClinetTotal() {
-		return contactingClinetTotal;
+	public Integer getTodayClientAddCount() {
+		return todayClientAddCount;
 	}
 
-	public void setContactingClinetTotal(Integer contactingClinetTotal) {
-		this.contactingClinetTotal = contactingClinetTotal;
-	}
-
-	public Integer getMonthTalkingAmount() {
-		return monthTalkingAmount;
-	}
-
-	public void setMonthTalkingAmount(Integer monthTalkingAmount) {
-		this.monthTalkingAmount = monthTalkingAmount;
+	public void setTodayClientAddCount(Integer todayClientAddCount) {
+		this.todayClientAddCount = todayClientAddCount;
 	}
 
 	public Integer getSalesmanId() {
@@ -118,43 +108,51 @@ public class MarketingCount implements Serializable
 		this.salesmanId = salesmanId;
 	}
 
-	public Integer getTalkingVistiAmount() {
-		return talkingVistiAmount;
-	}
-
-	public void setTalkingVistiAmount(Integer talkingVistiAmount) {
-		this.talkingVistiAmount = talkingVistiAmount;
-	}
-
-	public Integer getClientAddAmount() {
-		return clientAddAmount;
-	}
-
-	public void setClientAddAmount(Integer clientAddAmount) {
-		this.clientAddAmount = clientAddAmount;
-	}
-
-	public Integer getTalkingAmount() {
-		return talkingAmount;
-	}
-
-	public void setTalkingAmount(Integer talkingAmount) {
-		this.talkingAmount = talkingAmount;
-	}
-
-	public Integer getDealTotal() {
-		return dealTotal;
-	}
-
-	public void setDealTotal(Integer dealTotal) {
-		this.dealTotal = dealTotal;
-	}
-
-	public Integer getSalesmanName() {
+	public String getSalesmanName() {
 		return salesmanName;
 	}
 
-	public void setSalesmanName(Integer salesmanName) {
+	public void setSalesmanName(String salesmanName) {
 		this.salesmanName = salesmanName;
+	}
+
+	public Integer getTracingInfoerCount() {
+		return tracingInfoerCount;
+	}
+
+	public void setTracingInfoerCount(Integer tracingInfoerCount) {
+		this.tracingInfoerCount = tracingInfoerCount;
+	}
+
+	public Integer getContactingClientCount() {
+		return contactingClientCount;
+	}
+
+	public void setContactingClientCount(Integer contactingClientCount) {
+		this.contactingClientCount = contactingClientCount;
+	}
+
+	public Integer getTalkingOrderCount() {
+		return talkingOrderCount;
+	}
+
+	public void setTalkingOrderCount(Integer talkingOrderCount) {
+		this.talkingOrderCount = talkingOrderCount;
+	}
+
+	public Integer getDealOrderCount() {
+		return dealOrderCount;
+	}
+
+	public void setDealOrderCount(Integer dealOrderCount) {
+		this.dealOrderCount = dealOrderCount;
+	}
+
+	public Integer getMonthTalkingOrderCount() {
+		return monthTalkingOrderCount;
+	}
+
+	public void setMonthTalkingOrderCount(Integer monthTalkingOrderCount) {
+		this.monthTalkingOrderCount = monthTalkingOrderCount;
 	}
 }

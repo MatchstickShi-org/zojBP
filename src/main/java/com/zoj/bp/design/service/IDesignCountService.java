@@ -3,9 +3,9 @@
  */
 package com.zoj.bp.design.service;
 
-import java.util.List;
-
 import com.zoj.bp.common.model.DesignCount;
+import com.zoj.bp.common.vo.DatagridVo;
+import com.zoj.bp.common.vo.Pagination;
 
 /**
  * @author wangw
@@ -14,8 +14,10 @@ import com.zoj.bp.common.model.DesignCount;
 public interface IDesignCountService
 {
 	/**
-	 * 获取当天的设计部统计记录
+	 * 获取当前日期的设计部统计记录
+	 * @param pagination
+	 * @param designerName 设计师名称
 	 * @return
 	 */
-	List<DesignCount> getTodayDesignerCount();
+	DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName);
 }

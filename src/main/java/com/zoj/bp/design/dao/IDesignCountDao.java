@@ -3,9 +3,9 @@
  */
 package com.zoj.bp.design.dao;
 
-import java.util.List;
-
 import com.zoj.bp.common.model.DesignCount;
+import com.zoj.bp.common.vo.DatagridVo;
+import com.zoj.bp.common.vo.Pagination;
 
 /**
  * @author wangw
@@ -15,8 +15,9 @@ public interface IDesignCountDao
 {
 	/**
 	 * 获取当前日期的设计部统计记录
-	 * @param orderId
+	 * @param pagination
+	 * @param designerName 设计师名称
 	 * @return
 	 */
-	List<DesignCount> getTodayDesignerCount();
+	DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName);
 }

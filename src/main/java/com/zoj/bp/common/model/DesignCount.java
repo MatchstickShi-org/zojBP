@@ -22,17 +22,17 @@ public class DesignCount implements Serializable
 	
 	private Date countDate;
 	
-	private Integer talkingVistiAmount;  //当日在谈单回访数
+	private Integer todayOrderVisitCount;  //当日在谈单回访数
 	
-	private Integer talkingAmount;		//当前在谈单数量
+	private Integer talkingOrderCount;	//当前在谈单数量
 	
-	private Integer dealTotal;			//已签单数
+	private Integer dealOrderCount;		//已签单数
 	
-	private Integer deadTotal;			//死单总数
+	private Integer deadOrderCount;		//死单总数
 	
 	private Integer designerId;			//设计师Id
 	
-	private Integer designerName;		//设计师姓名
+	private String designerName;		//设计师姓名
 	
 	public Integer getId()
 	{
@@ -60,36 +60,36 @@ public class DesignCount implements Serializable
 		this.countDate = countDate;
 	}
 
-	public Integer getTalkingVistiAmount() {
-		return talkingVistiAmount;
+	public Integer getTodayOrderVisitCount() {
+		return todayOrderVisitCount;
 	}
 
-	public void setTalkingVistiAmount(Integer talkingVistiAmount) {
-		this.talkingVistiAmount = talkingVistiAmount;
+	public void setTodayOrderVisitCount(Integer todayOrderVisitCount) {
+		this.todayOrderVisitCount = todayOrderVisitCount;
 	}
 
-	public Integer getTalkingAmount() {
-		return talkingAmount;
+	public Integer getTalkingOrderCount() {
+		return talkingOrderCount;
 	}
 
-	public void setTalkingAmount(Integer talkingAmount) {
-		this.talkingAmount = talkingAmount;
+	public void setTalkingOrderCount(Integer talkingOrderCount) {
+		this.talkingOrderCount = talkingOrderCount;
 	}
 
-	public Integer getDealTotal() {
-		return dealTotal;
+	public Integer getDealOrderCount() {
+		return dealOrderCount;
 	}
 
-	public void setDealTotal(Integer dealTotal) {
-		this.dealTotal = dealTotal;
+	public void setDealOrderCount(Integer dealOrderCount) {
+		this.dealOrderCount = dealOrderCount;
 	}
 
-	public Integer getDeadTotal() {
-		return deadTotal;
+	public Integer getDeadOrderCount() {
+		return deadOrderCount;
 	}
 
-	public void setDeadTotal(Integer deadTotal) {
-		this.deadTotal = deadTotal;
+	public void setDeadOrderCount(Integer deadOrderCount) {
+		this.deadOrderCount = deadOrderCount;
 	}
 
 	public Integer getDesignerId() {
@@ -100,11 +100,11 @@ public class DesignCount implements Serializable
 		this.designerId = designerId;
 	}
 
-	public Integer getDesignerName() {
+	public String getDesignerName() {
 		return designerName;
 	}
 
-	public void setDesignerName(Integer designerName) {
+	public void setDesignerName(String designerName) {
 		this.designerName = designerName;
 	}
 }

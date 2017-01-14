@@ -3,20 +3,18 @@
  */
 package com.zoj.bp.design.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zoj.bp.common.excption.BusinessException;
-import com.zoj.bp.common.excption.ReturnCode;
-import com.zoj.bp.common.model.User;
-import com.zoj.bp.common.util.ResponseUtils;
+import com.zoj.bp.common.model.DesignCount;
+import com.zoj.bp.common.vo.DatagridVo;
+import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.design.service.IDesignCountService;
 
 /**
@@ -30,8 +28,8 @@ public class DesignCountCtrl
 	@Autowired
 	private IDesignCountService designCountService;
 	
-	@RequestMapping(value = "/toDesignCout")
-	public String toDesignCout() throws BusinessException
+	@RequestMapping(value = "/toDesignCoutView")
+	public String toDesignCoutView() throws BusinessException
 	{
 		return "/design/count/index";
 	}
@@ -42,13 +40,8 @@ public class DesignCountCtrl
 	 */
 	@RequestMapping(value = "/getTodayDesignCout")
 	@ResponseBody
-	public Map<String, ?> getTodayDesignCout(HttpSession session)
+	public DatagridVo<DesignCount> getTodayDesignCout(HttpSession session,Pagination pagination,@RequestParam(required=false) String designerName)
 	{
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isBelongDesign() || !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是主案部人员，无法操作。"));
-		Map<String, Object> returnMap = new HashMap<>();
-		returnMap.put("list", designCountService.getTodayDesignerCount());
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS,returnMap);
+		return designCountService.getTodayDesignerCount(pagination,designerName);
 	}
 }
