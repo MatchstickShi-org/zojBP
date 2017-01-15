@@ -16,7 +16,7 @@ $(function()
 		[[
 			{field:'orderId', title:'单号'},
 			{field:'clientName', title:'客户', width: 5},
-			{field:'projectAddr', title:'装修地址', width: 5},
+			{field:'projectAddr', title:'面积', width: 5},
 			{field:'infoer', title:'信息员', width: 5},
 			{field:'designer', title:'设计师', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
 			{field:'salesman', title:'业务员', width: 5},

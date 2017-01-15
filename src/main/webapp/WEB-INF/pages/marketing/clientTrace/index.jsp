@@ -65,7 +65,7 @@
 							<td colspan="3"><input name="projectName" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td align="right"><label>工程地址：</label></td>
+							<td align="right"><label>面积：</label></td>
 							<td colspan="3"><input name="projectAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
@@ -77,9 +77,11 @@
 					</table>
 				</form>
 			</div>
-			<div title="回访记录">
-	    		<table id="orderVisitGrid" border="false"></table>
-			</div>
+			<c:if test="${sessionScope.loginUser.role != 4}">
+				<div title="回访记录" selected="true">
+		    		<table id="orderVisitGrid" border="false"></table>
+				</div>
+			</c:if>
 			<div title="审核流程">
 	    		<table id="orderApproveGrid" border="false"></table>
 			</div>

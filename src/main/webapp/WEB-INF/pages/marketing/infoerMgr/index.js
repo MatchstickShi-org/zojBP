@@ -62,14 +62,16 @@ $(function()
 						return value == 1 ? '中介' : '售楼';
 					}
 				},
-				{field:'org', title:'工作单位', width: 8},
-				{field:'address', title:'地址', width: 8},
-				{field:'salesmanName', title:'业务员', width: 3},
-				{field:'leftVisitDays', title:'未回访天数', width: 5,
+				{field: 'org', title:'工作单位', width: 8},
+				{field: 'address', title:'单位地址', width: 8},
+				{field: 'salesmanName', title:'业务员', width: 4},
+				{field: 'insertTime', title:'创建时间', width: 6},
+				{field: 'lastVisitDate', title:'最后回访时间', width: 6},
+				{field: 'leftVisitDays', title:'未回访天数', width: 3, sortable: true,
 					styler: function (value, row, index) {
 						if(value > 5)
 							return 'background-color:red';
-		           }}
+				}}
 			]],
 			pagination: true,
 			singleSelect: true,
@@ -114,43 +116,16 @@ $(function()
 				{ 
 					chkLevels.push($(this).val()); 
 				});
-				$.ajax
-				({
-					url: 'marketing/infoerMgr/getAllInfoers',
-					data:
-					{
-						name: $infoerNameTextbox.textbox('getValue'), 
-						tel: $telTextbox.textbox('getValue'), 
-						level: chkLevels,
-						filter: $infoerFilterInput.filter(':checked').val()
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$infoerDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$infoerDatagrid.datagrid('loaded');
-					}
+				
+				$infoerDatagrid.datagrid('load', 
+				{
+					name: $infoerNameTextbox.textbox('getValue'), 
+					tel: $telTextbox.textbox('getValue'), 
+					level: chkLevels,
+					filter: $infoerFilterInput.filter(':checked').val()
 				});
 			}
 		});
-		
-		$infoerMgrTab.tabs
-		({
-			border: false,
-			onSelect: function(title, index)
-			{
-				var selRows = $infoerDatagrid.datagrid('getSelections');
-				
-				if(selRows.length == 1)
-					loadTabData(title, selRows[0]);
-				else
-					clearTabData(title);
-			}
-		});
-		
-		$infoerMgrTab.tabs('hideTool');
 		
 		$submitUpdateInfoerFormBtn.linkbutton({'onClick': submitEditInfoerForm});
 		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
@@ -185,7 +160,7 @@ $(function()
 				  {field:'id', hidden: true},
 				  {field:'name', title:'客户', width: 3},
 				  {field:'projectName', title:'工程名称', width: 6},
-				  {field:'projectAddr', title:'工程地址', width: 6},
+				  {field:'projectAddr', title:'面积', width: 6},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
 				  {field:'designerName', title:'设计师', width: 3},
@@ -271,7 +246,7 @@ $(function()
 				  {field:'telAll', title:'联系电话', width: 6},
 				  {field:'orgAddr', title:'单位地址', width: 8},
 				  {field:'projectName', title:'工程名称', width: 5},
-				  {field:'projectAddr', title:'工程地址', width: 8},
+				  {field:'projectAddr', title:'面积', width: 8},
 				  {field:'infoerName', title:'信息员', width: 3},
 				  {field:'salesmanName', title:'业务员', width: 3},
 				  {field:'insertTime', title:'录入日期', width: 5}
@@ -365,6 +340,23 @@ $(function()
 		$('#showBusinessTransferWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
 		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
 		$('#addClientBtn').linkbutton({onClick: showAddClientWindow});
+
+		
+		$infoerMgrTab.tabs
+		({
+			border: false,
+			onSelect: function(title, index)
+			{
+				var selRows = $infoerDatagrid.datagrid('getSelections');
+				
+				if(selRows.length == 1)
+					loadTabData(title, selRows[0]);
+				else
+					clearTabData(title);
+			}
+		});
+		
+		$infoerMgrTab.tabs('hideTool');
 		
 		$addInfoerWindow.window({width: 500});
 		$businessTransferWindow.window({width: 500});
@@ -662,7 +654,7 @@ $(function()
 			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>工程地址：</label></td>' + 
+			'			<td align="right"><label>面积：</label></td>' + 
 			'			<td colspan="3"><input name="projectAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 

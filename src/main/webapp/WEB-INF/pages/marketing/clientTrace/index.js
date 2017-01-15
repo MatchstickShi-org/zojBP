@@ -41,7 +41,7 @@ $(function()
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'工程地址', width: 8},
+				{field:'projectAddr', title:'面积', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'salesmanStatus', hidden: true},
@@ -70,8 +70,10 @@ $(function()
 					}
 				},
 				{field:'insertTime', title:'录入日期', width: 5},
-				{field:'notVisitDays', title:'未回访天数', width: 3,
-					styler: function (value, row, index) {
+				{
+					field:'notVisitDays', title:'未回访天数', width: 3, sortable: true,
+					styler: function (value, row, index)
+					{
 						if(value > 5)
 							return 'background-color:red';
 		           }
@@ -117,48 +119,20 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$orderDatagrid.datagrid('loading');
-				var chk_value =[]; 
+				var status =[];
 				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
-					chk_value.push($(this).val());  
-				}); 
-				$.ajax
-				({
-					url: 'marketing/clientMgr/getAllClientTrace',
-					data:
-					{
-						name: $orderNameTextbox.textbox('getValue'),
-						tel: $telTextbox.textbox('getValue'),
-						infoerName: $infoerNameTextbox.textbox('getValue'),
-						filter: $(':radio[name="clientTrace\.infoerFilterInput"]:checked').val(),
-						status:chk_value
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$orderDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$orderDatagrid.datagrid('loaded');
-					}
+					status.push($(this).val());
+				});
+				$orderDatagrid.datagrid('load', 
+				{
+					name: $orderNameTextbox.textbox('getValue'),
+					tel: $telTextbox.textbox('getValue'),
+					infoerName: $infoerNameTextbox.textbox('getValue'),
+					filter: $(':radio[name="clientTrace\.infoerFilterInput"]:checked').val(),
+					status: status
 				});
 			}
 		});
-		
-		$clientMgrTab.tabs
-		({
-			border: false,
-			onSelect: function(title, index)
-			{
-				var selRows = $orderDatagrid.datagrid('getSelections');
-				
-				if(selRows.length == 1)
-					loadTabData(title, selRows[0]);
-				else
-					clearTabData(title);
-			}
-		});
-		$clientMgrTab.tabs('hideTool');
 		
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
@@ -333,6 +307,21 @@ $(function()
 		$('#addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
 		$('#applyOrderBtn').linkbutton({onClick: showApplyOrderWindow});
 		$('#showBusinessTransferWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
+		
+		$clientMgrTab.tabs
+		({
+			border: false,
+			onSelect: function(title, index)
+			{
+				var selRows = $orderDatagrid.datagrid('getSelections');
+				
+				if(selRows.length == 1)
+					loadTabData(title, selRows[0]);
+				else
+					clearTabData(title);
+			}
+		});
+		$clientMgrTab.tabs('hideTool');
 		
 		function showBusinessTransferWindow()
 		{
@@ -603,7 +592,7 @@ $(function()
 			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>工程地址：</label></td>' + 
+			'			<td align="right"><label>面积：</label></td>' + 
 			'			<td colspan="3"><input name="projectAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 

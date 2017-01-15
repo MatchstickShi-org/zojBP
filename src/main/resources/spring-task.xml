@@ -15,5 +15,4 @@
 	  <task:scheduled-tasks> 
          <task:scheduled ref="businessCountJob" method="doCount" cron="0 1 0 * * ?"/> 
       </task:scheduled-tasks>
-      
 </beans>

@@ -92,10 +92,14 @@ public class OrderDao extends BaseDao implements IOrderDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
-				" CASE O.ID WHEN NULL THEN NULL "+ 
-				" ELSE "+ 
-				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
+				" CASE O.ID WHEN NULL THEN NULL "
+				+ " ELSE " 
+				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 "
+				+ " 	ELSE "+ 
+				" 			CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"			ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "
+				+ " 		END "
+				+ " 	END "+ 
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
 				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
@@ -153,9 +157,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
-		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql +=" , O.INSERT_TIME DESC ";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -168,11 +173,15 @@ public class OrderDao extends BaseDao implements IOrderDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
-				" CASE O.ID WHEN NULL THEN NULL "+ 
-				" ELSE "+ 
-				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
-				" END AS notVisitDays, "+ 
+				" CASE O.ID WHEN NULL THEN NULL "
+				+ " ELSE "
+				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 " +
+				" 		ELSE "+ 
+				" 			CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
+				"			ELSE DATEDIFF(NOW(),MAX(OV.DATE))"
+				+ " 		END "
+				+ " 	END "
+				+ " END AS notVisitDays, "+ 
 				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
 				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
 				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
@@ -206,9 +215,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" GROUP BY O.ID";
-		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql +=" , O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -222,9 +232,13 @@ public class OrderDao extends BaseDao implements IOrderDao
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
 				" CASE O.ID WHEN NULL THEN NULL "+ 
-				" ELSE "+ 
-				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"		ELSE DATEDIFF(NOW(),MAX(OV.DATE)) END "+ 
+				" ELSE " 
+				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 "
+				+ " 	ELSE "
+				+ " 		CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) " 
+				+ "			ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "
+				+ " 		END "
+				+ " 	END "+ 
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
 				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
@@ -261,9 +275,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
-		sql +=" ORDER BY O.INSERT_TIME DESC";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql +=" , O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());

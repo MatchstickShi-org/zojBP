@@ -61,7 +61,7 @@
 							<td colspan="3"><input name="org" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td align="right"><label>地址：</label></td>
+							<td align="right"><label>单位地址：</label></td>
 							<td colspan="3"><input name="address" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
@@ -77,7 +77,7 @@
 					</table>
 				</form>
 			</div>
-			<div title="回访记录">
+			<div title="回访记录" selected="true">
 	    		<table id="infoerVisitGrid" border="false"></table>
 			</div>
 			<div title="在谈单">

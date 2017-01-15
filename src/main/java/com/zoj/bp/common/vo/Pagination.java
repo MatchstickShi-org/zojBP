@@ -5,6 +5,7 @@ package com.zoj.bp.common.vo;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -18,6 +19,10 @@ public class Pagination implements Serializable
 	private Integer page = 1;
 	
 	private Integer rows = 10;
+	
+	private String orderBy;
+	
+	private String ascOrDesc = "ASC";
 	
 	public Pagination()
 	{
@@ -63,5 +68,36 @@ public class Pagination implements Serializable
 	public Integer getStartRow()
 	{
 		return startRow;
+	}
+
+	public String getOrderBy()
+	{
+		return orderBy;
+	}
+
+	public void setSort(String orderBy)
+	{
+		this.orderBy = orderBy;
+	}
+
+	public String getAscOrDesc()
+	{
+		return ascOrDesc;
+	}
+
+	public void setOrder(String ascOrDesc)
+	{
+		this.ascOrDesc = ascOrDesc;
+	}
+
+	/**
+	 * @param defaultOrderByIfNull
+	 * @return
+	 */
+	public String buildOrderBySqlPart(String defaultOrderByIfNull)
+	{
+		if(StringUtils.isEmpty(this.orderBy))
+			return StringUtils.defaultString(defaultOrderByIfNull);
+		return " ORDER BY " + this.getOrderBy() + " " + this.getAscOrDesc() + " ";
 	}
 }

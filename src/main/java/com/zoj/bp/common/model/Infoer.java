@@ -61,6 +61,11 @@ public class Infoer implements Serializable
 	
 	private Integer leftVisitDays;  //未回访天数
 	
+	/** 最后回访时间 */
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
+	private Date lastVisitDate;
+	
 	@SuppressWarnings("unused")
 	private String telAll;
 	
@@ -265,6 +270,16 @@ public class Infoer implements Serializable
 
 	public void setTelAll(String telAll) {
 		this.telAll = telAll;
+	}
+
+	public Date getLastVisitDate()
+	{
+		return lastVisitDate;
+	}
+
+	public void setLastVisitDate(Date lastVisitDate)
+	{
+		this.lastVisitDate = lastVisitDate;
 	}
 	
 }

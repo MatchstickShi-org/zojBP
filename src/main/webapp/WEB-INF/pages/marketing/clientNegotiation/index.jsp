@@ -17,21 +17,22 @@
 				<table id="orderDatagrid" border=false></table>
 				<div id="orderDatagridToolbar">
 					<label style="vertical-align: middle;">名称：</label>
-					<input class="easyui-textbox" id="clientTrace.nameInput"/>
+					<input class="easyui-textbox" id="clientNegotiation.nameInput"/>
 					<label style="vertical-align: middle;">电话：</label>
-					<input class="easyui-textbox" id="clientTrace.telInput"/>
+					<input class="easyui-textbox" id="clientNegotiation.telInput"/>
 					<label style="vertical-align: middle;">信息员名称：</label>
-					<input class="easyui-textbox" id="clientTrace.infoerNameInput"/>
+					<input class="easyui-textbox" id="clientNegotiation.infoerNameInput"/>
 					<br>
 					<label style="vertical-align: middle;">状态筛选：</label>
 					<label><input type="checkbox" value="" name="statusInput" />全部</label>
 					<label><input type="checkbox" value="34" name="statusInput" checked="checked" />在谈单已批准</label>
 					<label><input type="checkbox" value="90" name="statusInput"/>已签单</label>
 					<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
-					<label><input type="checkbox" value="62" name="statusInput"/>不准单审核中</label>
+					<label><input type="checkbox" value="60" name="statusInput"/>不准单-主案部经理审核中</label>
+					<label><input type="checkbox" value="62" name="statusInput"/>不准单-商务部经理审核中</label>
 					<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
-					<label><input type="radio" value="0" name="clientTrace.orderFilterInput" />全部客户</label>
-					<label><input type="radio" value="1" name="clientTrace.orderFilterInput" checked="checked"/>我的客户</label>
+					<label><input type="radio" value="0" name="clientNegotiation.orderFilterInput" />全部客户</label>
+					<label><input type="radio" value="1" name="clientNegotiation.orderFilterInput" checked="checked"/>我的客户</label>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showNewOrderWindowBtn" disabled="true">新生成客户</a>
 					<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn">放弃</a>
@@ -48,8 +49,8 @@
 						<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
 						<label style="vertical-align: middle;">信息员名称：</label>
 						<input style="width:100px;" class="easyui-textbox" id="order.infoerNameInput"/>
-						<label><input type="radio" value="0" name="order.orderFilterInput" />全部客户</label>
-						<label><input type="radio" value="1" name="order.orderFilterInput" checked="checked"/>我的客户</label>
+						<label><input type="radio" value="0" name="clientNegotiation.orderApproveFilterInput" />全部客户</label>
+						<label><input type="radio" value="1" name="clientNegotiation.orderApproveFilterInput" checked="checked"/>我的客户</label>
 						<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 						<br>
 						<label style="vertical-align: middle;">状态筛选：</label>
@@ -95,7 +96,7 @@
 							<td colspan="3"><input name="projectName" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
-							<td align="right"><label>工程地址：</label></td>
+							<td align="right"><label>面积：</label></td>
 							<td colspan="3"><input name="projectAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
@@ -107,12 +108,16 @@
 					</table>
 				</form>
 			</div>
-			<div title="业务员回访记录">
-	    		<table id="orderVisitGrid" border="false"></table>
-			</div>
-			<div title="设计师回访记录">
-	    		<table id="orderStylistVisitGrid" border="false"></table>
-			</div>
+			<c:if test="${sessionScope.loginUser.role != 4}">
+				<div title="业务员回访记录" selected="true">
+		    		<table id="orderVisitGrid" border="false"></table>
+				</div>
+			</c:if>
+			<c:if test="${sessionScope.loginUser.role != 1}">
+				<div title="设计师回访记录">
+		    		<table id="designerVisitGrid" border="false"></table>
+				</div>
+			</c:if>
 			<div title="审核流程">
 	    		<table id="orderApproveGrid" border="false"></table>
 			</div>

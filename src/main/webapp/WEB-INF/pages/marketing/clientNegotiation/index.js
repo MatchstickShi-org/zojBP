@@ -3,9 +3,9 @@ $(function()
 	var $showNewOrderWindowBtn = $('a#showNewOrderWindowBtn');
 	var $orderDatagrid = $('table#orderDatagrid');
 	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
-	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
-	var $orderNameTextbox = $('#clientTrace\\.nameInput');
-	var $telTextbox = $('#clientTrace\\.telInput');
+	var $infoerNameTextbox = $('#clientNegotiation\\.infoerNameInput');
+	var $orderNameTextbox = $('#clientNegotiation\\.nameInput');
+	var $telTextbox = $('#clientNegotiation\\.telInput');
 	var $orderCheckInfoerNameTextbox = $('#order\\.infoerNameInput');
 	var $orderCheckNameTextbox = $('#order\\.nameInput');
 	var $orderCheckTelTextbox = $('#order\\.telInput');
@@ -28,7 +28,7 @@ $(function()
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
 	var $orderVisitGrid = $('table#orderVisitGrid');
-	var $orderStylistVisitGrid = $('table#orderStylistVisitGrid');
+	var $designerVisitGrid = $('table#designerVisitGrid');
 	var $orderApproveGrid = $('table#orderApproveGrid');
 	var $infoCostGrid = $('table#infoCostGrid');
 	var $commissionCostGrid = $('table#commissionCostGrid');
@@ -73,7 +73,7 @@ $(function()
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'工程地址', width: 8},
+				{field:'projectAddr', title:'面积', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanId', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
@@ -123,7 +123,11 @@ $(function()
 				},
 				{field:'insertTime', title:'录入日期', width: 5},
 				{
-					field:'notVisitDays', title:'未回访天数', width: 2,
+					field:'notVisitDays', title:'未回访天数', width: 2, sortable: true, 
+					formatter: function(val, row, index)
+					{
+						return val == -100 ? "-" : val;
+					},
 					styler: function (value, row, index){if(value > 5) return 'background-color:red';}
 				}
 			]],
@@ -133,37 +137,49 @@ $(function()
 			checkOnSelect: false,
 			onSelect: function(idx, row)
 			{
+				refreshBtn(row);
+			},
+		});
+		$orderDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientNegotiation';
+		
+		function refreshBtn(row)
+		{
+			if(row.status == 0 || row.status == 90 || row.status == 64)		//死单、已签单、不准单商务部经理可以新生成客户，不允许再回访
+			{
+				if(_session_loginUserRole == 3)
+					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
+				$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+			}
+			else
+			{
 				if(row.salesmanId != _session_loginUserId)
 					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
 				else
 					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+			}
 
-				if(_session_loginUserRole == 3)
-				{
-					if(row.status == 0 || row.status == 90 || row.status == 64)
-						$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
-					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
-					$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
-					$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
-					if(row.status == 90)
-						$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
-					else
-						$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
-				}
+			if(_session_loginUserRole == 3)
+			{
+				$addInfoCostBtn.linkbutton('enable').linkbutton('show');
+				$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
+				$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
+				if(row.status == 90)
+					$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
 				else
-				{
-					$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
-					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
 					$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
-					$('#showPermitOrderWindowBtn').linkbutton('disable').linkbutton('hide');
-					$('#showRejectOrderWindowBtn').linkbutton('disable').linkbutton('hide');
-				}
-				
-				$clientMgrTab.tabs('showTool');
-				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
-			},
-		});
-		$orderDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientNegotiation';
+			}
+			else
+			{
+				$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
+				$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
+				$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
+				$('#showPermitOrderWindowBtn').linkbutton('disable').linkbutton('hide');
+				$('#showRejectOrderWindowBtn').linkbutton('disable').linkbutton('hide');
+			}
+			
+			$clientMgrTab.tabs('showTool');
+			loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
+		}
 		
 		$infoCostGrid.datagrid
 		({
@@ -221,7 +237,7 @@ $(function()
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'工程地址', width: 8},
+				{field:'projectAddr', title:'面积', width: 8},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'designerName', title:'设计师', width: 3},
@@ -238,7 +254,7 @@ $(function()
 								return '不准单审核中';
 								break;
 							default:
-								return '无状态';
+								return '未知状态';
 								break;
 						}
 					}
@@ -251,7 +267,7 @@ $(function()
 			checkOnSelect: false,
 			onSelect: function(idx, row)
 			{
-				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
+				refreshBtn(row);
 			},
 		});
 		
@@ -276,22 +292,25 @@ $(function()
 		$infoCostGrid.datagrid('options').url = 'marketing/clientMgr/getInfoCostByOrder';
 		$commissionCostGrid.datagrid('options').url = 'marketing/clientMgr/getCommissionCostByOrder';
 		
-		$orderStylistVisitGrid.datagrid
-		({
-			idField: 'id',
-			columns:
-			[[
-			  {field:'id', hidden: true},
-			  {field:'content', title:'回访内容', width: 5},
-			  {field:'date', title:'回访日期', width: 5}
-			]],
-			pagination: true,
-			onDblClickRow: function(index, row){
-				$.messager.alert('回访内容', row.content);
-			}
-		});
-		
-		$orderStylistVisitGrid.datagrid('options').url = 'marketing/clientMgr/getStylistOrderVisitByOrder';
+		if($designerVisitGrid.length > 0)
+		{
+			$designerVisitGrid.datagrid
+			({
+				idField: 'id',
+				columns:
+				[[
+				  {field:'id', hidden: true},
+				  {field:'content', title:'回访内容', width: 5},
+				  {field:'date', title:'回访日期', width: 5}
+				]],
+				pagination: true,
+				onDblClickRow: function(index, row){
+					$.messager.alert('回访内容', row.content);
+				}
+			});
+			
+			$designerVisitGrid.datagrid('options').url = 'marketing/clientMgr/getStylistOrderVisitByOrder';
+		}
 		
 		$orderApproveGrid.datagrid
 		({
@@ -413,25 +432,18 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$orderDatagrid.datagrid('loading');
-				var chk_value =[]; 
+				var status =[]; 
 				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function()
-				{ 
-					chk_value.push($(this).val());  
+				{
+					status.push($(this).val());  
 				}); 
-				
-				$.ajax
-				({
-					url: 'marketing/clientMgr/getAllClientNegotiation',
-					data: {name: $orderNameTextbox.textbox('getValue'), tel: $telTextbox.textbox('getValue'),infoerName: $infoerNameTextbox.textbox('getValue'), status:chk_value},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$orderDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$orderDatagrid.datagrid('loaded');
-					}
+				$orderDatagrid.datagrid('load', 
+				{
+					name: $orderNameTextbox.textbox('getValue'), 
+					tel: $telTextbox.textbox('getValue'),
+					infoerName: $infoerNameTextbox.textbox('getValue'),
+					filter: $(':radio[name="clientNegotiation\.orderFilterInput"]:checked').val(),
+					status: status
 				});
 			}
 		});
@@ -475,23 +487,17 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$orderCheckDatagrid.datagrid('loading');
-				var chk_value =[]; 
+				var status =[]; 
 				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
-					chk_value.push($(this).val());  
+					status.push($(this).val());  
 				}); 
-				$.ajax
-				({
-					url: 'marketing/clientMgr/getAllClientCheck',
-					data: {name: $orderCheckNameTextbox.textbox('getValue'), tel: $orderCheckTelTextbox.textbox('getValue'),infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),status:chk_value},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$orderCheckDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$orderCheckDatagrid.datagrid('loaded');
-					}
+				$orderCheckDatagrid.datagrid('load', 
+				{
+					name: $orderCheckNameTextbox.textbox('getValue'),
+					tel: $orderCheckTelTextbox.textbox('getValue'),
+					infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),
+					filter: $(':radio[name="clientNegotiation\.orderApproveFilterInput"]:checked').val(),
+					status: status
 				});
 			}
 		});
@@ -580,7 +586,7 @@ $(function()
 					$orderCheckDatagrid.datagrid('unselectAll').datagrid('reload');
 				$editClientForm.form('clear');
 				$orderVisitGrid.datagrid('loadData', []);
-				$orderStylistVisitGrid.datagrid('loadData', []);
+				$designerVisitGrid.datagrid('loadData', []);
 				$orderApproveGrid.datagrid('loadData', []);
 				$infoCostGrid.datagrid('loadData', []);
 				$commissionCostGrid.datagrid('loadData', []);
@@ -623,7 +629,7 @@ $(function()
 				$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 				break;
 			case '设计师回访记录':
-				$orderStylistVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
+				$designerVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
 				break;
 			case '审核流程':
 				$orderApproveGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
@@ -648,7 +654,7 @@ $(function()
 				$orderVisitGrid.datagrid('loadData', []);
 				break;
 			case '设计师回访记录':
-				$orderStylistVisitGrid.datagrid('loadData', []);
+				$designerVisitGrid.datagrid('loadData', []);
 				break;
 			case '审核流程':
 				$orderApproveGrid.datagrid('loadData', []);
@@ -1025,7 +1031,7 @@ $(function()
 			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>工程地址：</label></td>' + 
+			'			<td align="right"><label>面积：</label></td>' + 
 			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 

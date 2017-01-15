@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 业务统计任务
- * 
  * @author wangw
  */
 public class BusinessCountJob
@@ -18,9 +17,9 @@ public class BusinessCountJob
 	{
 		try
 		{
-			System.out.println("统计结束");
 			logger.info("业务统计成功!");
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			logger.error(MessageFormat.format("业务统计定时任务出错：", e.getMessage()));
 		}

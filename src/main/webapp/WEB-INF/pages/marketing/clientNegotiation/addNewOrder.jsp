@@ -48,7 +48,7 @@
 		<td colspan="3"><input name="projectName" value="${order.projectName}" class="easyui-textbox" style="width: 398px;"/></td>
 	</tr>
 	<tr>
-		<td align="right"><label>工程地址：</label></td>
+		<td align="right"><label>面积：</label></td>
 		<td colspan="3"><input name="projectAddr" value="${order.projectAddr}" class="easyui-textbox" style="width: 398px;"/></td>
 	</tr>
 		<tr>

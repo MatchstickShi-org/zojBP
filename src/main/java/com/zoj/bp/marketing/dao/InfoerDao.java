@@ -67,9 +67,10 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
-			+ " CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
-			+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
-			+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
+			+ "		CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
+			+ "			ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
+			+ " 	END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME, MAX(IV.DATE) lastVisitDate "
+			+ " FROM INFOER I "
 			+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
 			+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID ";
 		if(loginUser.isMarketingSalesman())
@@ -101,7 +102,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
+		sql += pagination.buildOrderBySqlPart(" ORDER BY leftVisitDays DESC");
+		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);
@@ -112,9 +114,11 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
-			+ " CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
-			+ "		ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
-			+ " END AS leftVisitDays, U.ALIAS AS SALESMAN_NAME FROM INFOER I "
+			+ " 	CASE WHEN MAX(IV.DATE) IS NULL THEN DATEDIFF(NOW(),I.INSERT_TIME) "
+			+ "			ELSE DATEDIFF(NOW(),MAX(IV.DATE)) "
+			+ " 	END AS leftVisitDays, "
+			+ " 	MAX(IV.DATE) lastVisitDate, U.ALIAS AS SALESMAN_NAME "
+			+ " FROM INFOER I "
 			+ " LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
 			+ " LEFT JOIN INFOER_VISIT IV ON I.ID = IV.INFOER_ID "
 			+ " WHERE U.ID = :userId ";
@@ -141,7 +145,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += " ORDER BY leftVisitDays DESC,I.INSERT_TIME LIMIT :start, :rows";
+		sql += pagination.buildOrderBySqlPart(" ORDER BY leftVisitDays DESC");
+		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Infoer.class)), count);

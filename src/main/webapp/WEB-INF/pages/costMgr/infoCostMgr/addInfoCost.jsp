@@ -30,7 +30,7 @@
 		<tr>
 			<td align="right"><label>业务员：</label></td>
 			<td><input name="salesman" value="${infoCost.salesman}" readonly="readonly" class="easyui-textbox" style="width: 160px;"/></td>
-			<td align="right"><label>装修地址：</label></td>
+			<td align="right"><label>面积：</label></td>
 			<td><input name="projectAddr" value="${infoCost.projectAddr}" readonly="readonly" class="easyui-textbox" style="width: 160px;"/></td>
 		</tr>
 		<tr>
