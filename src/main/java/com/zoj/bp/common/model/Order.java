@@ -125,6 +125,12 @@ public class Order implements Serializable
 		{
 			return Stream.of(Status.values()).filter(r -> r.value() == status).findFirst().orElse(null);
 		}
+		
+		@Override
+		public String toString()
+		{
+			return String.valueOf(this.value);
+		}
 	}
 
 	public Integer getId()

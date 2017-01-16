@@ -3,9 +3,6 @@ package com.zoj.bp.costmgr.commissionmgr.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zoj.bp.common.excption.BusinessException;
-import com.zoj.bp.common.excption.ReturnCode;
-import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.costmgr.commissionmgr.dao.ICommissionCostMgrDao;
@@ -21,12 +18,9 @@ public class CommissionCostMgrService implements ICommissionCostMgrService
 	private ICommissionCostMgrDao commissionCostDao;
 	
 	@Override
-	public DatagridVo<CommissionCost> getAllCommissionCosts(
-			User user, String clientName, String orderId, Pagination pagination) throws BusinessException
+	public DatagridVo<CommissionCost> getCommissionCostsByOrder(Integer orderId, Pagination pagination)
 	{
-		if(!user.isBelongMarketing())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部人员，无法查询。"));
-		return commissionCostDao.getAllCommissionCosts(user, clientName, orderId, pagination);
+		return commissionCostDao.getCommissionCostsByOrder(orderId, pagination);
 	}
 
 	@Override

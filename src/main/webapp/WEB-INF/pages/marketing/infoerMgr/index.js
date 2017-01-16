@@ -379,7 +379,6 @@ $(function()
 		$('#showBusinessTransferWindowBtn').linkbutton({onClick: showBusinessTransferWindow});
 		$('#addInfoerVisitBtn').linkbutton({onClick: showAddInfoerVisitWindow});
 		$('#addClientBtn').linkbutton({onClick: showAddClientWindow});
-
 		
 		$infoerMgrTab.tabs
 		({

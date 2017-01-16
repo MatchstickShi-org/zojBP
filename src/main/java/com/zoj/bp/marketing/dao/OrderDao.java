@@ -243,8 +243,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
 				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
-				" C.TEL4 TEL4, C.TEL5 TEL5, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
-				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
+				" C.TEL4 TEL4, C.TEL5 TEL5, I.ID INFOER_NAME, I.`NAME` infoerName, U.ID salesmanId, U.ALIAS salesmanName, "+ 
+				" U.STATUS salesmanStatus, U2.ID designerId, U2.ALIAS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
@@ -287,9 +287,50 @@ public class OrderDao extends BaseDao implements IOrderDao
 	}
 
 	@Override
-	public DatagridVo<Order> getOrdersByStatus(Status... status)
+	public DatagridVo<Order> getOrdersByStatus(
+			User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception
 	{
-		return null;
+		if(ArrayUtils.isEmpty(status))
+			throw new Exception("找不到要查找的客户，请检查请求参数。");
+		MapSqlParameterSource params = new MapSqlParameterSource("start", pagination.getStartRow()).addValue("rows", pagination.getRows());
+		String sql = "SELECT O.*, C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, "
+				+ " 	C.TEL4 TEL4, C.TEL5 TEL5, I.ID INFOER_NAME, I.`NAME` infoerName, "
+				+ " 	U.ID salesmanId, U.ALIAS salesmanName, U2.ID designerId, U2.ALIAS designerName "
+				+ " FROM `ORDER` O "
+				+ " LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "
+				+ " LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "
+				+ " LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "
+				+ " LEFT JOIN INFOER I ON I.ID = O.INFOER_ID ";
+		if(loginUser.isMarketingSalesman())
+			sql += " WHERE O.SALESMAN_ID = :userId ";
+		else if(loginUser.isMarketingLeader())
+		{
+			sql += " WHERE O.SALESMAN_ID IN "
+				+ " ("
+				+ "		SELECT G.ID FROM `GROUP` G LEFT JOIN USER U ON U.GROUP_ID = G.ID "
+				+ "		WHERE U.ID = :userId "
+				+ "	)";
+		}
+		else
+			sql += " WHERE 1=1 ";
+		
+		if(StringUtils.isNotEmpty(clientName))
+		{
+			sql += " AND C.NAME LIKE :clientName ";
+			params.addValue("clientName", "%" + clientName + "%");
+		}
+		if(orderId != null)
+		{
+			sql += " AND O.ID LIKE :orderId";
+			params.addValue("orderId", "%" + orderId + "%");
+		}
+		sql += " AND O.STATUS IN (" + StringUtils.join(status, ',') + ") ";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
+		sql += " ORDER BY O.INSERT_TIME LIMIT :start, :rows";
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, 
+				params, 
+				BeanPropertyRowMapper.newInstance(Order.class)), count);
 	}
 
 	@Override

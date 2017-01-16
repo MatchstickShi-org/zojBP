@@ -46,23 +46,35 @@ public class CommissionCostMgrCtrl
 	
 	@RequestMapping(value="/getDealOrders")
 	@ResponseBody
-	public DatagridVo<Order> getDealOrders(HttpSession session)
+	public DatagridVo<Order> getDealOrders(HttpSession session,
+			@RequestParam(value="clientName", required=false) String clientName,
+			@RequestParam(value="orderId", required=false) Integer orderId, Pagination pagination) throws Exception
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespDatagridVo(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法查询。"));
-		return orderSvc.getOrdersByStatus(Status.deal);
+		return orderSvc.getOrdersByStatus(loginUser, clientName, orderId, pagination, Status.deal);
 	}
 	
-	@RequestMapping(value = "/getAllcommissionCosts")
+	@RequestMapping(value = "/getCommissionCostsByOrder")
 	@ResponseBody
-	public DatagridVo<CommissionCost> getAllcommissionCosts(HttpSession session, 
-			@RequestParam(value="clientName", required=false) String clientName, 
-			@RequestParam(value="orderId", required=false) String orderId, 
-			Pagination pagination) throws BusinessException
+	public DatagridVo<CommissionCost> getCommissionCostsByOrder(HttpSession session,
+			@RequestParam(value="orderId") Integer orderId, Pagination pagination) throws BusinessException
 	{
+		//User loginUser = (User) session.getAttribute("loginUser");
+		return commissionCostSvc.getCommissionCostsByOrder(orderId, pagination);
+	}
+	
+	@RequestMapping(value = "/showAddCostWindow")
+	public ModelAndView showAddCostWindow(HttpSession session, @RequestParam(value="orderId") Integer orderId)
+	{
+		ModelAndView mv = new ModelAndView("costMgr/commissionCostMgr/addCost", "errorMsg", null);
 		User loginUser = (User) session.getAttribute("loginUser");
-		return commissionCostSvc.getAllCommissionCosts(loginUser, clientName, orderId, pagination);
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			mv.addObject("errorMsg", "对不起，您不是商务部经理，无法新增提成。");
+		Order order = orderSvc.getOrderById(orderId, loginUser);
+		mv.addObject("order", order);
+		return mv;
 	}
 	
 	@RequestMapping(value = "/addCommissionCost")

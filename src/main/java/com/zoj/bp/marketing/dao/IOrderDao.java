@@ -116,5 +116,5 @@ public interface IOrderDao {
 	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
 			Integer... statuses);
 
-	DatagridVo<Order> getOrdersByStatus(Status... status);
+	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 }

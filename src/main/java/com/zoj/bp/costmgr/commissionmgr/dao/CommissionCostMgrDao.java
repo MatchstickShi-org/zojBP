@@ -1,6 +1,5 @@
 package com.zoj.bp.costmgr.commissionmgr.dao;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
-import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.costmgr.commissionmgr.vo.CommissionCost;
@@ -30,7 +28,7 @@ public class CommissionCostMgrDao extends BaseDao implements ICommissionCostMgrD
 	}
 	
 	@Override
-	public DatagridVo<CommissionCost> getAllCommissionCosts(User user, String clientName, String orderId, Pagination pagination)
+	public DatagridVo<CommissionCost> getCommissionCostsByOrder(Integer orderId, Pagination pagination)
 	{
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		String sql = "SELECT IC.ID, O.ID ORDER_ID, C.ID CLIENT_ID, C.NAME CLIENT_NAME, O.PROJECT_ADDR, O.INFOER_ID, I.NAME INFOER, "
@@ -40,32 +38,10 @@ public class CommissionCostMgrDao extends BaseDao implements ICommissionCostMgrD
 				+ " LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "
 				+ " LEFT JOIN INFOER I ON O.INFOER_ID = I.ID "
 				+ " LEFT JOIN USER D ON O.DESIGNER_ID = D.ID "
-				+ " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID ";
-		if(user.isMarketingSalesman())
-			sql += " WHERE O.SALESMAN_ID = :userId ";
-		else if(user.isMarketingLeader())
-		{
-			sql += " WHERE O.SALESMAN_ID IN "
-				+ " ("
-				+ "		SELECT G.ID FROM `GROUP` G LEFT JOIN USER U ON U.GROUP_ID = G.ID "
-				+ "		WHERE U.ID = :userId "
-				+ "	)";
-		}
-		else
-			sql += " WHERE 1=1 ";
+				+ " LEFT JOIN USER S ON O.SALESMAN_ID = S.ID "
+				+ " WHERE O.ID = :orderId ";
 		
-		if(StringUtils.isNotEmpty(clientName))
-		{
-			sql += " AND C.NAME LIKE :clientName ";
-			params.addValue("clientName", '%' + clientName + '%');
-		}
-		if(StringUtils.isNotEmpty(orderId))
-		{
-			sql += " AND O.ID LIKE :orderId ";
-			params.addValue("orderId", '%' + orderId + '%');
-		}
-		
-		params.addValue("userId", user.getId());
+		params.addValue("orderId", orderId);
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, params, Integer.class);
 		sql += " ORDER BY IC.DATE DESC, O.ID DESC LIMIT :start, :rows";

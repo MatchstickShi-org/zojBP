@@ -354,8 +354,9 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public DatagridVo<Order> getOrdersByStatus(Status... status)
+	public DatagridVo<Order> getOrdersByStatus(
+			User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception
 	{
-		return orderDao.getOrdersByStatus(status);
+		return orderDao.getOrdersByStatus(loginUser, clientName, orderId, pagination, status);
 	}
 }

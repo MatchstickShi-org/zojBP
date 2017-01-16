@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
-	<div data-options="region:'center'" style="width: 470px;">
+	<div data-options="region:'center'">
 		<table id="infoerDatagrid" border="false"></table>
 		<div id="infoerDatagridToolbar">
 			<label>名称：</label>

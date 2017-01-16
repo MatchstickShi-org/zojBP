@@ -4,7 +4,10 @@ package com.zajbp.test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+
+import com.zoj.bp.common.model.Order;
 
 /**
  * @author MatchstickShi
@@ -22,5 +25,11 @@ public class CommontTest
 	public void testLocalDateTime()
 	{
 		System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	}
+	
+	@Test
+	public void testStringJoin()
+	{
+		System.out.println(StringUtils.join(Order.Status.values(), ','));
 	}
 }

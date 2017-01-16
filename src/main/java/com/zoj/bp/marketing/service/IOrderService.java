@@ -114,5 +114,5 @@ public interface IOrderService {
 	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
 			Integer... status);
 
-	DatagridVo<Order> getOrdersByStatus(Status... status);
+	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 }
