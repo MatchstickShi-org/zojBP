@@ -14,12 +14,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
+import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.costmgr.commissionmgr.service.ICommissionCostMgrService;
 import com.zoj.bp.costmgr.commissionmgr.vo.CommissionCost;
+import com.zoj.bp.marketing.service.IOrderService;
 
 /**
  * @author MatchstickShi
@@ -32,10 +35,23 @@ public class CommissionCostMgrCtrl
 	@Autowired
 	private ICommissionCostMgrService commissionCostSvc;
 	
+	@Autowired
+	private IOrderService orderSvc;
+	
 	@RequestMapping(value = "/toIndexView")
 	public ModelAndView toIndexView() throws BusinessException
 	{
 		return new ModelAndView("costMgr/commissionCostMgr/index");
+	}
+	
+	@RequestMapping(value="/getDealOrders")
+	@ResponseBody
+	public DatagridVo<Order> getDealOrders(HttpSession session)
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespDatagridVo(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部经理，无法查询。"));
+		return orderSvc.getOrdersByStatus(Status.deal);
 	}
 	
 	@RequestMapping(value = "/getAllcommissionCosts")

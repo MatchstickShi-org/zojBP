@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -283,6 +284,12 @@ public class OrderDao extends BaseDao implements IOrderDao
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(Order.class)), count);
+	}
+
+	@Override
+	public DatagridVo<Order> getOrdersByStatus(Status... status)
+	{
+		return null;
 	}
 
 	@Override

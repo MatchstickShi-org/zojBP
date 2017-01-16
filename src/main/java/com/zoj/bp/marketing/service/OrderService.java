@@ -352,4 +352,10 @@ public class OrderService implements IOrderService
 	{
 		return orderDao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
 	}
+
+	@Override
+	public DatagridVo<Order> getOrdersByStatus(Status... status)
+	{
+		return orderDao.getOrdersByStatus(status);
+	}
 }

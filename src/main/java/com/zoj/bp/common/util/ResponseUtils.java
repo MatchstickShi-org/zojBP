@@ -103,6 +103,18 @@ public class ResponseUtils
 		vo.setMsg(e.getReturnMsg());
 		return vo;
 	}
+	
+	/**
+	 * @param e
+	 * @return
+	 */
+	public static <T> DatagridVo<T> buildRespDatagridVo(ReturnCode returnCode)
+	{
+		DatagridVo<T> vo = DatagridVo.buildDatagridVo(new ArrayList<T>(), 0);
+		vo.setReturnCode(returnCode);
+		vo.setMsg(returnCode.getMsg());
+		return vo;
+	}
 
 	/**
 	 * @param returnCode

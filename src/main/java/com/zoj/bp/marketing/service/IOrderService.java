@@ -2,6 +2,7 @@ package com.zoj.bp.marketing.service;
 
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -112,4 +113,6 @@ public interface IOrderService {
 	 */
 	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
 			Integer... status);
+
+	DatagridVo<Order> getOrdersByStatus(Status... status);
 }

@@ -1,6 +1,7 @@
 package com.zoj.bp.marketing.dao;
 
 import com.zoj.bp.common.model.Order;
+import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -114,4 +115,6 @@ public interface IOrderDao {
 	 */
 	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
 			Integer... statuses);
+
+	DatagridVo<Order> getOrdersByStatus(Status... status);
 }
