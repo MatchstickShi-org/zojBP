@@ -19,4 +19,14 @@ public class DesignCountService implements IDesignCountService
 	{
 		return dao.getTodayDesignerCount(pagination,designerName);
 	}
+
+	@Override
+	public DesignCount getTodayDesignCountByUserId(Integer userId) {
+		return dao.getTodayDesignCountByUserId(userId);
+	}
+
+	@Override
+	public Integer addDesignCount(DesignCount designCount) {
+		return dao.addDesignCount(designCount);
+	}
 }

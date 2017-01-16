@@ -18,4 +18,14 @@ public class MarketingCountService implements IMarketingCountService{
 	public DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName) {
 		return dao.getTodayMarketingCout(pagination,salesmanName);
 	}
+
+	@Override
+	public MarketingCount getTodayMarketingCountByUserId(Integer userId) {
+		return dao.getTodayMarketingCountByUserId(userId);
+	}
+
+	@Override
+	public Integer addMarketingCount(MarketingCount marketingCount) {
+		return dao.addMarketingCount(marketingCount);
+	}
 }

@@ -20,4 +20,18 @@ public interface IMarketingCountDao
 	 * @return
 	 */
 	DatagridVo<MarketingCount> getTodayMarketingCout(Pagination pagination,String salesmanName);
+
+	/**
+	 * 获取前一天的统计数据（定时任务用）
+	 * @param userId
+	 * @return
+	 */
+	MarketingCount getTodayMarketingCountByUserId(Integer userId);
+
+	/**
+	 * 新增业务员统计
+	 * @param marketingCount
+	 * @return
+	 */
+	Integer addMarketingCount(MarketingCount marketingCount);
 }

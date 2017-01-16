@@ -20,4 +20,18 @@ public interface IDesignCountService
 	 * @return
 	 */
 	DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName);
+	
+	/**
+	 * 获取前一天的统计数据（定时任务用）
+	 * @param userId
+	 * @return
+	 */
+	DesignCount getTodayDesignCountByUserId(Integer userId);
+
+	/**
+	 * 新增设计师统计
+	 * @param designCount
+	 * @return
+	 */
+	Integer addDesignCount(DesignCount designCount);
 }

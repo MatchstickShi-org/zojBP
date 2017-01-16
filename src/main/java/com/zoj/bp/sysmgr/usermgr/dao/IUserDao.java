@@ -114,4 +114,16 @@ public interface IUserDao
 	 * @param userIds
 	 */
 	Integer deleteByUsers(Integer... userIds);
+
+	/**
+	 * 获取在职的业务员
+	 * @return
+	 */
+	List<User> getSalesmanByStatus();
+	
+	/**
+	 * 获取在职的设计师
+	 * @return
+	 */
+	List<User> getDesignerByStatus();
 }

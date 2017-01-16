@@ -6,13 +6,13 @@
        	   http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd
 	       http://www.springframework.org/schema/task       
-           http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+           http://www.springframework.org/schema/task/spring-task.xsd">
 
 	  <!-- 定时器开关-->  
 	  <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
 	  <task:scheduler id="qbScheduler" pool-size="5"/> 
 	  <bean id="businessCountJob" class="com.zoj.bp.task.job.BusinessCountJob"></bean> 
 	  <task:scheduled-tasks> 
-         <task:scheduled ref="businessCountJob" method="doCount" cron="0 1 0 * * ?"/> 
+         <task:scheduled ref="businessCountJob" method="businessCount" cron="0/5 0 0 * * ?"/> 
       </task:scheduled-tasks>
 </beans>

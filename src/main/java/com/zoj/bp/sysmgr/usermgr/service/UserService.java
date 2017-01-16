@@ -1,6 +1,7 @@
 package com.zoj.bp.sysmgr.usermgr.service;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -183,5 +184,15 @@ public class UserService implements IUserService
 		orderDao.deleteBySalesmans(userIds);
 		orderDao.deleteByDesigners(userIds);
 		userDao.deleteByUsers(userIds);
+	}
+	
+	@Override
+	public List<User> getSalesmanByStatus() {
+		return userDao.getSalesmanByStatus();
+	}
+	
+	@Override
+	public List<User> getDesignerByStatus() {
+		return userDao.getDesignerByStatus();
 	}
 }

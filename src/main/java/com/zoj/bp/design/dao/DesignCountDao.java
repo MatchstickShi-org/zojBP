@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zoj.bp.common.dao.BaseDao;
@@ -48,5 +51,52 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(DesignCount.class)), count);
+	}
+
+	@Override
+	public DesignCount getTodayDesignCountByUserId(Integer userId) {
+		String sql = "SELECT "+
+				"U.ID DESIGNER_ID, U.DESIGNER_NAME, "+
+				"COUNT(DISTINCT U.OV_ID) TODAY_ORDER_VISIT_COUNT, "+
+				"COUNT(DISTINCT U.O_ID) TALKING_ORDER_COUNT, "+
+				"COUNT(DISTINCT U.O2_ID) DEAL_ORDER_COUNT, "+
+				"COUNT(DISTINCT U.O3_ID) DEAD_ORDER_COUNT "+
+			"FROM "+
+			"( "+
+				"SELECT "+
+					"U.ID, U.ALIAS DESIGNER_NAME,OV.ID OV_ID,O.ID O_ID,O2.ID O2_ID,O3.ID O3_ID "+
+				"FROM `USER` U "+
+				"LEFT JOIN `ORDER` O ON U.ID = O.DESIGNER_ID AND O.`STATUS` = 34 "+
+				"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
+				"LEFT JOIN `ORDER` O2 ON U.ID = O2.DESIGNER_ID AND O2.`STATUS` = 90 "+
+				"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 0 "+
+				"WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND U.ID =:userId AND U.`STATUS` = 1 "+
+			") U "; 
+		return jdbcOps.queryForObject(sql,new MapSqlParameterSource("userId", userId), BeanPropertyRowMapper.newInstance(DesignCount.class));
+	}
+
+	@Override
+	public Integer addDesignCount(DesignCount designCount) {
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcOps.update(
+				"INSERT INTO DESIGN_COUNT("
+				+ "UPDATE_TIME,"
+				+ "COUNT_DATE,"
+				+ "TALKING_VISIT_AMOUNT,"
+				+ "TALKING_AMOUNT,"
+				+ "DEAL_TOTAL,"
+				+ "DEAD_TOTAL,"
+				+ "DESIGNER_ID"
+				+ ") "
+				+ "VALUES("
+				+ "now(),"
+				+ "date_sub(CURRENT_DATE,interval 1 day),"
+				+ ":todayOrderVisitCount,"
+				+ ":talkingOrderCount,"
+				+ ":dealOrderCount,"
+				+ ":deadOrderCount,"
+				+ ":designerId)",
+				new BeanPropertySqlParameterSource(designCount), keyHolder);
+		return keyHolder.getKey().intValue();
 	}
 }

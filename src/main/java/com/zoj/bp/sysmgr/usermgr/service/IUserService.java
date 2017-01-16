@@ -3,6 +3,8 @@
  */
 package com.zoj.bp.sysmgr.usermgr.service;
 
+import java.util.List;
+
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -100,4 +102,16 @@ public interface IUserService
 	 * @param userIds
 	 */
 	void deleteUsers(Integer[] userIds);
+
+	/**
+	 * 获取所有在职的业务员
+	 * @return
+	 */
+	List<User> getSalesmanByStatus();
+	
+	/**
+	 * 获取所有在职的设计师
+	 * @return
+	 */
+	List<User> getDesignerByStatus();
 }
