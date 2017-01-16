@@ -106,7 +106,7 @@ public class InfoerCtrl
 
 	@RequestMapping(value = "/addInfoer")
 	@ResponseBody
-	public Map<String, ?> addInfoer(@Valid Infoer infoer,Errors errors, HttpSession session) throws Exception
+	public Map<String, ?> addInfoer(@Valid Infoer infoer, Errors errors, HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
@@ -114,7 +114,8 @@ public class InfoerCtrl
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您不是商务部人员，无法新增信息员。"));
 		Infoer infoerTel = null;
-		if(infoer != null){
+		if(infoer != null)
+		{
 			infoerTel = infoerSvc.findByTel(infoer, loginUser);
 			if(infoerTel != null)
 				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoerTel.getInsertTime()+" 被业务员 "+infoerTel.getSalesmanName()+" 录入！"));
@@ -140,7 +141,8 @@ public class InfoerCtrl
 				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
 						"重复！该客户[" + order.getId() + "]于 "+orderTel.getInsertTime()+" 被业务员["+orderTel.getSalesmanName()+"]录入。"));
 		}
-		order.setSalesmanId(loginUser.getId());
+		if(!loginUser.isSuperAdmin())
+			order.setSalesmanId(loginUser.getId());
 		order.setStatus(Status.tracing.value());//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -153,7 +155,7 @@ public class InfoerCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(loginUser.getId() != infoerVisit.getSalesmanId())
+		if(loginUser.getId() != infoerVisit.getSalesmanId() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是该信息员的业务员，无法新增。"));
 		infoerVisitSvc.addInfoerVisit(infoerVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);

@@ -15,8 +15,9 @@ public class OrderVisitService implements IOrderVisitService{
 	private IOrderVisitDao dao;
 
 	@Override
-	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination,Integer visitorId,Integer orderId) {
-		return dao.getAllOrderVisit(pagination,visitorId,orderId);
+	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination, Integer visitorId, Integer orderId)
+	{
+		return dao.getAllOrderVisit(pagination, visitorId, orderId);
 	}
 
 	@Override

@@ -87,21 +87,21 @@ $(function()
 			url: 'marketing/clientMgr/getAllClientTrace',
 			onSelect: function(idx, row)
 			{
-				if(row.salesmanId != _session_loginUserId)
-				{
-					$('#addOrderVisitBtn').linkbutton('disable');
-					$clientMgrTab.tabs('hideTool');
-					$submitUpdateClientFormBtn.linkbutton('disable');
-					$('#removeOrderBtn').linkbutton('disable');
-					$('#applyOrderBtn').linkbutton('disable');
-				}
-				else
+				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1)
 				{
 					$('#addOrderVisitBtn').linkbutton('enable');
 					$clientMgrTab.tabs('showTool');
 					$submitUpdateClientFormBtn.linkbutton('enable');
 					$('#removeOrderBtn').linkbutton('enable');
 					$('#applyOrderBtn').linkbutton('enable');
+				}
+				else
+				{
+					$('#addOrderVisitBtn').linkbutton('disable');
+					$clientMgrTab.tabs('hideTool');
+					$submitUpdateClientFormBtn.linkbutton('disable');
+					$('#removeOrderBtn').linkbutton('disable');
+					$('#applyOrderBtn').linkbutton('disable');
 				}
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
@@ -501,12 +501,13 @@ $(function()
 		
 		var addClientVisitWindowHtml = 
 			'<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
+			'	<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'	<input id="visitorId"  name="visitorId" type="hidden" value="" />' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
 			'			<td><input name="content" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
-			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitAddClientVisitForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
@@ -522,6 +523,7 @@ $(function()
 			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$addClientVisitWindow.find(\'#visitorId\').val(selRows[0].salesmanId);' +
 			'function submitAddClientVisitForm()' + 
 			'{' + 
 			'	$addClientVisitWindow.find(\'form#addClientVisitForm\').form(\'submit\',' + 

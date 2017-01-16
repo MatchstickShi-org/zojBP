@@ -45,7 +45,7 @@
 					</c:if>
 				</div>
 			</div>
-			<c:if test="${sessionScope.loginUser.role == 6}">
+			<c:if test="${sessionScope.loginUser.role == 6 || sessionScope.loginUser.role == -1}">
 			<div title="审核">
 				<table id="orderCheckDatagrid" border="false"></table>
 				<div id="orderCheckDatagridToolbar">

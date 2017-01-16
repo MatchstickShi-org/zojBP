@@ -46,27 +46,27 @@
 					<table style="width: 100%; min-width: 700px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
-							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td width="70%"><input name="telAll" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td width="70%"><input name="telAll" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>信息员：</label></td>
-							<td><input name="infoerName" readonly="readonly" class="easyui-textbox"/></td>
+							<td><input name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
 							<td align="right" style="min-width: 80px;"><label>业务员：</label></td>
-							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox"/></td>
+							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>单位地址：</label></td>
-							<td colspan="3"><input name="orgAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="orgAddr" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>工程名称：</label></td>
-							<td colspan="3"><input name="projectName" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="projectName" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>面积：</label></td>
-							<td colspan="3"><input name="projectAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="projectAddr" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="3">
@@ -98,6 +98,7 @@
 <div id="businessTransferWindow"></div>
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
+var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>
 <script type="text/javascript" src="pages/marketing/clientTrace/index.js"></script>
 </body>

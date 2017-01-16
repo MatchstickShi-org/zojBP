@@ -80,19 +80,19 @@ $(function()
 			url: 'marketing/infoerMgr/getAllInfoers',
 			onSelect: function(idx, row)
 			{
-				if(row.salesmanId != _session_loginUserId)
-				{
-					$('#addInfoerVisitBtn').linkbutton('disable').linkbutton('hide');
-					$('#addClientBtn').linkbutton('disable').linkbutton('hide');
-					$infoerMgrTab.tabs('hideTool');
-					$submitUpdateInfoerFormBtn.linkbutton('disable').linkbutton('hide');
-				}
-				else
+				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1)
 				{
 					$('#addInfoerVisitBtn').linkbutton('enable').linkbutton('show');
 					$('#addClientBtn').linkbutton('enable').linkbutton('show');
 					$infoerMgrTab.tabs('showTool');
 					$submitUpdateInfoerFormBtn.linkbutton('enable').linkbutton('show');
+				}
+				else
+				{
+					$('#addInfoerVisitBtn').linkbutton('disable').linkbutton('hide');
+					$('#addClientBtn').linkbutton('disable').linkbutton('hide');
+					$infoerMgrTab.tabs('hideTool');
+					$submitUpdateInfoerFormBtn.linkbutton('disable').linkbutton('hide');
 				}
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, row);
 			}
@@ -238,20 +238,59 @@ $(function()
 		$clientGrid.datagrid
 		({
 			idField: 'id',
-			//toolbar: '#clientGridToolbar',
 			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'name', title:'联系人', width: 3},
-				  {field:'telAll', title:'联系电话', width: 6},
-				  {field:'orgAddr', title:'单位地址', width: 8},
-				  {field:'projectName', title:'工程名称', width: 5},
-				  {field:'projectAddr', title:'面积', width: 8},
-				  {field:'infoerName', title:'信息员', width: 3},
-				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'insertTime', title:'录入日期', width: 5}
-				  ]],
-				  pagination: true
+			[[
+				{field:'id', hidden: true},
+				{field:'name', title:'联系人', width: 3},
+				{field:'telAll', title:'联系电话', width: 6},
+				{field:'orgAddr', title:'单位地址', width: 8},
+				{field:'projectName', title:'工程名称', width: 5},
+				{field:'projectAddr', title:'面积', width: 2},
+				{
+					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
+					{
+						switch (value)
+						{
+							case 10:
+								return '正跟踪';
+								break;
+							case 12:
+								return '已放弃';
+								break;
+							case 30:
+							case 32:
+								return '在谈单审核中';
+								break;
+							case 34:
+								return '在谈单';
+								break;
+							case 60:
+							case 62:
+								return '不准单审核中';
+								break;
+							case 64:
+								return '不准单';
+								break;
+							case 14:
+								return '已打回';
+								break;
+							case 90:
+								return '已签单';
+								break;
+							case 0:
+								return '死单';
+								break;
+							default:
+								return '未知状态';
+								break;
+						}
+					}
+				},
+				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'insertTime', title:'录入日期', width: 5}
+			]],
+			pagination: true
 		});
 
 		$infoerVisitGrid.datagrid('options').url = 'marketing/infoerMgr/getInfoerVisitByInfoer';
@@ -421,7 +460,7 @@ $(function()
 			'			<td colspan="3"><input name="org" class="easyui-textbox" style="width: 380px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>地址：</label></td>' + 
+			'			<td align="right"><label>单位地址：</label></td>' + 
 			'			<td colspan="3"><input name="address" class="easyui-textbox" style="width: 380px;"/></td>' + 
 			'		</tr>' + 
 			'		<input name="level" type="hidden" value="4" />' + 
@@ -620,7 +659,8 @@ $(function()
 		var addClientWindowHtml = 
 			'<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
 			'	<input id="clientTelCount" type="hidden" value="1" />' + 
-			'	<input id="infoerId"  name="infoerId" type="hidden" value="" />' + 
+			'	<input id="infoerId" name="infoerId" type="hidden" value="" />' + 
+			'	<input id="salesmanId" name="salesmanId" type="hidden" value="" />' + 
 			'	<table width="100%" id="clientTab" >' + 
 			'		<tr>' + 
 			'			<td style="min-width: 70px;" align="right"><label>联系人：</label></td>' + 
@@ -673,6 +713,7 @@ $(function()
 			'var selRows = $infoerDatagrid.datagrid("getSelections");' +
 			'$addClientWindow.find(\'#infoerId\').val(selRows[0].id);' +
 			'$addClientWindow.find(\'#infoerName\').val(selRows[0].name);' +
+			'$addClientWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
 			'var $tel1Input = $(\'table#clientTab input#tel1\');' +
 			'$tel1Input.textbox({});' +
 			'$tel1Input.textbox("textbox").bind("blur", function(){checkClientTelValue($tel1Input.get(0));});' +

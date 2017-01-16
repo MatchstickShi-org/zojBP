@@ -30,8 +30,8 @@ public class InfoCostMgrService implements IInfoCostMgrService
 	public DatagridVo<InfoCost> getAllInfoCosts(
 			User user, Integer status, String clientName, String orderId, Pagination pagination) throws BusinessException
 	{
-		if(user.isDesignLeader() || user.isDesignDesigner() || user.isDesignManager() || user.isAdmin())
-			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部人员，无法查询。"));
+		if(!user.isBelongMarketing())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是商务部人员，无法查询。"));
 		return infoCostDao.getAllInfoCosts(user, status, clientName, orderId, pagination);
 	}
 

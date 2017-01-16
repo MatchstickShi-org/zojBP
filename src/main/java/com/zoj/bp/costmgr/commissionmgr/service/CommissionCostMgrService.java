@@ -24,7 +24,7 @@ public class CommissionCostMgrService implements ICommissionCostMgrService
 	public DatagridVo<CommissionCost> getAllCommissionCosts(
 			User user, String clientName, String orderId, Pagination pagination) throws BusinessException
 	{
-		if(user.isBelongDesign() || user.isAdmin())
+		if(!user.isBelongMarketing())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部人员，无法查询。"));
 		return commissionCostDao.getAllCommissionCosts(user, clientName, orderId, pagination);
 	}

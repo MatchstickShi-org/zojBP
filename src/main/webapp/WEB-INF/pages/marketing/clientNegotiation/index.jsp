@@ -39,9 +39,9 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn">申请在谈单</a> -->
 				</div>
 			</div>
-			<c:if test="${sessionScope.loginUser.role == 3}">
+			<c:if test="${sessionScope.loginUser.role == 3 || sessionScope.loginUser.role == -1}">
 				<div title="审核" border=false>
-					<table id="orderCheckDatagrid" border=false></table>
+					<table id="orderCheckDatagrid" border="false"></table>
 					<div id="orderCheckDatagridToolbar">
 						<label style="vertical-align: middle;">名称：</label>
 						<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>

@@ -168,10 +168,10 @@ public class ClientCtrl
 		if(ArrayUtils.isEmpty(status))
 		{
 			status = new Integer[]
-					{
-					Status.talkingMarketingManagerAuditing.value(),
-					Status.disagreeMarketingManagerAuditing.value()
-					};
+			{
+				Status.talkingMarketingManagerAuditing.value(),
+				Status.disagreeMarketingManagerAuditing.value()
+			};
 		}
 		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
 	}
@@ -246,7 +246,8 @@ public class ClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
-		orderVisit.setVisitorId(loginUser.getId());
+		if(!loginUser.isSuperAdmin())
+			orderVisit.setVisitorId(loginUser.getId());
 		orderVisitSvc.addOrderVisit(orderVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

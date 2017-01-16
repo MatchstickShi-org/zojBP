@@ -146,21 +146,24 @@ $(function()
 		{
 			if(row.status == 0 || row.status == 90 || row.status == 64)		//死单、已签单、不准单商务部经理可以新生成客户，不允许再回访
 			{
-				if(_session_loginUserRole == 3)
+				if(_session_loginUserRole == 3 || _session_loginUserRole == -1)
 					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
 				$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
 			}
 			else
 			{
-				if(row.salesmanId != _session_loginUserId)
-					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
-				else
+				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1)
 					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+				else
+					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
 			}
 
-			if(_session_loginUserRole == 3)
+			if(_session_loginUserRole == 3 || _session_loginUserRole == -1)
 			{
-				$addInfoCostBtn.linkbutton('enable').linkbutton('show');
+				if(row.status == 34 || row.status == 90 || row.status == 64)		//在谈单、已签单、不准单才能打信息费
+					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
+				else
+					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
 				$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
 				$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
 				if(row.status == 90)
@@ -448,7 +451,7 @@ $(function()
 			}
 		});
 		
-		if(_session_loginUserRole == 3)
+		if(_session_loginUserRole == 3 || _session_loginUserRole == -1)
 			$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
 		else
 			$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
@@ -614,7 +617,7 @@ $(function()
 		$clientMgrTab.tabs('hideTool');
 		
 		$orderCheckMgrTab.tabs({});
-		if(_session_loginUserRole != 3)
+		if(_session_loginUserRole != 3 && _session_loginUserRole != -1)
 			$orderCheckMgrTab.tabs('hideHeader');
 	}
 	
@@ -786,8 +789,8 @@ $(function()
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$permitOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$permitOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -867,8 +870,8 @@ $(function()
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitRejectOrderForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$rejectOrderWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitRejectOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$rejectOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -937,16 +940,17 @@ $(function()
 		function getAddClientVisitWindowHtml()
 		{
 			return '<form id="addClientVisitForm" action="marketing/clientMgr/addOrderVisit" method="post" style="width: 100%;">' + 
+			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="visitorId"  name="visitorId" type="hidden" value="" />' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
 			'			<td align="right"><label>回访内容：</label></td>' + 
 			'			<td><input name="content" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
-			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddClientVisitForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitAddClientVisitForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 
@@ -965,6 +969,7 @@ $(function()
 			'else' +
 			'	selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$addClientVisitWindow.find(\'#visitorId\').val(selRows[0].salesmanId);' +
 			'function submitAddClientVisitForm()' + 
 			'{' + 
 			'	$addClientVisitWindow.find(\'form#addClientVisitForm\').form(\'submit\',' + 
@@ -1036,8 +1041,8 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="3">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddClientForm();" href="javascript:void(0)">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
+			'				<a class="easyui-linkbutton" onclick="submitAddClientForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
 			'	</table>' + 

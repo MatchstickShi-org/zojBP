@@ -217,28 +217,31 @@ public class User implements Serializable
 	public enum Role
 	{
 		/**超级管理员*/
-		superAdmin(-1),
+		superAdmin(-1, "超级管理员"),
 		/**管理员*/
-		admin(0),
+		admin(0, "管理员"),
 		/**商务部-业务员*/
-		marketingSalesman(1),
+		marketingSalesman(1, "业务员"),
 		/**商务部-主管*/
-		marketingLeader(2),
+		marketingLeader(2, "商务部主管"),
 		/**商务部-经理*/
-		marketingManager(3),
+		marketingManager(3, "商务部经理"),
 		/**主案部-设计师*/
-		designDesigner(4),
+		designDesigner(4, "设计师"),
 		/**主案部-主管*/
-		designLeader(5),
+		designLeader(5, "主案部主管"),
 		/**主案部-经理*/
-		designManager(6);
-		
-		private Role(Integer value)
+		designManager(6, "主案部经理");
+
+		private Role(Integer value, String zhName)
 		{
 			this.value = value;
+			this.zhName = zhName;
 		}
 		
 		private Integer value;
+		
+		private String zhName;
 		
 		public Integer value()
 		{
@@ -248,6 +251,11 @@ public class User implements Serializable
 		public static Role valueOf(Integer role)
 		{
 			return Stream.of(Role.values()).filter(r -> r.value() == role).findFirst().orElse(null);
+		}
+
+		public String getZhName()
+		{
+			return zhName;
 		}
 	}
 
@@ -309,5 +317,10 @@ public class User implements Serializable
 	public void setGroupId(Integer groupId)
 	{
 		this.groupId = groupId;
+	}
+	
+	public String getRoleName()
+	{
+		return Role.valueOf(this.role).getZhName();
 	}
 }

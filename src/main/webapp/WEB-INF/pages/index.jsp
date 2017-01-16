@@ -49,7 +49,7 @@
 			<div id="topDiv"><div id="logoDiv"></div><h1>中奥建业务管理平台</h1></div>
 			<div id="topDiv-bg2"></div>
 			<div id="topDiv-loginUser" style="font-size: 14px;">
-				欢迎你，${sessionScope.loginUser.alias}
+				欢迎你，${sessionScope.loginUser.alias} (${sessionScope.loginUser.roleName})
 				<a id="logoutBtn" href="logout">[注销]</a>
 			</div>
 		</div>

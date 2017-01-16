@@ -28,7 +28,7 @@ $.ajaxSetup
 			}
 			catch (e){}
 		}
-		if(typeof data == Object)
+		if(typeof data == 'object')
 		{
 			if(data.returnCode == 0)
 				$.messager.show({title: '提示', msg: data.msg || '操作成功。'})

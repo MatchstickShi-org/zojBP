@@ -14,7 +14,6 @@
 <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
 </head>
 <body>
 	<div id="container" align="center">
@@ -43,7 +42,7 @@
 								</tr>
 								<tr>
 									<td id="pwdLabelTd"></td>
-									<td class="valueTd"><input type="text" name="pwd" maxlength="20" onfocus="this.type='password'" onkeypress="return doLogin(event)" autocomplete="off"/></td>
+									<td class="valueTd"><input type="text" name="pwd" maxlength="20" onblur="this.type='text'" onfocus="this.type='password'" onkeypress="return doLogin(event)" autocomplete="off"/></td>
 								</tr>
 								<tr>
 									<td height="52px" id="button" colspan="2"><div id="loginBtn"></div></td>

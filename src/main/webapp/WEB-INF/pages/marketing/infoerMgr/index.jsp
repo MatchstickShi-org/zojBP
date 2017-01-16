@@ -43,13 +43,13 @@
 					<table style="width: 100%; min-width: 500px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
-							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required"/></td>
+							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 							<td align="right" style="min-width: 80px;"><label>信息员等级：</label></td>
-							<td width="70%"><input name="levelDesc" readonly="readonly" class="easyui-textbox"/></td>
+							<td width="70%"><input name="levelDesc" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right" ><label>业务员：</label></td>
-							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>性质：</label></td>
 							<td>
 								<label><input type="radio" name="nature" value="1" checked="checked">中介</label>
@@ -58,15 +58,15 @@
 						</tr>
 						<tr>
 							<td align="right"><label>工作单位：</label></td>
-							<td colspan="3"><input name="org" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="org" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>单位地址：</label></td>
-							<td colspan="3"><input name="address" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="address" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td colspan="3"><input name="telAll" style="width: 459px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="telAll" style="width: 442px;" readonly="readonly" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="3">
@@ -105,6 +105,7 @@
 <div id="addClientWindow"></div>
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
+var _session_loginUserRole = ${sessionScope.loginUser.role};
 </script>
 <script type="text/javascript" src="pages/marketing/infoerMgr/index.js"></script>
 </body>

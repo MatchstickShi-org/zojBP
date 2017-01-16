@@ -196,7 +196,8 @@ public class DesignClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		orderVisit.setVisitorId(loginUser.getId());
+		if(!loginUser.isSuperAdmin())
+			orderVisit.setVisitorId(loginUser.getId());
 		orderVisitSvc.addOrderVisit(orderVisit);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
