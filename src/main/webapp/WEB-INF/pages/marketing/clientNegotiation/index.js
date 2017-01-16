@@ -2,15 +2,10 @@ $(function()
 {
 	var $showNewOrderWindowBtn = $('a#showNewOrderWindowBtn');
 	var $orderDatagrid = $('table#orderDatagrid');
-	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
 	var $infoerNameTextbox = $('#clientNegotiation\\.infoerNameInput');
 	var $orderNameTextbox = $('#clientNegotiation\\.nameInput');
 	var $telTextbox = $('#clientNegotiation\\.telInput');
-	var $orderCheckInfoerNameTextbox = $('#order\\.infoerNameInput');
-	var $orderCheckNameTextbox = $('#order\\.nameInput');
-	var $orderCheckTelTextbox = $('#order\\.telInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
-	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $addInfoCostBtn = $('a#clientNegotiationMgr-addInfoCostBtn');
 	var $addCommissionCostBtn = $('a#clientNegotiationMgr-addCommissionCostBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
@@ -18,12 +13,8 @@ $(function()
 	var $showAddNewOrderWindow = $('div#showAddNewOrderWindow');
 	var $showAddCommissionCostWindow = $('div#showAddCommissionCostWindow');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
-	var $addClientWindow = $('div#addClientWindow');
-	var $permitOrderWindow = $('div#permitOrderWindow');
-	var $rejectOrderWindow = $('div#rejectOrderWindow');
 	var $selectInfoerWindow = $('div#selectInfoerWindow');
 	var $clientMgrTab = $('div#clientMgrTab');
-	var $orderCheckMgrTab = $('div#orderCheckMgrTab');
 	var $editClientForm = $('form#editOrderForm');
 	var $submitUpdateClientFormBtn = $('a#submitUpdateClientFormBtn');
 	var $refreshUpdateClientFormBtn = $('a#refreshUpdateClientFormBtn');
@@ -50,9 +41,6 @@ $(function()
 	function initWindow()
 	{
 		$addClientVisitWindow.window({width: 350});
-		$addClientWindow.window({width: 450});
-		$permitOrderWindow.window({width: 340});
-		$rejectOrderWindow.window({width: 340});
 		$selectInfoerWindow.window({width: 350});
 		$showAddInfoCostWindow.window({width: 500});
 		$showAddCommissionCostWindow.window({width: 500});
@@ -164,8 +152,6 @@ $(function()
 					$addInfoCostBtn.linkbutton('enable').linkbutton('show');
 				else
 					$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
-				$('#showPermitOrderWindowBtn').linkbutton('enable').linkbutton('show');
-				$('#showRejectOrderWindowBtn').linkbutton('enable').linkbutton('show');
 				if(row.status == 90)
 					$addCommissionCostBtn.linkbutton('enable').linkbutton('show');
 				else
@@ -176,8 +162,6 @@ $(function()
 				$showNewOrderWindowBtn.linkbutton('disable').linkbutton('hide');
 				$addInfoCostBtn.linkbutton('disable').linkbutton('hide');
 				$addCommissionCostBtn.linkbutton('disable').linkbutton('hide');
-				$('#showPermitOrderWindowBtn').linkbutton('disable').linkbutton('hide');
-				$('#showRejectOrderWindowBtn').linkbutton('disable').linkbutton('hide');
 			}
 			
 			$clientMgrTab.tabs('showTool');
@@ -228,52 +212,6 @@ $(function()
 				  pagination: true
 		});
 		
-		$orderCheckDatagrid.datagrid
-		({
-			idField: 'id',
-			toolbar: '#orderCheckDatagridToolbar',
-			columns:
-			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'name', title:'名称', width: 3},
-				{field:'telAll', title:'联系电话', width: 5},
-				{field:'orgAddr', title:'单位地址', width: 8},
-				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 8},
-				{field:'infoerName', title:'信息员', width: 3},
-				{field:'salesmanName', title:'业务员', width: 3},
-				{field:'designerName', title:'设计师', width: 3},
-				{field:'salesmanStatus', hidden: true},
-				{
-					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
-					{
-						switch (value)
-						{
-							case 30:
-								return '在谈单审核中';
-								break;
-							case 62:
-								return '不准单审核中';
-								break;
-							default:
-								return '未知状态';
-								break;
-						}
-					}
-				},
-				{field:'insertTime', title:'录入日期', width: 5}
-			]],
-			pagination: true,
-			singleSelect: true,
-			selectOnCheck: false,
-			checkOnSelect: false,
-			onSelect: function(idx, row)
-			{
-				refreshBtn(row);
-			},
-		});
-		
 		$orderVisitGrid.datagrid
 		({
 			idField: 'id',
@@ -289,8 +227,6 @@ $(function()
 			}
 		});
 
-		if($orderCheckDatagrid.length > 0)
-			$orderCheckDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientCheck';
 		$orderVisitGrid.datagrid('options').url = 'marketing/clientMgr/getOrderVisitByOrder';
 		$infoCostGrid.datagrid('options').url = 'marketing/clientMgr/getInfoCostByOrder';
 		$commissionCostGrid.datagrid('options').url = 'marketing/clientMgr/getCommissionCostByOrder';
@@ -458,13 +394,7 @@ $(function()
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
 		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var selRows = null;
-			if(index == 0)
-				selRows = $orderDatagrid.datagrid('getSelections');
-			else
-				selRows = $orderCheckDatagrid.datagrid('getSelections');
+			var selRows = $orderDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
@@ -473,47 +403,16 @@ $(function()
 		
 		$reloadInfoCostBtn.linkbutton({'onClick': function()
 		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var selRows = null;
-			if(index == 0)
-				selRows = $orderDatagrid.datagrid('getSelections');
-			else
-				selRows = $orderCheckDatagrid.datagrid('getSelections');
+			var selRows = $orderDatagrid.datagrid('getSelections');
 			if(selRows.length == 1)
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
 		
-		$queryCheckOrderBtn.linkbutton
-		({
-			'onClick': function()
-			{
-				var status =[]; 
-				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
-					status.push($(this).val());  
-				}); 
-				$orderCheckDatagrid.datagrid('load', 
-				{
-					name: $orderCheckNameTextbox.textbox('getValue'),
-					tel: $orderCheckTelTextbox.textbox('getValue'),
-					infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),
-					filter: $(':radio[name="clientNegotiation\.orderApproveFilterInput"]:checked').val(),
-					status: status
-				});
-			}
-		});
-		
 		$addInfoCostBtn.linkbutton({onClick: function()
 		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var orderIds = null;
-			if(index == 0)
-				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
-			else
-				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			var orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
 			if(orderIds.length == 0)
 			{
 				$.messager.alert('提示', '请选择要打款的客户。');
@@ -528,13 +427,7 @@ $(function()
 		
 		$addCommissionCostBtn.linkbutton({onClick: function()
 		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var orderIds = null;
-			if(index == 0)
-				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
-			else
-				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			var orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
 			if(orderIds.length == 0)
 			{
 				$.messager.alert('提示', '请选择要打款的客户。');
@@ -549,13 +442,7 @@ $(function()
 		
 		$addCommissionCostBtn.linkbutton({onClick: function()
 		{
-			var selTab = $orderCheckMgrTab.tabs('getSelected');
-			var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-			var orderIds = null;
-			if(index == 0)
-				orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
-			else
-				orderIds = $orderCheckDatagrid.datagrid('getSelectRowPkValues');
+			var orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
 			if(orderIds.length == 0)
 			{
 				$.messager.alert('提示', '请选择要打款的客户。');
@@ -568,46 +455,18 @@ $(function()
 			}).window('open').window('refresh', 'marketing/clientMgr/showAddCommissionCostWindow?orderId=' + orderIds[0]);
 		}});
 
-		$('#showAddOrderWindowBtn').linkbutton({onClick: showAddClientWindow});
 		$('#removeOrderBtn').linkbutton({onClick: removeOrder});
 		$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton({onClick: showAddClientVisitWindow});
-		$('#showPermitOrderWindowBtn').linkbutton({onClick: showPermitOrderWindow});
-		$('#showRejectOrderWindowBtn').linkbutton({onClick: showRejectOrderWindow});
 	}
 	
 	function initTab()
 	{
-		$orderCheckMgrTab.tabs
-		({
-			border: false,
-			onSelect: function(title, index)
-			{
-				var selRows = null;
-				if(title == '在谈单查询')
-					$orderDatagrid.datagrid('unselectAll').datagrid('reload');
-				else
-					$orderCheckDatagrid.datagrid('unselectAll').datagrid('reload');
-				$editClientForm.form('clear');
-				$orderVisitGrid.datagrid('loadData', []);
-				$designerVisitGrid.datagrid('loadData', []);
-				$orderApproveGrid.datagrid('loadData', []);
-				$infoCostGrid.datagrid('loadData', []);
-				$commissionCostGrid.datagrid('loadData', []);
-			}
-		});
-
 		$clientMgrTab.tabs
 		({
 			border: false,
 			onSelect: function(title, index)
 			{
-				var selTab = $orderCheckMgrTab.tabs('getSelected');
-				var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-				var selRows = null;
-				if(index == 0)
-					selRows = $orderDatagrid.datagrid('getSelections');
-				else
-					selRows = $orderCheckDatagrid.datagrid('getSelections');
+				var selRows = $orderDatagrid.datagrid('getSelections');
 				if(selRows.length == 1)
 					loadTabData(title, selRows[0]);
 				else
@@ -615,10 +474,6 @@ $(function()
 			}
 		});
 		$clientMgrTab.tabs('hideTool');
-		
-		$orderCheckMgrTab.tabs({});
-		if(_session_loginUserRole != 3 && _session_loginUserRole != -1)
-			$orderCheckMgrTab.tabs('hideHeader');
 	}
 	
 	function loadTabData(title, row)
@@ -673,13 +528,7 @@ $(function()
 
 	function submitEditClientForm()
 	{
-		var selTab = $orderCheckMgrTab.tabs('getSelected');
-		var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-		var selRows = null;
-		if(index == 0)
-			selRows = $orderDatagrid.datagrid('getSelections');
-		else
-			selRows = $orderCheckDatagrid.datagrid('getSelections');
+		var selRows = $orderDatagrid.datagrid('getSelections');
 		if(selRows.length == 0)
 		{
 			$.messager.alert('提示', '请选中一个客户。');
@@ -695,12 +544,8 @@ $(function()
 			success: function(data)
 			{
 				data = $.fn.form.defaults.success(data);
-				if(data.returnCode == 0){
-					if(index == 0)
-						$orderDatagrid.datagrid('reload');
-					else
-						$orderCheckDatagrid.datagrid('reload');
-				}
+				if(data.returnCode == 0)
+					$orderDatagrid.datagrid('reload');
 				else
 					$.messager.show({title: '提示', msg: data.msg});
 			}
@@ -750,181 +595,10 @@ $(function()
 			);
 		});
 	}
-	
-	function showPermitOrderWindow()
-	{
-		var selIds = $orderCheckDatagrid.datagrid('getSelections');
-		if(selIds.length == 0)
-		{
-			$.messager.alert('提示', '请选中要批准的客户。');
-			return;
-		}
-		$permitOrderWindow.window('clear');
-		$permitOrderWindow.window('open').window
-		({
-			title: '批准',
-			content: getPermitOrderWindowHtml()
-		}).window('open').window('center');
-		
-		function getPermitOrderWindowHtml()
-		{
-			return '<form id="permitOrderForm" action="marketing/clientMgr/permitOrder" method="post" style="width: 100%;">' + 
-			'	<table width="100%">' + 
-			'		<tr>' + 
-			'			<td align="right"><label>客户名称：</label></td>' + 
-			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>申 请 人：</label></td>' + 
-			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
-			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
-			'		</tr>' + 
-			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
-			'		<tr>' + 
-			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$permitOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
-			'			</td>' + 
-			'		</tr>' +
-			'	</table>' + 
-			'</form>' +
-			'<script type="text/javascript">' + 
-			'var $permitOrderWindow = $(\'div#permitOrderWindow\');' +
-			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
-			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
-			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
-			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
-			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
-			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
-			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
-			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
-			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
-			'function submitPermitOrderForm()' + 
-			'{' + 
-			'	$permitOrderWindow.find(\'form#permitOrderForm\').form(\'submit\',' + 
-			'	{' + 
-			'		onSubmit: function()' + 
-			'		{' + 
-			'			if(!$(this).form(\'validate\'))' + 
-			'				return false;' + 
-			'		},' + 
-			'		success: function(data)' + 
-			'		{' + 
-			'			data = $.fn.form.defaults.success(data);' + 
-			'			if(data.returnCode == 0)' + 
-			'			{' + 
-			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
-			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				$permitOrderWindow.window(\'close\');' + 
-			'			}' + 
-			'		}' + 
-			'	});' + 
-			'}' + 
-			'</script>';
-		}
-	}
-
-	function showRejectOrderWindow()
-	{
-		var selIds = $orderCheckDatagrid.datagrid('getSelections');
-		if(selIds.length == 0)
-		{
-			$.messager.alert('提示', '请选中要驳回的客户。');
-			return;
-		}
-		$rejectOrderWindow.window('clear');
-		$rejectOrderWindow.window('open').window
-		({
-			title: '驳回',
-			content: getRejectOrderWindowHtml()
-		}).window('open').window('center');
-		
-		function getRejectOrderWindowHtml()
-		{
-			return '<form id="rejectOrderForm" action="marketing/clientMgr/rejectOrder" method="post" style="width: 100%;">' + 
-			'	<table width="100%">' + 
-			'		<tr>' + 
-			'			<td align="right"><label>客户名称：</label></td>' + 
-			'			<td><input id="clientName" name="name" readonly="readonly" class="easyui-textbox" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>申 请 人：</label></td>' + 
-			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
-			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
-			'		</tr>' + 
-			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
-			'		<tr>' + 
-			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitRejectOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$rejectOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
-			'			</td>' + 
-			'		</tr>' +
-			'	</table>' + 
-			'</form>' +
-			'<script type="text/javascript">' + 
-			'var $rejectOrderWindow = $(\'div#rejectOrderWindow\');' +
-			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
-			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
-			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
-			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
-			'$rejectOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
-			'$rejectOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
-			'$rejectOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
-			'$rejectOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
-			'$rejectOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
-			'function submitRejectOrderForm()' + 
-			'{' + 
-			'	$rejectOrderWindow.find(\'form#rejectOrderForm\').form(\'submit\',' + 
-			'	{' + 
-			'		onSubmit: function()' + 
-			'		{' + 
-			'			if(!$(this).form(\'validate\'))' + 
-			'				return false;' + 
-			'		},' + 
-			'		success: function(data)' + 
-			'		{' + 
-			'			data = $.fn.form.defaults.success(data);' + 
-			'			if(data.returnCode == 0)' + 
-			'			{' + 
-			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
-			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
-			'				$rejectOrderWindow.window(\'close\');' + 
-			'			}else{' + 
-			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
-			'			}' + 
-			'		}' + 
-			'	});' + 
-			'}' + 
-			'</script>';
-		}
-	}
-
 
 	function showAddClientVisitWindow()
 	{
-		var selTab = $orderCheckMgrTab.tabs('getSelected');
-		var index = $orderCheckMgrTab.tabs('getTabIndex',selTab);
-		var selRows = null;
-		if(index == 0)
-			selRows = $orderDatagrid.datagrid('getSelections');
-		else
-			selRows = $orderCheckDatagrid.datagrid('getSelections');
+		var selRows = $orderDatagrid.datagrid('getSelections');
 		if(selRows.length == 0)
 		{
 			$.messager.alert('提示', '请选中一个客户。');
@@ -958,16 +632,8 @@ $(function()
 			'<script type="text/javascript">' + 
 			'var $addClientVisitWindow = $(\'div#addClientVisitWindow\');' +
 			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
-			'var $orderCheckDatagrid = $(\'table#orderCheckDatagrid\');' +
 			'var $orderVisitGrid = $(\'table#orderVisitGrid\');' +
-			'var $orderCheckMgrTab = $(\'div#orderCheckMgrTab\');' +
-			'var selTab = $orderCheckMgrTab.tabs("getSelected");' +
-			'var index = $orderCheckMgrTab.tabs("getTabIndex",selTab);' +
-			'var selRows = null;' +
-			'if(index == 0)' +
-			'	selRows = $orderDatagrid.datagrid("getSelections");' +
-			'else' +
-			'	selRows = $orderCheckDatagrid.datagrid("getSelections");' +
+			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$addClientVisitWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$addClientVisitWindow.find(\'#visitorId\').val(selRows[0].salesmanId);' +
 			'function submitAddClientVisitForm()' + 
@@ -985,170 +651,12 @@ $(function()
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
 			'				$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\', {orderId: selRows[0].id});' + 
-			'				if(index == 0)' + 
-			'					$orderDatagrid.datagrid(\'reload\');' + 
-			'				else' + 
-			'					$orderCheckDatagrid.datagrid("reload");' + 
+			'				$orderDatagrid.datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 
 			'}' + 
-			'</script>';
-		}
-	}
-	
-	function showAddClientWindow()
-	{
-		$addClientWindow.window('clear');
-		$addClientWindow.window('open').window
-		({
-			title: '新增客户',
-			content: getAddClientWindowHtml()
-		}).window('open').window('center');
-		
-		function getAddClientWindowHtml()
-		{
-			return '<form id="addClientForm" action="marketing/infoerMgr/addClient" method="post" style="width: 100%;">' + 
-			'	<table width="100%" id="clientTab" >' + 
-			'		<tr>' + 
-			'			<td style="width: 120px;" align="right"><label>联系人：</label></td>' + 
-			'			<td style="width: 180px;"><input name="name" class="easyui-textbox" required="required" style="width: 150px;"/></td>' + 
-			'			<td></td>' + 
-			'		</tr>' + 
-			'		<tr id="clientTelTr">' + 
-			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" onblur="checkClientTelValue(this);" required="required" style="width: 150px;"/><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="addClientTelBtn"></a></td>' + 
-			'			<td><font id="errorclienttel1" color="red"></font></td>' + 
-			'		</tr>' + 
-			'		<input id="clientTelCount" type="hidden" value="1" />' +
-			'		<input type="hidden" name="infoerId" id="addClientForm_infoerIdInput" type="hidden" value="1" />' +
-			'		<tr>' + 
-			'			<td align="right"><label>所属信息员：</label></td>' + 
-			'			<td><input id="addClientForm_infoerSearchbox" name="infoerName" prompt="请选择信息员" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td><input name="orgAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>工程名称：</label></td>' + 
-			'			<td><input name="projectName" class="easyui-textbox" style="width: 200px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>面积：</label></td>' + 
-			'			<td><input name="projectAddr" class="easyui-textbox" style="width: 200px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="center" colspan="3">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddClientForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
-			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
-			'			</td>' + 
-			'		</tr>' +
-			'	</table>' + 
-			'</form>' +
-			'<script type="text/javascript">' + 
-			'var $addClientWindow = $(\'div#addClientWindow\');' +
-			'var $orderDatagrid = $(\'table#orderDatagrid\');' +
-			'var selRows = $orderDatagrid.datagrid("getSelections");' +
-			'var $infoerNameSearchbox = $addClientWindow.find("#addClientForm_infoerSearchbox");' +
-			'$infoerNameSearchbox.searchbox({searcher: function(){showSelectInfoerWindow();}});' + 
-			'function submitAddClientForm()' + 
-			'{' + 
-			'	$addClientWindow.find(\'form#addClientForm\').form(\'submit\',' + 
-			'	{' + 
-			'		onSubmit: function()' + 
-			'		{' + 
-			'			if(!$(this).form(\'validate\'))' + 
-			'				return false;' + 
-			'			if($(\'#tel1\').val() == ""){' + 
-			'      			$(\'#errorclienttel1\').html("联系电话未填！"); '+
-			'				return false;' + 
-			'			}' + 
-			'			var reg = /^1[0-9]{10}$/;'+
-			'			if(!(reg.test($(\'#tel1\').val()))){'+
-			'				$(\'#errorclienttel1\').html("无效的手机号码！");'+
-			'				$(\'#tel1\').val().focus(); '+
-			'				return false; '+
-			'			}'+
-			'		},' + 
-			'		success: function(data)' + 
-			'		{' + 
-			'			data = $.fn.form.defaults.success(data);' + 
-			'			if(data.returnCode == 0)' + 
-			'			{' + 
-			'				$orderDatagrid.datagrid(\'reload\');' + 
-			'				$addClientWindow.window(\'close\');' + 
-			'			}' + 
-			'		}' + 
-			'	});' + 
-			'}' + 
-			'function checkClientTelValue(obj)' + 
-			'{' + 
-			'	var errorId = obj.name;'+
-			'	errorId = errorId.charAt(errorId.length - 1);'+
-			'	if(obj.value.length==0) '+
-			' 	{ '+
-			'      $(\'#errorclienttel\'+errorId+\'\').html("联系电话未填！"); '+
-			'      return; '+
-			'   } '+
-			'	var reg = /^1[0-9]{10}$/;'+
-			'	if(!(reg.test(obj.value))){'+
-			'		$(\'#errorclienttel\'+errorId+\'\').html("无效的手机号码！");'+
-			'		obj.focus(); '+
-			'		return; '+
-			'	}else{'+
-			'		$(\'#errorclienttel\'+errorId+\'\').html("");'+
-			'	}'+
-			'	if(errorId > 1) '+
-			' 	{ '+
-			'		if($(\'#tel1\').val() == obj.value){' + 
-			'      		$(\'#errorclienttel\'+errorId+\'\').html("联系电话重复！"); '+
-			'      		return; '+
-			'   	} '+
-			'   } '+
-			'	$.ajax'+
-			'	({'+
-			'		url: \'marketing/infoerMgr/checkClientTel\','+
-			'		data: {tel:obj.value},'+
-			'		success: function(data, textStatus, jqXHR)'+
-			'		{'+
-			'			if(data.returnCode != 0){'+
-			'				$(\'#errorclienttel\'+errorId+\'\').html(data.msg); '+  
-			'				obj.focus(); '+  
-			'			}else{ '+  
-			'				$(\'#errorclienttel\'+errorId+\'\').html(""); '+  
-			'			} '+  
-			'		}'+
-			'	});'+
-			'} ' + 
-			'function removeTelAdd(obj)' +
-			'{' +
-			'	$.messager.confirm(\'确认\',\'您确认想要删除此联系电话吗？\',function(r){' +  
-			'   	if (r){ ' +
-			' 			var count = $(\'#clientTelCount\').val();' + 
-			' 			count = parseInt(count)-1;' + 
-			' 			$(\'#clientTelCount\').val(count);' +
-			'			obj.parent().parent().remove();' +
-			'    	}  ' +
-			'	}); ' +
-			'} ' +
-			'$(\'#addClientTelBtn\').click(function()'+
-			'{' + 
-			' 	var count = $(\'#clientTelCount\').val();' + 
-			' 	count = parseInt(count)+1;' + 
-			' 	if(count <6){' + 
-			' 		$(\'#clientTelCount\').val(count);' + 
-			'		var appendHtml =\'<tr>'+
-			'		<td align="right"><label>联系电话：</label></td>'+
-			'		<td><input name="tel\'+count+\'" onblur="checkClientTelValue(this);" class="easyui-textbox" required="required" style="width: 150px;"/><a href="javascript:void(0)" onclick="removeTelAdd($(this));" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeClientTelBtn">删除</a></td>' +
-			'		<td><font style="text-align:top" id="errorclienttel\'+count+\'" color="red"></font></td>' +
-			'		</tr>\';' + 
-			'		$(\'#clientTelTr\').after(appendHtml);' +   
-			'	}else{' +   
-			'		$.messager.alert(\'提示\', \'联系电话最多只能添加5个！\');' +   
-			'	}' +   
-			'});' + 
 			'</script>';
 		}
 	}

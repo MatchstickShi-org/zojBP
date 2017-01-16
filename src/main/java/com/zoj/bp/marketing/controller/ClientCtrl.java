@@ -84,6 +84,12 @@ public class ClientCtrl
 		return "/marketing/clientTrace/index";
 	}
 	
+	@RequestMapping(value = "/toClientCheckView")
+	public String toClientCheckView() throws BusinessException
+	{
+		return "/marketing/clientCheck/index";
+	}
+	
 	
 	@RequestMapping(value = "/toClientNegotiationView")
 	public String toClientNegotiationView() throws BusinessException
@@ -144,36 +150,6 @@ public class ClientCtrl
 	public DatagridVo<OrderApprove> getOrderApproveByOrderId(Pagination pagination,@RequestParam(required=false) Integer orderId,HttpSession session)
 	{
 		return orderApproveSvc.getAllOrderApprove(pagination, null, orderId);
-	}
-	
-	/**
-	 * 获取客户跟踪记录
-	 * @param pagination
-	 * @param name
-	 * @param tel
-	 * @param infoerName
-	 * @param status
-	 * @param session
-	 * @return
-	 */
-	@RequestMapping(value = "/getAllClientCheck")
-	@ResponseBody
-	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
-			@RequestParam(required=false) String name,
-			@RequestParam(required=false) String tel,
-			@RequestParam(required=false) String infoerName,
-			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
-	{
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(ArrayUtils.isEmpty(status))
-		{
-			status = new Integer[]
-			{
-				Status.talkingMarketingManagerAuditing.value(),
-				Status.disagreeMarketingManagerAuditing.value()
-			};
-		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
 	}
 	
 	/**
@@ -272,36 +248,6 @@ public class ClientCtrl
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setClaimerName(loginUser.getAlias());
 		orderApprove.setOperate(2);
-		orderSvc.addOrderApprove(orderApprove);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	@RequestMapping(value = "/permitOrder")
-	@ResponseBody
-	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
-		orderApprove.setOperate(1);
-		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	@RequestMapping(value = "/rejectOrder")
-	@ResponseBody
-	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
-		orderApprove.setOperate(0);
-		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
