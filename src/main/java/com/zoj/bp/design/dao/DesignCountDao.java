@@ -70,7 +70,7 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 				"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
 				"LEFT JOIN `ORDER` O2 ON U.ID = O2.DESIGNER_ID AND O2.`STATUS` = 90 "+
 				"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 0 "+
-				"WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND U.ID =:userId AND U.`STATUS` = 1 "+
+				"WHERE U.ID =:userId "+
 			") U "; 
 		return jdbcOps.queryForObject(sql,new MapSqlParameterSource("userId", userId), BeanPropertyRowMapper.newInstance(DesignCount.class));
 	}

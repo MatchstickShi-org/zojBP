@@ -85,7 +85,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 			"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) "+
 			"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 "+
 			"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` in(34,90,0,60,62,64) AND O5.INSERT_TIME BETWEEN CONCAT(concat(date_format(LAST_DAY(date_sub(CURRENT_DATE,interval 1 day)),'%Y-%m-'),'01'),' 00:00:00') AND CONCAT(LAST_DAY(date_sub(CURRENT_DATE,interval 1 day)),' 23:59:59') "+ 
-			"WHERE (U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3) AND U.ID = :userId AND U.`STATUS` = 1"+
+			"WHERE U.ID = :userId "+
 		") U ";
 		return jdbcOps.queryForObject(sql,new MapSqlParameterSource("userId", userId), BeanPropertyRowMapper.newInstance(MarketingCount.class));
 	}
