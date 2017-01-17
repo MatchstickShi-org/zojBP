@@ -12,59 +12,34 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<div id="orderCheckMgrTab">
-			<div title="在谈单查询">
-				<table id="orderDatagrid" border="false"></table>
-				<div id="orderDatagridToolbar">
-					<label style="vertical-align: middle;">名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.nameInput"/>
-					<label style="vertical-align: middle;">电话：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.telInput"/>
-					<label style="vertical-align: middle;">设计师名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.designerNameInput"/>
-					<c:if test="${sessionScope.loginUser.role <= 0 || sessionScope.loginUser.role >= 5}">
-						<label><input type="radio" value="0" name="clientNegotiation.orderFilterInput" />全部客户</label>
-						<label><input type="radio" value="1" name="clientNegotiation.orderFilterInput" checked="checked"/>我的客户</label>
-					</c:if>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
-					<br>
-					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="" name="clientNegotiation.statusInput" />全部</label>
-					<label><input type="checkbox" value="34" name="clientNegotiation.statusInput" checked="checked"/>在谈单已批准</label>
-					<label><input type="checkbox" value="90" name="clientNegotiation.statusInput"/>已签单</label>
-					<label><input type="checkbox" value="0" name="clientNegotiation.statusInput"/>死单</label>
-					<label><input type="checkbox" value="60" name="clientNegotiation.statusInput"/>不准单-主案部经理审核中</label>
-					<label><input type="checkbox" value="62" name="clientNegotiation.statusInput"/>不准单-商务部经理审核中</label>
-					<label><input type="checkbox" value="64" name="clientNegotiation.statusInput"/>不准单</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="dealOrderWindowBtn">已签单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="repulseOrderWindowBtn">打回正跟踪</a>
-					<c:if test="${sessionScope.loginUser.role == 6}">
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="transferOrderWindowBtn">业务转移</a>
-					</c:if>
-				</div>
-			</div>
-			<c:if test="${sessionScope.loginUser.role == 6 || sessionScope.loginUser.role == -1}">
-			<div title="审核">
-				<table id="orderCheckDatagrid" border="false"></table>
-				<div id="orderCheckDatagridToolbar">
-					<label style="vertical-align: middle;">名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
-					<label style="vertical-align: middle;">电话：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
-					<label style="vertical-align: middle;">设计师名称：</label>
-					<input style="width:100px;" class="easyui-textbox" id="order.designerNameInput"/>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
-					<br>
-					<label style="vertical-align: middle;">状态筛选：</label>
-					<label><input type="checkbox" value="32" name="orderStatusInput" />在谈单申请</label>
-					<label><input type="checkbox" value="60" name="orderStatusInput"/>不准单申请</label>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showPermitOrderWindowBtn">批准</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="showCheckDeadOrderWindowBtn">死单</a>
-				</div>
-			</div>
+		<table id="orderDatagrid" border="false"></table>
+		<div id="orderDatagridToolbar">
+			<label style="vertical-align: middle;">名称：</label>
+			<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.nameInput"/>
+			<label style="vertical-align: middle;">电话：</label>
+			<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.telInput"/>
+			<label style="vertical-align: middle;">设计师名称：</label>
+			<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.designerNameInput"/>
+			<c:if test="${sessionScope.loginUser.role <= 0 || sessionScope.loginUser.role >= 5}">
+				<label><input type="radio" value="0" name="clientNegotiation.orderFilterInput" />全部客户</label>
+				<label><input type="radio" value="1" name="clientNegotiation.orderFilterInput" checked="checked"/>我的客户</label>
+			</c:if>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+			<br>
+			<label style="vertical-align: middle;">状态筛选：</label>
+			<label><input type="checkbox" value="" name="clientNegotiation.statusInput" />全部</label>
+			<label><input type="checkbox" value="34" name="clientNegotiation.statusInput" checked="checked"/>在谈单已批准</label>
+			<label><input type="checkbox" value="90" name="clientNegotiation.statusInput"/>已签单</label>
+			<label><input type="checkbox" value="0" name="clientNegotiation.statusInput"/>死单</label>
+			<label><input type="checkbox" value="60" name="clientNegotiation.statusInput"/>不准单-主案部经理审核中</label>
+			<label><input type="checkbox" value="62" name="clientNegotiation.statusInput"/>不准单-商务部经理审核中</label>
+			<label><input type="checkbox" value="64" name="clientNegotiation.statusInput"/>不准单</label>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="dealOrderWindowBtn">已签单</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" id="deadOrderWindowBtn">死单</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="disagreeOrderWindowBtn">申请不准单</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="repulseOrderWindowBtn">打回正跟踪</a>
+			<c:if test="${sessionScope.loginUser.role == 6}">
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="transferOrderWindowBtn">业务转移</a>
 			</c:if>
 		</div>
 	</div>
@@ -136,14 +111,10 @@
 </div>
 <div id="addClientVisitWindow"></div>
 <div id="addVisitCommentWindow"></div>
-<div id="permitOrderWindow"></div>
-<div id="rejectOrderWindow"></div>
 <div id="dealOrderWindow"></div>
 <div id="deadOrderWindow"></div>
-<div id="checkDeadOrderWindow"></div>
 <div id="disagreeOrderWindow"></div>
 <div id="repulseOrderWindow"></div>
-<div id="selectDesignerWindow"></div>
 <div id="businessTransferWindow"></div>
 <div id="applyVisitWindow"></div>
 <script type="text/javascript">

@@ -118,29 +118,6 @@ public class ClientCheckCtrl
 	}
 	
 	/**
-	 * 新增客户的回访记录
-	 * @param orderVisit
-	 * @param errors
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/addOrderVisit")
-	@ResponseBody
-	public Map<String, ?> addOrderVisit(@Valid OrderVisit orderVisit,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部人员，无法操作。"));
-		if(!loginUser.isSuperAdmin())
-			orderVisit.setVisitorId(loginUser.getId());
-		orderVisitSvc.addOrderVisit(orderVisit);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	/**
 	 * 审核通过
 	 * @param orderApprove
 	 * @param errors

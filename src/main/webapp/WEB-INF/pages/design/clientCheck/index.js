@@ -28,37 +28,6 @@ $(function()
 	
 	function init()
 	{
-		function refreshBtn(row)
-		{
-			if(row.designerId == _session_loginUserId || _session_loginUserRole == -1)
-			{
-				if(row.status == 90 || row.status == 0 || row.status == 64)		//已签单、死单、不准单禁止新增回访记录
-				{
-					$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
-				}
-				else
-				{
-					$submitUpdateClientFormBtn.linkbutton('enable').linkbutton('show');
-				}
-			}
-			else
-			{
-				$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
-			}
-			$clientMgrTab.tabs('showTool');
-			loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
-		}
-		
-		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
-		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
-		{
-			var selRows = $orderCheckDatagrid.datagrid('getSelections');
-			if(selRows.length == 1)
-				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
-			else
-				$.messager.alert('提示', '请选中一个客户。');
-		}});
-		
 		$orderCheckDatagrid.datagrid
 		({
 			idField: 'id',
@@ -100,12 +69,45 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			url: 'design/clientCheckMgr/getAllClientCheck',
+			url: 'design/clientMgr/getAllClientCheck',
 			onSelect: function(idx, row)
 			{
 				refreshBtn(row);
-			}
+			},
 		});
+		
+		function refreshBtn(row)
+		{
+			if(row.designerId == _session_loginUserId || _session_loginUserRole == -1)
+			{
+				if(row.status == 90 || row.status == 0 || row.status == 64)		//已签单、死单、不准单禁止新增回访记录
+				{
+					$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
+				}
+				else
+				{
+					$submitUpdateClientFormBtn.linkbutton('enable').linkbutton('show');
+				}
+			}
+			else
+			{
+				$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
+			}
+			$clientMgrTab.tabs('showTool');
+			loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
+		}
+		
+		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
+		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
+		{
+			var selRows = $orderCheckDatagrid.datagrid('getSelections');
+			if(selRows.length == 1)
+				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
+			else
+				$.messager.alert('提示', '请选中一个客户。');
+		}});
+		
+		
 		
 		$queryCheckOrderBtn.linkbutton
 		({
@@ -146,7 +148,7 @@ $(function()
 					  }
 			});
 			
-			$orderVisitGrid.datagrid('options').url = 'design/clientCheckMgr/getOrderVisitByOrder';
+			$orderVisitGrid.datagrid('options').url = 'design/clientMgr/getOrderVisitByOrder';
 		}
 		
 		$orderStylistVisitGrid.datagrid
@@ -168,7 +170,7 @@ $(function()
 			}
 		});
 		
-		$orderStylistVisitGrid.datagrid('options').url = 'design/clientCheckMgr/getStylistOrderVisitByOrder';
+		$orderStylistVisitGrid.datagrid('options').url = 'design/clientMgr/getStylistOrderVisitByOrder';
 		$orderApproveGrid.datagrid
 		({
 			idField: 'id',
@@ -337,6 +339,7 @@ $(function()
 		$permitOrderWindow.window({width: 340});
 		$rejectOrderWindow.window({width: 340});
 		$checkDeadOrderWindow.window({width: 340});
+		$selectDesignerWindow.window({width: 500});
 		
 		function showPermitOrderWindow()
 		{
@@ -559,7 +562,7 @@ $(function()
 			'			{' + 
 			'				$orderCheckDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
-			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
+			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'loadData\', []);' + 
 			'				$rejectOrderWindow.window(\'close\');' + 
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
@@ -568,7 +571,6 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
-		
 		
 		function showCheckDeadOrderWindow()
 		{
@@ -655,6 +657,8 @@ $(function()
 			'	});' + 
 			'}' + 
 			'</script>';
+		
 	}
+
 	init();
 });
