@@ -85,17 +85,11 @@ public class ClientCtrl
 				"underling", userSvc.getMarketUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
-	@RequestMapping(value = "/toClientCheckView")
-	public String toClientCheckView() throws BusinessException
-	{
-		return "/marketing/clientCheck/index";
-	}
-	
-	
 	@RequestMapping(value = "/toClientNegotiationView")
-	public String toClientNegotiationView() throws BusinessException
+	public ModelAndView toClientNegotiationView(HttpSession session) throws BusinessException
 	{
-		return "/marketing/clientNegotiation/index";
+		return new ModelAndView("/marketing/clientNegotiation/index",
+				"underling", userSvc.getMarketUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
 	/**

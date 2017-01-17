@@ -29,6 +29,7 @@
 			<div title="详情" border="false" style="padding: 2px;">
 				<form id="editUserForm" action="sysMgr/userMgr/editUser" method="post" style="width: 100%;">
 					<input type="hidden" name="id">
+					<input type="hidden" name="groupId">
 					<table style="width: 100%; min-width: 500px;">
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>用户名：</label></td>

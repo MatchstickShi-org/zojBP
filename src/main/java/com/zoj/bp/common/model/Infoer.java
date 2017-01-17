@@ -31,7 +31,7 @@ public class Infoer implements Serializable
 	private String name;
 	
 	@NotNull
-	private String nature;
+	private Integer nature;
 	
 	private String org;
 	
@@ -118,11 +118,11 @@ public class Infoer implements Serializable
 		this.name = name;
 	}
 
-	public String getNature() {
+	public Integer getNature() {
 		return nature;
 	}
 
-	public void setNature(String nature) {
+	public void setNature(Integer nature) {
 		this.nature = nature;
 	}
 

@@ -63,10 +63,15 @@
 						<tr>
 							<td align="right" ><label>业务员：</label></td>
 							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
-							<td align="right" style="vertical-align: mid; min-width: 80px;"><label>性质：</label></td>
-							<td>
-								<label><input type="radio" name="nature" value="1" checked="checked">中介</label>
-								<label><input type="radio" name="nature" value="2">售楼</label>
+						</tr>
+						<tr>
+							<td align="right" style="vertical-align: mid;"><label>性质：</label></td>
+							<td colspan="3">
+								<label><input type="radio" name="nature" value="1" checked="checked">售楼</label>
+								<label><input type="radio" name="nature" value="2">商业中介</label>
+								<label><input type="radio" name="nature" value="3">二手房中介</label>
+								<label><input type="radio" name="nature" value="4">招商</label>
+								<label><input type="radio" name="nature" value="5">物业</label>
 							</td>
 						</tr>
 						<tr>

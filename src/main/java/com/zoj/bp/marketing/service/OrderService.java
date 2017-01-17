@@ -88,7 +88,7 @@ public class OrderService implements IOrderService
 						dbUser, pagination, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
 			else
 				os = this.getOrdersByDesigner(
-						dbUser, pagination, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
+						pagination, dbUser, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
 		}
 		else
 			os = orderDao.getOrdersByUser(
@@ -107,10 +107,10 @@ public class OrderService implements IOrderService
 	}
 	
 	@Override
-	public DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, 
-			String name, String tel, String infoerName, Integer designerId, Integer isKey, Integer... status)
+	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, 
+			String clientName, String tel, String infoerName, Integer designerId, Integer isKey, Integer... status)
 	{
-		return orderDao.getOrdersByDesigner(pagination, designer, name, tel, infoerName, designerId, isKey, status);
+		return orderDao.getOrdersByDesigner(pagination, designer, clientName, tel, infoerName, designerId, isKey, status);
 	}
 
 	@Override

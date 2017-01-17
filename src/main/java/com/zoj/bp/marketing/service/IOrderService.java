@@ -108,9 +108,9 @@ public interface IOrderService {
 			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status);
 
 	/**
-	 * @param designer
 	 * @param pagination
-	 * @param name
+	 * @param designer
+	 * @param clientName
 	 * @param tel
 	 * @param infoerName
 	 * @param designerId TODO
@@ -118,7 +118,7 @@ public interface IOrderService {
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
+	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String clientName, String tel, String infoerName,
 			Integer designerId, Integer isKey, Integer... status);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;

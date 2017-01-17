@@ -23,7 +23,7 @@
 			<c:if test="${sessionScope.loginUser.role != 1}">
 				<label>下属业务员：</label>
 				<select style="width: 120px;" class="easyui-combobox" id="clientTrace-salesmanCombobox" data-options="textField: 'alias'">
-					<option value="" style="color: gray;">-- 全部 --</option>
+					<option value="">-- 全部 --</option>
 					<c:forEach items="${requestScope.underling}" var="underling">
 						<option value="${underling.id}">${underling.alias}</option>
 					</c:forEach>

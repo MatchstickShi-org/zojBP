@@ -61,7 +61,7 @@ $(function()
 								break;
 							case 30:
 							case 32:
-								return '审核中';
+								return '在谈单审核中';
 								break;
 							case 14:
 								return '已打回';
@@ -78,7 +78,7 @@ $(function()
 					styler: function (value, row, index)
 					{
 						if(value > 5)
-							return 'background-color: orange;';
+							return 'background-color: red; color: white;';
 		           }
 				}
 			]],
@@ -135,12 +135,12 @@ $(function()
 			},
 		});
 		
-		$('#orderDatagridToolbar :checkbox').click(function()
+		$('#orderDatagridToolbar :checkbox[name="statusInput"]').click(function()
 		{
 			if($(this).attr('value') == '')		//全选
-				$('#orderDatagridToolbar :checkbox[value!=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="statusInput"][value!=""]').attr("checked", false);
 			else
-				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="statusInput"][value=""]').attr("checked", false);
 		});
 		
 		$queryOrderBtn.linkbutton

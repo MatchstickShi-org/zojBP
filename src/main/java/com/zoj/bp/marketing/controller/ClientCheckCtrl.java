@@ -15,6 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -31,6 +32,7 @@ import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.IOrderService;
 import com.zoj.bp.marketing.service.IOrderVisitService;
+import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 
 /**
  * @author wangw
@@ -52,10 +54,14 @@ public class ClientCheckCtrl
 	@Autowired
 	private IClientService clientSvc;
 	
+	@Autowired
+	private IUserService userSvc;
+	
 	@RequestMapping(value = "/toClientCheckView")
-	public String toClientCheckView() throws BusinessException
+	public ModelAndView toClientCheckView(HttpSession session) throws BusinessException
 	{
-		return "/marketing/clientCheck/index";
+		return new ModelAndView("/marketing/clientCheck/index",
+				"underling", userSvc.getMarketUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
 	/**
@@ -87,6 +93,8 @@ public class ClientCheckCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer salesmanId,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
@@ -99,7 +107,10 @@ public class ClientCheckCtrl
 				Status.disagreeMarketingManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, null, isKey, status);
+		if (filter == null || filter == 1)
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+		else
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	/**

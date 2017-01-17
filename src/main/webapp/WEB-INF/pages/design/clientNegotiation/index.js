@@ -1,9 +1,9 @@
 $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
-	var $designerNameTextbox = $('#clientNegotiation\\.designerNameInput');
-	var $orderNameTextbox = $('#clientNegotiation\\.nameInput');
-	var $telTextbox = $('#clientNegotiation\\.telInput');
+	var $orderNameTextbox = $('#clientNegotiation-nameInput');
+	var $telTextbox = $('#clientNegotiation-telInput');
+	var $designerCombobox = $('#clientNegotiation-designerCombobox');
 	var $orderFilterInput = $(':radio[name="clientNegotiation-orderFilterInput"]');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
@@ -102,7 +102,7 @@ $(function()
 					styler: function (value, row, index)
 					{
 						if(value > 1)
-							return 'background-color: orange;';
+							return 'background-color: red; color: white;';
 					}
 				}
 			]],
@@ -122,7 +122,7 @@ $(function()
 				status: function()
 				{
 					var status =[]; 
-					$('#orderDatagridToolbar :input[name="clientNegotiation\\.statusInput"]:checked').each(function()
+					$('#orderDatagridToolbar :input[name="clientNegotiation-statusInput"]:checked').each(function()
 					{ 
 						status.push($(this).val());   
 					});
@@ -178,12 +178,12 @@ $(function()
 			loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 		}
 		
-		$('#orderDatagridToolbar :checkbox').click(function()
+		$('#orderDatagridToolbar :checkbox[name="clientNegotiation-statusInput"]').click(function()
 		{
 			if($(this).attr('value') == '')		//全选
-				$('#orderDatagridToolbar :checkbox[value!=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="clientNegotiation-statusInput"][value!=""]').attr("checked", false);
 			else
-				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="clientNegotiation-statusInput"][value=""]').attr("checked", false);
 		});
 		
 		$queryOrderBtn.linkbutton
@@ -191,15 +191,15 @@ $(function()
 			'onClick': function()
 			{
 				var status =[]; 
-				$('#orderDatagridToolbar :input[name="clientNegotiation\\.statusInput"]:checked').each(function()
+				$('#orderDatagridToolbar :input[name="clientNegotiation-statusInput"]:checked').each(function()
 				{ 
 					status.push($(this).val());   
 				});
 				$orderDatagrid.datagrid('load', 
 				{
-					name: $orderNameTextbox.textbox('getValue'), 
+					clientName: $orderNameTextbox.textbox('getValue'), 
 					tel: $telTextbox.textbox('getValue'),
-					designerName: $designerNameTextbox.textbox('getValue'),
+					designerId: $designerCombobox.length == 0 ? null : $designerCombobox.combobox('getValue'),
 					filter: $orderFilterInput.filter(':checked').val(),
 					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
 					status: status

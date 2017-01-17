@@ -15,13 +15,20 @@
 		<table id="orderCheckDatagrid" border="false"></table>
 		<div id="orderCheckDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
-			<input style="width:100px;" class="easyui-textbox" id="order.nameInput"/>
+			<input style="width:100px;" class="easyui-textbox" id="orderApprove-nameInput"/>
 			<label style="vertical-align: middle;">电话：</label>
-			<input style="width:100px;" class="easyui-textbox" id="order.telInput"/>
-			<label style="vertical-align: middle;">设计师名称：</label>
-			<input style="width:100px;" class="easyui-textbox" id="order.designerNameInput"/>
+			<input style="width:100px;" class="easyui-textbox" id="orderApprove-telInput"/><label>下属设计师：</label>
+			<select style="width: 120px;" class="easyui-combobox" id="orderApprove-designerCombobox" data-options="textField: 'alias'">
+				<option value="">-- 全部 --</option>
+				<c:forEach items="${requestScope.underling}" var="underling">
+					<option value="${underling.id}">${underling.alias}</option>
+				</c:forEach>
+			</select>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 			<br>
+			<label><input type="checkbox" value="1" name="orderApprove-isKey" />重点客户</label>
+			<label><input type="radio" value="0" name="orderApprove-filterInput" />全部客户</label>
+			<label><input type="radio" value="1" name="orderApprove-filterInput" checked="checked"/>我的客户</label>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="32" name="orderStatusInput" />在谈单申请</label>
 			<label><input type="checkbox" value="60" name="orderStatusInput"/>不准单申请</label>

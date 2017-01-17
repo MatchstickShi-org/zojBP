@@ -15,16 +15,29 @@
 		<table id="orderDatagrid" border="false"></table>
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
-			<input class="easyui-textbox" id="clientNegotiation.nameInput" style="width: 120px;"/>
+			<input class="easyui-textbox" id="clientNegotiation-nameInput" style="width: 120px;"/>
 			<label style="vertical-align: middle;">电话：</label>
-			<input class="easyui-textbox" id="clientNegotiation.telInput" style="width: 120px;"/>
+			<input class="easyui-textbox" id="clientNegotiation-telInput" style="width: 120px;"/>
 			<label style="vertical-align: middle;">信息员：</label>
-			<input class="easyui-textbox" id="clientNegotiation.infoerNameInput" style="width: 120px;"/>
-			<label><input type="radio" value="0" name="clientNegotiation-orderFilterInput" />全部客户</label>
-			<label><input type="radio" value="1" name="clientNegotiation-orderFilterInput" checked="checked"/>我的客户</label>
+			<input class="easyui-textbox" id="clientNegotiation-infoerNameInput" style="width: 120px;"/>
+			<c:if test="${sessionScope.loginUser.role != 1}">
+				<label>下属业务员：</label>
+				<select style="width: 120px;" class="easyui-combobox" id="clientNegotiation-salesmanCombobox" data-options="textField: 'alias'">
+					<option value="">-- 全部 --</option>
+					<c:forEach items="${requestScope.underling}" var="underling">
+						<option value="${underling.id}">${underling.alias}</option>
+					</c:forEach>
+				</select>
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+				<br>
+				<label><input type="radio" value="0" name="clientNegotiation-orderFilterInput" />全部客户</label>
+				<label><input type="radio" value="1" name="clientNegotiation-orderFilterInput" checked="checked"/>我的客户</label>
+			</c:if>
+			<c:if test="${sessionScope.loginUser.role == 1}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+				<br>
+			</c:if>
 			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
-			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="" name="statusInput" />全部</label>
 			<label><input type="checkbox" value="34" name="statusInput" checked="checked" />在谈单</label>

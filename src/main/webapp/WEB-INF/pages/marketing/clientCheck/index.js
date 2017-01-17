@@ -1,9 +1,10 @@
 $(function()
 {
 	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
-	var $orderCheckInfoerNameTextbox = $('#order\\.infoerNameInput');
-	var $orderCheckNameTextbox = $('#order\\.nameInput');
-	var $orderCheckTelTextbox = $('#order\\.telInput');
+	var $orderCheckInfoerNameTextbox = $('#orderApprove-infoerNameInput');
+	var $orderCheckNameTextbox = $('#orderApprove-nameInput');
+	var $orderCheckTelTextbox = $('#orderApprove-telInput');
+	var $salesmanCombobox = $('#orderApprove-salesmanCombobox');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
 	var $reloadInfoCostBtn = $('a#reloadInfoCostBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
@@ -94,6 +95,18 @@ $(function()
 					return 'color: red;';
 			},
 			url: 'marketing/clientCheckMgr/getAllClientCheck',
+			queryParams:
+			{
+				filter: $(':radio[name="orderApprove-filterInput"]:checked').val(),
+				status: function()
+				{
+					var status =[]; 
+					$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
+						status.push($(this).val());  
+					});
+					return status;
+				}()
+			},
 			onSelect: function(idx, row)
 			{
 				refreshBtn(row);
@@ -249,13 +262,15 @@ $(function()
 				var status =[]; 
 				$('#orderCheckDatagridToolbar :input[name="orderStatusInput"]:checked').each(function(){ 
 					status.push($(this).val());  
-				}); 
+				});
 				$orderCheckDatagrid.datagrid('load', 
 				{
 					name: $orderCheckNameTextbox.textbox('getValue'),
 					tel: $orderCheckTelTextbox.textbox('getValue'),
 					infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),
-					filter: $(':radio[name="clientNegotiation\.orderApproveFilterInput"]:checked').val(),
+					salesmanId: $salesmanCombobox.combobox('getValue'),
+					filter: $(':radio[name="orderApprove-filterInput"]:checked').val(),
+					isKey: $(':checkbox[name="orderApprove-isKey"]:checked').val(),
 					status: status
 				});
 			}

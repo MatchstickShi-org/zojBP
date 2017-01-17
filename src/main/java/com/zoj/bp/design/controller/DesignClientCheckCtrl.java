@@ -16,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -60,15 +61,16 @@ public class DesignClientCheckCtrl
 	private IOrderApproveService orderApproveSvc;
 	
 	@RequestMapping(value = "/toClientCheckView")
-	public String toClientCheckView() throws BusinessException
+	public ModelAndView toClientCheckView(HttpSession session) throws BusinessException
 	{
-		return "/design/clientCheck/index";
+		return new ModelAndView("/design/clientCheck/index",
+				"underling", userSvc.getDesignUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
 	/**
 	 * 获取待审核的客户洽谈记录
 	 * @param pagination
-	 * @param name
+	 * @param clientName
 	 * @param tel
 	 * @param designerName
 	 * @param status
@@ -78,9 +80,10 @@ public class DesignClientCheckCtrl
 	@RequestMapping(value = "/getAllClientCheck")
 	@ResponseBody
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
-			@RequestParam(required=false) String name,
+			@RequestParam(required=false) String clientName,
 			@RequestParam(required=false) String tel,
-			@RequestParam(required=false) String designerName,
+			@RequestParam(required=false) Integer designerId,
+			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
@@ -93,7 +96,10 @@ public class DesignClientCheckCtrl
 				Status.disagreeDesignManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,null, isKey, status);
+		if (filter == null || filter == 1)
+			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
+		else
+			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
 	}
 	
 	

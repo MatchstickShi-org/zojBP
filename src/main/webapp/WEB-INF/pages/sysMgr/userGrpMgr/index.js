@@ -30,7 +30,7 @@ $(function()
 			{
 				var selRs = $groupDatagrid.datagrid('getSelections');
 				if(selRs.length > 0)
-					showSelectLeaderWindow('edit', selRs[0].groupId, selRs[0].groupName);
+					showSelectLeaderWindow('edit', selRs[0].id, selRs[0].name);
 			}
 		});
 	}
@@ -335,7 +335,7 @@ $(function()
 		$selectLeaderWindow.window('clear');
 		$selectLeaderWindow.window('open').window
 		({
-			title: dept ? '请选择要设置为' + dept + '主管的用户' : '请选择主管',
+			title: dept ? '请选择要设置为<span style="color: red;">[' + dept + ']主管</span>的用户' : '请选择主管',
 		}).window('open').window('refresh', 'sysMgr/userGrpMgr/showSelectLeaderWindow?from=' + from + '&groupId=' + (groupId || ''));
 	}
 	

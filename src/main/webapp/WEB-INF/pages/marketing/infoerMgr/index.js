@@ -60,7 +60,27 @@ $(function()
 				{
 					field:'nature', title:'性质', width: 3, formatter: function(value, row, index)
 					{
-						return value == 1 ? '中介' : '售楼';
+						switch (value)
+						{
+							case 1:
+								return '售楼'
+								break;
+							case 2:
+								return '商业中介'
+								break;
+							case 3:
+								return '二手房中介'
+								break;
+							case 4:
+								return '招商'
+								break;
+							case 5:
+								return '物业'
+								break;
+							default:
+								return '未知';
+								break;
+						}
 					}
 				},
 				{field: 'org', title:'工作单位', width: 8},
@@ -71,7 +91,7 @@ $(function()
 				{field: 'leftVisitDays', title:'未回访天数', width: 3, sortable: true,
 					styler: function (value, row, index) {
 						if(value > 5)
-							return 'background-color: orange;';
+							return 'background-color: red; color: white;';
 				}}
 			]],
 			pagination: true,
@@ -446,35 +466,40 @@ $(function()
 			'		<tr>' + 
 			'			<td style="min-width: 70px;" align="right"><label>名称：</label></td>' + 
 			'			<td><input name="name" style="width:150px;" class="easyui-textbox" required="required" /></td>' + 
-			'			<td style="min-width: 40px;" align="right"><label>性质：</label></td>' + 
-			'			<td style="width: 150px;"><label><input type="radio" name="nature" value="1" checked="checked">中介</label>' + 
-			'				<label><input type="radio" name="nature" value="2">售楼</label>' + 
+			'			<td style="min-width: 40px;" align="right"><label>电话1：</label></td>' + 
+			'			<td><input name="tel1" id="tel1" required="required" style="width: 150px;"/></td>' +
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话2：</label></td>' + 
+			'			<td><input name="tel2" id="tel2" style="width: 150px;"/></td>' +
+			'			<td align="right"><label>电话3：</label></td>' + 
+			'			<td><input name="tel3" id="tel3" style="width: 150px;"/></td>' +
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>电话4：</label></td>' + 
+			'			<td><input name="tel4" id="tel4" style="width: 150px;"/></td>' +
+			'			<td align="right"><label>电话5：</label></td>' + 
+			'			<td><input name="tel5" id="tel5" style="width: 150px;"/></td>' +
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td colspan="4" style="text-align: center;"><font id="errortel" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>性质：</label></td>' + 
+			'			<td colspan="3"><label><input type="radio" name="nature" value="1" checked="checked">售楼</label>' + 
+			'				<label><input type="radio" name="nature" value="2">商业中介</label>' + 
+			'				<label><input type="radio" name="nature" value="3">二手房中介</label>' + 
+			'				<label><input type="radio" name="nature" value="4">招商</label>' + 
+			'				<label><input type="radio" name="nature" value="5">物业</label>' + 
 			'			</td>' +
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>电话1：</label></td>' + 
-			'			<td><input name="tel1" id="tel1" required="required" style="width: 150px;"/></td>' +
-			'			<td align="right"><label>电话2：</label></td>' + 
-			'			<td><input name="tel2" id="tel2" style="width: 150px;"/></td>' +
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>电话3：</label></td>' + 
-			'			<td><input name="tel3" id="tel3" style="width: 150px;"/></td>' +
-			'			<td align="right"><label>电话4：</label></td>' + 
-			'			<td><input name="tel4" id="tel4" style="width: 150px;"/></td>' +
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>电话5：</label></td>' + 
-			'			<td><input name="tel5" id="tel5" style="width: 150px;"/></td>' +
-			'			<td colspan="2"><font id="errortel" color="red" ></font></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
 			'			<td align="right"><label>工作单位：</label></td>' + 
-			'			<td colspan="3"><input name="org" class="easyui-textbox" style="width: 380px;"/></td>' + 
+			'			<td colspan="3"><input name="org" class="easyui-textbox" style="width: 378px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td colspan="3"><input name="address" class="easyui-textbox" style="width: 380px;"/></td>' + 
+			'			<td colspan="3"><input name="address" class="easyui-textbox" style="width: 378px;"/></td>' + 
 			'		</tr>' + 
 			'		<input name="level" type="hidden" value="4" />' + 
 			'		<input id="infoerTelCount" type="hidden" value="1" />' + 

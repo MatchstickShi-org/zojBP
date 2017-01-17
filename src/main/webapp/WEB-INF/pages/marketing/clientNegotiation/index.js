@@ -2,9 +2,10 @@ $(function()
 {
 	var $showNewOrderWindowBtn = $('a#showNewOrderWindowBtn');
 	var $orderDatagrid = $('table#orderDatagrid');
-	var $infoerNameTextbox = $('#clientNegotiation\\.infoerNameInput');
-	var $orderNameTextbox = $('#clientNegotiation\\.nameInput');
-	var $telTextbox = $('#clientNegotiation\\.telInput');
+	var $infoerNameTextbox = $('#clientNegotiation-infoerNameInput');
+	var $orderNameTextbox = $('#clientNegotiation-nameInput');
+	var $telTextbox = $('#clientNegotiation-telInput');
+	var $salesmanCombobox = $('#clientNegotiation-salesmanCombobox');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $addInfoCostBtn = $('a#clientNegotiationMgr-addInfoCostBtn');
 	var $addCommissionCostBtn = $('a#clientNegotiationMgr-addCommissionCostBtn');
@@ -121,7 +122,7 @@ $(function()
 					{
 						return val == -100 ? "-" : val;
 					},
-					styler: function (value, row, index){if(value > 5) return 'background-color: orange;';}
+					styler: function (value, row, index){if(value > 5) return 'background-color: red; color: white;';}
 				}
 			]],
 			pagination: true,
@@ -405,6 +406,7 @@ $(function()
 					name: $orderNameTextbox.textbox('getValue'), 
 					tel: $telTextbox.textbox('getValue'),
 					infoerName: $infoerNameTextbox.textbox('getValue'),
+					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					filter: $(':radio[name="clientNegotiation-orderFilterInput"]:checked').val(),
 					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
 					status: status

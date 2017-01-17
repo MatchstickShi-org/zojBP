@@ -60,6 +60,6 @@ $(function()
 		]],
 		pagination: true,
 		url: "sysMgr/userGrpMgr/getCanAssignLeadersByGroup",
-		queryParams: {groupId: selGroupId}
+		queryParams: {groupId: _param_from == 'add' ? null : selGroupId}
 	});
 });
