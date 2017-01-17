@@ -40,11 +40,12 @@ public interface IOrderService {
 	 * @param name 客户名称
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
+	 * @param salesmanOrDesignerId TODO
 	 * @param isKey TODO
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer isKey, Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -98,12 +99,13 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param salesmanId TODO
 	 * @param isKey TODO
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, Integer isKey, Integer... status);
+			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status);
 
 	/**
 	 * @param designer
@@ -111,12 +113,13 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param designerId TODO
 	 * @param isKey TODO
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
-			Integer isKey, Integer... status);
+			Integer designerId, Integer isKey, Integer... status);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 

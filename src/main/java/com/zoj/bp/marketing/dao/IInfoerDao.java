@@ -32,9 +32,10 @@ public interface IInfoerDao
 	/**
 	 * 分页查询信息员
 	 * @param pagination
+	 * @param salesmanId TODO
 	 * @return
 	 */
-	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,Integer... levels);
+	DatagridVo<Infoer> getAllInfoer(Pagination pagination,User loginUser,String name,String tel,Integer salesmanId, Integer... levels);
 
 	/**
 	 * 新增信息员
@@ -75,8 +76,9 @@ public interface IInfoerDao
 	 * @param salesman
 	 * @param name
 	 * @param tel
+	 * @param salesmanId TODO
 	 * @param levels
 	 * @return
 	 */
-	DatagridVo<Infoer> getInfoersBySalesman(User salesman, String name, String tel, Integer[] levels, Pagination pagination);
+	DatagridVo<Infoer> getInfoersBySalesman(Pagination pagination, User salesman, String name, String tel, Integer salesmanId, Integer... levels);
 }

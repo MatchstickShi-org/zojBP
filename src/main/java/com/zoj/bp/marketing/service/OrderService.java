@@ -76,20 +76,23 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, String name, String tel, String infoerName,
-			Integer isKey, Integer... status)
+	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, String name,
+			String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status)
 	{
 		User dbUser = userDao.getUserById(loginUser.getId());
 		DatagridVo<Order> os = null;
 		if(dbUser.isLeader() && dbUser.getGroupId() == null)		//主管，尚未分配组
 		{
 			if(dbUser.isMarketingLeader())
-				os = this.getOrdersBySalesman(dbUser, pagination, name, tel, infoerName, isKey, status);
+				os = this.getOrdersBySalesman(
+						dbUser, pagination, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
 			else
-				os = this.getOrdersByDesigner(dbUser, pagination, name, tel, infoerName, isKey, status);
+				os = this.getOrdersByDesigner(
+						dbUser, pagination, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
 		}
 		else
-			os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, isKey, status);
+			os = orderDao.getOrdersByUser(
+					pagination, loginUser, name, tel, infoerName, salesmanOrDesignerId, isKey, status);
 		
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
@@ -98,16 +101,16 @@ public class OrderService implements IOrderService
 	
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, Integer isKey, Integer... status)
+			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status)
 	{
-		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, isKey, status);
+		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, 
-			String name, String tel, String infoerName, Integer isKey, Integer... status)
+			String name, String tel, String infoerName, Integer designerId, Integer isKey, Integer... status)
 	{
-		return orderDao.getOrdersByDesigner(pagination, designer, name, tel, infoerName, isKey, status);
+		return orderDao.getOrdersByDesigner(pagination, designer, name, tel, infoerName, designerId, isKey, status);
 	}
 
 	@Override

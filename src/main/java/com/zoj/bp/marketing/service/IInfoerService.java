@@ -25,12 +25,13 @@ public interface IInfoerService {
 
 	/**
 	 * @param pagination
+	 * @param salesmanId TODO
 	 * @param contains 
 	 * @return
 	 * @throws BusinessException 
 	 */
 	DatagridVo<Infoer> getAllInfoer(Pagination pagination, 
-			User loginUser,String name,String tel, boolean containsUnderling, Integer... levels) throws BusinessException;
+			User loginUser,String name,String tel, Integer salesmanId, boolean containsUnderling, Integer... levels) throws BusinessException;
 
 	/**
 	 * @param infoer

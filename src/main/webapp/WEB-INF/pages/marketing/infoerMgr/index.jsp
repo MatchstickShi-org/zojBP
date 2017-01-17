@@ -15,18 +15,31 @@
 		<table id="infoerDatagrid" border="false"></table>
 		<div id="infoerDatagridToolbar">
 			<label>名称：</label>
-			<input style="width: 120px;" class="easyui-textbox" id="infoerMgr.nameInput"/>
+			<input style="width: 120px;" class="easyui-textbox" id="infoerMgr-nameInput"/>
 			<label>电话：</label>
-			<input style="width: 120px;" class="easyui-textbox" id="infoerMgr.telInput"/>
+			<input style="width: 120px;" class="easyui-textbox" id="infoerMgr-telInput"/>
+			<c:if test="${sessionScope.loginUser.role != 1}">
+				<label>下属业务员：</label>
+				<select style="width: 120px;" class="easyui-combobox" id="infoerMgr-salesmanCombobox" data-options="textField: 'alias'">
+					<option value="" style="color: gray;">-- 全部 --</option>
+					<c:forEach items="${requestScope.underling}" var="underling">
+						<option value="${underling.id}">${underling.alias}</option>
+					</c:forEach>
+				</select>
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
+				<br>
+				<label><input type="radio" value="0" name="infoerMgr-infoerFilterInput" />全部信息员</label>
+				<label><input type="radio" value="1" name="infoerMgr-infoerFilterInput" checked="checked"/>我的信息员</label>
+			</c:if>
 			<label>信息员等级：</label>
 			<label><input type="checkbox" value="" name="levelInput" checked="checked"/>全部</label>
 			<label><input type="checkbox" value="1" name="levelInput"/>金牌</label>
 			<label><input type="checkbox" value="2" name="levelInput"/>银牌</label>
 			<label><input type="checkbox" value="3" name="levelInput"/>铜牌</label>
 			<label><input type="checkbox" value="4" name="levelInput"/>铁牌</label>
-			<label><input type="radio" value="0" name="infoerMgr.infoerFilterInput" />全部信息员</label>
-			<label><input type="radio" value="1" name="infoerMgr.infoerFilterInput" checked="checked"/>我的信息员</label>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
+			<c:if test="${sessionScope.loginUser.role == 1}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryInfoerBtn">查询</a>
+			</c:if>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddInfoerWindowBtn">新增</a>
 			<c:if test="${sessionScope.loginUser.role == 3}">
 				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>

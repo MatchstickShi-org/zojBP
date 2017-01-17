@@ -107,11 +107,25 @@ public interface IUserService
 	 * 获取所有在职的业务员
 	 * @return
 	 */
-	List<User> getSalesmanByStatus();
+	List<User> getInServiceMarketingUsers();
 	
 	/**
 	 * 获取所有在职的设计师
 	 * @return
 	 */
-	List<User> getDesignerByStatus();
+	List<User> getInServiceDesignUsers();
+
+	/**
+	 * @param user
+	 * @return
+	 * @throws BusinessException 
+	 */
+	List<User> getMarketUnderlingByUser(User user) throws BusinessException;
+
+	/**
+	 * @param user
+	 * @return
+	 * @throws BusinessException
+	 */
+	List<User> getDesignUnderlingByUser(User user) throws BusinessException;
 }

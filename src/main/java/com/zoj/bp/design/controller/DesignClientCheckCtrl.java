@@ -93,7 +93,7 @@ public class DesignClientCheckCtrl
 				Status.disagreeDesignManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,isKey, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,null, isKey, status);
 	}
 	
 	

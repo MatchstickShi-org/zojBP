@@ -112,7 +112,7 @@ public class DesignClientCtrl
 				Status.disagreeDesignManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,isKey, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY , null, isKey, status);
 	}
 	
 	/**
@@ -156,9 +156,9 @@ public class DesignClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersByDesigner(loginUser, pagination, name, tel, StringUtils.EMPTY, isKey, status);
+			return orderSvc.getOrdersByDesigner(loginUser, pagination, name, tel, StringUtils.EMPTY, null, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY, null, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

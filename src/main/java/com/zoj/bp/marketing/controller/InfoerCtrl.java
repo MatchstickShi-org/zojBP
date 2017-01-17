@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
@@ -65,9 +66,10 @@ public class InfoerCtrl
 	private IUserService userSvc;
 	
 	@RequestMapping(value = "/toInfoSrcMgrView")
-	public String toInfoSrcMgrView() throws BusinessException
+	public ModelAndView toInfoSrcMgrView(HttpSession session) throws BusinessException
 	{
-		return "/marketing/infoerMgr/index";
+		return new ModelAndView("/marketing/infoerMgr/index",
+				"underling", userSvc.getMarketUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
 	@RequestMapping(value = "/getAllInfoers")
@@ -76,6 +78,7 @@ public class InfoerCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) Integer filter,
+			@RequestParam(required=false) Integer salesmanId,
 			@RequestParam(value = "level[]", required=false) Integer[] levels, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -86,7 +89,8 @@ public class InfoerCtrl
 		}
 		try
 		{
-			return infoerSvc.getAllInfoer(pagination, loginUser, name, tel, (filter == null || filter == 1) ? false : true, levels);
+			return infoerSvc.getAllInfoer(pagination,
+					loginUser, name, tel, salesmanId, (filter == null || filter == 1) ? false : true, levels);
 		}
 		catch (BusinessException e)
 		{

@@ -34,12 +34,13 @@ public interface IOrderDao {
 	 * @param clientName
 	 * @param tel
 	 * @param infoerName
+	 * @param salesmanOrDesignerId TODO
 	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByUser(Pagination pagination,
-			User user, String clientName, String tel, String infoerName, Integer isKey, Integer... statuses);
+			User user, String clientName, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses);
 	/**
 	 * @param order
 	 * @return 
@@ -89,12 +90,13 @@ public interface IOrderDao {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param salesmanId TODO
 	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(Pagination pagination, User salesman,
-			String name, String tel, String infoerName, Integer isKey, Integer... statuses);
+			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses);
 
 	/**
 	 * @param userIds
@@ -113,12 +115,13 @@ public interface IOrderDao {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param designerId TODO
 	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
-			Integer isKey, Integer... statuses);
+			Integer designerId, Integer isKey, Integer... statuses);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 }
