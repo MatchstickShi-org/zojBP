@@ -40,7 +40,7 @@ $(function()
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 8},
+				{field:'projectAddr', title:'面积', width: 3},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanId', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
@@ -60,15 +60,19 @@ $(function()
 								return '已放弃';
 								break;
 							case 30:
+								return '在谈单-商务部经理审核中';
+								break;
 							case 32:
-								return '在谈单审核中';
+								return '在谈单-主案部经理审核中';
 								break;
 							case 34:
-								return '在谈单已批准';
+								return '在谈单';
 								break;
 							case 60:
+								return '不准单-主案部经理审核中';
+								break;
 							case 62:
-								return '不准单审核中';
+								return '不准单-商务部经理审核中';
 								break;
 							case 64:
 								return '不准单';
@@ -600,7 +604,7 @@ $(function()
 			}
 			if(selIds[0].status != 34)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单</span>的客户。');
 				return;
 			}
 			$dealOrderWindow.window('clear');
@@ -686,7 +690,7 @@ $(function()
 			}
 			if(selIds[0].status != 34)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单</span>的客户。');
 				return;
 			}
 			$deadOrderWindow.window('clear');
@@ -773,7 +777,7 @@ $(function()
 			}
 			if(selIds[0].status != 34)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单</span>的客户。');
 				return;
 			}
 			$disagreeOrderWindow.window('clear');
@@ -858,7 +862,7 @@ $(function()
 			}
 			if(selIds[0].status != 34)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单已批准</span>的客户。');
+				$.messager.alert('提示', '只能申请状态为<span style="color: red;">在谈单</span>的客户。');
 				return;
 			}
 			$repulseOrderWindow.window('clear');

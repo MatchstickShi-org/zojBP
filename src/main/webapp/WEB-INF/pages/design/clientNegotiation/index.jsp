@@ -29,7 +29,7 @@
 			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="" name="clientNegotiation.statusInput" />全部</label>
-			<label><input type="checkbox" value="34" name="clientNegotiation.statusInput" checked="checked"/>在谈单已批准</label>
+			<label><input type="checkbox" value="34" name="clientNegotiation.statusInput" checked="checked"/>在谈单</label>
 			<label><input type="checkbox" value="90" name="clientNegotiation.statusInput"/>已签单</label>
 			<label><input type="checkbox" value="0" name="clientNegotiation.statusInput"/>死单</label>
 			<label><input type="checkbox" value="60" name="clientNegotiation.statusInput"/>不准单-主案部经理审核中</label>
