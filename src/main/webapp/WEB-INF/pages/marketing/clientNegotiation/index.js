@@ -33,10 +33,10 @@ $(function()
 		}).window('open').window('refresh', 'marketing/clientMgr/showSelectInfoerWindow');
 	}
 	
+	initBtn();
 	initGrid();
 	initTab();
 	initWindow();
-	initBtn();
 	
 	function initWindow()
 	{
@@ -57,6 +57,7 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
+				{field:'isKey', hidden: true},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
@@ -116,19 +117,38 @@ $(function()
 					{
 						return val == -100 ? "-" : val;
 					},
-					styler: function (value, row, index){if(value > 5) return 'background-color:red';}
+					styler: function (value, row, index){if(value > 5) return 'background-color: orange;';}
 				}
 			]],
 			pagination: true,
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
 			onSelect: function(idx, row)
 			{
 				refreshBtn(row);
 			},
+			url: 'marketing/clientMgr/getAllClientNegotiation',
+			queryParams:
+			{
+				filter: $(':radio[name="clientNegotiation-orderFilterInput"]:checked').val(),
+				isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
+				status: function()
+				{
+					var status =[]; 
+					$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function()
+					{
+						status.push($(this).val());  
+					});
+					return status;
+				}()
+			}
 		});
-		$orderDatagrid.datagrid('options').url = 'marketing/clientMgr/getAllClientNegotiation';
 		
 		function refreshBtn(row)
 		{
@@ -337,12 +357,12 @@ $(function()
 
 	function initBtn()
 	{
-		$('#orderDatagridToolbar :checkbox').click(function()
+		$('#orderDatagridToolbar :checkbox[name="statusInput"]').click(function()
 		{
 			if($(this).attr('value') == '')		//全选
-				$('#orderDatagridToolbar :checkbox[value!=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="statusInput"][value!=""]').attr("checked", false);
 			else
-				$('#orderDatagridToolbar :checkbox[value=""]').attr("checked", false);
+				$('#orderDatagridToolbar :checkbox[name="statusInput"][value=""]').attr("checked", false);
 		});
 		
 		$showNewOrderWindowBtn.linkbutton
@@ -371,7 +391,7 @@ $(function()
 		({
 			'onClick': function()
 			{
-				var status =[]; 
+				var status =[];
 				$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function()
 				{
 					status.push($(this).val());  
@@ -381,7 +401,8 @@ $(function()
 					name: $orderNameTextbox.textbox('getValue'), 
 					tel: $telTextbox.textbox('getValue'),
 					infoerName: $infoerNameTextbox.textbox('getValue'),
-					filter: $(':radio[name="clientNegotiation\.orderFilterInput"]:checked').val(),
+					filter: $(':radio[name="clientNegotiation-orderFilterInput"]:checked').val(),
+					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
 					status: status
 				});
 			}

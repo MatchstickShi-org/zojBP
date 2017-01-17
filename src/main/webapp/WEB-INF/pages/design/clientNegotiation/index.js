@@ -4,7 +4,7 @@ $(function()
 	var $designerNameTextbox = $('#clientNegotiation\\.designerNameInput');
 	var $orderNameTextbox = $('#clientNegotiation\\.nameInput');
 	var $telTextbox = $('#clientNegotiation\\.telInput');
-	var $orderFilterInput = $(':radio[name="clientNegotiation\\.orderFilterInput"]');
+	var $orderFilterInput = $(':radio[name="clientNegotiation-orderFilterInput"]');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
 	var $addVisitCommentWindow = $('div#addVisitCommentWindow');
@@ -35,6 +35,7 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
+				{field: 'isKey', hidden: true},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
@@ -97,7 +98,7 @@ $(function()
 					styler: function (value, row, index)
 					{
 						if(value > 1)
-							return 'background-color:red';
+							return 'background-color: orange;';
 					}
 				}
 			]],
@@ -105,6 +106,11 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
 			url: 'design/clientMgr/getAllClientNegotiation',
 			queryParams:
 			{
@@ -191,6 +197,7 @@ $(function()
 					tel: $telTextbox.textbox('getValue'),
 					designerName: $designerNameTextbox.textbox('getValue'),
 					filter: $orderFilterInput.filter(':checked').val(),
+					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
 					status: status
 				});
 			}
@@ -205,7 +212,6 @@ $(function()
 			else
 				$.messager.alert('提示', '请选中一个客户。');
 		}});
-		
 		
 		if($orderVisitGrid.length > 0)
 		{

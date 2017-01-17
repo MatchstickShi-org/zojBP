@@ -43,7 +43,7 @@ public class BusinessCountJob
 					marketringCountService.addMarketingCount(marketingCount);
 				}
 			}
-			logger.info("商务部业务统计成功!");
+			logger.info("商务部业务统计完成。");
 			
 			List<User> designers = userService.getDesignerByStatus();
 			if(CollectionUtils.isNotEmpty(designers)){
@@ -52,7 +52,7 @@ public class BusinessCountJob
 					designCountService.addDesignCount(designCount);
 				}
 			}
-			logger.info("主案部业务统计成功!");
+			logger.info("主案部业务统计完成。");
 		}
 		catch (Exception e)
 		{

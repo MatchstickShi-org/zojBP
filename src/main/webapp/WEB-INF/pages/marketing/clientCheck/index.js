@@ -55,6 +55,7 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field: 'ck', checkbox: true},
+				{field:'isKey', hidden: true},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
@@ -87,6 +88,11 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
 			url: 'marketing/clientCheckMgr/getAllClientCheck',
 			onSelect: function(idx, row)
 			{

@@ -85,10 +85,11 @@ public class ClientDao extends BaseDao implements IClientDao
 	}
 	
 	@Override
-	public Integer addClient(Client client) {
+	public Integer addClient(Client client)
+	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO CLIENT(ORDER_ID,NAME,ORG_ADDR,TEL1,TEL2,TEL3,TEL4,TEL5) VALUES(:orderId,:name,:orgAddr,:tel1,:tel2,:tel3,:tel4,:tel5)",
+				"INSERT INTO CLIENT(ORDER_ID, NAME, ORG_ADDR, TEL1, TEL2, TEL3, TEL4, TEL5, IS_KEY) VALUES(:orderId, :name, :orgAddr, :tel1, :tel2, :tel3, :tel4, :tel5, :isKey)",
 				new BeanPropertySqlParameterSource(client), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

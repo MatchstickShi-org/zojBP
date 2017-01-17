@@ -10,14 +10,13 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 /**
  * @author wangw
  */
 public class Order implements Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1941948674701203482L;
 
 	private Integer id;
@@ -60,6 +59,11 @@ public class Order implements Serializable
 	private String tel4;
 
 	private String tel5;
+	
+	/**
+	 * 是否重点客户（1：是；0：否）
+	 */
+	private Integer isKey = 0;
 
 	/** 未回访天数 */
 	private Integer notVisitDays;
@@ -331,6 +335,7 @@ public class Order implements Serializable
 	/**
 	 * @return
 	 */
+	@JSONField(serialize=false)
 	public List<String> getTels()
 	{
 		List<String> tels = new ArrayList<>();
@@ -370,5 +375,15 @@ public class Order implements Serializable
 	public void setVisitApplyStatus(Integer visitApplyStatus)
 	{
 		this.visitApplyStatus = visitApplyStatus;
+	}
+
+	public Integer getIsKey()
+	{
+		return isKey;
+	}
+
+	public void setIsKey(Integer isKey)
+	{
+		this.isKey = isKey;
 	}
 }

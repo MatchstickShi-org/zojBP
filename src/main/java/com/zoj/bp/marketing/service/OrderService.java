@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.dao.IMsgLogDao;
 import com.zoj.bp.common.dao.IOrderApproveDao;
+import com.zoj.bp.common.excption.BusinessException;
+import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.Infoer.Level;
@@ -75,19 +77,19 @@ public class OrderService implements IOrderService
 
 	@Override
 	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, String name, String tel, String infoerName,
-			Integer... status)
+			Integer isKey, Integer... status)
 	{
 		User dbUser = userDao.getUserById(loginUser.getId());
 		DatagridVo<Order> os = null;
 		if(dbUser.isLeader() && dbUser.getGroupId() == null)		//主管，尚未分配组
 		{
 			if(dbUser.isMarketingLeader())
-				os = this.getOrdersBySalesman(dbUser, pagination, name, tel, infoerName, status);
+				os = this.getOrdersBySalesman(dbUser, pagination, name, tel, infoerName, isKey, status);
 			else
-				os = this.getOrdersByDesigner(dbUser, pagination, name, tel, infoerName, status);
+				os = this.getOrdersByDesigner(dbUser, pagination, name, tel, infoerName, isKey, status);
 		}
 		else
-			os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, status);
+			os = orderDao.getOrdersByUser(pagination, loginUser, name, tel, infoerName, isKey, status);
 		
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
@@ -96,16 +98,16 @@ public class OrderService implements IOrderService
 	
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, Integer... status)
+			String name, String tel, String infoerName, Integer isKey, Integer... status)
 	{
-		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, status);
+		return orderDao.getOrdersBySalesman(pagination, salesman, name, tel, infoerName, isKey, status);
 	}
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, 
-			String name, String tel, String infoerName, Integer... status)
+			String name, String tel, String infoerName, Integer isKey, Integer... status)
 	{
-		return orderDao.getOrdersByDesigner(pagination, designer, name, tel, infoerName, status);
+		return orderDao.getOrdersByDesigner(pagination, designer, name, tel, infoerName, isKey, status);
 	}
 
 	@Override
@@ -129,6 +131,7 @@ public class OrderService implements IOrderService
 			client.setTel4(order.getTel4());
 			client.setTel5(order.getTel5());
 			client.setOrderId(orderId);
+			client.setIsKey(order.getIsKey());
 			clientDao.addClient(client);
 		}
 		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
@@ -155,9 +158,9 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public Integer deleteOrderByIds(Integer[] orderIds)
+	public Integer giveUpOrders(Integer... orderIds)
 	{
-		return orderDao.updateOrderByIds(orderIds);
+		return orderDao.updateOrderStatus(Status.abandoned, orderIds);
 	}
 
 	@Override
@@ -358,5 +361,14 @@ public class OrderService implements IOrderService
 			User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception
 	{
 		return orderDao.getOrdersByStatus(loginUser, clientName, orderId, pagination, status);
+	}
+
+	@Override
+	public Integer setOrder2Tracing(Integer orderId) throws BusinessException
+	{
+		Order order = orderDao.getOrderById(orderId);
+		if (order.getStatus() != Status.abandoned.value())		//只有已放弃客户才能设置为正跟踪
+			throw new BusinessException(ReturnCode.ILLEGALITY_OPERATION.setMsg("只有已放弃状态的客户才能设置为正跟踪客户。"));
+		return orderDao.updateOrderStatus(Status.tracing, order.getId());
 	}
 }

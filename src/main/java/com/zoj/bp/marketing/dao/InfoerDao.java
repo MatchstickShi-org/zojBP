@@ -102,7 +102,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += pagination.buildOrderBySqlPart(" ORDER BY leftVisitDays DESC");
+		sql += " ORDER BY ";
+		sql += pagination.buildOrderBySqlPart(" leftVisitDays DESC");
 		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -145,7 +146,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		sql +=" GROUP BY I.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += pagination.buildOrderBySqlPart(" ORDER BY leftVisitDays DESC");
+		sql += " ORDER BY ";
+		sql += pagination.buildOrderBySqlPart(" leftVisitDays DESC");
 		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());

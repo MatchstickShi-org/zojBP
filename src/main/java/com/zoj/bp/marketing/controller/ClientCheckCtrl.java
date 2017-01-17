@@ -87,6 +87,7 @@ public class ClientCheckCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -98,7 +99,7 @@ public class ClientCheckCtrl
 				Status.disagreeMarketingManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
 	}
 	
 	/**

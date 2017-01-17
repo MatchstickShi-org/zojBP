@@ -32,6 +32,8 @@ public class Client implements Serializable
 	
 	private String tel5;
 	
+	private Integer isKey = 0;
+	
 	public Integer getId()
 	{
 		return id;
@@ -104,6 +106,16 @@ public class Client implements Serializable
 
 	public void setTel5(String tel5) {
 		this.tel5 = tel5;
+	}
+
+	public Integer getIsKey()
+	{
+		return isKey;
+	}
+
+	public void setIsKey(Integer isKey)
+	{
+		this.isKey = isKey;
 	}
 
 }

@@ -21,9 +21,10 @@
 			<label style="vertical-align: middle;">设计师名称：</label>
 			<input style="width:100px;" class="easyui-textbox" id="clientNegotiation.designerNameInput"/>
 			<c:if test="${sessionScope.loginUser.role <= 0 || sessionScope.loginUser.role >= 5}">
-				<label><input type="radio" value="0" name="clientNegotiation.orderFilterInput" />全部客户</label>
-				<label><input type="radio" value="1" name="clientNegotiation.orderFilterInput" checked="checked"/>我的客户</label>
+				<label><input type="radio" value="0" name="clientNegotiation-orderFilterInput" />全部客户</label>
+				<label><input type="radio" value="1" name="clientNegotiation-orderFilterInput" checked="checked"/>我的客户</label>
 			</c:if>
+			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>

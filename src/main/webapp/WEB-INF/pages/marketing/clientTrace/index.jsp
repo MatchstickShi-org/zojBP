@@ -12,7 +12,7 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<table id="orderDatagrid" border=false></table>
+		<table id="orderDatagrid" border="false"></table>
 		<div id="orderDatagridToolbar">
 			<label>名称：</label>
 			<input class="easyui-textbox" id="clientTrace.nameInput" style="width: 120px;"/>
@@ -20,8 +20,9 @@
 			<input class="easyui-textbox" id="clientTrace.telInput" style="width: 120px;"/>
 			<label>信息员名称：</label>
 			<input class="easyui-textbox" id="clientTrace.infoerNameInput" style="width: 120px;"/>
-			<label><input type="radio" value="0" name="clientTrace.infoerFilterInput" />全部客户</label>
-			<label><input type="radio" value="1" name="clientTrace.infoerFilterInput" checked="checked"/>我的客户</label>
+			<label><input type="radio" value="0" name="clientTrace-infoerFilterInput" />全部客户</label>
+			<label><input type="radio" value="1" name="clientTrace-infoerFilterInput" checked="checked"/>我的客户</label>
+			<label><input type="checkbox" value="1" name="clientTrace-isKey" />重点客户</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<br>
 			<label>状态：</label>
@@ -33,7 +34,8 @@
  			<!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showAddOrderWindowBtn">新增</a> -->
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeOrderBtn" disabled="true">放弃</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="applyOrderBtn" disabled="true">申请在谈单</a>
-			<c:if test="${sessionScope.loginUser.role == 3}">
+			<c:if test="${sessionScope.loginUser.role == 3 || sessionScope.loginUser.role == -1}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="setTracingClientBtn" disabled="true">设置为正跟踪客户</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="showBusinessTransferWindowBtn">业务转移</a>
 			</c:if>
 		</div>

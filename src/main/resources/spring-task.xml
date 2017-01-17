@@ -9,10 +9,12 @@
            http://www.springframework.org/schema/task/spring-task.xsd">
 
 	  <!-- 定时器开关-->  
-	  <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
-	  <task:scheduler id="qbScheduler" pool-size="5"/> 
+	  <!-- <task:annotation-driven scheduler="scheduler" mode="proxy"/> -->
+	  <task:scheduler id="scheduler" pool-size="5"/> 
 	  <bean id="businessCountJob" class="com.zoj.bp.task.job.BusinessCountJob"></bean> 
 	  <task:scheduled-tasks> 
-         <task:scheduled ref="businessCountJob" method="businessCount" cron="0/5 0 0 * * ?"/> 
+         <!-- 每天凌晨0:15:20开始统计任务 -->
+         <task:scheduled ref="businessCountJob" method="businessCount" cron="20 15 0 * * *" />
+         <!-- <task:scheduled ref="businessCountJob" method="businessCount" cron="*/5 * * * * *"/>  -->
       </task:scheduled-tasks>
 </beans>

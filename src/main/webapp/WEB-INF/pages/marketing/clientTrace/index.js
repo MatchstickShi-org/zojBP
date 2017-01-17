@@ -1,6 +1,7 @@
 $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
+	var $setTracingClientBtn = $('a#setTracingClientBtn');
 	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
 	var $orderNameTextbox = $('#clientTrace\\.nameInput');
 	var $telTextbox = $('#clientTrace\\.telInput');
@@ -36,6 +37,7 @@ $(function()
 			columns:
 			[[
 				{field:'id', hidden: true},
+				{field:'isKey', hidden: true},
 				{field: 'ck', checkbox: true},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
@@ -75,7 +77,7 @@ $(function()
 					styler: function (value, row, index)
 					{
 						if(value > 5)
-							return 'background-color:red';
+							return 'background-color: orange;';
 		           }
 				}
 			]],
@@ -84,6 +86,11 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
 			url: 'marketing/clientMgr/getAllClientTrace',
 			onSelect: function(idx, row)
 			{
@@ -102,6 +109,14 @@ $(function()
 					$submitUpdateClientFormBtn.linkbutton('disable');
 					$('#removeOrderBtn').linkbutton('disable');
 					$('#applyOrderBtn').linkbutton('disable');
+				}
+				
+				if(_session_loginUserRole == -1 || _session_loginUserRole == 3)
+				{
+					if(row.status == 12)	//已放弃
+						$setTracingClientBtn.linkbutton('enable');
+					else
+						$setTracingClientBtn.linkbutton('disable');
 				}
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, row);
 			},
@@ -128,11 +143,37 @@ $(function()
 					name: $orderNameTextbox.textbox('getValue'),
 					tel: $telTextbox.textbox('getValue'),
 					infoerName: $infoerNameTextbox.textbox('getValue'),
-					filter: $(':radio[name="clientTrace\.infoerFilterInput"]:checked').val(),
+					filter: $(':radio[name="clientTrace-infoerFilterInput"]:checked').val(),
+					isKey: $(':checkbox[name="clientTrace-isKey"]:checked').val(),
 					status: status
 				});
 			}
 		});
+		
+		$setTracingClientBtn.linkbutton({onClick: function()
+		{
+			var orderIds = $orderDatagrid.datagrid('getSelectRowPkValues');
+			if(orderIds.length == 0)
+			{
+				$.messager.alert('提示', '请选择要设为正跟踪的<span style="color: red;">已放弃</span>客户。');
+				return;
+			}
+			$.messager.confirm('警告','确定要设置选择客户为正跟踪客户吗？',function(r)
+			{
+				if (!r)
+					return;
+				$.ajax
+				({
+					url: 'marketing/clientMgr/setOrder2Tracing',
+					data: {orderId: orderIds[0]},
+					success: function(data, textStatus, jqXHR)
+					{
+						if(data.returnCode == 0)
+							$orderDatagrid.datagrid('reload');
+					}
+				});
+			});
+		}});
 		
 		$submitUpdateClientFormBtn.linkbutton({'onClick': submitEditClientForm});
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()

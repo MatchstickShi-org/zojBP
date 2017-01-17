@@ -100,6 +100,7 @@ public class DesignClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String designerName,
+			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -111,7 +112,7 @@ public class DesignClientCtrl
 				Status.disagreeDesignManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY ,isKey, status);
 	}
 	
 	/**
@@ -131,6 +132,7 @@ public class DesignClientCtrl
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String designerName,
 			@RequestParam(required=false) Integer filter,
+			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -154,9 +156,9 @@ public class DesignClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersByDesigner(loginUser, pagination, name, tel, StringUtils.EMPTY, status);
+			return orderSvc.getOrdersByDesigner(loginUser, pagination, name, tel, StringUtils.EMPTY, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, StringUtils.EMPTY, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -436,7 +438,7 @@ public class DesignClientCtrl
 	{
 		if(ArrayUtils.isEmpty(orderIds))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
-		orderSvc.deleteOrderByIds(orderIds);
+		orderSvc.giveUpOrders(orderIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

@@ -91,6 +91,7 @@ public class Pagination implements Serializable
 	}
 
 	/**
+	 * 构建order by 子句，不包括 “ORDER BY”关键字
 	 * @param defaultOrderByIfNull
 	 * @return
 	 */
@@ -98,6 +99,6 @@ public class Pagination implements Serializable
 	{
 		if(StringUtils.isEmpty(this.orderBy))
 			return StringUtils.defaultString(defaultOrderByIfNull);
-		return " ORDER BY " + this.getOrderBy() + " " + this.getAscOrDesc() + " ";
+		return " " + this.getOrderBy() + " " + this.getAscOrDesc() + " ";
 	}
 }

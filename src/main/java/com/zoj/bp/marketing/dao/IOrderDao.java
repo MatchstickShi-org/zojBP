@@ -34,11 +34,12 @@ public interface IOrderDao {
 	 * @param clientName
 	 * @param tel
 	 * @param infoerName
+	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByUser(Pagination pagination,
-			User user, String clientName, String tel, String infoerName, Integer... statuses);
+			User user, String clientName, String tel, String infoerName, Integer isKey, Integer... statuses);
 	/**
 	 * @param order
 	 * @return 
@@ -53,9 +54,10 @@ public interface IOrderDao {
 
 	/**
 	 * 设置客户状态为已放弃
+	 * @param status TODO
 	 * @param orderIds
 	 */
-	Integer updateOrderByIds(Integer[] orderIds);
+	Integer updateOrderStatus(Status status, Integer... orderIds);
 	
 	/**
 	 * 更新订单的业务员Id
@@ -87,11 +89,12 @@ public interface IOrderDao {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(Pagination pagination, User salesman,
-			String name, String tel, String infoerName, Integer... statuses);
+			String name, String tel, String infoerName, Integer isKey, Integer... statuses);
 
 	/**
 	 * @param userIds
@@ -110,11 +113,12 @@ public interface IOrderDao {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param isKey TODO
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
-			Integer... statuses);
+			Integer isKey, Integer... statuses);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 }

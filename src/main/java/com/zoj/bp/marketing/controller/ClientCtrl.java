@@ -114,6 +114,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
 			@RequestParam(required=false) Integer filter,
+			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -134,9 +135,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
 	}
 	
 	/**
@@ -169,6 +170,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
 			@RequestParam(required=false) Integer filter,
+			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -191,9 +193,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -321,7 +323,7 @@ public class ClientCtrl
 	{
 		if(ArrayUtils.isEmpty(orderIds))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
-		orderSvc.deleteOrderByIds(orderIds);
+		orderSvc.giveUpOrders(orderIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -456,6 +458,17 @@ public class ClientCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法新生成客户。"));
 		order.setStatus(Status.tracing.value());//状态为正跟踪
 		orderSvc.addOrderAndClient(order);
+		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+	}
+	
+	@RequestMapping(value= "/setOrder2Tracing")
+	@ResponseBody
+	public Map<String, ?> setOrder2Tracing(HttpSession session, @RequestParam Integer orderId) throws BusinessException
+	{
+		User loginUser = (User) session.getAttribute("loginUser");
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法进行本操作。"));
+		orderSvc.setOrder2Tracing(orderId);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

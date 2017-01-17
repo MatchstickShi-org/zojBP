@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.service;
 
+import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
@@ -39,10 +40,11 @@ public interface IOrderService {
 	 * @param name 客户名称
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
+	 * @param isKey TODO
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer isKey, Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -57,7 +59,7 @@ public interface IOrderService {
 	 * 放弃客户
 	 * @param orderIds
 	 */
-	Integer deleteOrderByIds(Integer[] orderIds);
+	Integer giveUpOrders(Integer... orderIds);
 
 	/**
 	 * 申请再谈单
@@ -96,11 +98,12 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param isKey TODO
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, Integer... status);
+			String name, String tel, String infoerName, Integer isKey, Integer... status);
 
 	/**
 	 * @param designer
@@ -108,11 +111,14 @@ public interface IOrderService {
 	 * @param name
 	 * @param tel
 	 * @param infoerName
+	 * @param isKey TODO
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByDesigner(User designer, Pagination pagination, String name, String tel, String infoerName,
-			Integer... status);
+			Integer isKey, Integer... status);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
+
+	Integer setOrder2Tracing(Integer orderId) throws BusinessException;
 }

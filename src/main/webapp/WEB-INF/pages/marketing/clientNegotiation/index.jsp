@@ -12,14 +12,18 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<table id="orderDatagrid" border=false></table>
+		<table id="orderDatagrid" border="false"></table>
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
-			<input class="easyui-textbox" id="clientNegotiation.nameInput"/>
+			<input class="easyui-textbox" id="clientNegotiation.nameInput" style="width: 120px;"/>
 			<label style="vertical-align: middle;">电话：</label>
-			<input class="easyui-textbox" id="clientNegotiation.telInput"/>
-			<label style="vertical-align: middle;">信息员名称：</label>
-			<input class="easyui-textbox" id="clientNegotiation.infoerNameInput"/>
+			<input class="easyui-textbox" id="clientNegotiation.telInput" style="width: 120px;"/>
+			<label style="vertical-align: middle;">信息员：</label>
+			<input class="easyui-textbox" id="clientNegotiation.infoerNameInput" style="width: 120px;"/>
+			<label><input type="radio" value="0" name="clientNegotiation-orderFilterInput" />全部客户</label>
+			<label><input type="radio" value="1" name="clientNegotiation-orderFilterInput" checked="checked"/>我的客户</label>
+			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<br>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="" name="statusInput" />全部</label>
@@ -29,9 +33,6 @@
 			<label><input type="checkbox" value="60" name="statusInput"/>不准单-主案部经理审核中</label>
 			<label><input type="checkbox" value="62" name="statusInput"/>不准单-商务部经理审核中</label>
 			<label><input type="checkbox" value="64" name="statusInput"/>不准单</label>
-			<label><input type="radio" value="0" name="clientNegotiation.orderFilterInput" />全部客户</label>
-			<label><input type="radio" value="1" name="clientNegotiation.orderFilterInput" checked="checked"/>我的客户</label>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="showNewOrderWindowBtn" disabled="true">新生成客户</a>
 		</div>
 	</div>

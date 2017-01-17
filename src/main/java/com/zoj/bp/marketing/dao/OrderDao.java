@@ -67,7 +67,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	public DatagridVo<Order> getOrdersByInfoer(Pagination pagination, Integer infoerId,Integer[] status)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR,C.TEL1,C.TEL2,C.TEL3,C.TEL4,C.TEL5,I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName "+ 
+		String sql = "SELECT O.*,C.`NAME`,C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` AS infoerName,U.ALIAS as salesmanName,U2.ALIAS AS designerName "+ 
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID"+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID"+
@@ -89,7 +89,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			String clientName, String tel, String infoerName, Integer... statuses)
+			String clientName, String tel, String infoerName, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -103,9 +103,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " 	END "+ 
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
-				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
-				" C.TEL4 TEL4, C.TEL5 TEL5, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
-				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
+				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
+				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
@@ -155,12 +154,18 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
+		if(isKey != null)
+		{
+			sql += " AND C.IS_KEY = :isKey";
+			paramMap.put("isKey", isKey);
+		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql += " ORDER BY C.IS_KEY DESC, ";
+		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
 		sql +=" , O.INSERT_TIME DESC ";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
@@ -170,7 +175,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(Pagination pagination,
-			User salesman, String name, String tel, String infoerName, Integer... statuses)
+			User salesman, String name, String tel, String infoerName, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -183,8 +188,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " 		END "
 				+ " 	END "
 				+ " END AS notVisitDays, "+ 
-				" MAX(C.NAME) NAME, MAX(C.ORG_ADDR) ORG_ADDR, MAX(C.TEL1) TEL1, MAX(C.TEL2) TEL2, MAX(C.TEL3) TEL3, " +
-				" MAX(C.TEL4) TEL4, MAX(C.TEL5)TEL5, MAX(I.`NAME`) infoerName, U.ALIAS salesmanName, "+ 
+				" C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
 				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
@@ -213,12 +217,18 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
+		if(isKey != null)
+		{
+			sql += " AND C.IS_KEY = :isKey";
+			paramMap.put("isKey", isKey);
+		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
-		sql +=" GROUP BY O.ID";
+		sql +=" GROUP BY O.ID, C.ID, U.ID, U2.ID, I.ID ";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql += " ORDER BY C.IS_KEY DESC, ";
+		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
 		sql +=" , O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
@@ -228,7 +238,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination,
-			User designer, String name, String tel, String infoerName, Integer... statuses)
+			User designer, String name, String tel, String infoerName, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -242,9 +252,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " 	END "+ 
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
-				" C.NAME NAME, C.ORG_ADDR ORG_ADDR, C.TEL1 TEL1, C.TEL2 TEL2, C.TEL3 TEL3, " +
-				" C.TEL4 TEL4, C.TEL5 TEL5, I.ID INFOER_NAME, I.`NAME` infoerName, U.ID salesmanId, U.ALIAS salesmanName, "+ 
-				" U.STATUS salesmanStatus, U2.ID designerId, U2.ALIAS designerName, U2.STATUS designerStatus "+
+				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.NAME INFOER_NAME, I.`NAME` infoerName, U.ID salesmanId, U.ALIAS salesmanName, "+ 
+				" 	U.STATUS salesmanStatus, U2.ID designerId, U2.ALIAS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
@@ -273,12 +282,18 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
+		if(isKey != null)
+		{
+			sql += " AND C.IS_KEY = :isKey";
+			paramMap.put("isKey", isKey);
+		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
-		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
+		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, I.ID, A.ID ";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
-		sql += pagination.buildOrderBySqlPart(" ORDER BY notVisitDays DESC ");
+		sql += " ORDER BY C.IS_KEY DESC, ";
+		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
 		sql +=" , O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
@@ -344,9 +359,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 	}
 
 	@Override
-	public Integer updateOrderByIds(Integer[] orderIds) {
-		return jdbcOps.update("UPDATE `ORDER` SET STATUS = 12 "
-				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
+	public Integer updateOrderStatus(Status status, Integer... orderIds)
+	{
+		return jdbcOps.update("UPDATE `ORDER` SET STATUS = :status "
+				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("status", status.value()));
 	}
 	
 	@Override

@@ -70,7 +70,7 @@ $(function()
 				{field: 'leftVisitDays', title:'未回访天数', width: 3, sortable: true,
 					styler: function (value, row, index) {
 						if(value > 5)
-							return 'background-color:red';
+							return 'background-color: orange;';
 				}}
 			]],
 			pagination: true,
@@ -156,16 +156,18 @@ $(function()
 		({
 			idField: 'id',
 			columns:
-				[[
-				  {field:'id', hidden: true},
-				  {field:'name', title:'客户', width: 3},
-				  {field:'projectName', title:'工程名称', width: 6},
-				  {field:'projectAddr', title:'面积', width: 6},
-				  {field:'infoerName', title:'信息员', width: 3},
-				  {field:'salesmanName', title:'业务员', width: 3},
-				  {field:'designerName', title:'设计师', width: 3},
-				  {field:'insertTime', title:'生成日期', width: 5},
-				  {field:'status', title:'状态', width: 5, formatter: function(value, row, index)
+			[[
+				{field:'id', hidden: true},
+				{field:'isKey', hidden: true},
+				{field:'name', title:'客户', width: 3},
+				{field:'projectName', title:'工程名称', width: 6},
+				{field:'projectAddr', title:'面积', width: 6},
+				{field:'infoerName', title:'信息员', width: 3},
+				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'designerName', title:'设计师', width: 3},
+				{field:'insertTime', title:'生成日期', width: 5},
+				{
+					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
 					{
 						switch (value)
 						{
@@ -186,9 +188,14 @@ $(function()
 								break;
 						}
 					}
-				  }
-				  ]],
-				  pagination: true
+				}
+			]],
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
+			pagination: true
 		});
 
 		$infoCostGrid.datagrid
@@ -241,6 +248,7 @@ $(function()
 			columns:
 			[[
 				{field:'id', hidden: true},
+				{field:'isKey', hidden: true},
 				{field:'name', title:'联系人', width: 3},
 				{field:'telAll', title:'联系电话', width: 6},
 				{field:'orgAddr', title:'单位地址', width: 8},
@@ -290,6 +298,11 @@ $(function()
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'insertTime', title:'录入日期', width: 5}
 			]],
+			rowStyler: function(index, row)
+			{
+				if(row.isKey == 1)
+					return 'color: red;';
+			},
 			pagination: true
 		});
 
@@ -665,23 +678,29 @@ $(function()
 			'			<td style="min-width: 70px;" align="right"><label>联系人：</label></td>' + 
 			'			<td><input name="name" class="easyui-textbox" required="required" style="width: 140px;"/></td>' + 
 			'			<td style="min-width: 75px;" align="right"><label>所属信息员：</label></td>' + 
-			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 136px;"/></td>' + 
+			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 140px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
+			'			<td align="right"><label>重点客户：</label></td>' + 
+			'			<td><label><input type="checkbox" value="1" name="isKey" />是</label></td>' + 
 			'			<td align="right"><label>联系电话1：</label></td>' + 
 			'			<td><input name="tel1" id="tel1" required="required" style="width: 140px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
 			'			<td align="right"><label>联系电话2：</label></td>' + 
 			'			<td><input name="tel2" id="tel2" style="width: 140px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
 			'			<td align="right"><label>联系电话3：</label></td>' + 
 			'			<td><input name="tel3" id="tel3" style="width: 140px;"/></td>' + 
-			'			<td align="right"><label>联系电话4：</label></td>' + 
-			'			<td><input name="tel4" id="tel4" style="width: 140px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
+			'			<td align="right"><label>联系电话4：</label></td>' + 
+			'			<td><input name="tel4" id="tel4" style="width: 140px;"/></td>' + 
 			'			<td align="right"><label>联系电话5：</label></td>' + 
 			'			<td><input name="tel5" id="tel5" style="width: 140px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td align="right"><label>面积：</label></td>' + 
+			'			<td><input name="projectAddr"style="width: 140px;" class="easyui-textbox"/></td>' + 
 			'			<td colspan="2"><font id="errorclienttel" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
@@ -691,10 +710,6 @@ $(function()
 			'		<tr>' + 
 			'			<td align="right"><label>工程名称：</label></td>' + 
 			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
-			'			<td align="right"><label>面积：</label></td>' + 
-			'			<td colspan="3"><input name="projectAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
