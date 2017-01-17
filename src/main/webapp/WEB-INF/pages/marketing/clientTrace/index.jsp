@@ -15,16 +15,29 @@
 		<table id="orderDatagrid" border="false"></table>
 		<div id="orderDatagridToolbar">
 			<label>名称：</label>
-			<input class="easyui-textbox" id="clientTrace.nameInput" style="width: 120px;"/>
+			<input class="easyui-textbox" id="clientTrace-nameInput" style="width: 120px;"/>
 			<label>电话：</label>
-			<input class="easyui-textbox" id="clientTrace.telInput" style="width: 120px;"/>
+			<input class="easyui-textbox" id="clientTrace-telInput" style="width: 120px;"/>
 			<label>信息员名称：</label>
-			<input class="easyui-textbox" id="clientTrace.infoerNameInput" style="width: 120px;"/>
-			<label><input type="radio" value="0" name="clientTrace-infoerFilterInput" />全部客户</label>
-			<label><input type="radio" value="1" name="clientTrace-infoerFilterInput" checked="checked"/>我的客户</label>
+			<input class="easyui-textbox" id="clientTrace-infoerNameInput" style="width: 120px;"/>
+			<c:if test="${sessionScope.loginUser.role != 1}">
+				<label>下属业务员：</label>
+				<select style="width: 120px;" class="easyui-combobox" id="clientTrace-salesmanCombobox" data-options="textField: 'alias'">
+					<option value="" style="color: gray;">-- 全部 --</option>
+					<c:forEach items="${requestScope.underling}" var="underling">
+						<option value="${underling.id}">${underling.alias}</option>
+					</c:forEach>
+				</select>
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+				<br>
+				<label><input type="radio" value="0" name="clientTrace-infoerFilterInput" />全部客户</label>
+				<label><input type="radio" value="1" name="clientTrace-infoerFilterInput" checked="checked"/>我的客户</label>
+			</c:if>
+			<c:if test="${sessionScope.loginUser.role == 1}">
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
+				<br>
+			</c:if>
 			<label><input type="checkbox" value="1" name="clientTrace-isKey" />重点客户</label>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
-			<br>
 			<label>状态：</label>
 			<label><input type="checkbox" value="" name="statusInput" />全部</label>
 			<label><input type="checkbox" value="10" name="statusInput" checked="checked" />正跟踪</label>

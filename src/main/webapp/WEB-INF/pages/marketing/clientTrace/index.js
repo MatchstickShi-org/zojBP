@@ -2,9 +2,10 @@ $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
 	var $setTracingClientBtn = $('a#setTracingClientBtn');
-	var $infoerNameTextbox = $('#clientTrace\\.infoerNameInput');
-	var $orderNameTextbox = $('#clientTrace\\.nameInput');
-	var $telTextbox = $('#clientTrace\\.telInput');
+	var $infoerNameTextbox = $('#clientTrace-infoerNameInput');
+	var $orderNameTextbox = $('#clientTrace-nameInput');
+	var $telTextbox = $('#clientTrace-telInput');
+	var $salesmanCombobox = $('#clientTrace-salesmanCombobox');
 	var $statusCheckbox = $('[name="clientTrace.status"][checked]');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	var $addClientVisitWindow = $('div#addClientVisitWindow');
@@ -92,6 +93,18 @@ $(function()
 					return 'color: red;';
 			},
 			url: 'marketing/clientMgr/getAllClientTrace',
+			queryParams:
+			{
+				filter: $(':radio[name="clientTrace-infoerFilterInput"]:checked').val(),
+				status: function()
+				{
+					var status =[];
+					$('#orderDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
+						status.push($(this).val());
+					});
+					return status;
+				}()
+			},
 			onSelect: function(idx, row)
 			{
 				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1)
@@ -143,6 +156,7 @@ $(function()
 					name: $orderNameTextbox.textbox('getValue'),
 					tel: $telTextbox.textbox('getValue'),
 					infoerName: $infoerNameTextbox.textbox('getValue'),
+					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					filter: $(':radio[name="clientTrace-infoerFilterInput"]:checked').val(),
 					isKey: $(':checkbox[name="clientTrace-isKey"]:checked').val(),
 					status: status

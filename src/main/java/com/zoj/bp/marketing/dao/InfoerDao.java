@@ -63,7 +63,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser, String name, String tel, Integer... levels)
+	public DatagridVo<Infoer> getAllInfoer(
+			Pagination pagination, User loginUser, String name, String tel, Integer salesmanId, Integer... levels)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
@@ -96,6 +97,12 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 			paramMap.put("tel4", '%' + tel + '%');
 			paramMap.put("tel5", '%' + tel + '%');
 		}
+		
+		if(salesmanId != null)
+		{
+			sql += " AND I.SALESMAN_ID = :salesmanId";
+			paramMap.put("salesmanId", salesmanId);
+		}
 		if(ArrayUtils.isNotEmpty(levels))
 			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
 		
@@ -111,7 +118,8 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	}
 	
 	@Override
-	public DatagridVo<Infoer> getInfoersBySalesman(User salesman, String name, String tel, Integer[] levels, Pagination pagination)
+	public DatagridVo<Infoer> getInfoersBySalesman(
+			Pagination pagination, User salesman, String name, String tel, Integer salesmanId, Integer... levels)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
@@ -140,6 +148,12 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 			paramMap.put("tel4", '%' + tel + '%');
 			paramMap.put("tel5", '%' + tel + '%');
 		}
+		if(salesmanId != null)
+		{
+			sql += " AND I.SALESMAN_ID = :salesmanId";
+			paramMap.put("salesmanId", salesmanId);
+		}
+		
 		if(ArrayUtils.isNotEmpty(levels))
 			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
 		

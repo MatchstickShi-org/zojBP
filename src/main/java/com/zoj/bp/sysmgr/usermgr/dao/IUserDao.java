@@ -117,13 +117,21 @@ public interface IUserDao
 
 	/**
 	 * 获取在职的业务员
+	 * @param status TODO
 	 * @return
 	 */
-	List<User> getSalesmanByStatus();
+	List<User> getMarketingUsersByStatus(Integer status);
 	
 	/**
 	 * 获取在职的设计师
+	 * @param status TODO
 	 * @return
 	 */
-	List<User> getDesignerByStatus();
+	List<User> getDesignUsersByStatus(Integer status);
+
+	/**
+	 * @param userId
+	 * @return
+	 */
+	List<User> getUnderlingByLeader(Integer userId);
 }

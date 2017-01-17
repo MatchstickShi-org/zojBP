@@ -36,7 +36,7 @@ public class BusinessCountJob
 	{
 		try
 		{
-			List<User> salesmans = userService.getSalesmanByStatus();
+			List<User> salesmans = userService.getInServiceMarketingUsers();
 			if(CollectionUtils.isNotEmpty(salesmans)){
 				for(User user:salesmans){
 					MarketingCount marketingCount = marketringCountService.getTodayMarketingCountByUserId(user.getId());
@@ -45,7 +45,7 @@ public class BusinessCountJob
 			}
 			logger.info("商务部业务统计完成。");
 			
-			List<User> designers = userService.getDesignerByStatus();
+			List<User> designers = userService.getInServiceDesignUsers();
 			if(CollectionUtils.isNotEmpty(designers)){
 				for(User user:designers){
 					DesignCount designCount = designCountService.getTodayDesignCountByUserId(user.getId());

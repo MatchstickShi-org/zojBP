@@ -166,6 +166,13 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
+	public List<User> getUnderlingByLeader(Integer userId)
+	{
+		
+		return null;
+	}
+
+	@Override
 	public DatagridVo<User> getAssignedUnderling(Integer userId, Pagination pagination)
 	{
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.NAME GROUP_NAME FROM USER U "
@@ -241,12 +248,16 @@ public class UserDao extends BaseDao implements IUserDao
 	}
 
 	@Override
-	public List<User> getSalesmanByStatus() {
-		return jdbcOps.query("SELECT U.* FROM USER U WHERE U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3 AND STATUS = 1",BeanPropertyRowMapper.newInstance(User.class));
+	public List<User> getMarketingUsersByStatus(Integer status)
+	{
+		return jdbcOps.query("SELECT U.* FROM USER U WHERE (U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3) AND STATUS = :status",
+				new MapSqlParameterSource("status", status), BeanPropertyRowMapper.newInstance(User.class));
 	}
 	
 	@Override
-	public List<User> getDesignerByStatus() {
-		return jdbcOps.query("SELECT U.* FROM USER U WHERE U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6 AND STATUS = 1",BeanPropertyRowMapper.newInstance(User.class));
+	public List<User> getDesignUsersByStatus(Integer status)
+	{
+		return jdbcOps.query("SELECT U.* FROM USER U WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND STATUS = :status",
+				new MapSqlParameterSource("status", status), BeanPropertyRowMapper.newInstance(User.class));
 	}
 }

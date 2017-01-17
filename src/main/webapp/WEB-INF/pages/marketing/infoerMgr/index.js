@@ -1,9 +1,10 @@
 $(function()
 {
 	var $infoerDatagrid = $('table#infoerDatagrid');
-	var $infoerNameTextbox = $('#infoerMgr\\.nameInput');
-	var $infoerFilterInput = $('[name="infoerMgr\\.infoerFilterInput"]');
-	var $telTextbox = $('#infoerMgr\\.telInput');
+	var $infoerNameTextbox = $('#infoerMgr-nameInput');
+	var $infoerFilterInput = $('[name="infoerMgr-infoerFilterInput"]');
+	var $telTextbox = $('#infoerMgr-telInput');
+	var $salesmanCombobox = $('#infoerMgr-salesmanCombobox');
 	var $queryInfoerBtn = $('a#queryInfoerBtn');
 	var $addInfoerWindow = $('div#addInfoerWindow');
 	var $businessTransferWindow = $('div#businessTransferWindow');
@@ -110,7 +111,6 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$infoerDatagrid.datagrid('loading');
 				var chkLevels = []; 
 				$('#infoerDatagridToolbar :checkbox[name="levelInput"]:checked').each(function()
 				{ 
@@ -120,7 +120,8 @@ $(function()
 				$infoerDatagrid.datagrid('load', 
 				{
 					name: $infoerNameTextbox.textbox('getValue'), 
-					tel: $telTextbox.textbox('getValue'), 
+					tel: $telTextbox.textbox('getValue'),
+					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					level: chkLevels,
 					filter: $infoerFilterInput.filter(':checked').val()
 				});

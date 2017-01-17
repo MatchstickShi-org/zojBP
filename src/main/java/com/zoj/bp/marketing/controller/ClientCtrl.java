@@ -79,9 +79,10 @@ public class ClientCtrl
 	private IUserService userSvc;
 	
 	@RequestMapping(value = "/toClientTraceView")
-	public String toClientTraceView() throws BusinessException
+	public ModelAndView toClientTraceView(HttpSession session) throws BusinessException
 	{
-		return "/marketing/clientTrace/index";
+		return new ModelAndView("/marketing/clientTrace/index",
+				"underling", userSvc.getMarketUnderlingByUser((User) session.getAttribute("loginUser")));
 	}
 	
 	@RequestMapping(value = "/toClientCheckView")
@@ -113,6 +114,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer salesmanId,
 			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
@@ -135,9 +137,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	/**
@@ -169,6 +171,7 @@ public class ClientCtrl
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
+			@RequestParam(required=false) Integer salesmanId,
 			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
@@ -193,9 +196,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

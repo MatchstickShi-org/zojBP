@@ -50,21 +50,21 @@ public class InfoerService implements IInfoerService{
 	}
 
 	@Override
-	public DatagridVo<Infoer> getAllInfoer(Pagination pagination,
-			User loginUser, String name, String tel, boolean containsUnderling, Integer... levels) throws BusinessException
+	public DatagridVo<Infoer> getAllInfoer(Pagination pagination, User loginUser, 
+			String name, String tel, Integer salesmanId, boolean containsUnderling, Integer... levels) throws BusinessException
 	{
 		if(!loginUser.isBelongMarketing())
 			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不是市场部人员，无法查看信息员。"));
 		User dbUser = userDao.getUserById(loginUser.getId());
 		DatagridVo<Infoer> is;
 		if(dbUser.isLeader() && dbUser.getGroupId() == null)		//主管，尚未分配组
-			is = infoerDao.getInfoersBySalesman(dbUser, name, tel, levels, pagination);
+			is = infoerDao.getInfoersBySalesman(pagination, dbUser, name, tel, salesmanId, levels);
 		else
 		{
 			if(containsUnderling)
-				is = infoerDao.getAllInfoer(pagination, loginUser, name, tel, levels);
+				is = infoerDao.getAllInfoer(pagination, loginUser, name, tel, salesmanId, levels);
 			else
-				is = infoerDao.getInfoersBySalesman(dbUser, name, tel, levels, pagination);
+				is = infoerDao.getInfoersBySalesman(pagination, dbUser, name, tel, salesmanId, levels);
 		}
 		if(loginUser.isLeader())
 			is.getRows().stream().forEach(i -> i.hideAllTel(loginUser));

@@ -99,7 +99,7 @@ public class ClientCheckCtrl
 				Status.disagreeMarketingManagerAuditing.value()
 			};
 		}
-		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, isKey, status);
+		return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, null, isKey, status);
 	}
 	
 	/**

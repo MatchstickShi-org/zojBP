@@ -89,7 +89,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			String clientName, String tel, String infoerName, Integer isKey, Integer... statuses)
+			String clientName, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -120,6 +120,11 @@ public class OrderDao extends BaseDao implements IOrderDao
 				sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 			else
 				sql += " WHERE 1=1 ";
+			if(salesmanOrDesignerId != null)
+			{
+				sql += " AND O.SALESMAN_ID = :salesmanId";
+				paramMap.put("salesmanId", salesmanOrDesignerId);
+			}
 		}
 		else if(user.isBelongDesign())
 		{
@@ -130,6 +135,11 @@ public class OrderDao extends BaseDao implements IOrderDao
 				sql += " WHERE U2.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 			else
 				sql += " WHERE 1=1 ";
+			if(salesmanOrDesignerId != null)
+			{
+				sql += " AND O.DESIGNER_ID = :designerId";
+				paramMap.put("designerId", salesmanOrDesignerId);
+			}
 		}
 		else
 			sql += " WHERE 1=1 ";
@@ -175,7 +185,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(Pagination pagination,
-			User salesman, String name, String tel, String infoerName, Integer isKey, Integer... statuses)
+			User salesman, String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -217,6 +227,11 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql += " AND I.NAME like :infoerName";
 			paramMap.put("infoerName", '%' + infoerName + '%');
 		}
+		if(salesmanId != null)
+		{
+			sql += " AND I.SALESMAN_ID = :salesmanId";
+			paramMap.put("salesmanId", salesmanId);
+		}
 		if(isKey != null)
 		{
 			sql += " AND C.IS_KEY = :isKey";
@@ -238,7 +253,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination,
-			User designer, String name, String tel, String infoerName, Integer isKey, Integer... statuses)
+			User designer, String name, String tel, String infoerName, Integer designerId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -279,8 +294,13 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		if(StringUtils.isNotEmpty(infoerName))
 		{
-			sql += " AND I.NAME like :infoerName";
+			sql += " AND I.NAME like :infoerName ";
 			paramMap.put("infoerName", '%' + infoerName + '%');
+		}
+		if(designerId != null)
+		{
+			sql += " AND O.DESIGNER_ID = :designerId ";
+			paramMap.put("designerId", designerId);
 		}
 		if(isKey != null)
 		{

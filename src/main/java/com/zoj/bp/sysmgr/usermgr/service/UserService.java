@@ -1,6 +1,7 @@
 package com.zoj.bp.sysmgr.usermgr.service;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,12 +188,41 @@ public class UserService implements IUserService
 	}
 	
 	@Override
-	public List<User> getSalesmanByStatus() {
-		return userDao.getSalesmanByStatus();
+	public List<User> getInServiceMarketingUsers()
+	{
+		return userDao.getMarketingUsersByStatus(1);
 	}
 	
 	@Override
-	public List<User> getDesignerByStatus() {
-		return userDao.getDesignerByStatus();
+	public List<User> getInServiceDesignUsers() {
+		return userDao.getDesignUsersByStatus(1);
+	}
+	
+	@Override
+	public List<User> getMarketUnderlingByUser(User user) throws BusinessException
+	{
+		if(user.isBelongDesign() && !user.isSuperAdmin())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不能查询商务部人员。"));
+		if(user.isMarketingSalesman())
+			return Collections.<User>emptyList();
+		if(user.isMarketingLeader())
+			return userDao.getUnderlingByLeader(user.getId());
+		if(user.isMarketingManager() || user.isSuperAdmin())
+			return userDao.getMarketingUsersByStatus(1);
+		return Collections.<User>emptyList();
+	}
+	
+	@Override
+	public List<User> getDesignUnderlingByUser(User user) throws BusinessException
+	{
+		if(user.isBelongMarketing() && !user.isSuperAdmin())
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不能查询主案部人员。"));
+		if(user.isDesignDesigner())
+			return Collections.<User>emptyList();
+		if(user.isDesignLeader())
+			return userDao.getUnderlingByLeader(user.getId());
+		if(user.isDesignManager() || user.isSuperAdmin())
+			return userDao.getDesignUsersByStatus(1);
+		return Collections.<User>emptyList();
 	}
 }
