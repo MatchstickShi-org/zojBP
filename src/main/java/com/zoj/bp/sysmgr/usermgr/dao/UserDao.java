@@ -168,8 +168,16 @@ public class UserDao extends BaseDao implements IUserDao
 	@Override
 	public List<User> getUnderlingByLeader(Integer userId)
 	{
-		
-		return null;
+		String sql = "SELECT U.* FROM USER U "
+			+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
+			+ " LEFT JOIN USER LU ON LU.GROUP_ID = G.ID "
+			+ " 	AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
+			+ " WHERE LU.ID = :userId AND U.STATUS = 1 "
+			+ " 	AND (U.ROLE = CASE G.TYPE WHEN :marketGroup THEN :salesman ELSE :designer END) ";
+		MapSqlParameterSource params = new MapSqlParameterSource("marketGroup", Type.marketingGroup.value())
+			.addValue("marketingLeader", Role.marketingLeader.value()).addValue("designLeader", Role.designLeader.value())
+			.addValue("salesman", Role.marketingSalesman.value()).addValue("designer", Role.designDesigner.value()).addValue("userId", userId);
+		return jdbcOps.query(sql, params, BeanPropertyRowMapper.newInstance(User.class));
 	}
 
 	@Override
@@ -178,9 +186,9 @@ public class UserDao extends BaseDao implements IUserDao
 		String sql = "SELECT U.*, LU.ID LEADER_ID, LU.ALIAS LEADER_NAME, G.NAME GROUP_NAME FROM USER U "
 				+ " LEFT JOIN `GROUP` G ON U.GROUP_ID = G.ID "
 				+ " LEFT JOIN USER LU ON LU.GROUP_ID = G.ID "
-				+ " AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
+				+ " 	AND (LU.ROLE = CASE G.TYPE WHEN :marketGroup THEN :marketingLeader ELSE :designLeader END) "
 				+ " WHERE LU.ID = :userId AND U.STATUS = 1 "
-				+ " AND (U.ROLE = CASE G.TYPE WHEN :marketGroup THEN :salesman ELSE :designer END) ";
+				+ " 	AND (U.ROLE = CASE G.TYPE WHEN :marketGroup THEN :salesman ELSE :designer END) ";
 		MapSqlParameterSource params = new MapSqlParameterSource("marketGroup", Type.marketingGroup.value())
 				.addValue("marketingLeader", Role.marketingLeader.value()).addValue("designLeader", Role.designLeader.value()) 
 				.addValue("salesman", Role.marketingSalesman.value()).addValue("designer", Role.designDesigner.value()) 
