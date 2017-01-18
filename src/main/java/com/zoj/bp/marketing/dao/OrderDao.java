@@ -1,5 +1,6 @@
 package com.zoj.bp.marketing.dao;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 		String sql = "UPDATE `ORDER` SET STATUS = :status ";
 		if(order.getDesignerId() != null && order.getDesignerId() > 0)
 			sql +=",DESIGNER_ID = :designerId ";
+		if(order.getDealAmount() != null && order.getDealAmount().compareTo(BigDecimal.ZERO) > 0)
+			sql +=",DEAL_AMOUNT = :dealAmount ";
 		sql += "WHERE ID = :id";
 		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
 		

@@ -3,6 +3,7 @@
  */
 package com.zoj.bp.design.controller;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -207,6 +208,8 @@ public class DesignClientCtrl
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+		if(orderApprove.getDealAmount().compareTo(BigDecimal.ZERO) <= 0)
+			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("请输入正确的签单金额！")));
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.permit.value());

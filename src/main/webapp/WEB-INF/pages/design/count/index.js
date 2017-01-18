@@ -17,7 +17,9 @@ $(function()
 				{field:'todayOrderVisitCount', title:'今日在谈单回访数', width: 5},
 				{field:'talkingOrderCount', title:'当前在谈单数量', width: 5},
 				{field:'dealOrderCount', title:'已签单总数', width: 5},
-				{field:'deadOrderCount', title:'死单总数', width: 5}
+				{field:'deadOrderCount', title:'死单总数', width: 5},
+				{field:'monthDealAmount', title:'本月签单总额', width: 5},
+				{field:'totalDealAmount', title:'累计签单总额', width: 5}
 			]],
 			border: false,
 			pagination: true,

@@ -1,10 +1,14 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.NumberFormat;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -43,6 +47,10 @@ public class OrderApprove implements Serializable{
 	
 	@NotNull
 	private String remark;
+	
+	@NumberFormat(pattern="#,###.##")
+	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
+	private BigDecimal dealAmount;
 
 	public enum Operate
 	{
@@ -168,5 +176,13 @@ public class OrderApprove implements Serializable{
 	public void setDesignerName(String designerName)
 	{
 		this.designerName = designerName;
+	}
+
+	public BigDecimal getDealAmount() {
+		return dealAmount;
+	}
+
+	public void setDealAmount(BigDecimal dealAmount) {
+		this.dealAmount = dealAmount;
 	}
 }

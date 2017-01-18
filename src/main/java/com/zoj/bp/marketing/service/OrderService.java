@@ -269,7 +269,7 @@ public class OrderService implements IOrderService
 						if(CollectionUtils.isNotEmpty(targetUsers))
 						{
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
-									MessageFormat.format("市场部经理批准了在谈单[{0}]的申请，请尽快审核。", order.getId()))));
+									MessageFormat.format("商务部经理批准了在谈单[{0}]的申请，请尽快审核。", order.getId()))));
 						}
 						break;
 					case talkingDesignManagerAuditing://状态为：在谈单-主案部经理审核中：分配设计师跟踪
@@ -286,6 +286,7 @@ public class OrderService implements IOrderService
 						infoer.setLevel(Level.gold.value());
 						updateInfoerFlag = true;
 						order.setStatus(Status.deal.value());
+						order.setDealAmount(orderApprove.getDealAmount());
 						orderApprove.setStatus(Status.deal.value());
 						String msg = MessageFormat.format(
 								"在谈单[{0}]已被设计师[{1}]签单，请知悉。", order.getId(), order.getDesignerName());

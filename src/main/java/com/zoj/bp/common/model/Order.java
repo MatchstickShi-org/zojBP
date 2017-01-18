@@ -1,14 +1,17 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.NumberFormat;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -64,6 +67,10 @@ public class Order implements Serializable
 	 * 是否重点客户（1：是；0：否）
 	 */
 	private Integer isKey = 0;
+	
+	@NumberFormat(pattern="#,###.##")
+	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
+	private BigDecimal dealAmount;
 
 	/** 未回访天数 */
 	private Integer notVisitDays;
@@ -389,5 +396,13 @@ public class Order implements Serializable
 	public void setIsKey(Integer isKey)
 	{
 		this.isKey = isKey;
+	}
+
+	public BigDecimal getDealAmount() {
+		return dealAmount;
+	}
+
+	public void setDealAmount(BigDecimal dealAmount) {
+		this.dealAmount = dealAmount;
 	}
 }

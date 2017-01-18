@@ -645,6 +645,10 @@ $(function()
 			'			<td><input id="salesmanName" name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /><input id="salesmanId"  name="claimer" type="hidden" value="" /></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
+			'			<td align="right"><label>签单金额：</label></td>' + 
+			'			<td><input id="dealAmount" name="dealAmount" required="required" class="easyui-textbox" /> ￥</td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
