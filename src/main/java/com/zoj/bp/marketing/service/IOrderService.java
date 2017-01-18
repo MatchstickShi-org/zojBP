@@ -1,7 +1,6 @@
 package com.zoj.bp.marketing.service;
 
 import com.zoj.bp.common.excption.BusinessException;
-import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.OrderApprove;
@@ -19,10 +18,10 @@ public interface IOrderService {
 
 	/**
 	 * @param order
-	 * @param client
+	 * @param loginUser TODO
 	 * @return
 	 */
-	void updateOrder(Order order,Client client);
+	void updateOrder(Order order, User loginUser);
 
 	/**
 	 * @param pagination

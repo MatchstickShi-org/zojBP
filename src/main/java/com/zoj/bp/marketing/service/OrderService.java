@@ -51,6 +51,9 @@ public class OrderService implements IOrderService
 	@Autowired
 	private IMsgLogDao msgDao;
 	
+	@Autowired
+	private IClientService clientSvc;
+	
 	@Override
 	public Order getOrderById(Integer id, User loginUser)
 	{
@@ -60,9 +63,17 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public void updateOrder(Order order, Client client)
+	public void updateOrder(Order order, User loginUser)
 	{
-		orderDao.updateOrder(order);
+		Client client = clientSvc.getClientByOrderId(order.getId());
+		client.setName(order.getName());
+		client.setOrgAddr(order.getOrgAddr());
+		client.setIsKey(order.getIsKey());
+		Order dbOrder = getOrderById(order.getId(), loginUser);
+		dbOrder.setProjectName(order.getProjectName());
+		dbOrder.setProjectAddr(order.getProjectAddr());
+		
+		orderDao.updateOrder(dbOrder);
 		clientDao.updateClient(client);
 	}
 

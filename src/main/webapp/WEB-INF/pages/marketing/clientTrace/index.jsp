@@ -68,10 +68,16 @@
 							<td width="70%"><input name="telAll" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 						</tr>
 						<tr>
-							<td align="right" style="min-width: 80px;"><label>信息员：</label></td>
+							<td align="right"><label>信息员：</label></td>
 							<td><input name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
-							<td align="right" style="min-width: 80px;"><label>业务员：</label></td>
+							<td align="right"><label>业务员：</label></td>
 							<td><input name="salesmanName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>面积：</label></td>
+							<td><input name="projectAddr" style="width: 154px;" class="easyui-textbox" required="required"/></td>
+							<td align="right"><label>重点客户：</label></td>
+							<td><label><input type="checkbox" value="1" name="isKey" />是</label></td>
 						</tr>
 						<tr>
 							<td align="right"><label>单位地址：</label></td>
@@ -80,10 +86,6 @@
 						<tr>
 							<td align="right"><label>工程名称：</label></td>
 							<td colspan="3"><input name="projectName" style="width: 442px;" class="easyui-textbox" required="required"/></td>
-						</tr>
-						<tr>
-							<td align="right"><label>面积：</label></td>
-							<td colspan="3"><input name="projectAddr" style="width: 442px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="3">

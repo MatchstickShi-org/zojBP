@@ -28,7 +28,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		try
 		{
 			return jdbcOps.queryForObject(
-				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, I.`NAME` AS infoerName, "
+				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` AS infoerName, "
 				+ " 	U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
 				" FROM `ORDER` O "+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "+
