@@ -65,9 +65,10 @@ public class ClientDao extends BaseDao implements IClientDao
 	}
 
 	@Override
-	public void updateClient(Client client) {
-		String sql = "UPDATE CLIENT SET ORDER_ID = :orderId, NAME = :name,ORG_ADDR = :orgAddr,"
-				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5";
+	public void updateClient(Client client)
+	{
+		String sql = "UPDATE CLIENT SET ORDER_ID = :orderId, NAME = :name, ORG_ADDR = :orgAddr, "
+				+ " TEL1 = :tel1, TEL2 = :tel2, TEL3 = :tel3, TEL4 = :tel4, TEL5 = :tel5, IS_KEY = :isKey ";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(client));
 	}
@@ -89,7 +90,7 @@ public class ClientDao extends BaseDao implements IClientDao
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO CLIENT(ORDER_ID, NAME, ORG_ADDR, TEL1, TEL2, TEL3, TEL4, TEL5, IS_KEY) VALUES(:orderId, :name, :orgAddr, :tel1, :tel2, :tel3, :tel4, :tel5, :isKey)",
+				"INSERT INTO CLIENT(ORDER_ID, NAME, ORG_ADDR, TEL1, TEL2, TEL3, TEL4, TEL5) VALUES(:orderId, :name, :orgAddr, :tel1, :tel2, :tel3, :tel4, :tel5)",
 				new BeanPropertySqlParameterSource(client), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

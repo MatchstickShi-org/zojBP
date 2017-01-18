@@ -296,7 +296,7 @@ public class DesignClientCtrl
 		Order order = orderSvc.getOrderById(orderForm.getId(), (User) session.getAttribute("loginUser"));
 		order.setProjectName(orderForm.getProjectName());
 		order.setProjectAddr(orderForm.getProjectAddr());
-		orderSvc.updateOrder(order,client);
+		orderSvc.updateOrder(order, null);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

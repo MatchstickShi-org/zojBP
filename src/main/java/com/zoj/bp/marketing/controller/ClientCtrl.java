@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
-import com.zoj.bp.common.model.Client;
 import com.zoj.bp.common.model.CommissionCost;
 import com.zoj.bp.common.model.InfoCost;
 import com.zoj.bp.common.model.Order;
@@ -35,7 +34,6 @@ import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.costmgr.infocostmgr.service.IInfoCostMgrService;
-import com.zoj.bp.marketing.service.IClientService;
 import com.zoj.bp.marketing.service.ICommissionCostService;
 import com.zoj.bp.marketing.service.IInfoCostService;
 import com.zoj.bp.marketing.service.IInfoerService;
@@ -59,9 +57,6 @@ public class ClientCtrl
 	
 	@Autowired
 	private IOrderVisitService orderVisitSvc;
-	
-	@Autowired
-	private IClientService clientSvc;
 	
 	@Autowired
 	private IInfoerService infoerSvc;
@@ -203,9 +198,7 @@ public class ClientCtrl
 	@ResponseBody
 	public Map<String, Object> getOrderById(@RequestParam("orderId") Integer orderId, HttpSession session) throws Exception
 	{
-		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
-		Map<String, Object> map = ResponseUtils.buildRespMapByBean(order);
-		return map;
+		return ResponseUtils.buildRespMapByBean(orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser")));
 	}
 	
 	/**
@@ -268,13 +261,7 @@ public class ClientCtrl
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL);
-		Client client = clientSvc.getClientByOrderId(orderForm.getId());
-		client.setName(orderForm.getName());
-		client.setOrgAddr(orderForm.getOrgAddr());
-		Order order = orderSvc.getOrderById(orderForm.getId(), (User) session.getAttribute("loginUser"));
-		order.setProjectName(orderForm.getProjectName());
-		order.setProjectAddr(orderForm.getProjectAddr());
-		orderSvc.updateOrder(order,client);
+		orderSvc.updateOrder(orderForm, (User) session.getAttribute("loginUser"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -288,7 +275,7 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/getOrderVisitByOrder")
 	@ResponseBody
-	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination,HttpSession session) throws BusinessException
+	public DatagridVo<OrderVisit> getOrderVisitByOrder(@RequestParam("orderId") Integer orderId, Pagination pagination, HttpSession session) throws BusinessException
 	{
 		Order order = orderSvc.getOrderById(orderId, (User) session.getAttribute("loginUser"));
 		return orderVisitSvc.getAllOrderVisit(pagination, order.getSalesmanId(), orderId);

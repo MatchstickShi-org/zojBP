@@ -723,35 +723,33 @@ $(function()
 			'			<td><input id="infoerName" name="infoerName" readonly="readonly" class="easyui-textbox" style="width: 140px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
-			'			<td align="right"><label>重点客户：</label></td>' + 
-			'			<td><label><input type="checkbox" value="1" name="isKey" />是</label></td>' + 
 			'			<td align="right"><label>联系电话1：</label></td>' + 
 			'			<td><input name="tel1" id="tel1" required="required" style="width: 140px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
 			'			<td align="right"><label>联系电话2：</label></td>' + 
 			'			<td><input name="tel2" id="tel2" style="width: 140px;"/></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
 			'			<td align="right"><label>联系电话3：</label></td>' + 
 			'			<td><input name="tel3" id="tel3" style="width: 140px;"/></td>' + 
-			'		</tr>' + 
-			'		<tr>' + 
 			'			<td align="right"><label>联系电话4：</label></td>' + 
 			'			<td><input name="tel4" id="tel4" style="width: 140px;"/></td>' + 
-			'			<td align="right"><label>联系电话5：</label></td>' + 
-			'			<td><input name="tel5" id="tel5" style="width: 140px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
+			'			<td align="right"><label>联系电话5：</label></td>' + 
+			'			<td><input name="tel5" id="tel5" style="width: 140px;"/></td>' + 
 			'			<td align="right"><label>面积：</label></td>' + 
 			'			<td><input name="projectAddr"style="width: 140px;" class="easyui-textbox"/></td>' + 
-			'			<td colspan="2"><font id="errorclienttel" color="red"></font></td>' + 
+			'		</tr>' + 
+			'		<tr>' + 
+			'			<td colspan="4" style="text-align: center;"><font id="errorclienttel" color="red"></font></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>单位地址：</label></td>' + 
-			'			<td colspan="3"><input name="orgAddr" class="easyui-textbox" style="width: 398px;"/></td>' + 
+			'			<td colspan="3"><input name="orgAddr" class="easyui-textbox" style="width: 386px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>工程名称：</label></td>' + 
-			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 398px;"/></td>' + 
+			'			<td colspan="3"><input name="projectName" class="easyui-textbox" style="width: 386px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
