@@ -127,6 +127,8 @@ public class ClientCtrl
 				Status.tracing.value(),
 				Status.abandoned.value(),
 				Status.designerRejected.value(),
+				Status.rejectingDesignManagerAuditing.value(),
+				Status.rejectingMarketingManagerAuditing.value(),
 				Status.talkingMarketingManagerAuditing.value(),
 				Status.talkingDesignManagerAuditing.value()
 			};

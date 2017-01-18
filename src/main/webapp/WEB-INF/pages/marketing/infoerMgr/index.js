@@ -195,6 +195,12 @@ $(function()
 							case 14:
 								return '在谈单-设计师已打回';
 								break;
+							case 20:
+								return '打回中-主案部经理审核';
+								break;
+							case 22:
+								return '打回中-商务部经理审核';
+								break;
 							case 30:
 								return '在谈单-商务部经理审核中';
 								break;
@@ -286,16 +292,26 @@ $(function()
 							case 12:
 								return '已放弃';
 								break;
+							case 20:
+								return '打回中-主案部经理审核';
+								break;
+							case 22:
+								return '打回中-商务部经理审核';
+								break;
 							case 30:
+								return '在谈单-商务部经理审核中';
+								break;
 							case 32:
-								return '在谈单审核中';
+								return '在谈单-主案部经理审核中';
 								break;
 							case 34:
 								return '在谈单';
 								break;
 							case 60:
+								return '不准单-主案部经理审核中';
+								break;
 							case 62:
-								return '不准单审核中';
+								return '不准单-商务部经理审核中';
 								break;
 							case 64:
 								return '不准单';

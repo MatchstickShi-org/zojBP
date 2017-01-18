@@ -97,6 +97,10 @@ public class Order implements Serializable
 		abandoned(12),
 		/** 在谈单-设计师已打回:14 */
 		designerRejected(14),
+		/** 打回中-主案部经理审核:20 */
+		rejectingDesignManagerAuditing(20),
+		/** 打回中-商务部经理审核:22 */
+		rejectingMarketingManagerAuditing(22),
 		/** 在谈单-商务部经理审核中:30 */
 		talkingMarketingManagerAuditing(30),
 		/** 在谈单-主案部经理审核中:32 */

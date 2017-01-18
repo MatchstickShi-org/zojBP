@@ -181,6 +181,18 @@ public class OrderService implements IOrderService
 			case reject:		//驳回操作
 				switch (Status.valueOf(order.getStatus()))
 				{
+					case rejectingDesignManagerAuditing://状态为：打回中-主案部经理审核中：驳回-更新为在谈单-设计师跟踪中
+						order.setStatus(Status.talkingDesignerTracing.value());
+						orderApprove.setStatus(Status.talkingDesignerTracing.value());
+						msgs.add(new MsgLog(order.getDesignerId(), 
+								MessageFormat.format("你提交的在谈单[{0}]打回申请被主案部经理打回，请知悉。", order.getId())));
+						break;
+					case rejectingMarketingManagerAuditing://状态为：打回中-商务部经理审核中：驳回-更新为打回中-主案部经理审核中
+						order.setStatus(Status.rejectingDesignManagerAuditing.value());
+						orderApprove.setStatus(Status.rejectingDesignManagerAuditing.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你提交的在谈单[{0}]打回申请被商务部经理打回，请知悉。", order.getId())));
+						break;
 					case talkingMarketingManagerAuditing://状态为：在谈单-商务部经理审核中：驳回-更新为正跟踪
 						order.setStatus(Status.tracing.value());
 						orderApprove.setStatus(Status.tracing.value());
@@ -223,10 +235,26 @@ public class OrderService implements IOrderService
 			case permit:		//批准操作
 				switch (Status.valueOf(order.getStatus()))
 				{
+					case rejectingDesignManagerAuditing://状态为：打回中-主案部经理审核中：提交商务部部经理审核
+						order.setStatus(Status.rejectingMarketingManagerAuditing.value());
+						orderApprove.setStatus(Status.rejectingMarketingManagerAuditing.value());
+						List<User> targetUsers = userDao.getUsersByRole(Role.marketingManager.value());
+						if(CollectionUtils.isNotEmpty(targetUsers))
+						{
+							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
+									MessageFormat.format("主案部经理批准了在谈单[{0}]的打回申请，请尽快审核。", order.getId()))));
+						}
+						break;
+					case rejectingMarketingManagerAuditing://状态为：打回中-商务部经理审核中：设计师已打回
+						order.setStatus(Status.designerRejected.value());
+						orderApprove.setStatus(Status.designerRejected.value());
+						msgs.add(new MsgLog(order.getSalesmanId(), 
+								MessageFormat.format("你的在谈单[{0}]被设计师[{1}]打回，请知悉。", order.getId(), orderApprove.getDesignerName())));
+						break;
 					case talkingMarketingManagerAuditing://状态为：在谈单-商务部经理审核中：提交主案部经理审核
 						order.setStatus(Status.talkingDesignManagerAuditing.value());
 						orderApprove.setStatus(Status.talkingDesignManagerAuditing.value());
-						List<User> targetUsers = userDao.getUsersByRole(Role.designManager.value());
+						targetUsers = userDao.getUsersByRole(Role.designManager.value());
 						if(CollectionUtils.isNotEmpty(targetUsers))
 						{
 							targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
@@ -274,8 +302,8 @@ public class OrderService implements IOrderService
 						msgs.add(new MsgLog(order.getDesignerId(), 
 								MessageFormat.format("你提交的不准单[{0}]申请已通过，请知悉。", order.getId())));
 						break;
-				default:
-					break;
+					default:
+						break;
 				}
 				break;
 			case apply:		//申请操作
@@ -320,10 +348,15 @@ public class OrderService implements IOrderService
 				}
 				break;
 			case repulse:		//打回操作
-				order.setStatus(Status.designerRejected.value());
-				orderApprove.setStatus(Status.designerRejected.value());
-				msgs.add(new MsgLog(order.getSalesmanId(), 
-						MessageFormat.format("你的在谈单[{0}]被设计师[{1}]打回，请知悉。", order.getId(), orderApprove.getDesignerName())));
+				order.setStatus(Status.rejectingDesignManagerAuditing.value());
+				orderApprove.setStatus(Status.rejectingDesignManagerAuditing.value());
+				List<User> targetUsers = userDao.getUsersByRole(Role.designManager.value());
+				if(CollectionUtils.isNotEmpty(targetUsers))
+				{
+					targetUsers.stream().forEach(u -> msgs.add(new MsgLog(u.getId(),
+							MessageFormat.format("设计师[{0}]对在谈单[{1}]申请了打回，请尽快审核。", 
+									orderApprove.getDesignerName(), order.getId()))));
+				}
 				break;
 		}
 		approveDao.addOrderApprove(orderApprove);

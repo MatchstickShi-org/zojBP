@@ -54,6 +54,9 @@ $(function()
 					{
 						switch (value)
 						{
+							case 20:
+								return '打回审核中';
+								break;
 							case 32:
 								return '在谈单审核中';
 								break;
@@ -240,6 +243,12 @@ $(function()
 								case 14:
 									return '在谈单-设计师已打回';
 									break;
+								case 20:
+									return '打回中-主案部经理审核';
+									break;
+								case 22:
+									return '打回中-商务部经理审核';
+									break;
 								case 30:
 									return '在谈单-商务部经理审核中';
 									break;
@@ -423,8 +432,8 @@ $(function()
 			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
 			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
-			'$permitOrderWindow.find(\'#permitOrderForm_designerNameSearchbox\').val(selRows[0].desingerName);' +
-			'$permitOrderWindow.find(\'#permitOrderForm_designerIdInput\').val(selRows[0].desingerId);' +
+			'$permitOrderWindow.find(\'#permitOrderForm_designerNameSearchbox\').val(selRows[0].designerName);' +
+			'$permitOrderWindow.find(\'#permitOrderForm_designerIdInput\').val(selRows[0].designerId);' +
 			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
 			'$permitOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
 			'var $designerNameSearchbox = $permitOrderWindow.find("#permitOrderForm_designerNameSearchbox");' +

@@ -83,6 +83,12 @@ $(function()
 							case 12:
 								return '已放弃';
 								break;
+							case 20:
+								return '打回中-主案部经理审核';
+								break;
+							case 22:
+								return '打回中-商务部经理审核';
+								break;
 							case 30:
 								return '在谈单-商务部经理审核中';
 								break;
@@ -321,6 +327,12 @@ $(function()
 									break;
 								case 14:
 									return '在谈单-设计师已打回';
+									break;
+								case 20:
+									return '打回中-主案部经理审核';
+									break;
+								case 22:
+									return '打回中-商务部经理审核';
 									break;
 								case 30:
 									return '在谈单-商务部经理审核中';

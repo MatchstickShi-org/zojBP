@@ -95,6 +95,7 @@ public class DesignClientCheckCtrl
 			status = new Integer[]
 			{
 				Status.talkingDesignManagerAuditing.value(),
+				Status.rejectingDesignManagerAuditing.value(),
 				Status.disagreeDesignManagerAuditing.value()
 			};
 		}
