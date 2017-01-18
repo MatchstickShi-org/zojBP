@@ -89,7 +89,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			String clientName, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses)
+			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -143,8 +143,12 @@ public class OrderDao extends BaseDao implements IOrderDao
 		}
 		else
 			sql += " WHERE 1=1 ";
-		
 		paramMap.put("userId", user.getId());
+		if(orderId != null)
+		{
+			sql += " AND O.ID LIKE :orderId";
+			paramMap.put("orderId", '%' + String.valueOf(orderId) + '%');
+		}
 		if(StringUtils.isNotEmpty(clientName))
 		{
 			sql += " AND C.NAME LIKE :name";
@@ -185,7 +189,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(Pagination pagination,
-			User salesman, String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses)
+			User salesman, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -208,10 +212,15 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID "+
 				" WHERE U.ID = :userId ";
 		paramMap.put("userId", salesman.getId());
-		if(StringUtils.isNotEmpty(name))
+		if(orderId != null)
+		{
+			sql += " AND O.ID LIKE :orderId";
+			paramMap.put("orderId", '%' + String.valueOf(orderId) + '%');
+		}
+		if(StringUtils.isNotEmpty(clientName))
 		{
 			sql += " AND C.NAME LIKE :name";
-			paramMap.put("name", '%' + name + '%');
+			paramMap.put("name", '%' + clientName + '%');
 		}
 		if (StringUtils.isNotEmpty(tel))
 		{
@@ -253,7 +262,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination,
-			User designer, String name, String tel, String infoerName, Integer designerId, Integer isKey, Integer... statuses)
+			User designer, String clientName,Integer orderId, String tel, String infoerName, Integer designerId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -278,10 +287,15 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) "+
 				" WHERE U2.ID = :userId ";
 		paramMap.put("userId", designer.getId());
-		if(StringUtils.isNotEmpty(name))
+		if(orderId != null)
+		{
+			sql += " AND O.ID LIKE :orderId";
+			paramMap.put("orderId", '%' + String.valueOf(orderId) + '%');
+		}
+		if(StringUtils.isNotEmpty(clientName))
 		{
 			sql += " AND C.NAME LIKE :name";
-			paramMap.put("name", '%' + name + '%');
+			paramMap.put("name", '%' + clientName + '%');
 		}
 		if (StringUtils.isNotEmpty(tel))
 		{

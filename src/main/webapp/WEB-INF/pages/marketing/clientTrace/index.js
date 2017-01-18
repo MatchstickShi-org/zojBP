@@ -4,6 +4,7 @@ $(function()
 	var $setTracingClientBtn = $('a#setTracingClientBtn');
 	var $infoerNameTextbox = $('#clientTrace-infoerNameInput');
 	var $orderNameTextbox = $('#clientTrace-nameInput');
+	var $orderIdTextbox = $('#clientTrace-idInput');
 	var $telTextbox = $('#clientTrace-telInput');
 	var $salesmanCombobox = $('#clientTrace-salesmanCombobox');
 	var $statusCheckbox = $('[name="clientTrace.status"][checked]');
@@ -37,14 +38,14 @@ $(function()
 			toolbar: '#orderDatagridToolbar',
 			columns:
 			[[
-				{field:'id', hidden: true},
-				{field:'isKey', hidden: true},
-				{field: 'ck', checkbox: true},
+			  	{field: 'ck', checkbox: true},
+			  	{field:'isKey', hidden: true},
+				{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 8},
+				{field:'projectAddr', title:'面积', width: 2},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'salesmanStatus', hidden: true},
@@ -154,6 +155,7 @@ $(function()
 				$orderDatagrid.datagrid('load', 
 				{
 					name: $orderNameTextbox.textbox('getValue'),
+					orderId: $orderIdTextbox.textbox('getValue'),
 					tel: $telTextbox.textbox('getValue'),
 					infoerName: $infoerNameTextbox.textbox('getValue'),
 					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),

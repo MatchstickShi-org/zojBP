@@ -16,6 +16,8 @@
 		<div id="orderDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
 			<input class="easyui-textbox" id="clientNegotiation-nameInput" style="width: 120px;"/>
+			<label style="vertical-align: middle;">单号：</label>
+			<input class="easyui-textbox" id="clientNegotiation-idInput" style="width: 120px;"/>
 			<label style="vertical-align: middle;">电话：</label>
 			<input class="easyui-textbox" id="clientNegotiation-telInput" style="width: 120px;"/>
 			<label style="vertical-align: middle;">信息员：</label>

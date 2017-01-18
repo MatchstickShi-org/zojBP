@@ -106,6 +106,7 @@ public class ClientCtrl
 	@ResponseBody
 	public DatagridVo<Order> getAllClientTrace(Pagination pagination,
 			@RequestParam(required=false) String name,
+			@RequestParam(required=false) Integer orderId,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
 			@RequestParam(required=false) Integer salesmanId,
@@ -131,9 +132,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	/**
@@ -163,6 +164,7 @@ public class ClientCtrl
 	@ResponseBody
 	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,
 			@RequestParam(required=false) String name,
+			@RequestParam(required=false) Integer orderId,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
 			@RequestParam(required=false) Integer salesmanId,
@@ -190,9 +192,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

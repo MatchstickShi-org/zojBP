@@ -178,11 +178,11 @@ $(function()
 			idField: 'id',
 			columns:
 			[[
-				{field:'id', hidden: true},
+				{field:'id', title:'单号', width: 3},
 				{field:'isKey', hidden: true},
 				{field:'name', title:'客户', width: 3},
 				{field:'projectName', title:'工程名称', width: 6},
-				{field:'projectAddr', title:'面积', width: 6},
+				{field:'projectAddr', title:'面积', width: 2},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'designerName', title:'设计师', width: 3},
@@ -268,7 +268,7 @@ $(function()
 			idField: 'id',
 			columns:
 			[[
-				{field:'id', hidden: true},
+				{field:'id', title:'单号', width: 3},
 				{field:'isKey', hidden: true},
 				{field:'name', title:'联系人', width: 3},
 				{field:'telAll', title:'联系电话', width: 6},

@@ -38,6 +38,7 @@ public interface IOrderService {
 	 * @param loginUser TODO
 	 * @param pagination 分页对象
 	 * @param name 客户名称
+	 * @param orderId 单号
 	 * @param tel	客户电话
 	 * @param infoerName 信息员名称
 	 * @param salesmanOrDesignerId TODO
@@ -45,7 +46,7 @@ public interface IOrderService {
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -96,7 +97,8 @@ public interface IOrderService {
 	/**
 	 * @param salesman
 	 * @param pagination
-	 * @param name
+	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param infoerName
 	 * @param salesmanId TODO
@@ -105,12 +107,13 @@ public interface IOrderService {
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status);
+			String clientName,Integer orderId,String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status);
 
 	/**
 	 * @param pagination
 	 * @param designer
 	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param infoerName
 	 * @param designerId TODO
@@ -118,7 +121,7 @@ public interface IOrderService {
 	 * @param status
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String clientName, String tel, String infoerName,
+	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String clientName,Integer orderId, String tel, String infoerName,
 			Integer designerId, Integer isKey, Integer... status);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;

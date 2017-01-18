@@ -2,6 +2,7 @@ $(function()
 {
 	var $orderDatagrid = $('table#orderDatagrid');
 	var $orderNameTextbox = $('#clientNegotiation-nameInput');
+	var $orderIdTextbox = $('#clientNegotiation-idInput');
 	var $telTextbox = $('#clientNegotiation-telInput');
 	var $designerCombobox = $('#clientNegotiation-designerCombobox');
 	var $orderFilterInput = $(':radio[name="clientNegotiation-orderFilterInput"]');
@@ -33,14 +34,14 @@ $(function()
 			toolbar: '#orderDatagridToolbar',
 			columns:
 			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field: 'isKey', hidden: true},
+			  	{field: 'ck', checkbox: true},
+			  	{field: 'isKey', hidden: true},
+			  	{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 3},
+				{field:'projectAddr', title:'面积', width: 2},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanId', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
@@ -198,6 +199,7 @@ $(function()
 				$orderDatagrid.datagrid('load', 
 				{
 					clientName: $orderNameTextbox.textbox('getValue'), 
+					orderId: $orderIdTextbox.textbox('getValue'), 
 					tel: $telTextbox.textbox('getValue'),
 					designerId: $designerCombobox.length == 0 ? null : $designerCombobox.combobox('getValue'),
 					filter: $orderFilterInput.filter(':checked').val(),

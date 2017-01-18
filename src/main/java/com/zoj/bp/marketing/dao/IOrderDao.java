@@ -32,6 +32,7 @@ public interface IOrderDao {
 	 * @param pagination
 	 * @param user TODO
 	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param infoerName
 	 * @param salesmanOrDesignerId TODO
@@ -40,7 +41,7 @@ public interface IOrderDao {
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByUser(Pagination pagination,
-			User user, String clientName, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses);
+			User user, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses);
 	/**
 	 * @param order
 	 * @return 
@@ -87,7 +88,8 @@ public interface IOrderDao {
 	/**
 	 * @param pagination
 	 * @param salesman
-	 * @param name
+	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param infoerName
 	 * @param salesmanId TODO
@@ -96,7 +98,7 @@ public interface IOrderDao {
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(Pagination pagination, User salesman,
-			String name, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses);
+			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses);
 
 	/**
 	 * @param userIds
@@ -112,7 +114,8 @@ public interface IOrderDao {
 	/**
 	 * @param pagination
 	 * @param designer
-	 * @param name
+	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param infoerName
 	 * @param designerId TODO
@@ -120,7 +123,7 @@ public interface IOrderDao {
 	 * @param statuses
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String name, String tel, String infoerName,
+	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String clientName,Integer orderId, String tel, String infoerName,
 			Integer designerId, Integer isKey, Integer... statuses);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;

@@ -16,6 +16,8 @@
 		<div id="orderCheckDatagridToolbar">
 			<label style="vertical-align: middle;">名称：</label>
 			<input style="width:120px;" class="easyui-textbox" id="orderApprove-nameInput"/>
+			<label style="vertical-align: middle;">单号：</label>
+			<input style="width:120px;" class="easyui-textbox" id="orderApprove-idInput"/>
 			<label style="vertical-align: middle;">电话：</label>
 			<input style="width:120px;" class="easyui-textbox" id="orderApprove-telInput"/>
 			<label style="vertical-align: middle;">信息员名称：</label>

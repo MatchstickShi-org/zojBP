@@ -91,6 +91,7 @@ public class ClientCheckCtrl
 	@ResponseBody
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
 			@RequestParam(required=false) String name,
+			@RequestParam(required=false) Integer orderId,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) String infoerName,
 			@RequestParam(required=false) Integer salesmanId,
@@ -108,9 +109,9 @@ public class ClientCheckCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
 	}
 	
 	/**

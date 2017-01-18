@@ -16,6 +16,8 @@
 		<div id="orderDatagridToolbar">
 			<label>名称：</label>
 			<input class="easyui-textbox" id="clientTrace-nameInput" style="width: 120px;"/>
+			<label>单号：</label>
+			<input class="easyui-textbox" id="clientTrace-idInput" style="width: 120px;"/>
 			<label>电话：</label>
 			<input class="easyui-textbox" id="clientTrace-telInput" style="width: 120px;"/>
 			<label>信息员名称：</label>

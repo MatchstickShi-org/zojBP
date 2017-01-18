@@ -71,6 +71,7 @@ public class DesignClientCheckCtrl
 	 * 获取待审核的客户洽谈记录
 	 * @param pagination
 	 * @param clientName
+	 * @param orderId
 	 * @param tel
 	 * @param designerName
 	 * @param status
@@ -81,6 +82,7 @@ public class DesignClientCheckCtrl
 	@ResponseBody
 	public DatagridVo<Order> getAllClientCheck(Pagination pagination,
 			@RequestParam(required=false) String clientName,
+			@RequestParam(required=false) Integer orderId,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) Integer designerId,
 			@RequestParam(required=false) Integer filter,
@@ -97,9 +99,9 @@ public class DesignClientCheckCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
 	}
 	
 	

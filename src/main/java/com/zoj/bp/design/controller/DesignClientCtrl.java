@@ -100,6 +100,7 @@ public class DesignClientCtrl
 	@ResponseBody
 	public DatagridVo<Order> getAllClientNegotiation(Pagination pagination,
 			@RequestParam(required=false) String clientName,
+			@RequestParam(required=false) Integer orderId,
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) Integer designerId,
 			@RequestParam(required=false) Integer filter,
@@ -127,9 +128,9 @@ public class DesignClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")
@@ -233,26 +234,6 @@ public class DesignClientCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	/**
-	 * 审核时申请死单
-	 * @param orderApprove
-	 * @param errors
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/checkDeadOrder")
-	@ResponseBody
-	public Map<String, ?> checkDeadOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
-		User loginUser = (User) session.getAttribute("loginUser");
-		orderApprove.setClaimer(loginUser.getId());
-		orderApprove.setOperate(Operate.apply.value());
-		orderSvc.addOrderApprove(orderApprove);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	/**
 	 * 不准单
 	 * @param orderApprove
 	 * @param errors
@@ -291,50 +272,6 @@ public class DesignClientCtrl
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.repulse.value());
 		orderApprove.setDesignerName(loginUser.getAlias());
-		orderSvc.addOrderApprove(orderApprove);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	/**
-	 * 审核通过
-	 * @param orderApprove
-	 * @param errors
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/permitOrder")
-	@ResponseBody
-	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
-		User loginUser = (User) session.getAttribute("loginUser");
-		orderApprove.setOperate(Operate.permit.value());
-		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	/**
-	 * 审核驳回
-	 * @param orderApprove
-	 * @param errors
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/rejectOrder")
-	@ResponseBody
-	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
-	{
-		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
-		User loginUser = (User) session.getAttribute("loginUser");
-		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是经理职务，无法执行此操作。"));
-		orderApprove.setOperate(Operate.reject.value());
-		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -449,12 +386,6 @@ public class DesignClientCtrl
 	public DatagridVo<CommissionCost> getCommissionCostByOrder(@RequestParam("orderId") Integer orderId,Pagination pagination) throws BusinessException
 	{
 		return commissionCostSvc.getAllCommissionCost(pagination,null,orderId);
-	}
-	
-	@RequestMapping("/showDesignerForPermit")
-	public String showDesignerForPermit()
-	{
-		return "design/clientNegotiation/selectDesignerForPermit";
 	}
 	
 	@RequestMapping("/showDesignerForTransfer")

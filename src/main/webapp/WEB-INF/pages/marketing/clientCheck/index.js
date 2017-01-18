@@ -3,6 +3,7 @@ $(function()
 	var $orderCheckDatagrid = $('table#orderCheckDatagrid');
 	var $orderCheckInfoerNameTextbox = $('#orderApprove-infoerNameInput');
 	var $orderCheckNameTextbox = $('#orderApprove-nameInput');
+	var $orderCheckIdTextbox = $('#orderApprove-idInput');
 	var $orderCheckTelTextbox = $('#orderApprove-telInput');
 	var $salesmanCombobox = $('#orderApprove-salesmanCombobox');
 	var $queryCheckOrderBtn = $('a#queryCheckOrderBtn');
@@ -54,14 +55,14 @@ $(function()
 			toolbar: '#orderCheckDatagridToolbar',
 			columns:
 			[[
-				{field:'id', hidden: true},
-				{field: 'ck', checkbox: true},
-				{field:'isKey', hidden: true},
+			  	{field: 'ck', checkbox: true},
+			  	{field:'isKey', hidden: true},
+				{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 8},
+				{field:'projectAddr', title:'面积', width: 2},
 				{field:'infoerName', title:'信息员', width: 3},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'designerName', title:'设计师', width: 3},
@@ -266,6 +267,7 @@ $(function()
 				$orderCheckDatagrid.datagrid('load', 
 				{
 					name: $orderCheckNameTextbox.textbox('getValue'),
+					orderId: $orderCheckIdTextbox.textbox('getValue'),
 					tel: $orderCheckTelTextbox.textbox('getValue'),
 					infoerName: $orderCheckInfoerNameTextbox.textbox('getValue'),
 					salesmanId: $salesmanCombobox.combobox('getValue'),
