@@ -80,7 +80,16 @@ public class Order implements Serializable
 
 	public boolean canLookTel(User user)
 	{
-		return !user.isLeader() || (user.isLeader() && user.getId() == this.getSalesmanId());
+		if(!user.isLeader())
+			return true;
+		else if(user.isLeader())
+		{
+			if(user.isBelongMarketing())
+				return user.getId() == this.getSalesmanId();
+			else if(user.isBelongDesign())
+				return user.getId() == this.getDesignerId();
+		}
+		return false;
 	}
 
 	public void hideAllTel(User user)
