@@ -102,7 +102,7 @@ $(function()
 	var $form = $('form#loginForm');
 	var $loginBtn = $('div#loginBtn');
 	var $loginNameInput = $('input#loginNameInput');
-	
+	var $pwd = $form.find(':input[name="pwd"]');
 	$form.form
 	({
 		url: 'login',
@@ -119,7 +119,12 @@ $(function()
 				window.location.href = "toIndexView";
 				return;
 			}
-			$.messager.alert('提示', retMsg.msg, 'warning', function(){$loginNameInput.focus().select();});
+			$.messager.alert('提示', retMsg.msg, 'warning', function()
+			{
+				$loginNameInput.focus().select();
+				$pwd.val('');
+				$pwd.attr('type', 'text');
+			});
 		}
 	});
 	

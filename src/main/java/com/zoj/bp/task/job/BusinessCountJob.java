@@ -1,6 +1,5 @@
 package com.zoj.bp.task.job;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -56,7 +55,7 @@ public class BusinessCountJob
 		}
 		catch (Exception e)
 		{
-			logger.error(MessageFormat.format("业务统计定时任务出错：", e.getMessage()));
+			logger.error("业务统计定时任务出错", e);
 		}
 	}
 }
