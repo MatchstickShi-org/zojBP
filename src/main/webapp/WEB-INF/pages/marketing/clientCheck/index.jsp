@@ -32,8 +32,8 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryCheckOrderBtn">查询</a>
 			<br>
 			<label><input type="checkbox" value="1" name="orderApprove-isKey" />重点客户</label>
-			<label><input type="radio" value="0" name="orderApprove-filterInput" />全部客户</label>
-			<label><input type="radio" value="1" name="orderApprove-filterInput" checked="checked"/>我的客户</label>
+			<label><input type="radio" value="0" name="orderApprove-filterInput" checked="checked"/>全部客户</label>
+			<label><input type="radio" value="1" name="orderApprove-filterInput" />我的客户</label>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="22" name="orderStatusInput" />打回申请</label>
 			<label><input type="checkbox" value="30" name="orderStatusInput" />在谈单申请</label>

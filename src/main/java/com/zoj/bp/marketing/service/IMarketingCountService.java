@@ -7,12 +7,14 @@ import com.zoj.bp.common.vo.Pagination;
 public interface IMarketingCountService {
 
 	/**
-	 * 获取当天的商务部统计记录
+	 * 获取指定日期的商务部统计记录
 	 * @param pagination
 	 * @param salesmanName 信息员名称
+	 * @param startDate 开始日期
+	 * @param endDate 截至日期
 	 * @return
 	 */
-	DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName);
+	DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName,String startDate,String endDate);
 
 	/**
 	 * 获取前一天的统计数据（定时任务用）

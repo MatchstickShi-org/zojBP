@@ -15,8 +15,8 @@ public class MarketingCountService implements IMarketingCountService{
 	private IMarketingCountDao dao;
 
 	@Override
-	public DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName) {
-		return dao.getTodayMarketingCout(pagination,salesmanName);
+	public DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName,String startDate,String endDate) {
+		return dao.getTodayMarketingCout(pagination,salesmanName,startDate,endDate);
 	}
 
 	@Override

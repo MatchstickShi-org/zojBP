@@ -36,12 +36,19 @@ public class DesignCountCtrl
 	/**
 	 * 获取当天的主案部统计记录
 	 * @param session
+	 * @param pagination
+	 * @param designerName
+	 * @param startDate
+	 * @param endDate
 	 * @return
 	 */
 	@RequestMapping(value = "/getTodayDesignCout")
 	@ResponseBody
-	public DatagridVo<DesignCount> getTodayDesignCout(HttpSession session,Pagination pagination,@RequestParam(required=false) String designerName)
+	public DatagridVo<DesignCount> getTodayDesignCout(HttpSession session,Pagination pagination,
+			@RequestParam(required=false) String designerName,
+			@RequestParam(required=false) String startDate,
+			@RequestParam(required=false) String endDate)
 	{
-		return designCountService.getTodayDesignerCount(pagination,designerName);
+		return designCountService.getTodayDesignerCount(pagination,designerName,startDate,endDate);
 	}
 }

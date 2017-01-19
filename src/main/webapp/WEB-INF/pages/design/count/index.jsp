@@ -16,6 +16,10 @@
 		<div id="designCountDatagridToolbar">
 			<label>设计师名称：</label>
 			<input class="easyui-textbox" id="order.designerNameInput" style="width: 120px;"/>
+			<label>开始日期：</label>
+			<input id="order.startDateInput" editable="false" type= "text" class= "easyui-datebox" /> 
+			<label>截止日期：</label>
+			<input id="order.endDateInput" editable="false" type= "text" class= "easyui-datebox" /> 
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 		</div>
 	</div>

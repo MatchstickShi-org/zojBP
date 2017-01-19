@@ -15,9 +15,9 @@ public class DesignCountService implements IDesignCountService
 	private IDesignCountDao dao;
 
 	@Override
-	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName)
+	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName,String startDate,String endDate)
 	{
-		return dao.getTodayDesignerCount(pagination,designerName);
+		return dao.getTodayDesignerCount(pagination,designerName,startDate,endDate);
 	}
 
 	@Override
