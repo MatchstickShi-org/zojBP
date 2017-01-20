@@ -105,7 +105,6 @@ public class DesignClientCtrl
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) Integer designerId,
 			@RequestParam(required=false) Integer filter,
-			@RequestParam(required=false) Integer isKey,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -129,9 +128,9 @@ public class DesignClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, orderId, tel, StringUtils.EMPTY, designerId, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, null, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

@@ -54,7 +54,7 @@
 							<td><input name="confirmPwd" class="easyui-textbox" type="password" data-options="validType:'length[6, 24]'"/></td>
 							<td align="right" style="vertical-align: top;"><label>角色：</label></td>
 							<td>
-								<select class="easyui-combobox" name="role" style="width: 173px;" id="userEditForm.role"></select>
+								<select class="easyui-combobox" name="role" style="width: 160px;" id="userEditForm.role"></select>
 							</td>
 						</tr>
 						<tr><td colspan="4">
@@ -77,6 +77,9 @@
 </div>
 <div id="addUserWindow"></div>
 <div id="addUnderlingWindow"></div>
+<script type="text/javascript">
+var _session_loginUserId = ${sessionScope.loginUser.id};
+</script>
 <script type="text/javascript" src="pages/sysMgr/userMgr/index.js"></script>
 </body>
 </html>

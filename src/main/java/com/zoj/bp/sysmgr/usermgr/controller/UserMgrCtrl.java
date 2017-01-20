@@ -57,9 +57,9 @@ public class UserMgrCtrl
 	public Map<String, ?> addUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
 		if(!StringUtils.equals(user.getPwd(), confirmPwd))
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。")));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。"));
 		user.setPwd(EncryptUtil.encoderByMd5(user.getPwd()));
 		userSvc.addUser(user);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
@@ -67,10 +67,14 @@ public class UserMgrCtrl
 	
 	@RequestMapping(value = "/deleteUsers")
 	@ResponseBody
-	public Map<String, ?> deleteUsers(@RequestParam("userIds[]") Integer[] userIds) throws Exception
+	public Map<String, ?> deleteUsers(HttpSession session, @RequestParam("userIds[]") Integer[] userIds) throws Exception
 	{
 		if(ArrayUtils.isEmpty(userIds))
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("没有可以删除的用户。")));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可以删除的用户。"));
+		if(ArrayUtils.contains(userIds, -1))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不能删除超级管理员。"));
+		if(ArrayUtils.contains(userIds, ((User)session.getAttribute("loginUser")).getId()))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你不能删除自己。"));
 		userSvc.deleteUsers(userIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -80,9 +84,9 @@ public class UserMgrCtrl
 	public Map<String, ?> editUser(@Valid User user, @RequestParam("confirmPwd") String confirmPwd, Errors errors) throws BusinessException, Exception
 	{
 		if(errors.hasErrors())
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL);
 		if(!StringUtils.equals(user.getPwd(), confirmPwd))
-			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。")));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("两次密码输入不一致，请重新输入。"));
 		//if(StringUtils.equals(user.getPwd(), "******"))		//不修改密码
 		if(StringUtils.isEmpty(user.getPwd()))		//不修改密码
 			userSvc.updateUser(user, false);
@@ -94,15 +98,17 @@ public class UserMgrCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
-	@RequestMapping(value = "/deleteUserByIds")
+	@RequestMapping(value = "/setUsersToDimission")
 	@ResponseBody
-	public Map<String, ?> deleteUserByIds(@RequestParam("delIds[]") Integer[] userIds, HttpSession session) throws Exception
+	public Map<String, ?> setUsersToDimission(@RequestParam("userIds[]") Integer[] userIds, HttpSession session) throws Exception
 	{
 		if(ArrayUtils.isEmpty(userIds))
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可删除的用户"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可设置的用户"));
 		User loginUser = (User) session.getAttribute("loginUser");
+		if(ArrayUtils.contains(userIds, -1))
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，不能设置超级管理员为离职状态。"));
 		if(ArrayUtils.contains(userIds, loginUser.getId()))
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("不能删除你自己。"));
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，不能设置自己为离职状态。"));
 		userSvc.setUserToDimission(userIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}

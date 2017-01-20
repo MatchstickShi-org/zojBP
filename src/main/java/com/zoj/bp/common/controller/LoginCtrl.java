@@ -50,6 +50,8 @@ public class LoginCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("无效的用户名或密码。"));
 		if(!StringUtils.equals(EncryptUtil.encoderByMd5(loginUser.getPwd()), u.getPwd()))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("无效的用户名或密码。"));
+		if(u.isDimission())
+			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，你已离职，无法登录本系统。"));
 		
 		u.setMenus(menuSvc.getMenusByUser(u));
 		

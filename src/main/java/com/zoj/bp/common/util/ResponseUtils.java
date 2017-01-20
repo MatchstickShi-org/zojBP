@@ -30,7 +30,7 @@ public class ResponseUtils
 	{
 		if(returnMap == null)
 			returnMap = new TreeMap<>();
-		returnMap.put("returnCode", e.getReturnCode());
+		returnMap.put("returnCode", e.getReturnCode().getValue());
 		returnMap.put("msg", e.getReturnMsg());
 		return returnMap;
 	}
@@ -38,7 +38,7 @@ public class ResponseUtils
 	public static Map<String, Object> buildRespMap(ReturnCode returnCode)
 	{
 		Map<String, Object> returnMap = new TreeMap<>();
-		returnMap.put("returnCode", returnCode.getReturnCode());
+		returnMap.put("returnCode", returnCode.getValue());
 		returnMap.put("msg", returnCode.getMsg());
 		return returnMap;
 	}
@@ -46,7 +46,7 @@ public class ResponseUtils
 	public static Map<String, Object> buildRespMap(ReturnCode returnCode, String key, Object value)
 	{
 		Map<String, Object> returnMap = new TreeMap<>();
-		returnMap.put("returnCode", returnCode.getReturnCode());
+		returnMap.put("returnCode", returnCode.getValue());
 		returnMap.put("msg", returnCode.getMsg());
 		returnMap.put(key, value);
 		return returnMap;
@@ -125,7 +125,7 @@ public class ResponseUtils
 	{
 		if(returnMap == null)
 			returnMap = new TreeMap<>();
-		returnMap.put("returnCode", returnCode.getReturnCode());
+		returnMap.put("returnCode", returnCode.getValue());
 		returnMap.put("msg", returnCode.getMsg());
 		return returnMap;
 	}

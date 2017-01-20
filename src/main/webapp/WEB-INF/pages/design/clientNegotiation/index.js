@@ -35,7 +35,6 @@ $(function()
 			columns:
 			[[
 			  	{field: 'ck', checkbox: true},
-			  	{field: 'isKey', hidden: true},
 			  	{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
 				{field:'telAll', title:'联系电话', width: 5},
@@ -117,11 +116,6 @@ $(function()
 			singleSelect: true,
 			selectOnCheck: false,
 			checkOnSelect: false,
-			rowStyler: function(index, row)
-			{
-				if(row.isKey == 1)
-					return 'color: red;';
-			},
 			url: 'design/clientMgr/getAllClientNegotiation',
 			queryParams:
 			{
@@ -209,7 +203,6 @@ $(function()
 					tel: $telTextbox.textbox('getValue'),
 					designerId: $designerCombobox.length == 0 ? null : $designerCombobox.combobox('getValue'),
 					filter: $orderFilterInput.filter(':checked').val(),
-					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
 					status: status
 				});
 			}

@@ -163,6 +163,17 @@ $(function()
 				$.messager.alert('提示', '请<span style="color: red;">勾选</span>要删除的用户');
 				return;
 			}
+			if($.inArray(-1, chkIds) >= 0)
+			{
+				$.messager.alert('提示', '<span style="color: red;">勾选</span>的用户中包括超级管理员，无法删除。');
+				return;
+			}
+			if($.inArray(_session_loginUserId, chkIds) >= 0)
+			{
+				$.messager.alert('提示', '<span style="color: red;">勾选</span>的用户中包括你自己，无法删除。');
+				return;
+			}
+			
 			var msg = '确定要删除<span style="color: red;">勾选</span>的用户吗？'
 				+ '<br><span style="color: red;">被删除用户的所有数据（信息员、客户、在谈单等等）将会一并删除<span>，请在删除前确认该用户的所有业务数据均已转移！';
 			$.messager.confirm('警告', msg, function(r)
@@ -177,6 +188,8 @@ $(function()
 						{
 							if(data.returnCode == 0)
 								$userDatagrid.datagrid('uncheckAll').datagrid('reload');
+							else
+								$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');
 						}
 					});
 				}
@@ -452,8 +465,8 @@ $(function()
 					return;
 				$.post
 				(
-					'sysMgr/userMgr/deleteUserByIds',
-					{delIds : selIds},
+					'sysMgr/userMgr/setUsersToDimission',
+					{userIds : selIds},
 					function(data, textStatus, jqXHR)
 					{
 						if(data.returnCode == 0)
@@ -462,7 +475,7 @@ $(function()
 							$userDatagrid.datagrid('reload');
 						}
 						else
-							$.messager.show({title:'提示', msg:'设置失败\n' + data.msg});   
+							$.messager.alert('提示', '设置失败\n' + data.msg);
 					},
 					'JSON'
 				);

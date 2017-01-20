@@ -37,7 +37,7 @@ public class DatagridVo<T> implements Serializable
 	{
 		this.rows = beanList;
 		this.total = totalRows;
-		this.returnCode = returnCode.getReturnCode();
+		this.returnCode = returnCode.getValue();
 		this.msg = returnCode.getMsg();
 	}
 	
@@ -91,7 +91,7 @@ public class DatagridVo<T> implements Serializable
 
 	public void setReturnCode(ReturnCode returnCode)
 	{
-		this.returnCode = returnCode.getReturnCode();
+		this.returnCode = returnCode.getValue();
 	}
 
 	public String getMsg()

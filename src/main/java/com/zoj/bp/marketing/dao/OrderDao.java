@@ -265,7 +265,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByDesigner(Pagination pagination,
-			User designer, String clientName,Integer orderId, String tel, String infoerName, Integer designerId, Integer isKey, Integer... statuses)
+			User designer, String clientName,Integer orderId, String tel, String infoerName, Integer designerId, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, "+ 
@@ -318,11 +318,6 @@ public class OrderDao extends BaseDao implements IOrderDao
 		{
 			sql += " AND O.DESIGNER_ID = :designerId ";
 			paramMap.put("designerId", designerId);
-		}
-		if(isKey != null)
-		{
-			sql += " AND C.IS_KEY = :isKey";
-			paramMap.put("isKey", isKey);
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";

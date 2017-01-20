@@ -116,12 +116,11 @@ public interface IOrderService {
 	 * @param tel
 	 * @param infoerName
 	 * @param designerId TODO
-	 * @param isKey TODO
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByDesigner(Pagination pagination, User designer, String clientName,Integer orderId, String tel, String infoerName,
-			Integer designerId, Integer isKey, Integer... status);
+			Integer designerId, Integer... status);
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 

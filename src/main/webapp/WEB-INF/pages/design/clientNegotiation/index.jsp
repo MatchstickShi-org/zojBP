@@ -37,7 +37,6 @@
 				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 				<br>
 			</c:if>
-			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="" name="clientNegotiation-statusInput" />全部</label>
 			<label><input type="checkbox" value="34" name="clientNegotiation-statusInput" checked="checked"/>在谈单</label>

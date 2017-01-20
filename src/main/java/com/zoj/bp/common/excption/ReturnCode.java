@@ -34,7 +34,7 @@ public enum ReturnCode
 		this.msg = msg;
 	}
 	
-	public int getReturnCode()
+	public int getValue()
 	{
 		return returnCode;
 	}

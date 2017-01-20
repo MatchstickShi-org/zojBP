@@ -185,6 +185,16 @@ public class User implements Serializable
 	}
 	
 	/**
+	 * 是否离职
+	 * @return
+	 */
+	@Transient
+	public boolean isDimission()
+	{
+		return this.status == 0;
+	}
+	
+	/**
 	 * 是否是主案部设计师
 	 * @return
 	 */
