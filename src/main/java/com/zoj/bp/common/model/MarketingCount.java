@@ -40,6 +40,8 @@ public class MarketingCount implements Serializable
 	
 	private Integer monthTalkingOrderCount;	//本月提单数量（已申请在谈单）
 	
+	private Integer applyTalkingOrderCount;	//当日提单数量（已申请在谈单）
+	
 	private Integer salesmanId;				//业务员Id
 	
 	private String salesmanName;			//业务员姓名
@@ -154,5 +156,13 @@ public class MarketingCount implements Serializable
 
 	public void setMonthTalkingOrderCount(Integer monthTalkingOrderCount) {
 		this.monthTalkingOrderCount = monthTalkingOrderCount;
+	}
+
+	public Integer getApplyTalkingOrderCount() {
+		return applyTalkingOrderCount;
+	}
+
+	public void setApplyTalkingOrderCount(Integer applyTalkingOrderCount) {
+		this.applyTalkingOrderCount = applyTalkingOrderCount;
 	}
 }

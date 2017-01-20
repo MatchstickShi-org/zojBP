@@ -37,6 +37,10 @@ public class DesignCount implements Serializable
 	
 	@NumberFormat(pattern="#,###.##")
 	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
+	private BigDecimal todayDealAmount;	//当日签单总额
+	
+	@NumberFormat(pattern="#,###.##")
+	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
 	private BigDecimal monthDealAmount;	//本月签单总额
 	
 	@NumberFormat(pattern="#,###.##")
@@ -135,5 +139,13 @@ public class DesignCount implements Serializable
 
 	public void setTotalDealAmount(BigDecimal totalDealAmount) {
 		this.totalDealAmount = totalDealAmount;
+	}
+
+	public BigDecimal getTodayDealAmount() {
+		return todayDealAmount;
+	}
+
+	public void setTodayDealAmount(BigDecimal todayDealAmount) {
+		this.todayDealAmount = todayDealAmount;
 	}
 }

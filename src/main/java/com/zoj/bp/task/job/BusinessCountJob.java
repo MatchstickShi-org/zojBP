@@ -1,5 +1,8 @@
 package com.zoj.bp.task.job;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -35,10 +38,30 @@ public class BusinessCountJob
 	{
 		try
 		{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			List<User> salesmans = userService.getInServiceMarketingUsers();
 			if(CollectionUtils.isNotEmpty(salesmans)){
 				for(User user:salesmans){
-					MarketingCount marketingCount = marketringCountService.getTodayMarketingCountByUserId(user.getId());
+					List<MarketingCount> lastMarketingCout = marketringCountService.getLastMarketingCountByUsetrId(user.getId());
+					String startDate = sdf.format(new Date());
+					String endDate = sdf.format(new Date());
+					//如果有统计记录，则取这条记录的更新时间
+					if(CollectionUtils.isNotEmpty(lastMarketingCout)){
+						Calendar cal = Calendar.getInstance();
+						Calendar aCalendar = Calendar.getInstance();
+						//当前日期
+					    aCalendar.setTime(new Date());
+					    int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+					    //统计日期
+					    aCalendar.setTime(lastMarketingCout.get(0).getUpdateTime());
+					    int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+					    if(day1-day2 >1){//如果相差日期大于一天，则开始日期需要加一天（sql中会减去一天）
+					    	cal.setTime(lastMarketingCout.get(0).getUpdateTime());
+						    cal.add(Calendar.DATE, 1);
+						    startDate = sdf.format(cal.getTime());
+					    }
+					}
+					MarketingCount marketingCount = marketringCountService.getTodayMarketingCountByUserId(user.getId(),startDate,endDate);
 					marketringCountService.addMarketingCount(marketingCount);
 				}
 			}
@@ -47,7 +70,26 @@ public class BusinessCountJob
 			List<User> designers = userService.getInServiceDesignUsers();
 			if(CollectionUtils.isNotEmpty(designers)){
 				for(User user:designers){
-					DesignCount designCount = designCountService.getTodayDesignCountByUserId(user.getId());
+					List<DesignCount> lastDesignCount = designCountService.getLastDesignCountByUsetrId(user.getId());
+					String startDate = sdf.format(new Date());
+					String endDate = sdf.format(new Date());
+					//如果有统计记录，则取这条记录的更新时间
+					if(CollectionUtils.isNotEmpty(lastDesignCount)){
+						Calendar cal = Calendar.getInstance();
+						Calendar aCalendar = Calendar.getInstance();
+						//当前日期
+					    aCalendar.setTime(new Date());
+					    int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+					    //统计日期
+					    aCalendar.setTime(lastDesignCount.get(0).getUpdateTime());
+					    int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+					    if(day1-day2 >1){//如果相差日期大于一天，则开始日期需要加一天（sql中会减去一天）
+					    	cal.setTime(lastDesignCount.get(0).getUpdateTime());
+						    cal.add(Calendar.DATE, 1);
+						    startDate = sdf.format(cal.getTime());
+					    }
+					}
+					DesignCount designCount = designCountService.getTodayDesignCountByUserId(user.getId(),startDate,endDate);
 					designCountService.addDesignCount(designCount);
 				}
 			}

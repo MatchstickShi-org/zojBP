@@ -9,7 +9,6 @@ import sun.misc.BASE64Encoder;
 /**
  * @author MatchstickShi
  */
-@SuppressWarnings("restriction")
 public class EncryptUtil
 {
 	public static String encoderByMd5(String plaintext) throws NoSuchAlgorithmException, UnsupportedEncodingException

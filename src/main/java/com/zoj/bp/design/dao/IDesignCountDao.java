@@ -3,6 +3,8 @@
  */
 package com.zoj.bp.design.dao;
 
+import java.util.List;
+
 import com.zoj.bp.common.model.DesignCount;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -25,10 +27,12 @@ public interface IDesignCountDao
 	
 	/**
 	 * 获取前一天的统计数据（定时任务用）
-	 * @param userId
+	 * @param userId 用户Id
+	 * @param startDate 开始日期
+	 * @param endDate 截至日期
 	 * @return
 	 */
-	DesignCount getTodayDesignCountByUserId(Integer userId);
+	DesignCount getTodayDesignCountByUserId(Integer userId,String startDate,String endDate);
 
 	/**
 	 * 新增设计师统计
@@ -36,4 +40,11 @@ public interface IDesignCountDao
 	 * @return
 	 */
 	Integer addDesignCount(DesignCount designCount);
+
+	/**
+	 * 根据用户Id获取最近统计记录
+	 * @param userId
+	 * @return
+	 */
+	List<DesignCount> getLastDesignCountByUsetrId(Integer userId);
 }

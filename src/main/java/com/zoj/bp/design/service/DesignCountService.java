@@ -1,5 +1,7 @@
 package com.zoj.bp.design.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,17 @@ public class DesignCountService implements IDesignCountService
 	}
 
 	@Override
-	public DesignCount getTodayDesignCountByUserId(Integer userId) {
-		return dao.getTodayDesignCountByUserId(userId);
+	public DesignCount getTodayDesignCountByUserId(Integer userId,String startDate,String endDate) {
+		return dao.getTodayDesignCountByUserId(userId,startDate,endDate);
 	}
 
 	@Override
 	public Integer addDesignCount(DesignCount designCount) {
 		return dao.addDesignCount(designCount);
+	}
+
+	@Override
+	public List<DesignCount> getLastDesignCountByUsetrId(Integer userId) {
+		return dao.getLastDesignCountByUsetrId(userId);
 	}
 }

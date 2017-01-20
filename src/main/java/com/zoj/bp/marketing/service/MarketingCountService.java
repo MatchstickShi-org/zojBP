@@ -1,5 +1,7 @@
 package com.zoj.bp.marketing.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +22,17 @@ public class MarketingCountService implements IMarketingCountService{
 	}
 
 	@Override
-	public MarketingCount getTodayMarketingCountByUserId(Integer userId) {
-		return dao.getTodayMarketingCountByUserId(userId);
+	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String startDate,String endDate) {
+		return dao.getTodayMarketingCountByUserId(userId,startDate,endDate);
 	}
 
 	@Override
 	public Integer addMarketingCount(MarketingCount marketingCount) {
 		return dao.addMarketingCount(marketingCount);
+	}
+
+	@Override
+	public List<MarketingCount> getLastMarketingCountByUsetrId(Integer userId) {
+		return dao.getLastMarketingCountByUsetrId(userId);
 	}
 }

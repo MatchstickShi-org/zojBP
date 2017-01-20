@@ -3,6 +3,7 @@ package com.zoj.bp.marketing.dao;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,28 +25,28 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 	@Override
 	public DatagridVo<MarketingCount> getTodayMarketingCout(Pagination pagination,String salesmanName,String startDate,String endDate) {
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT "+
-						"U.ID SALESMAN_ID, U.ALIAS SALESMAN_NAME, "+
-						"COUNT(DISTINCT IV.ID) TODAY_INFOER_VISIT_COUNT, "+
-						"COUNT(DISTINCT OV.ID) TODAY_ORDER_VISIT_COUNT, "+
-						"COUNT(DISTINCT I.ID) TODAY_INFOER_ADD_COUNT, "+ 
-						"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, "+ 
-						"COUNT(DISTINCT I2.ID) TRACING_INFOER_COUNT, "+ 
-						"COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+ 
-						"COUNT(DISTINCT O.ID) TALKING_ORDER_COUNT, "+ 
-						"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, "+ 
-						"COUNT(DISTINCT O5.ID) MONTH_TALKING_ORDER_COUNT "+
-					"FROM `USER` U "+
-					"LEFT JOIN INFOER_VISIT IV ON U.ID = IV.SALESMAN_ID AND IV.DATE BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
-					"LEFT JOIN `ORDER` O ON U.ID = O.SALESMAN_ID AND O.`STATUS` = 34 "+
-					"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
-					"LEFT JOIN INFOER I ON I.SALESMAN_ID = U.ID AND I.INSERT_TIME BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
-					"LEFT JOIN INFOER I2 ON I2.SALESMAN_ID = U.ID "+
-					"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
-					"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) "+
-					"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 "+
-					"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` in(20,22,34,90,0,60,62,64) AND O5.INSERT_TIME BETWEEN CONCAT(DATE_FORMAT(CURRENT_DATE,'%Y-%m'),'-01 00:00:00') AND CONCAT(LAST_DAY(CURRENT_DATE),' 23:59:59') "+
-					"WHERE (U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3) AND U.`STATUS` = 1 ";
+		String sql = "SELECT U.*, "+
+			"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+
+			"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, COUNT(DISTINCT O5.ID) MONTH_TALKING_ORDER_COUNT "+
+		"FROM "+
+		"( "+
+			"SELECT U.ID,U.ID SALESMAN_ID, U.ALIAS SALESMAN_NAME, "+
+				"COUNT(DISTINCT IV.ID) TODAY_INFOER_VISIT_COUNT, COUNT(DISTINCT OV.ID) TODAY_ORDER_VISIT_COUNT, COUNT(DISTINCT O.ID) TALKING_ORDER_COUNT, "+
+				"COUNT(DISTINCT I.ID) TODAY_INFOER_ADD_COUNT, COUNT(DISTINCT I2.ID) TRACING_INFOER_COUNT "+
+			"FROM USER U "+
+			"LEFT JOIN INFOER_VISIT IV ON U.ID = IV.SALESMAN_ID AND IV.DATE BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+ 
+			"LEFT JOIN `ORDER` O ON U.ID = O.SALESMAN_ID AND O.`STATUS` = 34 "+
+			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+ 
+			"LEFT JOIN INFOER I ON I.SALESMAN_ID = U.ID AND I.INSERT_TIME BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+ 
+			"LEFT JOIN INFOER I2 ON I2.SALESMAN_ID = U.ID "+
+			"WHERE (U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3) AND U.`STATUS` = 1 "+
+			"GROUP BY U.ID "+
+		") U "+
+		"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
+		"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) "+
+		"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 "+
+		"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` IN(20,22,34,90,0,60,62,64) AND O5.INSERT_TIME BETWEEN CONCAT(DATE_FORMAT(CURRENT_DATE,'%Y-%m'),'-01 00:00:00') AND CONCAT(LAST_DAY(CURRENT_DATE),' 23:59:59') "+
+		"WHERE 1 = 1 ";
 		if(StringUtils.isNotEmpty(salesmanName)){
 			sql +="AND U.SALESMAN_NAME LIKE :salesmanName ";
 			paramMap.put("salesmanName", '%' + salesmanName + '%');
@@ -54,7 +55,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 		paramMap.put("startDate", StringUtils.isEmpty(startDate) ? sdf.format(new Date()):startDate);
 		paramMap.put("endDate", StringUtils.isEmpty(endDate) ? sdf.format(new Date()):endDate);
 		sql+="GROUP BY U.ID ";
-		sql+="ORDER BY U.ID ";
+		sql+="ORDER BY U.SALESMAN_NAME ";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " LIMIT :start, :rows";
@@ -64,30 +65,32 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 	}
 
 	@Override
-	public MarketingCount getTodayMarketingCountByUserId(Integer userId) {
-		String sql = "SELECT "+
-						"U.ID SALESMAN_ID, U.ALIAS SALESMAN_NAME, "+
-						"COUNT(DISTINCT IV.ID) TODAY_INFOER_VISIT_COUNT, "+
-						"COUNT(DISTINCT OV.ID) TODAY_ORDER_VISIT_COUNT, "+
-						"COUNT(DISTINCT I.ID) TODAY_INFOER_ADD_COUNT, "+ 
-						"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, "+ 
-						"COUNT(DISTINCT I2.ID) TRACING_INFOER_COUNT, "+ 
-						"COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+ 
-						"COUNT(DISTINCT O.ID) TALKING_ORDER_COUNT, "+ 
-						"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, "+ 
-						"COUNT(DISTINCT O5.ID) MONTH_TALKING_ORDER_COUNT "+
-					"FROM `USER` U "+
-					"LEFT JOIN INFOER_VISIT IV ON U.ID = IV.SALESMAN_ID AND IV.DATE BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
-					"LEFT JOIN `ORDER` O ON U.ID = O.SALESMAN_ID AND O.`STATUS` = 34 "+
-					"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
-					"LEFT JOIN INFOER I ON I.SALESMAN_ID = U.ID AND I.INSERT_TIME BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
-					"LEFT JOIN INFOER I2 ON I2.SALESMAN_ID = U.ID "+
-					"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 00:00:00') AND CONCAT(date_sub(CURRENT_DATE,interval 1 day),' 23:59:59') "+
-					"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) "+
-					"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 "+
-					"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` in(20,22,34,90,0,60,62,64) AND O5.INSERT_TIME BETWEEN CONCAT(concat(date_format(LAST_DAY(date_sub(CURRENT_DATE,interval 1 day)),'%Y-%m-'),'01'),' 00:00:00') AND CONCAT(LAST_DAY(date_sub(CURRENT_DATE,interval 1 day)),' 23:59:59') "+ 
-					"WHERE U.ID = :userId ";
-		return jdbcOps.queryForObject(sql,new MapSqlParameterSource("userId", userId), BeanPropertyRowMapper.newInstance(MarketingCount.class));
+	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String startDate,String endDate) {
+		String sql = "SELECT U.*, "+
+			"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+
+			"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, COUNT(DISTINCT O5.ID) APPLY_TALKING_ORDER_COUNT "+ 
+		"FROM "+
+		"( "+
+			"SELECT U.ID,U.ID SALESMAN_ID, U.ALIAS SALESMAN_NAME, "+
+				"COUNT(DISTINCT IV.ID) TODAY_INFOER_VISIT_COUNT, COUNT(DISTINCT OV.ID) TODAY_ORDER_VISIT_COUNT, COUNT(DISTINCT O.ID) TALKING_ORDER_COUNT, "+
+				"COUNT(DISTINCT I.ID) TODAY_INFOER_ADD_COUNT "+
+			"FROM USER U "+
+			"LEFT JOIN INFOER_VISIT IV ON U.ID = IV.SALESMAN_ID AND IV.DATE BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+			"LEFT JOIN `ORDER` O ON U.ID = O.SALESMAN_ID AND O.`STATUS` = 34 AND O.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+			"LEFT JOIN INFOER I ON I.SALESMAN_ID = U.ID AND I.INSERT_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+  
+			"WHERE U.ID = :userId "+
+			"GROUP BY U.ID "+
+		") U "+
+		"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+		"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) AND O3.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+		"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 AND O4.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') "+
+		"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` IN(20,22,34,90,0,60,62,64) AND O5.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59') ";
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("userId", userId);
+		paramMap.put("startDate", startDate);
+		paramMap.put("endDate", endDate);
+		return jdbcOps.queryForObject(sql,paramMap, BeanPropertyRowMapper.newInstance(MarketingCount.class));
 	}
 	
 	@Override
@@ -100,12 +103,11 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ "INFOER_VISIT_AMOUNT,"
 				+ "TALKING_VISIT_AMOUNT,"
 				+ "INFOER_ADD_AMOUNT,"
-				+ "INFOER_TRACING_TOTAL,"
 				+ "CLIENT_ADD_AMOUNT,"
 				+ "CONTACTING_CLIENT_TOTAL,"
 				+ "TALKING_AMOUNT,"
 				+ "DEAL_TOTAL,"
-				+ "MONTH_TALKING_AMOUNT,"
+				+ "APPLY_TALKING_AMOUNT,"
 				+ "SALESMAN_ID"
 				+ ") "
 				+ "VALUES("
@@ -114,14 +116,20 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ ":todayInfoerVisitCount,"
 				+ ":todayOrderVisitCount,"
 				+ ":todayInfoerAddCount,"
-				+ ":tracingInfoerCount,"
 				+ ":todayClientAddCount,"
 				+ ":contactingClientCount,"
 				+ ":talkingOrderCount,"
 				+ ":dealOrderCount,"
-				+ ":monthTalkingOrderCount,"
+				+ ":applyTalkingOrderCount,"
 				+ ":salesmanId)",
 				new BeanPropertySqlParameterSource(marketingCount), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+
+	@Override
+	public List<MarketingCount> getLastMarketingCountByUsetrId(Integer userId) {
+		return jdbcOps.query("SELECT * FROM marketing_count "
+				+ " WHERE SALESMAN_ID = :userId ORDER BY ID DESC LIMIT 0,1 ",
+		new MapSqlParameterSource("userId", userId), BeanPropertyRowMapper.newInstance(MarketingCount.class));
 	}
 }
