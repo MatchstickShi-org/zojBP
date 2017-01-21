@@ -9,6 +9,14 @@ import com.zoj.bp.common.vo.Pagination;
 public interface IMarketingCountService {
 
 	/**
+	 * 获取当天的商务部统计记录
+	 * @param pagination
+	 * @param salesmanName 信息员名称
+	 * @return
+	 */
+	DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName);
+	
+	/**
 	 * 获取指定日期的商务部统计记录
 	 * @param pagination
 	 * @param salesmanName 信息员名称
@@ -16,16 +24,15 @@ public interface IMarketingCountService {
 	 * @param endDate 截至日期
 	 * @return
 	 */
-	DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName,String startDate,String endDate);
+	DatagridVo<MarketingCount> getMarketingCountByDate(Pagination pagination,String salesmanName,String startDate,String endDate);
 
 	/**
 	 * 获取前一天的统计数据（定时任务用）
 	 * @param userId 用户Id
-	 * @param startDate 开始日期
-	 * @param endDate 结束日期
+	 * @param countDate 统计日期（数据日期）
 	 * @return
 	 */
-	MarketingCount getTodayMarketingCountByUserId(Integer userId,String startDate,String endDate);
+	MarketingCount getTodayMarketingCountByUserId(Integer userId,String countDate);
 	
 	/**
 	 * 新增业务员统计

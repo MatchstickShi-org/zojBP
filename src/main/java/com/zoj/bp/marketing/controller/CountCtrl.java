@@ -5,6 +5,7 @@ package com.zoj.bp.marketing.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +55,9 @@ public class CountCtrl
 			@RequestParam(required=false) String startDate,
 			@RequestParam(required=false) String endDate)
 	{
-		return marketingCountService.getTodayMarketingCount(pagination,salesmanName,startDate,endDate);
+		if(StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate))
+			return marketingCountService.getTodayMarketingCount(pagination,salesmanName);
+		else
+			return marketingCountService.getMarketingCountByDate(pagination,salesmanName,startDate,endDate);
 	}
 }

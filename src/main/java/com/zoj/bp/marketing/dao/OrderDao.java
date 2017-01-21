@@ -61,6 +61,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql +=",DESIGNER_ID = :designerId ";
 		if(order.getDealAmount() != null && order.getDealAmount().compareTo(BigDecimal.ZERO) > 0)
 			sql +=",DEAL_AMOUNT = :dealAmount ";
+		sql += ",UPDATE_TIME = CURRENT_TIMESTAMP ";
 		sql += "WHERE ID = :id";
 		return jdbcOps.update(sql, new BeanPropertySqlParameterSource(order));
 		
@@ -393,23 +394,23 @@ public class OrderDao extends BaseDao implements IOrderDao
 	@Override
 	public Integer updateOrderStatus(Status status, Integer... orderIds)
 	{
-		return jdbcOps.update("UPDATE `ORDER` SET STATUS = :status "
+		return jdbcOps.update("UPDATE `ORDER` SET STATUS = :status, UPDATE_TIME = now() "
 				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("status", status.value()));
 	}
 	
 	@Override
 	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId) {
-		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
+		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId, UPDATE_TIME = now() "
 				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
 	@Override
 	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId) {
-		return jdbcOps.update("UPDATE `ORDER` SET DESIGNER_ID = :designerId "
+		return jdbcOps.update("UPDATE `ORDER` SET DESIGNER_ID = :designerId, UPDATE_TIME = now() "
 				+ " WHERE ID IN(" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("designerId",designerId));
 	}
 	@Override
 	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
-		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId "
+		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId, UPDATE_TIME = now() "
 				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
 	}
 

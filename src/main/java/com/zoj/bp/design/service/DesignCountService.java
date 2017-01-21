@@ -17,14 +17,20 @@ public class DesignCountService implements IDesignCountService
 	private IDesignCountDao dao;
 
 	@Override
-	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName,String startDate,String endDate)
+	public DatagridVo<DesignCount> getDesignerCountByDate(Pagination pagination,String designerName,String startDate,String endDate)
 	{
-		return dao.getTodayDesignerCount(pagination,designerName,startDate,endDate);
+		return dao.getDesignerCountByDate(pagination,designerName,startDate,endDate);
+	}
+	
+	@Override
+	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName)
+	{
+		return dao.getTodayDesignerCount(pagination,designerName);
 	}
 
 	@Override
-	public DesignCount getTodayDesignCountByUserId(Integer userId,String startDate,String endDate) {
-		return dao.getTodayDesignCountByUserId(userId,startDate,endDate);
+	public DesignCount getTodayDesignCountByUserId(Integer userId,String countDate) {
+		return dao.getTodayDesignCountByUserId(userId,countDate);
 	}
 
 	@Override

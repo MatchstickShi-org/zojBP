@@ -5,6 +5,7 @@ package com.zoj.bp.design.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,9 @@ public class DesignCountCtrl
 			@RequestParam(required=false) String startDate,
 			@RequestParam(required=false) String endDate)
 	{
-		return designCountService.getTodayDesignerCount(pagination,designerName,startDate,endDate);
+		if(StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate))
+			return designCountService.getTodayDesignerCount(pagination,designerName);
+		else
+			return designCountService.getDesignerCountByDate(pagination,designerName,startDate,endDate);
 	}
 }

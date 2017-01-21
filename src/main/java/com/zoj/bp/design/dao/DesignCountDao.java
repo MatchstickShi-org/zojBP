@@ -1,7 +1,5 @@
 package com.zoj.bp.design.dao;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,7 @@ import com.zoj.bp.common.vo.Pagination;
 public class DesignCountDao extends BaseDao implements IDesignCountDao{
 
 	@Override
-	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName,String startDate,String endDate) {
+	public DatagridVo<DesignCount> getTodayDesignerCount(Pagination pagination,String designerName) {
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT U.*, COUNT(DISTINCT O3.ID) DEAD_ORDER_COUNT, U2.TODAY_DEAL_AMOUNT, U3.MONTH_DEAL_AMOUNT, U4.TOTAL_DEAL_AMOUNT "+ 
 		"FROM "+
@@ -34,7 +32,7 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 				 "COUNT(DISTINCT O2.ID) DEAL_ORDER_COUNT "+
 			"FROM `USER` U "+
 			"LEFT JOIN `ORDER` O ON U.ID = O.DESIGNER_ID AND O.`STATUS` = 34 "+
-			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59') "+
+			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND OV.DATE BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') "+
 			"LEFT JOIN `ORDER` O2 ON U.ID = O2.DESIGNER_ID AND O2.`STATUS` = 90 "+
 			"WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND U.`STATUS` = 1 "+
 			"GROUP BY U.ID "+
@@ -44,7 +42,7 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 		"( "+
 			"SELECT U.ID, IFNULL(SUM(O.DEAL_AMOUNT), 0.00) TODAY_DEAL_AMOUNT FROM USER U "+
 			"LEFT JOIN `ORDER` O ON U.ID = O.DESIGNER_ID AND O.`STATUS` = 90 "+
-				"AND (O.INSERT_TIME BETWEEN CONCAT(:startDate,' 00:00:00') AND CONCAT(:endDate,' 23:59:59')) "+
+				"AND (O.INSERT_TIME BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59')) "+
 			"WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND U.`STATUS` = 1 "+
 			"GROUP BY U.ID "+
 		") U2 ON U.ID = U2.ID "+
@@ -68,9 +66,6 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 			sql +="AND U.DESIGNER_NAME LIKE :designerName ";
 			paramMap.put("designerName", '%' + designerName + '%');
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		paramMap.put("startDate", StringUtils.isEmpty(startDate) ? sdf.format(new Date()):startDate);
-		paramMap.put("endDate", StringUtils.isEmpty(endDate) ? sdf.format(new Date()):endDate);
 		sql+="GROUP BY U.ID ";
 		sql+="ORDER BY U.DESIGNER_NAME";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
@@ -80,9 +75,41 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 		paramMap.put("rows", pagination.getRows());
 		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(DesignCount.class)), count);
 	}
+	@Override
+	public DatagridVo<DesignCount> getDesignerCountByDate(Pagination pagination,String designerName,String startDate,String endDate) {
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT "+
+			"U.ID, "+
+			"U.ALIAS DESIGNER_NAME, "+
+			"COUNT(DC.TALKING_VISIT_AMOUNT) TODAY_ORDER_VISIT_COUNT, "+
+			"COUNT(DC.TALKING_AMOUNT) TALKING_ORDER_COUNT, "+
+			"COUNT(DC.DEAL_TOTAL) DEAL_ORDER_COUNT, "+
+			"COUNT(DC.DEAD_TOTAL) DEAD_ORDER_COUNT, "+
+			"COUNT(DC.TODAY_DEAL_AMOUNT) TOTAL_DEAL_AMOUNT "+
+		"FROM "+
+			"USER U "+
+		"LEFT JOIN DESIGN_COUNT DC ON U.ID = DC.DESIGNER_ID "+
+		"AND DC.COUNT_DATE BETWEEN CONCAT(:startDate, ' 00:00:00') "+
+		"AND CONCAT(:endDate, ' 23:59:59') "+
+		"WHERE (U.ROLE = 4 OR U.ROLE = 5 OR U.ROLE = 6) AND U.`STATUS` = 1 ";
+		if(StringUtils.isNotEmpty(designerName)){
+			sql +="AND U.ALIAS LIKE :designerName ";
+			paramMap.put("designerName", '%' + designerName + '%');
+		}
+		paramMap.put("startDate",startDate);
+		paramMap.put("endDate",endDate);
+		sql+="GROUP BY U.ID ";
+		sql+="ORDER BY U.ALIAS ";
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(DesignCount.class)), count);
+	}
 
 	@Override
-	public DesignCount getTodayDesignCountByUserId(Integer userId,String startDate,String endDate) {
+	public DesignCount getTodayDesignCountByUserId(Integer userId,String countDate) {
 		String sql = "SELECT U.*, COUNT(DISTINCT O3.ID) DEAD_ORDER_COUNT, IFNULL(U2.TODAY_DEAL_AMOUNT, 0.00) TODAY_DEAL_AMOUNT "+
 		"FROM "+
 		"( "+
@@ -93,23 +120,22 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 				 ", COUNT(DISTINCT O2.ID) DEAL_ORDER_COUNT "+
 			"FROM `USER` U "+
 			"LEFT JOIN `ORDER` O ON U.ID = O.DESIGNER_ID AND O.`STATUS` = 34 "+
-			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND (OV.DATE BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59')) "+
-			"LEFT JOIN `ORDER` O2 ON U.ID = O2.DESIGNER_ID AND O2.`STATUS` = 90 AND (O2.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59')) "+
-			"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 34 AND (O3.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59')) "+
+			"LEFT JOIN ORDER_VISIT OV ON OV.ORDER_ID = O.ID AND (OV.DATE BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59')) "+
+			"LEFT JOIN `ORDER` O2 ON U.ID = O2.DESIGNER_ID AND O2.`STATUS` = 90 AND (O2.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59')) "+
+			"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 34 AND (O3.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59')) "+
 			"GROUP BY U.ID "+
 		") U "+
-		"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 0 AND (O3.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59')) "+
+		"LEFT JOIN `ORDER` O3 ON U.ID = O3.DESIGNER_ID AND O3.`STATUS` = 0 AND (O3.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59')) "+
 		"LEFT JOIN "+
 		"( "+
 			"SELECT U.ID, IFNULL(SUM(O.DEAL_AMOUNT), 0.00) TODAY_DEAL_AMOUNT FROM USER U "+
 			"LEFT JOIN `ORDER` O ON U.ID = O.DESIGNER_ID AND O.`STATUS` = 90 "+
-				"AND (O.UPDATE_TIME BETWEEN CONCAT(date_sub(:startDate,interval 1 day),' 00:00:00') AND CONCAT(date_sub(:endDate,interval 1 day),' 23:59:59')) "+ 
+				"AND (O.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59')) "+ 
 		") U2 ON U.ID = U2.ID "+
 		"WHERE U.ID =:userId ";
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("userId", userId);
-		paramMap.put("startDate", startDate);
-		paramMap.put("endDate",endDate);
+		paramMap.put("countDate", countDate);
 		return jdbcOps.queryForObject(sql,paramMap, BeanPropertyRowMapper.newInstance(DesignCount.class));
 	}
 
@@ -129,7 +155,7 @@ public class DesignCountDao extends BaseDao implements IDesignCountDao{
 				+ ") "
 				+ "VALUES("
 				+ "now(),"
-				+ "date_sub(CURRENT_DATE,interval 1 day),"
+				+ ":countDate,"
 				+ ":todayOrderVisitCount,"
 				+ ":talkingOrderCount,"
 				+ ":dealOrderCount,"

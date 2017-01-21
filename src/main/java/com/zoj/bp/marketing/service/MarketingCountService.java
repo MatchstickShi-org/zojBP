@@ -17,13 +17,18 @@ public class MarketingCountService implements IMarketingCountService{
 	private IMarketingCountDao dao;
 
 	@Override
-	public DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName,String startDate,String endDate) {
-		return dao.getTodayMarketingCout(pagination,salesmanName,startDate,endDate);
+	public DatagridVo<MarketingCount> getTodayMarketingCount(Pagination pagination,String salesmanName) {
+		return dao.getTodayMarketingCount(pagination,salesmanName);
+	}
+	
+	@Override
+	public DatagridVo<MarketingCount> getMarketingCountByDate(Pagination pagination,String salesmanName,String startDate,String endDate) {
+		return dao.getMarketingCountByDate(pagination,salesmanName,startDate,endDate);
 	}
 
 	@Override
-	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String startDate,String endDate) {
-		return dao.getTodayMarketingCountByUserId(userId,startDate,endDate);
+	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String countDate) {
+		return dao.getTodayMarketingCountByUserId(userId,countDate);
 	}
 
 	@Override
