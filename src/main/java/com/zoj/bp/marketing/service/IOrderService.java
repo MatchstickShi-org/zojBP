@@ -60,7 +60,7 @@ public interface IOrderService {
 	 * 放弃客户
 	 * @param orderIds
 	 */
-	Integer giveUpOrders(Integer... orderIds);
+	Integer giveUpOrders(User loginUser,Integer... orderIds);
 
 	/**
 	 * 申请再谈单
@@ -124,5 +124,5 @@ public interface IOrderService {
 
 	DatagridVo<Order> getOrdersByStatus(User loginUser, String clientName, Integer orderId, Pagination pagination, Status... status) throws Exception;
 
-	Integer setOrder2Tracing(Integer orderId) throws BusinessException;
+	Integer setOrder2Tracing(Integer orderId,User loginUser) throws BusinessException;
 }

@@ -309,9 +309,10 @@ public class ClientCtrl
 	@ResponseBody
 	public Map<String, ?> deleteOrderByIds(@RequestParam("delIds[]") Integer[] orderIds, HttpSession session) throws Exception
 	{
+		User loginUser = (User) session.getAttribute("loginUser");
 		if(ArrayUtils.isEmpty(orderIds))
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
-		orderSvc.giveUpOrders(orderIds);
+		orderSvc.giveUpOrders(loginUser,orderIds);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -456,7 +457,7 @@ public class ClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法进行本操作。"));
-		orderSvc.setOrder2Tracing(orderId);
+		orderSvc.setOrder2Tracing(orderId,loginUser);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 }

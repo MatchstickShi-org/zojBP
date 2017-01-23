@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zoj.bp.common.dao.IOrderApproveDao;
+import com.zoj.bp.common.dao.IOrderChangeLogDao;
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.model.User;
@@ -50,6 +51,9 @@ public class UserService implements IUserService
 	
 	@Autowired
 	private IOrderVisitDao orderVisitDao;
+	
+	@Autowired
+	private IOrderChangeLogDao orderChangeLogDao;
 
 	@Override
 	public User getUserByName(String userName)
@@ -180,6 +184,8 @@ public class UserService implements IUserService
 		clientDao.deleteByDesigners(userIds);
 		approveDao.deleteBySalesmans(userIds);
 		approveDao.deleteByDesigners(userIds);
+		orderChangeLogDao.deleteBySalesmans(userIds);
+		orderChangeLogDao.deleteByDesigners(userIds);
 		orderVisitDao.deleteBySalesmanId(userIds);
 		orderVisitDao.deleteByDesignerId(userIds);
 		orderDao.deleteBySalesmans(userIds);

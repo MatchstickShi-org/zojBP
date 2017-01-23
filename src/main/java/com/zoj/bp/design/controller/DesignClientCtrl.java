@@ -337,23 +337,6 @@ public class DesignClientCtrl
 	}
 	
 	/**
-	 * 放弃客户
-	 * @param orderIds
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/deleteOrderByIds")
-	@ResponseBody
-	public Map<String, ?> deleteOrderByIds(@RequestParam("delIds[]") Integer[] orderIds, HttpSession session) throws Exception
-	{
-		if(ArrayUtils.isEmpty(orderIds))
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("没有可放弃的客户"));
-		orderSvc.giveUpOrders(orderIds);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-	}
-	
-	/**
 	 * 根据业务员查询信息员
 	 * @param session
 	 * @param pagination

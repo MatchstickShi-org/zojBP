@@ -1,11 +1,12 @@
 package com.zoj.bp.common.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wangw
  */
-public class OrderApproveFlow implements Serializable{
+public class OrderChangeLog implements Serializable{
 	
 	/**
 	 * 
@@ -14,9 +15,11 @@ public class OrderApproveFlow implements Serializable{
 
 	private Integer id;
 	
+	private Integer orderId;
+	
 	private Integer status;
 	
-	private Integer nextStatus;
+	private Date changeTime;
 	
 	public Integer getId() {
 		return id;
@@ -34,11 +37,19 @@ public class OrderApproveFlow implements Serializable{
 		this.status = status;
 	}
 
-	public Integer getNextStatus() {
-		return nextStatus;
+	public Integer getOrderId() {
+		return orderId;
 	}
 
-	public void setNextStatus(Integer nextStatus) {
-		this.nextStatus = nextStatus;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public Date getChangeTime() {
+		return changeTime;
+	}
+
+	public void setChangeTime(Date changeTime) {
+		this.changeTime = changeTime;
 	}
 }
