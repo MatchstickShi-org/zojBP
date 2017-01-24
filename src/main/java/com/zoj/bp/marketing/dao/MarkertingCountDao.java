@@ -66,15 +66,14 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				"U.ID, "+
 				"U.ID SALESMAN_ID, "+
 				"U.ALIAS SALESMAN_NAME, "+
-				"COUNT(MC.INFOER_VISIT_AMOUNT) TODAY_INFOER_VISIT_COUNT, "+
-				"COUNT(MC.TALKING_VISIT_AMOUNT) TODAY_ORDER_VISIT_COUNT, "+
-				"COUNT(MC.TALKING_AMOUNT) TALKING_ORDER_COUNT, "+
-				"COUNT(MC.INFOER_ADD_AMOUNT) TODAY_INFOER_ADD_COUNT, "+
-				"COUNT(MC.INFOER_ADD_AMOUNT) TRACING_INFOER_COUNT, "+
-				"COUNT(MC.CLIENT_ADD_AMOUNT) TODAY_CLIENT_ADD_COUNT, "+
-				"COUNT(MC.CONTACTING_CLIENT_TOTAL) CONTACTING_CLIENT_COUNT, "+
-				"COUNT(MC.DEAL_TOTAL) DEAL_ORDER_COUNT, "+
-				"COUNT(MC.APPLY_TALKING_AMOUNT) MONTH_TALKING_ORDER_COUNT "+
+				"SUM(MC.INFOER_VISIT_AMOUNT) TODAY_INFOER_VISIT_COUNT, "+
+				"SUM(MC.TALKING_VISIT_AMOUNT) TODAY_ORDER_VISIT_COUNT, "+
+				"SUM(MC.TALKING_AMOUNT) TALKING_ORDER_COUNT, "+
+				"SUM(MC.INFOER_ADD_AMOUNT) TODAY_INFOER_ADD_COUNT, "+
+				"SUM(MC.INFOER_ADD_AMOUNT) TRACING_INFOER_COUNT, "+
+				"SUM(MC.CLIENT_ADD_AMOUNT) TODAY_CLIENT_ADD_COUNT, "+
+				"SUM(MC.DEAL_TOTAL) DEAL_ORDER_COUNT, "+
+				"SUM(MC.APPLY_TALKING_AMOUNT) MONTH_TALKING_ORDER_COUNT "+
 			"FROM "+
 				"USER U "+
 			"LEFT JOIN MARKETING_COUNT MC ON U.ID = MC.SALESMAN_ID "+
@@ -100,8 +99,9 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 	@Override
 	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String countDate) {
 		String sql = "SELECT U.*, "+
-			"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+
-			"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, COUNT(DISTINCT O5.ID) APPLY_TALKING_ORDER_COUNT "+ 
+			"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, "+
+			"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, "+
+			"COUNT(DISTINCT OCL.ORDER_ID) APPLY_TALKING_ORDER_COUNT "+ 
 		"FROM "+
 		"( "+
 			"SELECT U.ID,U.ID SALESMAN_ID, U.ALIAS SALESMAN_NAME, "+
@@ -118,7 +118,8 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 		"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59') "+
 		"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) AND O3.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59') "+
 		"LEFT JOIN `ORDER` O4 ON U.ID = O4.SALESMAN_ID AND O4.`STATUS` = 90 AND O4.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59') "+
-		"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID AND O5.`STATUS` IN(20,22,34,90,0,60,62,64) AND O5.UPDATE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59') ";
+		"LEFT JOIN `ORDER` O5 ON U.ID = O5.SALESMAN_ID "+
+		"LEFT JOIN ORDER_CHANGE_LOG OCL ON OCL.ORDER_ID = O5.ID  AND OCL.`STATUS` =34 AND OCL.CHANGE_TIME BETWEEN CONCAT(:countDate,' 00:00:00') AND CONCAT(:countDate,' 23:59:59') ";
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("userId", userId);
 		paramMap.put("countDate", countDate);
@@ -136,7 +137,6 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ "TALKING_VISIT_AMOUNT,"
 				+ "INFOER_ADD_AMOUNT,"
 				+ "CLIENT_ADD_AMOUNT,"
-				+ "CONTACTING_CLIENT_TOTAL,"
 				+ "TALKING_AMOUNT,"
 				+ "DEAL_TOTAL,"
 				+ "APPLY_TALKING_AMOUNT,"
@@ -149,7 +149,6 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ ":todayOrderVisitCount,"
 				+ ":todayInfoerAddCount,"
 				+ ":todayClientAddCount,"
-				+ ":contactingClientCount,"
 				+ ":talkingOrderCount,"
 				+ ":dealOrderCount,"
 				+ ":applyTalkingOrderCount,"

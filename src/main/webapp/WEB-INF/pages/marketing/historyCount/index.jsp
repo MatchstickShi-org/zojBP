@@ -12,14 +12,14 @@
 <body>
 <div class="easyui-layout" data-options="fit:true" style="margin: 2px;">
 	<div data-options="region:'center'" style="width: 470px;">
-		<table id="designCountDatagrid" border=false></table>
-		<div id="designCountDatagridToolbar">
-			<label>设计师名称：</label>
-			<input class="easyui-textbox" id="order.designerNameInput" style="width: 120px;"/>
-<!-- 			<label>开始日期：</label> -->
-<!-- 			<input id="order.startDateInput" editable="false" type= "text" class= "easyui-datebox" />  -->
-<!-- 			<label>截止日期：</label> -->
-<!-- 			<input id="order.endDateInput" editable="false" type= "text" class= "easyui-datebox" />  -->
+		<table id="marketingCountDatagrid" border=false></table>
+		<div id="marketingCountDatagridToolbar">
+			<label>业务员名称：</label>
+			<input class="easyui-textbox" id="order.salesmanNameInput" style="width: 120px;"/>
+			<label>开始日期：</label>
+			<input id="order.startDateInput"  type= "text" class= "easyui-datebox"/> 
+			<label>截止日期：</label>
+			<input id="order.endDateInput"  type= "text" class= "easyui-datebox" /> 
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 		</div>
 	</div>
@@ -28,6 +28,6 @@
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
 </script>
-<script type="text/javascript" src="pages/design/count/index.js"></script>
+<script type="text/javascript" src="pages/marketing/historyCount/index.js"></script>
 </body>
 </html>

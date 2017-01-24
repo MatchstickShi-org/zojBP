@@ -5,7 +5,6 @@ package com.zoj.bp.design.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +33,28 @@ public class DesignCountCtrl
 	{
 		return "/design/count/index";
 	}
+	
+	@RequestMapping(value = "/toDesignHistoryCountView")
+	public String toDesignHistoryCountView() throws BusinessException
+	{
+		return "/design/historyCount/index";
+	}
 	/**
 	 * 获取当天的主案部统计记录
+	 * @param session
+	 * @param pagination
+	 * @param designerName
+	 * @return
+	 */
+	@RequestMapping(value = "/getTodayDesignCout")
+	@ResponseBody
+	public DatagridVo<DesignCount> getTodayDesignCout(HttpSession session,Pagination pagination,
+			@RequestParam(required=false) String designerName)
+	{
+		return designCountService.getTodayDesignerCount(pagination,designerName);
+	}
+	/**
+	 * 获取主案部历史统计记录
 	 * @param session
 	 * @param pagination
 	 * @param designerName
@@ -43,16 +62,13 @@ public class DesignCountCtrl
 	 * @param endDate
 	 * @return
 	 */
-	@RequestMapping(value = "/getTodayDesignCout")
+	@RequestMapping(value = "/getHistoryDesignCout")
 	@ResponseBody
-	public DatagridVo<DesignCount> getTodayDesignCout(HttpSession session,Pagination pagination,
+	public DatagridVo<DesignCount> getHistoryDesignCout(HttpSession session,Pagination pagination,
 			@RequestParam(required=false) String designerName,
 			@RequestParam(required=false) String startDate,
 			@RequestParam(required=false) String endDate)
 	{
-		if(StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate))
-			return designCountService.getTodayDesignerCount(pagination,designerName);
-		else
 			return designCountService.getDesignerCountByDate(pagination,designerName,startDate,endDate);
 	}
 }

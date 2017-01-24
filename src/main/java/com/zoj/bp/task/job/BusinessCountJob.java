@@ -57,7 +57,7 @@ public class BusinessCountJob
 					    aCalendar.setTime(lastMarketingCoutUpdateTime);
 					    int lastUpdateDay = aCalendar.get(Calendar.DAY_OF_YEAR);
 					    int days = nowDay-lastUpdateDay;
-					    if(days >1){//如果相差日期大于一天，则开始日期需要加一天（sql中会减去一天）
+					    if(days >1){//如果相差日期大于一天，则循环添加遗漏的未统计记录
 					    	for(int i = 0;i<days; i++){
 					    		cal.setTime(lastMarketingCoutUpdateTime);
 					    		cal.add(Calendar.DATE, i);
@@ -100,7 +100,7 @@ public class BusinessCountJob
 					    aCalendar.setTime(lastDesignCoutUpdateTime);
 					    int lastUpdateDay = aCalendar.get(Calendar.DAY_OF_YEAR);
 					    int days = nowDay-lastUpdateDay;
-					    if(days >1){//如果相差日期大于一天，则开始日期需要加一天（sql中会减去一天）
+					    if(days >1){//如果相差日期大于一天，则循环添加遗漏的未统计记录
 					    	for(int i = 0;i<days; i++){
 					    		cal.setTime(lastDesignCoutUpdateTime);
 					    		cal.add(Calendar.DATE, i);

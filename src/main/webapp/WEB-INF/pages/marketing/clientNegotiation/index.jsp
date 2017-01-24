@@ -41,8 +41,8 @@
 			</c:if>
 			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
 			<label style="vertical-align: middle;">状态筛选：</label>
-			<label><input type="checkbox" value="" name="statusInput" />全部</label>
-			<label><input type="checkbox" value="34" name="statusInput" checked="checked" />在谈单</label>
+			<label><input type="checkbox" value="" name="statusInput" checked="checked" />全部</label>
+			<label><input type="checkbox" value="34" name="statusInput" />在谈单</label>
 			<label><input type="checkbox" value="90" name="statusInput"/>已签单</label>
 			<label><input type="checkbox" value="0" name="statusInput"/>死单</label>
 			<label><input type="checkbox" value="60" name="statusInput"/>不准单-主案部经理审核中</label>

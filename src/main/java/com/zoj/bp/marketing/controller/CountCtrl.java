@@ -5,7 +5,6 @@ package com.zoj.bp.marketing.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +29,7 @@ public class CountCtrl
 	private IMarketingCountService marketingCountService;
 	
 	/**
-	 * 跳转商务部统计首页
+	 * 跳转商务部即时统计首页
 	 * @return
 	 * @throws BusinessException
 	 */
@@ -40,7 +39,31 @@ public class CountCtrl
 		return "/marketing/count/index";
 	}
 	/**
-	 * 获取指定日期的商务部统计记录
+	 * 跳转商务部历史统计首页
+	 * @return
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/toMarketingHistoryCountView")
+	public String toMarketingHistoryCountView() throws BusinessException
+	{
+		return "/marketing/historyCount/index";
+	}
+	/**
+	 * 获取商务部即时统计记录
+	 * @param session
+	 * @param pagination
+	 * @param salesmanName 业务员名称
+	 * @return
+	 */
+	@RequestMapping(value = "/getTodayMarketingCout")
+	@ResponseBody
+	public DatagridVo<MarketingCount> getTodayMarketingCout(HttpSession session,Pagination pagination,
+			@RequestParam(required=false) String salesmanName)
+	{
+		return marketingCountService.getTodayMarketingCount(pagination,salesmanName);
+	}
+	/**
+	 * 获取指定日期的商务部历史统计记录
 	 * @param session
 	 * @param pagination
 	 * @param salesmanName 业务员名称
@@ -48,16 +71,13 @@ public class CountCtrl
 	 * @param endDate 截至日期
 	 * @return
 	 */
-	@RequestMapping(value = "/getTodayMarketingCout")
+	@RequestMapping(value = "/getHistoryMarketingCout")
 	@ResponseBody
-	public DatagridVo<MarketingCount> getTodayMarketingCout(HttpSession session,Pagination pagination,
+	public DatagridVo<MarketingCount> getHistoryMarketingCout(HttpSession session,Pagination pagination,
 			@RequestParam(required=false) String salesmanName,
 			@RequestParam(required=false) String startDate,
 			@RequestParam(required=false) String endDate)
 	{
-		if(StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate))
-			return marketingCountService.getTodayMarketingCount(pagination,salesmanName);
-		else
-			return marketingCountService.getMarketingCountByDate(pagination,salesmanName,startDate,endDate);
+		return marketingCountService.getMarketingCountByDate(pagination,salesmanName,startDate,endDate);
 	}
 }
