@@ -69,6 +69,19 @@ public class DesignCountCtrl
 			@RequestParam(required=false) String startDate,
 			@RequestParam(required=false) String endDate)
 	{
-			return designCountService.getDesignerCountByDate(pagination,designerName,startDate,endDate);
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//		if(StringUtils.isEmpty(startDate)){
+//			Calendar calendar = Calendar.getInstance();  
+//			calendar.setTime(new Date());  
+//			calendar.add(Calendar.DAY_OF_MONTH, -1);  
+//			startDate = sdf.format(calendar.getTime());  
+//		}
+//		if (StringUtils.isEmpty(endDate)) {
+//			Calendar calendar = Calendar.getInstance();  
+//			calendar.setTime(new Date());  
+//			calendar.add(Calendar.DAY_OF_MONTH, -1);  
+//			endDate = sdf.format(calendar.getTime());  
+//		}
+		return designCountService.getDesignerCountByDate(pagination,designerName,startDate,endDate);
 	}
 }
