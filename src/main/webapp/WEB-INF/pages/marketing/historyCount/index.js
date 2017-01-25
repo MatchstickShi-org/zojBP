@@ -6,7 +6,7 @@ $(function()
 	var $endDateTextbox = $('#order\\.endDateInput');
 	var $queryOrderBtn = $('a#queryOrderBtn');
 	
-	//得到当前日期的前一天
+	//得到当前日期
 	formatterDate = function(date) {
 		var day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
 		var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0"+ (date.getMonth() + 1);

@@ -35,4 +35,9 @@ public class OrderVisitService implements IOrderVisitService{
 		dao.updateOrderVisit(orderVisit);
 	}
 
+	@Override
+	public DatagridVo<OrderVisit> getTodayTalkingOrderVisitByUserId(Pagination pagination, Integer userId) {
+		return dao.getTodayTalkingOrderVisitByUserId(pagination, userId);
+	}
+
 }

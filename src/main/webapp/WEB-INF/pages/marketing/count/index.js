@@ -2,10 +2,20 @@ $(function()
 {
 	var $marketingCountDatagrid = $('table#marketingCountDatagrid');
 	var $salesmanNameTextbox = $('#order\\.salesmanNameInput');
+	var $salesmanIdInput = $('#order\\.salesmanIdInput');
+	var $showOrderVisitWindow = $('div#showOrderVisitWindow');
 	var $queryOrderBtn = $('a#queryOrderBtn');
+	
+	//得到当前日期
+	formatterDate = function(date) {
+		var day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
+		var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0"+ (date.getMonth() + 1);
+		return date.getFullYear() + '-' + month + '-' + day;
+	};
 	
 	function init()
 	{
+		$showOrderVisitWindow.window({width: 700});
 		$marketingCountDatagrid.datagrid
 		({
 			idField: 'id',
@@ -13,9 +23,15 @@ $(function()
 			columns:
 			[[
 				{field:'id', hidden: true},
+				{field:'salesmanId', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'todayInfoerVisitCount', title:'今日信息员回访数', width: 5},
-				{field:'todayOrderVisitCount', title:'今日在谈单回访数', width: 5},
+				{field:'todayOrderVisitCount', title:'今日在谈单回访数', width: 5,
+					formatter: function(val, row, index)
+					{
+						return "<a href='javacript:void(0);'>" + val + "</a>";
+					}
+				},
 				{field:'todayInfoerAddCount', title:'今日信息员录入数', width: 5},
 				{field:'todayClientAddCount', title:'今日客户录入数', width: 5},
 				{field:'tracingInfoerCount', title:'正跟踪信息员总数', width: 5},
@@ -30,15 +46,15 @@ $(function()
 			selectOnCheck: false,
 			checkOnSelect: false,
 			url: 'marketing/countMgr/getTodayMarketingCout',
-			onSelect: function(idx, row)
-			{
-				if(row.status ==0 && row.notVisitDays > 1)
-				{
-					$permitVisitBtn.linkbutton('enable');
-				}
-				else
-				{
-					$permitVisitBtn.linkbutton('disable');
+			onClickCell: function(index,field,value){
+				if(field == 'todayOrderVisitCount' && value > 0){
+					var selRows = $marketingCountDatagrid.datagrid('getData').rows[index];
+					$salesmanIdInput.val(selRows.salesmanId);
+					$showOrderVisitWindow.window('clear');
+					$showOrderVisitWindow.window('open').window
+					({
+						title: selRows.salesmanName+"-"+formatterDate(new Date())+'-在谈单回访记录'
+					}).window('open').window('refresh', 'marketing/countMgr/toShowOrderVisitView');
 				}
 			}
 		});

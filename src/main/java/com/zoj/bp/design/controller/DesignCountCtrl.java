@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.DesignCount;
+import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.design.service.IDesignCountService;
+import com.zoj.bp.marketing.service.IOrderVisitService;
 
 /**
  * @author wangw
@@ -28,6 +30,9 @@ public class DesignCountCtrl
 	@Autowired
 	private IDesignCountService designCountService;
 	
+	@Autowired
+	private IOrderVisitService orderVisitService;
+	
 	@RequestMapping(value = "/toDesignCoutView")
 	public String toDesignCoutView() throws BusinessException
 	{
@@ -38,6 +43,30 @@ public class DesignCountCtrl
 	public String toDesignHistoryCountView() throws BusinessException
 	{
 		return "/design/historyCount/index";
+	}
+	/**
+	 * 跳转业务员回访记录页面
+	 * @return
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/toShowOrderVisitView")
+	public String toShowOrderVisitView() throws BusinessException
+	{
+		return "/design/count/showOrderVisit";
+	}
+	/**
+	 * 获取当天的在谈单回访记录
+	 * @param session
+	 * @param pagination
+	 * @param designerId
+	 * @return
+	 */
+	@RequestMapping(value = "/getTodayTalkingOrderVisitByUserId")
+	@ResponseBody
+	public DatagridVo<OrderVisit> getTodayTalkingOrderVisitByUserId(HttpSession session,Pagination pagination,
+			@RequestParam(required=false) String designerId)
+	{
+		return orderVisitService.getTodayTalkingOrderVisitByUserId(pagination, Integer.valueOf(designerId));
 	}
 	/**
 	 * 获取当天的主案部统计记录

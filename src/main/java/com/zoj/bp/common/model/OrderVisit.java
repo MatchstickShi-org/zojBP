@@ -30,6 +30,8 @@ public class OrderVisit implements Serializable
 	
 	private Integer applyStatus;//回访申请状态
 	
+	private String name;//客户名称
+	
 	public Integer getId()
 	{
 		return id;
@@ -94,5 +96,13 @@ public class OrderVisit implements Serializable
 
 	public void setApplyStatus(Integer applyStatus) {
 		this.applyStatus = applyStatus;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

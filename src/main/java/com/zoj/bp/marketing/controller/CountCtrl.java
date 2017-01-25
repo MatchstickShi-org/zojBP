@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zoj.bp.common.excption.BusinessException;
 import com.zoj.bp.common.model.MarketingCount;
+import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.service.IMarketingCountService;
+import com.zoj.bp.marketing.service.IOrderVisitService;
 
 /**
  * @author wangw
@@ -27,6 +29,9 @@ public class CountCtrl
 {
 	@Autowired
 	private IMarketingCountService marketingCountService;
+	
+	@Autowired
+	private IOrderVisitService orderVisitService;
 	
 	/**
 	 * 跳转商务部即时统计首页
@@ -47,6 +52,30 @@ public class CountCtrl
 	public String toMarketingHistoryCountView() throws BusinessException
 	{
 		return "/marketing/historyCount/index";
+	}
+	/**
+	 * 跳转业务员回访记录页面
+	 * @return
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/toShowOrderVisitView")
+	public String toShowOrderVisitView() throws BusinessException
+	{
+		return "/marketing/count/showOrderVisit";
+	}
+	/**
+	 * 获取当天的在谈单回访记录
+	 * @param session
+	 * @param pagination
+	 * @param salesmanName
+	 * @return
+	 */
+	@RequestMapping(value = "/getTodayTalkingOrderVisitByUserId")
+	@ResponseBody
+	public DatagridVo<OrderVisit> getTodayTalkingOrderVisitByUserId(HttpSession session,Pagination pagination,
+			@RequestParam(required=false) String salesmanId)
+	{
+		return orderVisitService.getTodayTalkingOrderVisitByUserId(pagination, Integer.valueOf(salesmanId));
 	}
 	/**
 	 * 获取商务部即时统计记录

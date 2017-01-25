@@ -18,9 +18,10 @@
 			<input class="easyui-textbox" id="order.salesmanNameInput" style="width: 120px;"/>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 		</div>
+		<input type="hidden" id="order.salesmanIdInput" />
 	</div>
 </div>
-<div id="addClientVisitWindow"></div>
+<div id="showOrderVisitWindow"></div>
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
 </script>

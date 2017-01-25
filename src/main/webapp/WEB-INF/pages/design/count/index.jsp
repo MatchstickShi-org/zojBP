@@ -22,9 +22,10 @@
 <!-- 			<input id="order.endDateInput" editable="false" type= "text" class= "easyui-datebox" />  -->
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 		</div>
+		<input type="hidden" id="order.designerIdInput" />
 	</div>
 </div>
-<div id="addClientVisitWindow"></div>
+<div id="showOrderVisitWindow"></div>
 <script type="text/javascript">
 var _session_loginUserId = ${sessionScope.loginUser.id};
 </script>

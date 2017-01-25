@@ -63,6 +63,23 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 	}
 	
 	@Override
+	public DatagridVo<OrderVisit> getTodayTalkingOrderVisitByUserId(Pagination pagination,Integer userId) {
+		Map<String, Object> paramMap = new HashMap<>();
+		String sql = "SELECT OV.*,C.`NAME` "
+				+ "FROM ORDER_VISIT OV "
+				+ "LEFT JOIN CLIENT C ON C.ORDER_ID = OV.ORDER_ID "
+				+ "WHERE OV.VISITOR_ID= :visitorId AND OV.DATE BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') ";
+		paramMap.put("visitorId", userId);
+		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
+		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY DATE DESC";
+		sql += " LIMIT :start, :rows";
+		paramMap.put("start", pagination.getStartRow());
+		paramMap.put("rows", pagination.getRows());
+		return DatagridVo.buildDatagridVo(jdbcOps.query(sql, paramMap, BeanPropertyRowMapper.newInstance(OrderVisit.class)), count);
+	}
+	
+	@Override
 	public Integer addOrderVisit(OrderVisit orderVisit) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
