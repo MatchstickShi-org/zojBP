@@ -131,24 +131,12 @@ $(function()
 				$('#applyVisitDatagridToolbar :input[name="statusInput"]:checked').each(function(){ 
 					chk_value.push($(this).val());  
 				}); 
-				$.ajax
-				({
-					url: 'design/clientMgr/getAllDesignerVisitApply',
-					data:
-					{
-						orderId: $orderIdTextbox.textbox('getValue'),
-						designerName: $designerNameTextbox.textbox('getValue'),
-						status:chk_value
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$applyVisitDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$applyVisitDatagrid.datagrid('loaded');
-					}
-				});
+				$applyVisitDatagrid.datagrid('load', 
+						{
+							orderId: $orderIdTextbox.textbox('getValue'),
+							designerName: $designerNameTextbox.textbox('getValue'),
+							status:chk_value
+						});
 			}
 		});
 		

@@ -60,23 +60,10 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$designCountDatagrid.datagrid('loading');
-				$.ajax
-				({
-					url: 'design/countMgr/getTodayDesignCout',
-					data:
+				$designCountDatagrid.datagrid('load', 
 					{
 						designerName: $designerNameTextbox.textbox('getValue')
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$designCountDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$designCountDatagrid.datagrid('loaded');
-					}
-				});
+					});
 			}
 		});
 	}

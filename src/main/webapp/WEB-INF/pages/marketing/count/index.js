@@ -63,23 +63,10 @@ $(function()
 		({
 			'onClick': function()
 			{
-				$marketingCountDatagrid.datagrid('loading');
-				$.ajax
-				({
-					url: 'marketing/countMgr/getTodayMarketingCout',
-					data:
-					{
-						salesmanName: $salesmanNameTextbox.textbox('getValue')
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$marketingCountDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$marketingCountDatagrid.datagrid('loaded');
-					}
-				});
+				$marketingCountDatagrid.datagrid('load', 
+						{
+					salesmanName: $salesmanNameTextbox.textbox('getValue')
+						});
 			}
 		});
 	}

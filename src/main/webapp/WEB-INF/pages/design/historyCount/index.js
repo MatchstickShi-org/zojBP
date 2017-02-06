@@ -52,25 +52,12 @@ $(function()
 	    			$.messager.alert('提示','只能查询 '+nowDate+' 之前的数据！');
 	    			return;
 				}
-				$designCountDatagrid.datagrid('loading');
-				$.ajax
-				({
-					url: 'design/countMgr/getHistoryDesignCout',
-					data:
-					{
-						designerName: $designerNameTextbox.textbox('getValue'),
-						startDate: $startDateTextbox.datebox('getValue'),
-						endDate: $endDateTextbox.datebox('getValue')
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$designCountDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$designCountDatagrid.datagrid('loaded');
-					}
-				});
+				$designCountDatagrid.datagrid('load', 
+						{
+							designerName: $designerNameTextbox.textbox('getValue'),
+							startDate: $startDateTextbox.datebox('getValue'),
+							endDate: $endDateTextbox.datebox('getValue')
+						});
 			}
 		});
 	}

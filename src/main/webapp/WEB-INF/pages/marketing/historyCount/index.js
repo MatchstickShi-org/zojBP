@@ -65,25 +65,12 @@ $(function()
 	    			$.messager.alert('提示','只能查询 '+nowDate+' 之前的数据！');
 	    			return;
 				}
-				$marketingCountDatagrid.datagrid('loading');
-				$.ajax
-				({
-					url: 'marketing/countMgr/getHistoryMarketingCout',
-					data:
-					{
-						salesmanName: $salesmanNameTextbox.textbox('getValue'),
-						startDate: $startDateTextbox.datebox('getValue'),
-						endDate: $endDateTextbox.datebox('getValue')
-					},
-					success: function(data, textStatus, jqXHR)
-					{
-						if(data.returnCode == 0)
-							$marketingCountDatagrid.datagrid('loadData', data);
-						else
-							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
-						$marketingCountDatagrid.datagrid('loaded');
-					}
-				});
+				$marketingCountDatagrid.datagrid('load', 
+						{
+							salesmanName: $salesmanNameTextbox.textbox('getValue'),
+							startDate: $startDateTextbox.datebox('getValue'),
+							endDate: $endDateTextbox.datebox('getValue')
+						});
 			}
 		});
 	}
