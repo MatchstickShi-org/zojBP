@@ -100,6 +100,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 	public MarketingCount getTodayMarketingCountByUserId(Integer userId,String countDate) {
 		String sql = "SELECT U.*, "+
 			"COUNT(DISTINCT O2.ID) TODAY_CLIENT_ADD_COUNT, "+
+			"COUNT(DISTINCT O3.ID) CONTACTING_CLIENT_COUNT, "+
 			"COUNT(DISTINCT O4.ID) DEAL_ORDER_COUNT, "+
 			"COUNT(DISTINCT OCL.ORDER_ID) APPLY_TALKING_ORDER_COUNT "+ 
 		"FROM "+
@@ -137,6 +138,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ "TALKING_VISIT_AMOUNT,"
 				+ "INFOER_ADD_AMOUNT,"
 				+ "CLIENT_ADD_AMOUNT,"
+				+ "CONTACTING_CLIENT_TOTAL,"
 				+ "TALKING_AMOUNT,"
 				+ "DEAL_TOTAL,"
 				+ "APPLY_TALKING_AMOUNT,"
@@ -149,6 +151,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 				+ ":todayOrderVisitCount,"
 				+ ":todayInfoerAddCount,"
 				+ ":todayClientAddCount,"
+				+ ":contactingClientCount,"
 				+ ":talkingOrderCount,"
 				+ ":dealOrderCount,"
 				+ ":applyTalkingOrderCount,"

@@ -1012,6 +1012,7 @@ $(function()
 			'				if($clientMgrTab.tabs(\'getSelected\').panel(\'options\').title == "设计师回访记录")' + 
 			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
+			'				$orderDatagrid.datagrid(\'reload\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

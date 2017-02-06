@@ -611,6 +611,7 @@ $(function()
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "回访记录")' + 
 			'					$orderVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
+			'				$orderDatagrid.datagrid(\'reload\');' + 
 			'			}' + 
 			'		}' + 
 			'	});' + 

@@ -68,7 +68,10 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 		String sql = "SELECT OV.*,C.`NAME` "
 				+ "FROM ORDER_VISIT OV "
 				+ "LEFT JOIN CLIENT C ON C.ORDER_ID = OV.ORDER_ID "
-				+ "WHERE OV.VISITOR_ID= :visitorId AND OV.DATE BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') ";
+				+ "LEFT JOIN `order` O ON O.ID = OV.ORDER_ID  "
+				+ "WHERE OV.VISITOR_ID= :visitorId "
+				+ "AND OV.DATE BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') "
+				+ "AND O.`STATUS` =34 ";
 		paramMap.put("visitorId", userId);
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
