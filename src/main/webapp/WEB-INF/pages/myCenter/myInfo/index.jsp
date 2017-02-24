@@ -17,7 +17,7 @@
 				<td align="right" style="min-width: 80px;"><label>用户名：</label></td>
 				<td style="min-width: 200px;"><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[4, 16]'" value="${userInfo.name}"/></td>
 				<td align="right" style="min-width: 80px;"><label>姓名：</label></td>
-				<td width="70%"><input name="alias" class="easyui-textbox" data-options="required:true, validType:'length[3, 16]'" value="${userInfo.alias}"/></td>
+				<td width="70%"><input name="alias" class="easyui-textbox" data-options="required:true, validType:'length[2, 16]'" value="${userInfo.alias}"/></td>
 			</tr>
 			<tr>
 				<td align="right"><label>电话：</label></td>
