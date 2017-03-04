@@ -2,6 +2,11 @@ $(function()
 {
 	var $infoerDatagrid = $('table#infoerDatagrid');
 	var $infoerNameTextbox = $('#infoerMgr-nameInput');
+	var $tel1Textbox = $('#editInfoerForm-tel1');
+	var $tel2Textbox = $('#editInfoerForm-tel2');
+	var $tel3Textbox = $('#editInfoerForm-tel3');
+	var $tel4Textbox = $('#editInfoerForm-tel4');
+	var $tel5Textbox = $('#editInfoerForm-tel5');
 	var $infoerFilterInput = $('[name="infoerMgr-infoerFilterInput"]');
 	var $telTextbox = $('#infoerMgr-telInput');
 	var $salesmanCombobox = $('#infoerMgr-salesmanCombobox');
@@ -152,6 +157,7 @@ $(function()
 		$refreshUpdateUserFormBtn.linkbutton({'onClick': function()
 		{
 			var selRows = $infoerDatagrid.datagrid('getSelections');
+			$('#editInfoerForm-errortel').html('');
 			if(selRows.length == 1)
 				loadTabData($infoerMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
@@ -349,12 +355,86 @@ $(function()
 		$commissionCostGrid.datagrid('options').url = 'marketing/infoerMgr/getCommissionCostByInfoer';
 		$clientGrid.datagrid('options').url = 'marketing/infoerMgr/getClientByInfoer';
 		
+		function checkInfoerTel(obj) 
+		{ 
+			if(obj.value != ''){
+				var reg = /^1[0-9]{10}$/;
+				if(!(reg.test(obj.value))){
+					$('#editInfoerForm-errortel').html("无效的手机号码，请刷新重填！");
+					return false; 
+				}else{
+					$('#editInfoerForm-errortel').html("");
+				}
+				if($tel1Textbox.textbox('getValue') == obj.value){
+	      			$('#editInfoerForm-errortel').html("联系电话重复，请刷新重填！");
+	      			return false;
+				}
+				if(obj.value.length >0){
+					$.ajax
+					({
+						url: 'marketing/infoerMgr/checkInfoerTel',
+						data: {tel:obj.value},
+						success: function(data, textStatus, jqXHR)
+						{
+							if(data.returnCode != 0){
+								$('#editInfoerForm-errortel').html(data.msg);   
+								return false;   
+							}else{   
+								$('#editInfoerForm-errortel').html("");  
+							}  
+						}
+					});
+				}
+			}
+		   return true;
+		}  
 		function loadTabData(title, row)
 		{
 			switch (title)
 			{
 				case '详情':
 					$editInfoerForm.form('clear').form('load', 'marketing/infoerMgr/getInfoerById?infoerId=' + row.id);
+					$('#editInfoerForm-errortel').html("");
+					$tel2Textbox.textbox('readonly',false);
+					$tel2Textbox.textbox("textbox").bind("click", function(){
+						if($tel2Textbox.textbox('getValue') != ''){
+							$tel2Textbox.textbox('readonly',true);
+						}else{
+							$tel2Textbox.textbox("textbox").bind("blur", function(){
+								checkInfoerTel($tel2Textbox.get(0));
+							});
+						}
+					});
+					$tel3Textbox.textbox('readonly',false);
+					$tel3Textbox.textbox("textbox").bind("click", function(){
+						if($tel3Textbox.textbox('getValue') != ''){
+							$tel3Textbox.textbox('readonly',true);
+						}else{
+							$tel3Textbox.textbox("textbox").bind("blur", function(){
+								checkInfoerTel($tel3Textbox.get(0));
+							});
+						}
+					});
+					$tel4Textbox.textbox('readonly',false);
+					$tel4Textbox.textbox("textbox").bind("click", function(){
+						if($tel4Textbox.textbox('getValue') != ''){
+							$tel4Textbox.textbox('readonly',true);
+						}else{
+							$tel4Textbox.textbox("textbox").bind("blur", function(){
+								checkInfoerTel($tel4Textbox.get(0));
+							});
+						}
+					});
+					$tel5Textbox.textbox('readonly',false);
+					$tel5Textbox.textbox("textbox").bind("click", function(){
+						if($tel5Textbox.textbox('getValue') != ''){
+							$tel5Textbox.textbox('readonly',true);
+						}else{
+							$tel5Textbox.textbox("textbox").bind("blur", function(){
+								checkInfoerTel($tel5Textbox.get(0));
+							});
+						}
+					});
 					break;
 				case '回访记录':
 					$infoerVisitGrid.datagrid('unselectAll').datagrid('reload', {infoerId: row.id});
@@ -407,19 +487,23 @@ $(function()
 				$.messager.alert('提示', '请选择要修改的信息员。');
 				return;
 			}
+			var errortel = $('#editInfoerForm-errortel');
 			$editInfoerForm.form('submit',
 			{
 				onSubmit: function()
 				{
 					if(!$(this).form('validate'))
 						return false;
+					if(errortel.html().length > 0){ 
+						return false; 
+					}
 				},
 				success: function(data)
 				{
 					data = $.fn.form.defaults.success(data);
-					if(data.returnCode == 0)
+					if(data.returnCode == 0){
 						$infoerDatagrid.datagrid('reload');
-					else
+					}else
 						$.messager.show({title: '提示', msg: data.msg});
 				}
 			});

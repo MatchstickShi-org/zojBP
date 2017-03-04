@@ -74,6 +74,10 @@ public class OrderService implements IOrderService
 		client.setName(order.getName());
 		client.setOrgAddr(order.getOrgAddr());
 		client.setIsKey(order.getIsKey());
+		client.setTel2(order.getTel2());
+		client.setTel3(order.getTel3());
+		client.setTel4(order.getTel4());
+		client.setTel5(order.getTel5());
 		Order dbOrder = getOrderById(order.getId(), loginUser);
 		dbOrder.setProjectName(order.getProjectName());
 		dbOrder.setProjectAddr(order.getProjectAddr());

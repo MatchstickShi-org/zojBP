@@ -64,8 +64,23 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required" style="width: 154px;"/></td>
-							<td align="right" style="min-width: 80px;"><label>联系电话：</label></td>
-							<td width="70%"><input name="telAll" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
+							<td align="right" style="min-width: 80px;"><label>联系电话1：</label></td>
+							<td width="70%"><input name="tel1" id="editOrderForm-tel1" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>联系电话2：</label></td>
+							<td><input name="tel2" id="editOrderForm-tel2" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td align="right"><label>联系电话3：</label></td>
+							<td><input name="tel3" id="editOrderForm-tel3" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+						</tr>
+						<tr>
+							<td align="right"><label>联系电话4：</label></td>
+							<td><input name="tel4" id="editOrderForm-tel4" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td align="right"><label>联系电话5：</label></td>
+							<td><input name="tel5" id="editOrderForm-tel5" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+						</tr>
+						<tr>
+							<td colspan="3" style="text-align: center;vertical-align: mid;"><font id="editOrderForm-errortel" color="red"></font></td>
 						</tr>
 						<tr>
 							<td align="right"><label>信息员：</label></td>
