@@ -100,7 +100,7 @@ public class ClientDao extends BaseDao implements IClientDao
 	{
 		try
 		{
-			String sql ="SELECT O.*,U.ALIAS AS salesmanName FROM CLIENT C "+
+			String sql ="SELECT O.*,C.NAME,U.ALIAS AS salesmanName FROM CLIENT C "+
 					"LEFT JOIN `order` O ON O.ID = C.ORDER_ID "+
 					"LEFT JOIN `user` U ON U.ID = O.SALESMAN_ID "+
 					"WHERE 1=1 ";

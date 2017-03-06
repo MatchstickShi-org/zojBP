@@ -80,7 +80,7 @@
 							<td><input name="tel5" id="editOrderForm-tel5" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
-							<td colspan="3" style="text-align: center;vertical-align: mid;"><font id="editOrderForm-errortel" color="red"></font></td>
+							<td colspan="4" style="vertical-align: mid;">&nbsp;&nbsp;<font id="editOrderForm-errortel" color="red"></font></td>
 						</tr>
 						<tr>
 							<td align="right"><label>信息员：</label></td>

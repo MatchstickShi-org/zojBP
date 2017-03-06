@@ -79,7 +79,7 @@
 							<td><input name="tel5" id="editInfoerForm-tel5" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
-							<td colspan="3" style="text-align: center;vertical-align: mid;"><font id="editInfoerForm-errortel" color="red"></font></td>
+							<td colspan="4" style="vertical-align: mid;">&nbsp;&nbsp;<font id="editInfoerForm-errortel" color="red"></font></td>
 						</tr>
 						<tr>
 							<td align="right" style="vertical-align: mid;"><label>性质：</label></td>
