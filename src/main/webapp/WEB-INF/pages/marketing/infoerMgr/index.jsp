@@ -68,15 +68,15 @@
 						</tr>
 						<tr>
 							<td align="right" ><label>联系电话2：</label></td>
-							<td><input name="tel2" id="editInfoerForm-tel2" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td><input name="tel2" id="editInfoerForm-tel2" class="easyui-textbox" style="width: 154px;"/></td>
 							<td align="right" ><label>联系电话3：</label></td>
-							<td><input name="tel3" id="editInfoerForm-tel3" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td><input name="tel3" id="editInfoerForm-tel3" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right" ><label>联系电话4：</label></td>
-							<td><input name="tel4" id="editInfoerForm-tel4" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td><input name="tel4" id="editInfoerForm-tel4" class="easyui-textbox" style="width: 154px;"/></td>
 							<td align="right" ><label>联系电话5：</label></td>
-							<td><input name="tel5" id="editInfoerForm-tel5" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td><input name="tel5" id="editInfoerForm-tel5" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: center;vertical-align: mid;"><font id="editInfoerForm-errortel" color="red"></font></td>

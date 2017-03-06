@@ -325,48 +325,56 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
+					$editClientForm.form('clear').form( 
+							{
+								onLoadSuccess:function(data){   
+									if($tel2Textbox.textbox('getValue') != ''){
+										$tel2Textbox.textbox('readonly',true);
+										$tel2Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel(null);
+										});
+									}else{
+										$tel2Textbox.textbox('readonly',false);
+										$tel2Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel2Textbox.get(0));
+										});
+									}
+									if($tel3Textbox.textbox('getValue') != ''){
+										$tel3Textbox.textbox('readonly',true);
+										$tel3Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel(null);
+										});
+									}else{
+										$tel3Textbox.textbox('readonly',false);
+										$tel3Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel3Textbox.get(0));
+										});
+									}
+									if($tel4Textbox.textbox('getValue') != ''){
+										$tel4Textbox.textbox('readonly',true);
+										$tel4Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel(null);
+										});
+									}else{
+										$tel4Textbox.textbox('readonly',false);
+										$tel4Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel4Textbox.get(0));
+										});
+									}
+									if($tel5Textbox.textbox('getValue') != ''){
+										$tel5Textbox.textbox('readonly',true);
+										$tel5Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel(null);
+										});
+									}else{
+										$tel5Textbox.textbox('readonly',false);
+										$tel5Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel5Textbox.get(0));
+										});
+									}
+								}
+						}).form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
 					$('#editOrderForm-errortel').html("");
-					$tel2Textbox.textbox('readonly',false);
-					$tel2Textbox.textbox("textbox").bind("click", function(){
-						if($tel2Textbox.textbox('getValue') != ''){
-							$tel2Textbox.textbox('readonly',true);
-						}else{
-							$tel2Textbox.textbox("textbox").bind("blur", function(){
-								checkClientTel($tel2Textbox.get(0));
-							});
-						}
-					});
-					$tel3Textbox.textbox('readonly',false);
-					$tel3Textbox.textbox("textbox").bind("click", function(){
-						if($tel3Textbox.textbox('getValue') != ''){
-							$tel3Textbox.textbox('readonly',true);
-						}else{
-							$tel3Textbox.textbox("textbox").bind("blur", function(){
-								checkClientTel($tel3Textbox.get(0));
-							});
-						}
-					});
-					$tel4Textbox.textbox('readonly',false);
-					$tel4Textbox.textbox("textbox").bind("click", function(){
-						if($tel4Textbox.textbox('getValue') != ''){
-							$tel4Textbox.textbox('readonly',true);
-						}else{
-							$tel4Textbox.textbox("textbox").bind("blur", function(){
-								checkClientTel($tel4Textbox.get(0));
-							});
-						}
-					});
-					$tel5Textbox.textbox('readonly',false);
-					$tel5Textbox.textbox("textbox").bind("click", function(){
-						if($tel5Textbox.textbox('getValue') != ''){
-							$tel5Textbox.textbox('readonly',true);
-						}else{
-							$tel5Textbox.textbox("textbox").bind("blur", function(){
-								checkClientTel($tel5Textbox.get(0));
-							});
-						}
-					});
 					break;
 					break;
 				case '回访记录':
@@ -396,16 +404,16 @@ $(function()
 		
 		function checkClientTel(obj) 
 		{ 
-			if(obj.value != ''){
+			if(obj != null && obj.value != ''){
 				var reg = /^1[0-9]{10}$/;
 				if(!(reg.test(obj.value))){
-					$('#editOrderForm-errortel').html("无效的手机号码，请刷新重填！");
+					$('#editOrderForm-errortel').html("无效的手机号码！");
 					return false; 
 				}else{
 					$('#editOrderForm-errortel').html("");
 				}
 				if($tel1Textbox.textbox('getValue') == obj.value){
-	      			$('#editOrderForm-errortel').html("联系电话重复，请刷新重填！");
+	      			$('#editOrderForm-errortel').html("联系电话重复！");
 	      			return false;
 				}
 				if(obj.value.length >0){
@@ -450,8 +458,10 @@ $(function()
 				success: function(data)
 				{
 					data = $.fn.form.defaults.success(data);
-					if(data.returnCode == 0)
+					if(data.returnCode == 0){
 						$orderDatagrid.datagrid('reload');
+						loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selIds[0]);						
+					}
 					else
 						$.messager.show({title: '提示', msg: data.msg});
 				}
