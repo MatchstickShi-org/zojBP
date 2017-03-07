@@ -398,9 +398,7 @@ $(function()
 							onLoadSuccess:function(data){   
 								if($tel2Textbox.textbox('getValue') != ''){
 									$tel2Textbox.textbox('readonly',true);
-									$tel2Textbox.textbox("textbox").bind("blur", function(){
-										checkInfoerTel(null);
-									});
+									$tel2Textbox.textbox("textbox").unbind();
 								}else{
 									$tel2Textbox.textbox('readonly',false);
 									$tel2Textbox.textbox("textbox").bind("blur", function(){
@@ -409,9 +407,7 @@ $(function()
 								}
 								if($tel3Textbox.textbox('getValue') != ''){
 									$tel3Textbox.textbox('readonly',true);
-									$tel3Textbox.textbox("textbox").bind("blur", function(){
-										checkInfoerTel(null);
-									});
+									$tel3Textbox.textbox("textbox").unbind();
 								}else{
 									$tel3Textbox.textbox('readonly',false);
 									$tel3Textbox.textbox("textbox").bind("blur", function(){
@@ -420,9 +416,7 @@ $(function()
 								}
 								if($tel4Textbox.textbox('getValue') != ''){
 									$tel4Textbox.textbox('readonly',true);
-									$tel4Textbox.textbox("textbox").bind("blur", function(){
-										checkInfoerTel(null);
-									});
+									$tel4Textbox.textbox("textbox").unbind();
 								}else{
 									$tel4Textbox.textbox('readonly',false);
 									$tel4Textbox.textbox("textbox").bind("blur", function(){
@@ -431,9 +425,7 @@ $(function()
 								}
 								if($tel5Textbox.textbox('getValue') != ''){
 									$tel5Textbox.textbox('readonly',true);
-									$tel5Textbox.textbox("textbox").bind("blur", function(){
-										checkInfoerTel(null);
-									});
+									$tel5Textbox.textbox("textbox").unbind();
 								}else{
 									$tel5Textbox.textbox('readonly',false);
 									$tel5Textbox.textbox("textbox").bind("blur", function(){
