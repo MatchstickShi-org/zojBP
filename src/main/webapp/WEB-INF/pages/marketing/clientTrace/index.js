@@ -4,6 +4,11 @@ $(function()
 	var $setTracingClientBtn = $('a#setTracingClientBtn');
 	var $infoerNameTextbox = $('#clientTrace-infoerNameInput');
 	var $orderNameTextbox = $('#clientTrace-nameInput');
+	var $tel1Textbox = $('#editOrderForm-tel1');
+	var $tel2Textbox = $('#editOrderForm-tel2');
+	var $tel3Textbox = $('#editOrderForm-tel3');
+	var $tel4Textbox = $('#editOrderForm-tel4');
+	var $tel5Textbox = $('#editOrderForm-tel5');
 	var $orderIdTextbox = $('#clientTrace-idInput');
 	var $telTextbox = $('#clientTrace-telInput');
 	var $salesmanCombobox = $('#clientTrace-salesmanCombobox');
@@ -202,6 +207,7 @@ $(function()
 		$refreshUpdateClientFormBtn.linkbutton({'onClick': function()
 		{
 			var selRows = $orderDatagrid.datagrid('getSelections');
+			$('#editOrderForm-errortel').html('');
 			if(selRows.length == 1)
 				loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 			else
@@ -319,7 +325,49 @@ $(function()
 			switch (title)
 			{
 				case '详情':
-					$editClientForm.form('clear').form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
+					$editClientForm.form('clear').form( 
+							{
+								onLoadSuccess:function(data){   
+									if($tel2Textbox.textbox('getValue') != ''){
+										$tel2Textbox.textbox('readonly',true);
+										$tel2Textbox.textbox("textbox").unbind();
+									}else{
+										$tel2Textbox.textbox('readonly',false);
+										$tel2Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel2Textbox.get(0));
+										});
+									}
+									if($tel3Textbox.textbox('getValue') != ''){
+										$tel3Textbox.textbox('readonly',true);
+										$tel3Textbox.textbox("textbox").unbind();
+									}else{
+										$tel3Textbox.textbox('readonly',false);
+										$tel3Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel3Textbox.get(0));
+										});
+									}
+									if($tel4Textbox.textbox('getValue') != ''){
+										$tel4Textbox.textbox('readonly',true);
+										$tel4Textbox.textbox("textbox").unbind();
+									}else{
+										$tel4Textbox.textbox('readonly',false);
+										$tel4Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel4Textbox.get(0));
+										});
+									}
+									if($tel5Textbox.textbox('getValue') != ''){
+										$tel5Textbox.textbox('readonly',true);
+										$tel5Textbox.textbox("textbox").unbind();
+									}else{
+										$tel5Textbox.textbox('readonly',false);
+										$tel5Textbox.textbox("textbox").bind("blur", function(){
+											checkClientTel($tel5Textbox.get(0));
+										});
+									}
+								}
+						}).form('load', 'marketing/clientMgr/getOrderById?orderId=' + row.id);
+					$('#editOrderForm-errortel').html("");
+					break;
 					break;
 				case '回访记录':
 					$orderVisitGrid.datagrid('unselectAll').datagrid('reload', {orderId: row.id});
@@ -346,6 +394,40 @@ $(function()
 			}
 		}
 		
+		function checkClientTel(obj) 
+		{ 
+			if(obj != null && obj.value != ''){
+				var reg = /^1[0-9]{10}$/;
+				if(!(reg.test(obj.value))){
+					$('#editOrderForm-errortel').html("无效的手机号码！");
+					return false; 
+				}else{
+					$('#editOrderForm-errortel').html("");
+				}
+				if($tel1Textbox.textbox('getValue') == obj.value){
+	      			$('#editOrderForm-errortel').html("联系电话重复！");
+	      			return false;
+				}
+				if(obj.value.length >0){
+					$.ajax
+					({
+						url: 'marketing/infoerMgr/checkClientTel',
+						data: {tel:obj.value},
+						success: function(data, textStatus, jqXHR)
+						{
+							if(data.returnCode != 0){
+								$('#editOrderForm-errortel').html(data.msg);   
+								return false;   
+							}else{   
+								$('#editOrderForm-errortel').html("");  
+							}  
+						}
+					});
+				}
+			}
+		   return true;
+		}  
+		
 		function submitEditClientForm()
 		{
 			var selIds = $orderDatagrid.datagrid('getSelections');
@@ -354,18 +436,24 @@ $(function()
 				$.messager.alert('提示', '请选中一个客户。');
 				return;
 			}
+			var errortel = $('#editOrderForm-errortel');
 			$editClientForm.form('submit',
 			{
 				onSubmit: function()
 				{
 					if(!$(this).form('validate'))
 						return false;
+					if(errortel.html().length > 0){ 
+						return false; 
+					}
 				},
 				success: function(data)
 				{
 					data = $.fn.form.defaults.success(data);
-					if(data.returnCode == 0)
+					if(data.returnCode == 0){
 						$orderDatagrid.datagrid('reload');
+						loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selIds[0]);						
+					}
 					else
 						$.messager.show({title: '提示', msg: data.msg});
 				}

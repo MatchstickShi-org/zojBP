@@ -200,7 +200,7 @@ public class InfoerCtrl
 			infoer = infoerSvc.findByTel(infoer, (User) session.getAttribute("loginUser"));
 			if(infoer != null && infoer.getId() >0)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
-					"重复！该信息员于"+infoer.getInsertTime()+" 被业务员["+infoer.getSalesmanName()+"]录入。"));
+					"重复！信息员["+infoer.getName()+"]的电话["+tel+"]于"+infoer.getInsertTime()+" 被业务员["+infoer.getSalesmanName()+"]录入。"));
 		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
@@ -214,7 +214,7 @@ public class InfoerCtrl
 			order = orderSvc.findByTels((User) session.getAttribute("loginUser"), tel);
 		if(order != null)
 			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
-					"重复！该客户[" + order.getId() + "]于 "+order.getInsertTime()+" 被业务员["+order.getSalesmanName()+"]录入。"));
+					"重复！客户[" + order.getName() + "]的电话["+tel+"]于 "+order.getInsertTime()+" 被业务员["+order.getSalesmanName()+"]录入。"));
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

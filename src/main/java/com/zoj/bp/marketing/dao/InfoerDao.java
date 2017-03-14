@@ -57,7 +57,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	@Override
 	public void updateInfoer(Infoer infoer)
 	{
-		String sql = "UPDATE INFOER SET NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId";
+		String sql = "UPDATE INFOER SET TEL2 = :tel2,TEL3 = :tel3,TEL4 = :tel4,TEL5 = :tel5,NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
 	}
