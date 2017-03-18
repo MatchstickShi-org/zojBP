@@ -172,10 +172,14 @@ $(function()
 			}
 			else
 			{
-				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1)
+				if(row.salesmanId == _session_loginUserId || _session_loginUserRole == -1){
+					$submitUpdateClientFormBtn.linkbutton('enable');
 					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('enable').linkbutton('show');
-				else
+				}
+				else{
+					$submitUpdateClientFormBtn.linkbutton('disable');					
 					$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+				}
 			}
 
 			if(_session_loginUserRole == 3 || _session_loginUserRole == -1)
