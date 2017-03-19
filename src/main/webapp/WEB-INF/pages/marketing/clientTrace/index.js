@@ -196,8 +196,12 @@ $(function()
 					data: {orderId: orderIds[0]},
 					success: function(data, textStatus, jqXHR)
 					{
-						if(data.returnCode == 0)
+						if(data.returnCode == 0){
 							$orderDatagrid.datagrid('reload');
+							var selRows = $orderDatagrid.datagrid('getSelections');
+							if(selRows.length == 1)
+								loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);							
+						}
 					}
 				});
 			});
@@ -549,6 +553,9 @@ $(function()
 						{
 							$.messager.show({title:'提示',msg:'操作成功。'});
 							$orderDatagrid.datagrid('reload');
+							var selRows = $orderDatagrid.datagrid('getSelections');
+							if(selRows.length == 1)
+								loadTabData($clientMgrTab.tabs('getSelected').panel('options').title, selRows[0]);
 						}
 						else
 							$.messager.show({title:'提示', msg:'操作失败\n' + data.msg});   
