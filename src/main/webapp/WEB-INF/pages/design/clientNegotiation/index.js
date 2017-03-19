@@ -1024,7 +1024,7 @@ $(function()
 			var selRows = $orderStylistVisitGrid.datagrid('getSelections');
 			if(selRows.length == 0)
 			{
-				$.messager.alert('提示', '请选中一条回访记录。');
+				$.messager.alert('提示', '请选中一条设计师回访记录。');
 				return;
 			}
 			$addVisitCommentWindow.window('clear');
