@@ -5,7 +5,8 @@ String.prototype.startWith = function(str)
 	if (this.substr(0, str.length) != str)
 		return false;
 	return true;
-}
+};
+
 String.prototype.endWith = function(str)
 {
 	if (str == null || str == "" || this.length == 0 || str.length > this.length)
@@ -13,13 +14,21 @@ String.prototype.endWith = function(str)
 	if (this.substring(this.length - str.length) != str)
 		return false;
 	return true;
-}
+};
 
 $.ajaxSetup
 ({
 	accepts: 'application/json, text/javascript, */*;',
-	success: function(data)
+	success: function(data, textStatus, jqXHR)
 	{
+		if(jqXHR.getResponseHeader('sessionTimeout') == 'true')
+		{
+			$.messager.alert('警告', '你已长时间未操作，请重新登录。', 'warning', function()
+			{
+				window.location.href = '';
+			});
+			return;
+		}
 		if(typeof data == 'string')
 		{
 			try
@@ -32,13 +41,6 @@ $.ajaxSetup
 		{
 			if(data.returnCode == 0)
 				$.messager.show({title: '提示', msg: data.msg || '操作成功。'})
-			else if(data.sessionTimeout == true)
-			{
-				$.messager.alert('警告', '你已长时间未操作，请重新登录。', function()
-				{
-					window.location.href = '';
-				});
-			}
 			else
 				$.messager.alert('提示', '操作失败。<br>详情：' + data.msg, 'warning');
 		}
@@ -49,9 +51,8 @@ $.ajaxSetup
 		try
 		{
 			msg = jqXHR.responseJSON ? jqXHR.responseJSON.msg : $.parseJSON(jqXHR.responseText).msg;
-		} catch (e)
-		{
 		}
+		catch (e){}
 		$.messager.alert('警告', msg || '服务器内部错误，请稍后再试。', 'warning');
 	},
 	dataType : "JSON",
@@ -61,6 +62,51 @@ $.ajaxSetup
 
 $(function()
 {
+	$.extend($.fn.panel.defaults,
+	{
+		onLoadError: function(jqXHR, textStatus, errorThrown)
+		{
+			$(this).html(jqXHR.responseText);
+		},
+		loader: function(data, successFn, failFn)
+		{
+			var opts = $(this).panel("options");
+            if (!opts.href)
+            {
+                return false;
+            }
+            $.ajax
+            ({
+                type: opts.method,
+                url: opts.href,
+                cache: false,
+                data: data,
+                dataType: "html",
+                success: function(data, textStatus, jqXHR)
+                {
+                	if(jqXHR.getResponseHeader('sessionTimeout') == 'true')
+                	{
+                		$.messager.alert('警告', '你已长时间未操作，请重新登录。', 'warning', function()
+        				{
+        					window.location.href = '';
+        				});
+                	}
+                	else
+                		successFn(data);
+                },
+                error: function(xhr, status, error)
+                {
+                	failFn.apply(this, arguments);
+                }
+            });
+		}
+	});
+	
+	$.extend($.fn.layout.paneldefaults,
+	{
+		loader: $.fn.panel.defaults.loader
+	});
+	
 	$.extend($.fn.accordion.defaults,
 	{
 		fit: true
@@ -94,14 +140,6 @@ $(function()
 	$.extend($.fn.layout.defaults,
 	{
 		fit: true
-	});
-	
-	$.extend($.fn.panel.defaults,
-	{
-		onLoadError: function(jqXHR, textStatus, errorThrown)
-		{
-			$(this).html(jqXHR.responseText);
-		}
 	});
 	
 	$.extend($.fn.datagrid.defaults,

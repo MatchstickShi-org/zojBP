@@ -33,7 +33,7 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>组名：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" data-options="required:true, validType:'length[4, 16]'"/></td>
-							<td align="right"><label>主管：</label></td>
+							<td align="right" style="min-width: 80px;"><label>主管：</label></td>
 							<td width="70%"><input id="editGroupForm_leaderSearchbox" name="leaderName" class="easyui-searchbox" editable="false"/></td>
 						</tr>
 						<tr><td colspan="4">

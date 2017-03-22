@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.alibaba.fastjson.JSONObject;
-import com.zoj.bp.common.excption.ReturnCode;
 import com.zoj.bp.common.util.HttpUtils;
-import com.zoj.bp.common.util.ResponseUtils;
 
 /**
  * @author MatchstickShi
@@ -24,8 +21,8 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter
 		{
 			if(HttpUtils.instance().isAjaxRequest(request))
 			{
-				response.getWriter().write(new JSONObject(
-						ResponseUtils.buildRespMap(ReturnCode.SESSION_TIME_OUT, "sessionTimeout", true)).toJSONString());;
+				response.setHeader("sessionTimeout", "true");
+				response.getWriter().write("{}");
 			}
 			else
 				response.sendRedirect(request.getServletContext().getContextPath() + "/toLoginView");

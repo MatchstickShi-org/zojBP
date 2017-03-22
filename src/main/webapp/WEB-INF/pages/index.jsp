@@ -3,8 +3,7 @@
 <!DOCTYPE html>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 <html>
 <head>
@@ -16,9 +15,9 @@
 <link rel="stylesheet" type="text/css" href="css/header.css">
 <link rel="stylesheet" type="text/css" href="css/global.css">
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
 <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="pages/global/easyui.cfg.js"></script>
 <style type="text/css">
 #broadcastMsgDiv span
 {
@@ -140,7 +139,11 @@ $(function()
 					getLastMsg();
 				}
 			},
-			timeout: 0
+			timeout: 0,
+			error: function(xhr, status, error)
+			{
+				setTimeout(getLastMsg, 30000);		//30秒后重新尝试获取信息。
+			}
 		});
 	}
 	getLastMsg();
