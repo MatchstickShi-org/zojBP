@@ -16,11 +16,11 @@ $(function()
 		[[
 			{field:'orderId', title:'单号'},
 			{field:'clientName', title:'客户', width: 5},
-			{field:'projectAddr', title:'面积', width: 5},
-			{field:'infoer', title:'信息员', width: 5},
-			{field:'designer', title:'设计师', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
-			{field:'salesman', title:'业务员', width: 5},
-			{field:'orderStatus', title:'状态', width: 5, formatter: function(val, row, index)
+			{field:'projectAddr', title:'面积'},
+			{field:'infoer', title:'信息员'},
+			{field:'designer', title:'设计师', formatter: function(val, row, index){return val == null ? '-' : val;}},
+			{field:'salesman', title:'业务员'},
+			{field:'orderStatus', title:'状态', formatter: function(val, row, index)
 				{
 					switch (val)
 					{
@@ -59,8 +59,8 @@ $(function()
 					}
 				}
 			},
-			{field:'remitDate', title:'打款日期', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
-			{field:'cost', title:'金额', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
+			{field:'remitDate', title:'打款日期', formatter: function(val, row, index){return val == null ? '-' : val;}},
+			{field:'cost', title:'金额', align: 'right', formatter: function(val, row, index){return val == null ? '-' : '¥' + val;}},
 			{field:'remark', title:'备注', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}}
 		]],
 		pagination: true,

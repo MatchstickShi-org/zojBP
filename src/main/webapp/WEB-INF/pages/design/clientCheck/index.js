@@ -39,14 +39,14 @@ $(function()
 			  	{field: 'ck', checkbox: true},
 			  	{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
-				{field:'telAll', title:'联系电话', width: 5},
+				{field:'telAll', title:'联系电话'},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 2},
-				{field:'infoerName', title:'信息员', width: 3},
-				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'projectAddr', title:'面积'},
+				{field:'infoerName', title:'信息员'},
+				{field:'salesmanName', title:'业务员'},
 				{field:'designerId', hidden: true},
-				{field:'designerName', title:'设计师', width: 3},
+				{field:'designerName', title:'设计师'},
 				{field:'salesmanStatus', hidden: true},
 				{
 					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
@@ -157,7 +157,7 @@ $(function()
 					[[
 					  {field:'id', hidden: true},
 					  {field:'content', title:'回访内容', width: 5},
-					  {field:'date', title:'回访日期', width: 5}
+					  {field:'date', title:'回访日期'}
 					  ]],
 					  pagination: true,
 					  singleSelect: true,
@@ -178,8 +178,8 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field:'content', title:'回访内容', width: 5},
-				{field:'date', title:'回访日期', width: 5},
-				{field:'comment', title:'批示', width: 5}
+				{field:'date', title:'回访日期'},
+				{field:'comment', title:'批示'}
 			]],
 			pagination: true,
 			singleSelect: true,
@@ -273,7 +273,7 @@ $(function()
 						}
 					},
 			  {field:'remark', title:'备注', width: 6},
-			  {field:'operateTime', title:'操作日期', width: 5}
+			  {field:'operateTime', title:'操作日期'}
 			  ]],
 			  pagination: true
 		});

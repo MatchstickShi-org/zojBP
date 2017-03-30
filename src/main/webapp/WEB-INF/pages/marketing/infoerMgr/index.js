@@ -171,7 +171,7 @@ $(function()
 			[[
 				{field:'id', hidden: true},
 				{field:'content', title:'回访内容', width: 5},
-				{field:'date', title:'回访日期', width: 5}
+				{field:'date', title:'回访日期'}
 			]],
 			pagination: true,
 			onDblClickRow: function(index, row){
@@ -188,11 +188,11 @@ $(function()
 				{field:'isKey', hidden: true},
 				{field:'name', title:'客户', width: 3},
 				{field:'projectName', title:'工程名称', width: 6},
-				{field:'projectAddr', title:'面积', width: 2},
-				{field:'infoerName', title:'信息员', width: 3},
-				{field:'salesmanName', title:'业务员', width: 3},
-				{field:'designerName', title:'设计师', width: 3},
-				{field:'insertTime', title:'生成日期', width: 5},
+				{field:'projectAddr', title:'面积'},
+				{field:'infoerName', title:'信息员'},
+				{field:'salesmanName', title:'业务员'},
+				{field:'designerName', title:'设计师'},
+				{field:'insertTime', title:'生成日期'},
 				{
 					field:'status', title:'状态', width: 5, formatter: function(value, row, index)
 					{
@@ -282,11 +282,11 @@ $(function()
 			[[
 				{field:'id', title:'单号', width: 3},
 				{field:'isKey', hidden: true},
-				{field:'name', title:'联系人', width: 3},
+				{field:'name', title:'联系人'},
 				{field:'telAll', title:'联系电话', width: 6},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 5},
-				{field:'projectAddr', title:'面积', width: 2},
+				{field:'projectAddr', title:'面积'},
 				{
 					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
 					{

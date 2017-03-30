@@ -25,21 +25,21 @@ $(function()
 			toolbar: '#commissionMgr-orderGridToolbar',
 			columns:
 			[[
-				{field:'id', title: '单号', width: 5},
+				{field:'id', title: '单号'},
 				{field:'name', title:'名称', width: 3},
-				{field:'telAll', title:'联系电话', width: 5},
+				{field:'telAll', title:'联系电话'},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
-				{field:'projectAddr', title:'面积', width: 8},
-				{field:'infoerName', title:'信息员', width: 3},
+				{field:'projectAddr', title:'面积'},
+				{field:'infoerName', title:'信息员'},
 				{field:'salesmanId', hidden: true},
-				{field:'salesmanName', title:'业务员', width: 3},
+				{field:'salesmanName', title:'业务员'},
 				{field:'salesmanStatus', hidden: true},
 				{field:'designerId', hidden: true},
-				{field:'designerName', title:'设计师', width: 3},
+				{field:'designerName', title:'设计师'},
 				{field:'designerStatus', hidden: true},
 				{
-					field:'status', title:'状态', width: 4, formatter: function(value, row, index)
+					field:'status', title:'状态', formatter: function(value, row, index)
 					{
 						switch (value)
 						{
@@ -98,12 +98,12 @@ $(function()
 				{field:'id', hidden: true},
 				{field:'orderId', title:'单号', width: 5},
 				{field:'clientName', title:'客户', width: 5},
-				{field:'projectAddr', title:'面积', width: 5},
-				{field:'infoer', title:'信息员', width: 5},
-				{field:'designer', title:'设计师', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
-				{field:'salesman', title:'业务员', width: 5},
-				{field:'remitDate', title:'打款日期', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
-				{field:'cost', title:'金额', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}},
+				{field:'projectAddr', title:'面积'},
+				{field:'infoer', title:'信息员'},
+				{field:'designer', title:'设计师', formatter: function(val, row, index){return val == null ? '-' : val;}},
+				{field:'salesman', title:'业务员'},
+				{field:'remitDate', title:'打款日期', formatter: function(val, row, index){return val == null ? '-' : val;}},
+				{field:'cost', title:'金额', align: 'right', formatter: function(val, row, index){return val == null ? '-' : '¥' + val;}},
 				{field:'remark', title:'备注', width: 5, formatter: function(val, row, index){return val == null ? '-' : val;}}
 			]],
 			singleSelect: true,
