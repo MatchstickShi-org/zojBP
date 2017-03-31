@@ -18,6 +18,7 @@ import com.zoj.bp.common.dao.BaseDao;
 import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.User;
+import com.zoj.bp.common.model.User.Role;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 
@@ -96,7 +97,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*, "+ 
+		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
 				" CASE O.ID WHEN NULL THEN NULL "
 				+ " ELSE " 
 				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 "
@@ -123,7 +124,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			else if(user.isMarketingLeader())
 				sql += " WHERE U.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 			else
-				sql += " WHERE 1=1 ";
+				sql += " WHERE U.ROLE IN(" + StringUtils.join(new int[]{Role.marketingLeader.value(), Role.marketingManager.value(), Role.marketingSalesman.value()}, ',') + ") ";
 			if(salesmanOrDesignerId != null)
 			{
 				sql += " AND O.SALESMAN_ID = :salesmanId";
@@ -138,7 +139,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			else if(user.isDesignLeader())
 				sql += " WHERE U2.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 			else
-				sql += " WHERE 1=1 ";
+				sql += " WHERE U2.ROLE IN(" + StringUtils.join(new int[]{Role.designDesigner.value(), Role.designLeader.value(), Role.designManager.value()}, ',') + ") ";
 			if(salesmanOrDesignerId != null)
 			{
 				sql += " AND O.DESIGNER_ID = :designerId";
@@ -184,7 +185,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " ORDER BY C.IS_KEY DESC, ";
 		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
-		sql +=" , O.INSERT_TIME DESC ";
+		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
+			sql +=", VD ASC, O.INSERT_TIME ASC";
+		else
+			sql +=", VD DESC, O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -196,7 +200,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			User salesman, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*, "+ 
+		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
 				" CASE O.ID WHEN NULL THEN NULL "
 				+ " ELSE "
 				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 " +
@@ -257,7 +261,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " ORDER BY C.IS_KEY DESC, ";
 		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
-		sql +=" , O.INSERT_TIME DESC";
+		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
+			sql +=", VD ASC, O.INSERT_TIME ASC";
+		else
+			sql +=", VD DESC, O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -269,7 +276,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			User designer, String clientName,Integer orderId, String tel, String infoerName, Integer designerId, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
-		String sql = "SELECT O.*, "+ 
+		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
 				" CASE O.ID WHEN NULL THEN NULL "+ 
 				" ELSE " 
 				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 "
@@ -327,7 +334,10 @@ public class OrderDao extends BaseDao implements IOrderDao
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " ORDER BY C.IS_KEY DESC, ";
 		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
-		sql +=" , O.INSERT_TIME DESC";
+		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
+			sql +=", OV.DATE ASC, O.INSERT_TIME ASC";
+		else
+			sql +=", OV.DATE DESC, O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());

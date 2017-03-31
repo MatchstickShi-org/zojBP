@@ -111,6 +111,10 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " ORDER BY ";
 		sql += pagination.buildOrderBySqlPart(" leftVisitDays DESC");
+		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
+			sql +=", lastVisitDate ASC, I.INSERT_TIME ASC";
+		else
+			sql +=", lastVisitDate DESC, I.INSERT_TIME DESC";
 		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
@@ -162,6 +166,10 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
 		sql += " ORDER BY ";
 		sql += pagination.buildOrderBySqlPart(" leftVisitDays DESC");
+		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
+			sql +=", lastVisitDate ASC, I.INSERT_TIME ASC";
+		else
+			sql +=", lastVisitDate DESC, I.INSERT_TIME DESC";
 		sql += ", I.INSERT_TIME LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());

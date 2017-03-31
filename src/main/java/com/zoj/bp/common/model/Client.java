@@ -115,7 +115,7 @@ public class Client implements Serializable
 
 	public void setIsKey(Integer isKey)
 	{
-		this.isKey = isKey;
+		if(isKey != null)
+			this.isKey = isKey;
 	}
-
 }
