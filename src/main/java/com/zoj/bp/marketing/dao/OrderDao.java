@@ -30,7 +30,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 		try
 		{
 			return jdbcOps.queryForObject(
-				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` AS infoerName, "
+				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, C.IS_WAIT, I.`NAME` AS infoerName, "
 				+ " 	U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
 				" FROM `ORDER` O "+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "+
@@ -94,7 +94,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	
 	@Override
 	public DatagridVo<Order> getOrdersByUser(Pagination pagination, User user,
-			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses)
+			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer isWait, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
@@ -108,7 +108,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " 	END "+ 
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
-				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
+				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY,C.IS_WAIT, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
 				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
@@ -178,6 +178,11 @@ public class OrderDao extends BaseDao implements IOrderDao
 			sql += " AND C.IS_KEY = :isKey";
 			paramMap.put("isKey", isKey);
 		}
+		if(isWait != null)
+		{
+			sql += " AND C.IS_WAIT = :isWait";
+			paramMap.put("isWait", isWait);
+		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";
 		sql +=" GROUP BY O.ID, C.ID, I.ID, U.ID, U2.ID, A.ID ";
@@ -197,7 +202,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(Pagination pagination,
-			User salesman, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses)
+			User salesman, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer isWait, Integer... statuses)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
@@ -210,7 +215,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				+ " 		END "
 				+ " 	END "
 				+ " END AS notVisitDays, "+ 
-				" C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
+				" C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, C.IS_WAIT,I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
 				" U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
@@ -253,6 +258,11 @@ public class OrderDao extends BaseDao implements IOrderDao
 		{
 			sql += " AND C.IS_KEY = :isKey";
 			paramMap.put("isKey", isKey);
+		}
+		if(isWait != null)
+		{
+			sql += " AND C.IS_WAIT = :isWait";
+			paramMap.put("isWait", isWait);
 		}
 		if(ArrayUtils.isNotEmpty(statuses))
 			sql +=" AND O.`STATUS` IN(" + StringUtils.join(statuses, ',') + ")";

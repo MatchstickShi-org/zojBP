@@ -107,6 +107,7 @@ public class ClientCtrl
 			@RequestParam(required=false) Integer salesmanId,
 			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
+			@RequestParam(required=false) Integer isWait,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -129,9 +130,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, isWait, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, isWait, status);
 	}
 	
 	/**
@@ -167,6 +168,7 @@ public class ClientCtrl
 			@RequestParam(required=false) Integer salesmanId,
 			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer isKey,
+			@RequestParam(required=false) Integer isWait,
 			@RequestParam(value = "status[]",required=false) Integer[] status, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -189,9 +191,9 @@ public class ClientCtrl
 			};
 		}
 		if (filter == null || filter == 1)
-			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersBySalesman(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, isWait, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, name, orderId, tel, infoerName, salesmanId, isKey, isWait, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

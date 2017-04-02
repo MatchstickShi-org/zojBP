@@ -42,10 +42,11 @@ public interface IOrderService {
 	 * @param infoerName 信息员名称
 	 * @param salesmanOrDesignerId TODO
 	 * @param isKey TODO
+	 * @param isWait 是否为待联系客户
 	 * @param status 状态
 	 * @return
 	 */
-	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status);
+	DatagridVo<Order> getOrdersByUser(User loginUser,Pagination pagination,String name,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey,Integer isWait, Integer... status);
 	/**
 	 * @param order
 	 * @return 
@@ -102,11 +103,12 @@ public interface IOrderService {
 	 * @param infoerName
 	 * @param salesmanId TODO
 	 * @param isKey TODO
+	 * @param isWait 
 	 * @param status
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String clientName,Integer orderId,String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status);
+			String clientName,Integer orderId,String tel, String infoerName, Integer salesmanId, Integer isKey, Integer isWait, Integer... status);
 
 	/**
 	 * @param pagination

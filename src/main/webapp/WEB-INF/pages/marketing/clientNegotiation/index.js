@@ -129,7 +129,7 @@ $(function()
 					{
 						return val == -100 ? "-" : val;
 					},
-					styler: function (value, row, index){if(value > 5) return 'background-color: red; color: white;';}
+					styler: function (value, row, index){if(value > 7) return 'background-color: red; color: white;';}
 				}
 			]],
 			pagination: true,
@@ -150,6 +150,7 @@ $(function()
 			{
 				filter: $(':radio[name="clientNegotiation-orderFilterInput"]:checked').val(),
 				isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
+				isWait: $(':checkbox[name="clientNegotiation-isWait"]:checked').val(),
 				status: function()
 				{
 					var status =[]; 
@@ -427,6 +428,7 @@ $(function()
 					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					filter: $(':radio[name="clientNegotiation-orderFilterInput"]:checked').val(),
 					isKey: $(':checkbox[name="clientNegotiation-isKey"]:checked').val(),
+					isWait: $(':checkbox[name="clientNegotiation-isWait"]:checked').val(),
 					status: status
 				});
 			}

@@ -37,11 +37,12 @@ public interface IOrderDao {
 	 * @param infoerName
 	 * @param salesmanOrDesignerId TODO
 	 * @param isKey TODO
+	 * @param isWait
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersByUser(Pagination pagination,
-			User user, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... statuses);
+			User user, String clientName,Integer orderId, String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer isWait, Integer... statuses);
 	/**
 	 * @param order
 	 * @return 
@@ -94,11 +95,12 @@ public interface IOrderDao {
 	 * @param infoerName
 	 * @param salesmanId TODO
 	 * @param isKey TODO
+	 * @param isWait
 	 * @param statuses
 	 * @return
 	 */
 	DatagridVo<Order> getOrdersBySalesman(Pagination pagination, User salesman,
-			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... statuses);
+			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer isWait, Integer... statuses);
 
 	/**
 	 * @param userIds

@@ -24,6 +24,8 @@ public class MarketingCount implements Serializable
 	
 	private Integer todayInfoerVisitCount;  //当日信息员回访数
 	
+	private Integer todayClientVisitCount;  //当日客户回访数（客户跟踪）
+	
 	private Integer todayOrderVisitCount;  	//当日在谈单回访数
 	
 	private Integer todayInfoerAddCount;  	//当日信息员录入数
@@ -45,6 +47,8 @@ public class MarketingCount implements Serializable
 	private Integer salesmanId;				//业务员Id
 	
 	private String salesmanName;			//业务员姓名
+	
+	private Integer leaderId;				//上级主管Id
 
 	public Integer getId() {
 		return id;
@@ -84,6 +88,14 @@ public class MarketingCount implements Serializable
 
 	public void setTodayOrderVisitCount(Integer todayOrderVisitCount) {
 		this.todayOrderVisitCount = todayOrderVisitCount;
+	}
+
+	public Integer getTodayClientVisitCount() {
+		return todayClientVisitCount;
+	}
+
+	public void setTodayClientVisitCount(Integer todayClientVisitCount) {
+		this.todayClientVisitCount = todayClientVisitCount;
 	}
 
 	public Integer getTodayInfoerAddCount() {
@@ -164,5 +176,13 @@ public class MarketingCount implements Serializable
 
 	public void setApplyTalkingOrderCount(Integer applyTalkingOrderCount) {
 		this.applyTalkingOrderCount = applyTalkingOrderCount;
+	}
+
+	public Integer getLeaderId() {
+		return leaderId;
+	}
+
+	public void setLeaderId(Integer leaderId) {
+		this.leaderId = leaderId;
 	}
 }

@@ -130,7 +130,7 @@ public class DesignClientCtrl
 		if (filter == null || filter == 1)
 			return orderSvc.getOrdersByDesigner(pagination, loginUser, clientName, orderId, tel, StringUtils.EMPTY, designerId, status);
 		else
-			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, null, status);
+			return orderSvc.getOrdersByUser(loginUser, pagination, clientName, orderId, tel, StringUtils.EMPTY, designerId, null, null, status);
 	}
 	
 	@RequestMapping(value = "/getOrderById")

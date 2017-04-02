@@ -24,6 +24,7 @@ $(function()
 				{field:'id', hidden: true},
 				{field:'salesmanName', title:'业务员', width: 3},
 				{field:'todayInfoerVisitCount', title:'信息员回访数', width: 5},
+				{field:'todayClientVisitCount', title:'客户回访数', width: 5},
 				{field:'todayOrderVisitCount', title:'在谈单回访数', width: 5},
 				{field:'todayInfoerAddCount', title:'信息员录入数', width: 5},
 				{field:'todayClientAddCount', title:'客户录入数', width: 5},

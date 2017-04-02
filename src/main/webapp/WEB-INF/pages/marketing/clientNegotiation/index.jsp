@@ -40,6 +40,7 @@
 				<br>
 			</c:if>
 			<label><input type="checkbox" value="1" name="clientNegotiation-isKey" />重点客户</label>
+			<label><input type="checkbox" value="1" name="clientNegotiation-isWait" />待联系客户</label>
 			<label style="vertical-align: middle;">状态筛选：</label>
 			<label><input type="checkbox" value="" name="statusInput" checked="checked" />全部</label>
 			<label><input type="checkbox" value="34" name="statusInput" />在谈单</label>
@@ -72,20 +73,22 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>设计师：</label></td>
 							<td><input name="designerName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
-							<td align="right" style="min-width: 80px;"><label>录入日期：</label></td>
+							<td align="right" style="min-width: 100px;"><label>录入日期：</label></td>
 							<td><input name="insertTime" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>面积：</label></td>
 							<td><input name="projectAddr" style="width: 154px;" class="easyui-textbox" required="required"/></td>
+							<td align="right"><label>重点客户：</label><label><input type="checkbox" value="1" name="isKey" />是</label></td>
+							<td>&nbsp;&nbsp;<label>待联系客户：</label><label><input type="checkbox" value="1" name="isWait" />是</label></td>
 						</tr>
 						<tr>
 							<td align="right"><label>单位地址：</label></td>
-							<td colspan="3"><input name="orgAddr" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="orgAddr" style="width: 462px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>工程名称：</label></td>
-							<td colspan="3"><input name="projectName" style="width: 459px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="projectName" style="width: 462px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="3">

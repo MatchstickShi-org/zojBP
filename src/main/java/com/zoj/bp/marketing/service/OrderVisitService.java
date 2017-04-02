@@ -3,9 +3,11 @@ package com.zoj.bp.marketing.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.OrderVisit;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
+import com.zoj.bp.marketing.dao.IOrderDao;
 import com.zoj.bp.marketing.dao.IOrderVisitDao;
 
 @Service
@@ -13,6 +15,9 @@ public class OrderVisitService implements IOrderVisitService{
 
 	@Autowired
 	private IOrderVisitDao dao;
+	
+	@Autowired
+	private IOrderDao orderDao;
 
 	@Override
 	public DatagridVo<OrderVisit> getAllOrderVisit(Pagination pagination, Integer visitorId, Integer orderId)
@@ -22,6 +27,8 @@ public class OrderVisitService implements IOrderVisitService{
 
 	@Override
 	public Integer addOrderVisit(OrderVisit orderVisit) {
+		Order order = orderDao.getOrderById(orderVisit.getOrderId());
+		orderVisit.setOrderStatus(order.getStatus());
 		return dao.addOrderVisit(orderVisit);
 	}
 

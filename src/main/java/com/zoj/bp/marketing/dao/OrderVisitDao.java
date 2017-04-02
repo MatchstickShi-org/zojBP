@@ -71,7 +71,7 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 				+ "LEFT JOIN `order` O ON O.ID = OV.ORDER_ID  "
 				+ "WHERE OV.VISITOR_ID= :visitorId "
 				+ "AND OV.DATE BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') "
-				+ "AND O.`STATUS` =34 ";
+				+ "AND OV.ORDER_STATUS =34 ";
 		paramMap.put("visitorId", userId);
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
@@ -86,7 +86,7 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 	public Integer addOrderVisit(OrderVisit orderVisit) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO ORDER_VISIT(ORDER_ID,VISITOR_ID,DATE,CONTENT) VALUES(:orderId,:visitorId,now(),:content)",
+				"INSERT INTO ORDER_VISIT(ORDER_ID,VISITOR_ID,DATE,CONTENT,ORDER_STATUS) VALUES(:orderId,:visitorId,now(),:content,:orderStatus)",
 				new BeanPropertySqlParameterSource(orderVisit), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

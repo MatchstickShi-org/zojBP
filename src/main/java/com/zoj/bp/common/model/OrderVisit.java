@@ -32,6 +32,8 @@ public class OrderVisit implements Serializable
 	
 	private String name;//客户名称
 	
+	private Integer orderStatus;//订单状态
+	
 	public Integer getId()
 	{
 		return id;
@@ -104,5 +106,13 @@ public class OrderVisit implements Serializable
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Integer orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 }

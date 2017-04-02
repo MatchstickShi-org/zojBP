@@ -67,6 +67,10 @@ public class Order implements Serializable
 	 * 是否重点客户（1：是；0：否）
 	 */
 	private Integer isKey = 0;
+	/**
+	 * 是否待联系客户（1：是；0：否）
+	 */
+	private Integer isWait = 0;
 	
 	@NumberFormat(pattern="#,###.##")
 	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
@@ -405,6 +409,14 @@ public class Order implements Serializable
 	public void setIsKey(Integer isKey)
 	{
 		this.isKey = isKey;
+	}
+
+	public Integer getIsWait() {
+		return isWait;
+	}
+
+	public void setIsWait(Integer isWait) {
+		this.isWait = isWait;
 	}
 
 	public BigDecimal getDealAmount() {

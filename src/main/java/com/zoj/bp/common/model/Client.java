@@ -34,6 +34,8 @@ public class Client implements Serializable
 	
 	private Integer isKey = 0;
 	
+	private Integer isWait = 0;
+	
 	public Integer getId()
 	{
 		return id;
@@ -118,4 +120,15 @@ public class Client implements Serializable
 		if(isKey != null)
 			this.isKey = isKey;
 	}
+
+	public Integer getIsWait() {
+		return isWait;
+	}
+
+	public void setIsWait(Integer isWait) {
+		if(isWait != null)
+			this.isWait = isWait;
+	}
+	
+	
 }

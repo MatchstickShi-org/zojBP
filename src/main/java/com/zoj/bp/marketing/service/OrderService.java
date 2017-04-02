@@ -74,6 +74,7 @@ public class OrderService implements IOrderService
 		client.setName(order.getName());
 		client.setOrgAddr(order.getOrgAddr());
 		client.setIsKey(order.getIsKey());
+		client.setIsWait(order.getIsWait());
 		client.setTel2(order.getTel2());
 		client.setTel3(order.getTel3());
 		client.setTel4(order.getTel4());
@@ -97,7 +98,7 @@ public class OrderService implements IOrderService
 
 	@Override
 	public DatagridVo<Order> getOrdersByUser(User loginUser, Pagination pagination, String clientName,Integer orderId,
-			String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer... status)
+			String tel, String infoerName, Integer salesmanOrDesignerId, Integer isKey, Integer isWait, Integer... status)
 	{
 		User dbUser = userDao.getUserById(loginUser.getId());
 		DatagridVo<Order> os = null;
@@ -105,14 +106,14 @@ public class OrderService implements IOrderService
 		{
 			if(dbUser.isMarketingLeader())
 				os = this.getOrdersBySalesman(
-						dbUser, pagination, clientName, orderId, tel, infoerName, salesmanOrDesignerId, isKey, status);
+						dbUser, pagination, clientName, orderId, tel, infoerName, salesmanOrDesignerId, isKey, isWait, status);
 			else
 				os = this.getOrdersByDesigner(
 						pagination, dbUser, clientName, orderId, tel, infoerName, salesmanOrDesignerId, status);
 		}
 		else
 			os = orderDao.getOrdersByUser(
-					pagination, loginUser, clientName, orderId, tel, infoerName, salesmanOrDesignerId, isKey, status);
+					pagination, loginUser, clientName, orderId, tel, infoerName, salesmanOrDesignerId, isKey, isWait, status);
 		
 		if(loginUser.isLeader())
 			os.getRows().stream().forEach(o -> o.hideAllTel(loginUser));
@@ -121,9 +122,9 @@ public class OrderService implements IOrderService
 	
 	@Override
 	public DatagridVo<Order> getOrdersBySalesman(User salesman, Pagination pagination, 
-			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer... status)
+			String clientName,Integer orderId, String tel, String infoerName, Integer salesmanId, Integer isKey, Integer isWait, Integer... status)
 	{
-		return orderDao.getOrdersBySalesman(pagination, salesman, clientName,orderId, tel, infoerName, salesmanId, isKey, status);
+		return orderDao.getOrdersBySalesman(pagination, salesman, clientName,orderId, tel, infoerName, salesmanId, isKey, isWait, status);
 	}
 	
 	@Override

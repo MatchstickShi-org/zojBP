@@ -90,7 +90,7 @@ $(function()
 					field:'notVisitDays', title:'未回访天数', width: 3, sortable: true,
 					styler: function (value, row, index)
 					{
-						if(value > 5)
+						if(value > 7)
 							return 'background-color: red; color: white;';
 		           }
 				}
@@ -173,6 +173,7 @@ $(function()
 					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					filter: $(':radio[name="clientTrace-infoerFilterInput"]:checked').val(),
 					isKey: $(':checkbox[name="clientTrace-isKey"]:checked').val(),
+					isWait: $(':checkbox[name="clientTrace-isWait"]:checked').val(),
 					status: status
 				});
 			}

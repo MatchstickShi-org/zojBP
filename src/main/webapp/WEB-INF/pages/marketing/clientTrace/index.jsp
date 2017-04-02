@@ -40,6 +40,7 @@
 				<br>
 			</c:if>
 			<label><input type="checkbox" value="1" name="clientTrace-isKey" />重点客户</label>
+			<label><input type="checkbox" value="1" name="clientTrace-isWait" />待联系客户</label>
 			<label>状态：</label>
 			<label><input type="checkbox" value="" name="statusInput" />全部</label>
 			<label><input type="checkbox" value="10" name="statusInput" checked="checked" />正跟踪</label>
@@ -64,7 +65,7 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>名称：</label></td>
 							<td style="min-width: 200px;"><input name="name" class="easyui-textbox" required="required" style="width: 154px;"/></td>
-							<td align="right" style="min-width: 80px;"><label>联系电话1：</label></td>
+							<td align="right" style="min-width: 100px;"><label>联系电话1：</label></td>
 							<td width="70%"><input name="tel1" id="editOrderForm-tel1" readonly="readonly" class="easyui-textbox" required="required" style="width: 154px;"/></td>
 						</tr>
 						<tr>
@@ -91,16 +92,16 @@
 						<tr>
 							<td align="right"><label>面积：</label></td>
 							<td><input name="projectAddr" style="width: 154px;" class="easyui-textbox" required="required"/></td>
-							<td align="right"><label>重点客户：</label></td>
-							<td><label><input type="checkbox" value="1" name="isKey" />是</label></td>
+							<td align="right"><label>重点客户：</label><label><input type="checkbox" value="1" name="isKey" />是</label></td>
+							<td>&nbsp;&nbsp;<label>待联系客户：</label><label><input type="checkbox" value="1" name="isWait" />是</label></td>
 						</tr>
 						<tr>
 							<td align="right"><label>单位地址：</label></td>
-							<td colspan="3"><input name="orgAddr" style="width: 442px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="orgAddr" style="width: 462px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>工程名称：</label></td>
-							<td colspan="3"><input name="projectName" style="width: 442px;" class="easyui-textbox" required="required"/></td>
+							<td colspan="3"><input name="projectName" style="width: 462px;" class="easyui-textbox" required="required"/></td>
 						</tr>
 						<tr>
 							<td align="center" colspan="3">
