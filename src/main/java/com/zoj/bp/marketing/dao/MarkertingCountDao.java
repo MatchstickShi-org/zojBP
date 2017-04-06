@@ -42,7 +42,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 			"LEFT JOIN `GROUP` G ON G.ID = U.GROUP_ID "+
 			"LEFT JOIN USER LU ON LU.GROUP_ID = G.ID AND LU.ROLE = 2 AND LU.ID != U.ID "+
 			"WHERE (U.ROLE = 1 OR U.ROLE = 2 OR U.ROLE = 3) AND U.`STATUS` = 1 "+
-			"GROUP BY U.ID "+
+			"GROUP BY U.ID, LU.ID "+
 		") U "+
 		"LEFT JOIN `ORDER` O2 ON U.ID = O2.SALESMAN_ID AND O2.INSERT_TIME BETWEEN CONCAT(CURRENT_DATE,' 00:00:00') AND CONCAT(CURRENT_DATE,' 23:59:59') "+
 		"LEFT JOIN `ORDER` O3 ON U.ID = O3.SALESMAN_ID AND O3.`STATUS` IN(10,30,32) "+
@@ -53,7 +53,7 @@ public class MarkertingCountDao extends BaseDao implements IMarketingCountDao
 			sql +="AND U.SALESMAN_NAME LIKE :salesmanName ";
 			paramMap.put("salesmanName", '%' + salesmanName + '%');
 		}
-		sql+="GROUP BY U.ID ";
+		sql+="GROUP BY U.ID, U.LEADER_ID ";
 		sql+="ORDER BY U.SALESMAN_NAME ";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
