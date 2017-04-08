@@ -139,7 +139,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 			else if(user.isDesignLeader())
 				sql += " WHERE U2.GROUP_ID = (SELECT U.GROUP_ID FROM USER U WHERE U.ID = :userId) ";
 			else
-				sql += " WHERE U2.ROLE IN(" + StringUtils.join(new int[]{Role.designDesigner.value(), Role.designLeader.value(), Role.designManager.value()}, ',') + ") ";
+				sql += " WHERE (U2.ROLE IS NULL OR U2.ROLE IN(" + StringUtils.join(new int[]{Role.designDesigner.value(), Role.designLeader.value(), Role.designManager.value()}, ',') + ")) ";
 			if(salesmanOrDesignerId != null)
 			{
 				sql += " AND O.DESIGNER_ID = :designerId";
@@ -304,8 +304,8 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
-				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID "
-				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) "+
+				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID " +
+				" LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) " +
 				" WHERE U2.ID = :userId ";
 		paramMap.put("userId", designer.getId());
 		if(orderId != null)
@@ -345,9 +345,9 @@ public class OrderDao extends BaseDao implements IOrderDao
 		sql += " ORDER BY C.IS_KEY DESC, ";
 		sql += pagination.buildOrderBySqlPart(" notVisitDays DESC ");
 		if(sql.endsWith("DESC ") || sql.endsWith("desc "))	//未回访天数降序，最后回访ASC，INSERT_TIME ASC
-			sql +=", OV.DATE ASC, O.INSERT_TIME ASC";
+			sql +=", VD ASC, O.INSERT_TIME ASC";
 		else
-			sql +=", OV.DATE DESC, O.INSERT_TIME DESC";
+			sql +=", VD DESC, O.INSERT_TIME DESC";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
