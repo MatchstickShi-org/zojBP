@@ -150,9 +150,6 @@ public class ClientCheckCtrl
 		if(!(loginUser.isMarketingManager() || loginUser.isDesignManager()) && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
 		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		if(order.getDesignerId() != null && order.getDesignerId() > 0){
 			User designer = userSvc.getUserById(order.getDesignerId());
 			orderApprove.setDesignerName(designer.getAlias());

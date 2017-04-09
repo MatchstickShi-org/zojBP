@@ -163,10 +163,6 @@ public class DesignClientCheckCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		orderApprove.setOperate(Operate.permit.value());
 		orderApprove.setApprover(loginUser.getId());
 		orderSvc.addOrderApprove(orderApprove);

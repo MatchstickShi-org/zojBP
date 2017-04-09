@@ -67,8 +67,9 @@ public interface IOrderService {
 	 * 申请再谈单
 	 * @param orderApprove
 	 * @return
+	 * @throws BusinessException 
 	 */
-	Integer addOrderApprove(OrderApprove orderApprove);
+	Integer addOrderApprove(OrderApprove orderApprove) throws BusinessException;
 	
 	/**
 	 * 更新订单的业务员Id

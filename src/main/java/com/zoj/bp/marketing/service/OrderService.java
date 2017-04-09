@@ -215,9 +215,12 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public synchronized Integer addOrderApprove(OrderApprove orderApprove)
+	public synchronized Integer addOrderApprove(OrderApprove orderApprove) throws BusinessException
 	{
 		Order order = orderDao.getOrderById(orderApprove.getOrderId());
+		if(!order.getStatus().equals(orderApprove.getOrderStatus()))
+			throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
+		
 		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
 			order.setDesignerId(orderApprove.getDesignerId());
 		Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());

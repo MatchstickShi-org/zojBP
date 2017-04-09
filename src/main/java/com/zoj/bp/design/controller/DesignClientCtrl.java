@@ -210,10 +210,6 @@ public class DesignClientCtrl
 		if(orderApprove.getDealAmount().compareTo(BigDecimal.ZERO) <= 0)
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("请输入正确的签单金额！")));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.permit.value());
 		orderSvc.addOrderApprove(orderApprove);
@@ -234,10 +230,6 @@ public class DesignClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.reject.value());
 		orderSvc.addOrderApprove(orderApprove);
@@ -258,10 +250,6 @@ public class DesignClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setClaimerName(loginUser.getAlias());
 		orderApprove.setOperate(Operate.apply.value());
@@ -284,10 +272,6 @@ public class DesignClientCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order order = orderSvc.getOrderById(orderApprove.getOrderId(), loginUser);
-		if(!order.getStatus().equals(orderApprove.getOrderStatus())){
-			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
-		}
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.repulse.value());
 		orderApprove.setDesignerName(loginUser.getAlias());
