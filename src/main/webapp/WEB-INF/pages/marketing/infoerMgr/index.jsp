@@ -31,7 +31,8 @@
 				<label><input type="radio" value="0" name="infoerMgr-infoerFilterInput" />全部信息员</label>
 				<label><input type="radio" value="1" name="infoerMgr-infoerFilterInput" checked="checked"/>我的信息员</label>
 			</c:if>
-			<label>信息员等级：</label>
+			<label><input type="checkbox" value="1" name="infoerMgr-isWait" />待联系信息员</label>
+			<label> 信息员等级：</label>
 			<label><input type="checkbox" value="" name="levelInput" checked="checked"/>全部</label>
 			<label><input type="checkbox" value="1" name="levelInput"/>金牌</label>
 			<label><input type="checkbox" value="2" name="levelInput"/>银牌</label>
@@ -89,6 +90,7 @@
 								<label><input type="radio" name="nature" value="3">二手房中介</label>
 								<label><input type="radio" name="nature" value="4">招商</label>
 								<label><input type="radio" name="nature" value="5">物业</label>
+								&nbsp;&nbsp;<label>待联系信息员：</label><label><input type="checkbox" value="1" name="isWait" />是</label>
 							</td>
 						</tr>
 						<tr>

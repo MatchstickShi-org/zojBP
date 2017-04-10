@@ -69,6 +69,8 @@ public class Infoer implements Serializable
 	@SuppressWarnings("unused")
 	private String telAll;
 	
+	private Integer isWait = 0;
+	
 	public enum Level
 	{
 		/**金牌*/
@@ -281,5 +283,12 @@ public class Infoer implements Serializable
 	{
 		this.lastVisitDate = lastVisitDate;
 	}
-	
+
+	public Integer getIsWait() {
+		return isWait;
+	}
+
+	public void setIsWait(Integer isWait) {
+		this.isWait = isWait;
+	}
 }

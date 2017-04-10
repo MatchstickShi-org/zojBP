@@ -57,14 +57,14 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	@Override
 	public void updateInfoer(Infoer infoer)
 	{
-		String sql = "UPDATE INFOER SET TEL2 = :tel2,TEL3 = :tel3,TEL4 = :tel4,TEL5 = :tel5,NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId";
+		String sql = "UPDATE INFOER SET TEL2 = :tel2,TEL3 = :tel3,TEL4 = :tel4,TEL5 = :tel5,NAME = :name, NATURE = :nature, ORG = :org, ADDRESS = :address, LEVEL = :level, SALESMAN_ID = :salesmanId, IS_WAIT = :isWait";
 		sql += " WHERE ID = :id";
 		jdbcOps.update(sql, new BeanPropertySqlParameterSource(infoer));
 	}
 
 	@Override
 	public DatagridVo<Infoer> getAllInfoer(
-			Pagination pagination, User loginUser, String name, String tel, Integer salesmanId, Integer... levels)
+			Pagination pagination, User loginUser, String name, String tel, Integer salesmanId, Integer isWait, Integer... levels)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
@@ -103,6 +103,11 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 			sql += " AND I.SALESMAN_ID = :salesmanId";
 			paramMap.put("salesmanId", salesmanId);
 		}
+		if(isWait != null)
+		{
+			sql += " AND I.IS_WAIT = :isWait";
+			paramMap.put("isWait", isWait);
+		}
 		if(ArrayUtils.isNotEmpty(levels))
 			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
 		
@@ -123,7 +128,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	
 	@Override
 	public DatagridVo<Infoer> getInfoersBySalesman(
-			Pagination pagination, User salesman, String name, String tel, Integer salesmanId, Integer... levels)
+			Pagination pagination, User salesman, String name, String tel, Integer salesmanId, Integer isWait, Integer... levels)
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT I.*, "
@@ -157,7 +162,11 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 			sql += " AND I.SALESMAN_ID = :salesmanId";
 			paramMap.put("salesmanId", salesmanId);
 		}
-		
+		if(isWait != null)
+		{
+			sql += " AND I.IS_WAIT = :isWait";
+			paramMap.put("isWait", isWait);
+		}
 		if(ArrayUtils.isNotEmpty(levels))
 			sql += " AND I.LEVEL IN(" + StringUtils.join(levels, ',') + ")";
 		
@@ -181,7 +190,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	{
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcOps.update(
-				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now())",
+				"INSERT INTO INFOER(NAME,NATURE,ORG,ADDRESS,TEL1,TEL2,TEL3,TEL4,TEL5,LEVEL,SALESMAN_ID,INSERT_TIME,IS_WAIT) VALUES(:name,:nature,:org,:address,:tel1,:tel2,:tel3,:tel4,:tel5,:level,:salesmanId,now(),:isWait)",
 				new BeanPropertySqlParameterSource(infoer), keyHolder);
 		return keyHolder.getKey().intValue();
 	}

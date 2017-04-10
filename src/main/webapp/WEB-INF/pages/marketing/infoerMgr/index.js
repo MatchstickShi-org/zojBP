@@ -148,7 +148,8 @@ $(function()
 					tel: $telTextbox.textbox('getValue'),
 					salesmanId: $salesmanCombobox.length == 0 ? null : $salesmanCombobox.combo('getValue'),
 					level: chkLevels,
-					filter: $infoerFilterInput.filter(':checked').val()
+					filter: $infoerFilterInput.filter(':checked').val(),
+					isWait: $(':checkbox[name="infoerMgr-isWait"]:checked').val()
 				});
 			}
 		});
@@ -500,6 +501,7 @@ $(function()
 				},
 				success: function(data)
 				{
+					debugger;
 					data = $.fn.form.defaults.success(data);
 					if(data.returnCode == 0){
 						$infoerDatagrid.datagrid('reload');

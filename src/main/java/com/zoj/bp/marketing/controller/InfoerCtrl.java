@@ -79,6 +79,7 @@ public class InfoerCtrl
 			@RequestParam(required=false) String tel,
 			@RequestParam(required=false) Integer filter,
 			@RequestParam(required=false) Integer salesmanId,
+			@RequestParam(required=false) Integer isWait,
 			@RequestParam(value = "level[]", required=false) Integer[] levels, HttpSession session)
 	{
 		User loginUser = (User) session.getAttribute("loginUser");
@@ -90,7 +91,7 @@ public class InfoerCtrl
 		try
 		{
 			return infoerSvc.getAllInfoer(pagination,
-					loginUser, name, tel, salesmanId, (filter == null || filter == 1) ? false : true, levels);
+					loginUser, name, tel, salesmanId, (filter == null || filter == 1) ? false : true, isWait, levels);
 		}
 		catch (BusinessException e)
 		{
