@@ -215,7 +215,7 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public Integer addOrderApprove(OrderApprove orderApprove)
+	public synchronized Integer addOrderApprove(OrderApprove orderApprove)
 	{
 		Order order = orderDao.getOrderById(orderApprove.getOrderId());
 		if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)

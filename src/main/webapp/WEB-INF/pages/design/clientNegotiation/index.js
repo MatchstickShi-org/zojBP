@@ -646,6 +646,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitDealOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -661,6 +662,7 @@ $(function()
 			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$dealOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$dealOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$dealOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$dealOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$dealOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -673,9 +675,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
@@ -732,6 +736,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitDeadOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -747,6 +752,7 @@ $(function()
 			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$deadOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$deadOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$deadOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$deadOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$deadOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -759,9 +765,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
@@ -819,6 +827,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitDisagreeOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -834,6 +843,7 @@ $(function()
 			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$disagreeOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$disagreeOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$disagreeOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$disagreeOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$disagreeOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -846,9 +856,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
@@ -904,6 +916,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitRepulseOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -919,6 +932,7 @@ $(function()
 			'var $orderApproveGrid = $(\'table#orderApproveGrid\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$repulseOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$repulseOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$repulseOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$repulseOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$repulseOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -931,9 +945,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 

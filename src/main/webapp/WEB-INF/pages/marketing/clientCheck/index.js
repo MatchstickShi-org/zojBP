@@ -408,6 +408,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitPermitOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -423,6 +424,7 @@ $(function()
 			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$permitOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$permitOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$permitOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$permitOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$permitOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -435,9 +437,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
@@ -489,6 +493,7 @@ $(function()
 			'			<td><input name="remark" required="required" multiline="true" class="easyui-textbox" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitRejectOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
@@ -504,6 +509,7 @@ $(function()
 			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderCheckDatagrid.datagrid("getSelections");' +
 			'$rejectOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$rejectOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$rejectOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$rejectOrderWindow.find(\'#salesmanName\').val(selRows[0].salesmanName);' +
 			'$rejectOrderWindow.find(\'#salesmanId\').val(selRows[0].salesmanId);' +
@@ -516,9 +522,11 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$.messager.progress();' + 
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
+			'			$.messager.progress(\'close\');' + 
 			'			data = $.fn.form.defaults.success(data);' + 
 			'			if(data.returnCode == 0)' + 
 			'			{' + 
