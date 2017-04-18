@@ -47,7 +47,7 @@ $(function()
 			  	{field:'isKey', hidden: true},
 				{field:'id', title:'单号', width: 3},
 				{field:'name', title:'名称', width: 3},
-				{field:'telAll', title:'联系电话'},
+				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 8},
 				{field:'projectAddr', title:'面积'},
