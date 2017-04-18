@@ -284,7 +284,7 @@ $(function()
 				{field:'id', title:'单号', width: 3},
 				{field:'isKey', hidden: true},
 				{field:'name', title:'联系人'},
-				{field:'telAll', title:'联系电话', width: 6},
+				{field:'telAll', title:'联系电话', width: 5},
 				{field:'orgAddr', title:'单位地址', width: 8},
 				{field:'projectName', title:'工程名称', width: 5},
 				{field:'projectAddr', title:'面积'},
