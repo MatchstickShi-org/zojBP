@@ -179,6 +179,14 @@ public class InfoerCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 业务转移（信息员归属业务员转移）
+	 * @param session
+	 * @param infoerIds
+	 * @param salesmanId
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/transferInfoer")
 	@ResponseBody
 	public Map<String, ?> transferInfoer(HttpSession session,
@@ -219,6 +227,13 @@ public class InfoerCtrl
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
+	/**
+	 * 根据信息员Id获取信息员回访记录
+	 * @param infoerId
+	 * @param pagination
+	 * @return
+	 * @throws BusinessException
+	 */
 	@RequestMapping(value = "/getInfoerVisitByInfoer")
 	@ResponseBody
 	public DatagridVo<InfoerVisit> getInfoerVisitByInfoer(@RequestParam("infoerId") Integer infoerId, Pagination pagination) throws BusinessException

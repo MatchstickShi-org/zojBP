@@ -52,8 +52,6 @@ public class OrderApprove implements Serializable{
 	@Digits(fraction = 2, integer = Integer.MAX_VALUE)
 	private BigDecimal dealAmount;
 	
-	private Integer orderStatus;
-
 	public enum Operate
 	{
 		/**驳回:0*/
@@ -186,13 +184,5 @@ public class OrderApprove implements Serializable{
 
 	public void setDealAmount(BigDecimal dealAmount) {
 		this.dealAmount = dealAmount;
-	}
-
-	public Integer getOrderStatus() {
-		return orderStatus;
-	}
-
-	public void setOrderStatus(Integer orderStatus) {
-		this.orderStatus = orderStatus;
 	}
 }

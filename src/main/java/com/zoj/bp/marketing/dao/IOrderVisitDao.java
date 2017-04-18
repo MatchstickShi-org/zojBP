@@ -55,4 +55,18 @@ public interface IOrderVisitDao
 	 * @return
 	 */
 	Integer deleteByDesignerId(Integer... designerIds);
+	/**
+	 * 更新回访记录的回访者Id
+	 * @param infoerIds 信息员Id
+	 * @param salesmanId 业务员Id
+	 * @return
+	 */
+	Integer updateVisitorIdByInfoers(Integer[] infoerIds, Integer salesmanId);
+	/**
+	 * 更新回访记录的回访者Id
+	 * @param orderIds 客户Id
+	 * @param userId 转移接收者Id
+	 * @return
+	 */
+	Integer updateVisitorIdByOrderIds(Integer[] orderIds, Integer userId);
 }

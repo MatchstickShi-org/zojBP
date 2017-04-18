@@ -142,7 +142,7 @@ public class ClientCheckCtrl
 	 */
 	@RequestMapping(value = "/permitOrder")
 	@ResponseBody
-	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
@@ -156,7 +156,7 @@ public class ClientCheckCtrl
 		}
 		orderApprove.setOperate(1);
 		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -170,7 +170,7 @@ public class ClientCheckCtrl
 	 */
 	@RequestMapping(value = "/rejectOrder")
 	@ResponseBody
-	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
@@ -179,7 +179,7 @@ public class ClientCheckCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务经理，无法执行此操作。"));
 		orderApprove.setOperate(0);
 		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

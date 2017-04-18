@@ -30,6 +30,7 @@ import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IClientDao;
 import com.zoj.bp.marketing.dao.IInfoerDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
+import com.zoj.bp.marketing.dao.IOrderVisitDao;
 import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 @Service
@@ -43,6 +44,9 @@ public class OrderService implements IOrderService
 	
 	@Autowired
 	private IOrderApproveDao approveDao;
+	
+	@Autowired
+	private IOrderVisitDao orderVisitDao;
 	
 	@Autowired
 	private IOrderChangeLogDao orderChangeLogDao;
@@ -215,12 +219,12 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public Integer addOrderApprove(OrderApprove orderApprove) throws BusinessException
+	public Integer addOrderApprove(OrderApprove orderApprove,Integer orderStatus) throws BusinessException
 	{
 		synchronized (String.valueOf(orderApprove.getOrderId()).intern())
 		{
 			Order order = orderDao.getOrderById(orderApprove.getOrderId());
-			if(!order.getStatus().equals(orderApprove.getOrderStatus()))
+			if(!order.getStatus().equals(orderStatus))
 				throw new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg("对不起，数据已过期，请刷新后再试。"));
 			
 			if(orderApprove.getDesignerId() !=null && orderApprove.getDesignerId() > 0)
@@ -273,7 +277,7 @@ public class OrderService implements IOrderService
 							orderChangeLog.setStatus(Status.dead.value());
 							msgs.add(new MsgLog(order.getSalesmanId(), 
 									MessageFormat.format("你的在谈单[{0}]被设计师[{1}]判定为死单，请知悉。",
-											order.getId(), order.getDesignerId())));
+											order.getId(), order.getDesignerName())));
 							break;
 						case disagreeDesignManagerAuditing://状态为：不准单-主案部经理审核中：驳回->设计师跟踪中
 							order.setStatus(Status.talkingDesignerTracing.value());
@@ -457,12 +461,14 @@ public class OrderService implements IOrderService
 	@Override
 	public Integer updateOrderSalesmanId(Integer[] orderIds, Integer salesmanId)
 	{
+		orderVisitDao.updateVisitorIdByOrderIds(orderIds, salesmanId);
 		return orderDao.updateOrderSalesmanId(orderIds, salesmanId);
 	}
 
 	@Override
 	public Integer updateOrderDesigerId(Integer[] orderIds, Integer designerId)
 	{
+		orderVisitDao.updateVisitorIdByOrderIds(orderIds, designerId);
 		return orderDao.updateOrderDesigerId(orderIds, designerId);
 	}
 

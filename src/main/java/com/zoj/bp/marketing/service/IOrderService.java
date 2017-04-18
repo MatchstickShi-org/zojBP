@@ -66,10 +66,11 @@ public interface IOrderService {
 	/**
 	 * 申请再谈单
 	 * @param orderApprove
+	 * @param orderStatus
 	 * @return
 	 * @throws BusinessException 
 	 */
-	Integer addOrderApprove(OrderApprove orderApprove) throws BusinessException;
+	Integer addOrderApprove(OrderApprove orderApprove,Integer orderStatus) throws BusinessException;
 	
 	/**
 	 * 更新订单的业务员Id

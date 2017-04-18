@@ -203,7 +203,7 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/dealOrder")
 	@ResponseBody
-	public Map<String, ?> dealOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> dealOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
@@ -212,7 +212,7 @@ public class DesignClientCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.permit.value());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	/**
@@ -225,14 +225,14 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/deadOrder")
 	@ResponseBody
-	public Map<String, ?> deadOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> deadOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.reject.value());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	/**
@@ -245,7 +245,7 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/disagreeOrder")
 	@ResponseBody
-	public Map<String, ?> disagreeOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> disagreeOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
@@ -253,7 +253,7 @@ public class DesignClientCtrl
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setClaimerName(loginUser.getAlias());
 		orderApprove.setOperate(Operate.apply.value());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -267,7 +267,7 @@ public class DesignClientCtrl
 	 */
 	@RequestMapping(value = "/repulseOrder")
 	@ResponseBody
-	public Map<String, ?> repulseOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> repulseOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
@@ -275,7 +275,7 @@ public class DesignClientCtrl
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.repulse.value());
 		orderApprove.setDesignerName(loginUser.getAlias());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

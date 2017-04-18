@@ -137,14 +137,14 @@ public class DesignClientCheckCtrl
 	 */
 	@RequestMapping(value = "/checkDeadOrder")
 	@ResponseBody
-	public Map<String, ?> checkDeadOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> checkDeadOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setOperate(Operate.apply.value());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -158,14 +158,14 @@ public class DesignClientCheckCtrl
 	 */
 	@RequestMapping(value = "/permitOrder")
 	@ResponseBody
-	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> permitOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
 		orderApprove.setOperate(Operate.permit.value());
 		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -179,7 +179,7 @@ public class DesignClientCheckCtrl
 	 */
 	@RequestMapping(value = "/rejectOrder")
 	@ResponseBody
-	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> rejectOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
@@ -188,7 +188,7 @@ public class DesignClientCheckCtrl
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是经理职务，无法执行此操作。"));
 		orderApprove.setOperate(Operate.reject.value());
 		orderApprove.setApprover(loginUser.getId());
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

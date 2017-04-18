@@ -608,6 +608,7 @@ $(function()
 			'			<td><input name="remark" required="required" class="easyui-textbox" multiline="true" style="width: 230px; height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
+			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
 			'				<a class="easyui-linkbutton" onclick="submitApplyOrderForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
@@ -623,6 +624,7 @@ $(function()
 			'var $clientMgrTab = $(\'div#clientMgrTab\');' +
 			'var selRows = $orderDatagrid.datagrid("getSelections");' +
 			'$applyOrderWindow.find(\'#orderId\').val(selRows[0].id);' +
+			'$applyOrderWindow.find(\'#orderStatus\').val(selRows[0].status);' +
 			'$applyOrderWindow.find(\'#clientName\').val(selRows[0].name);' +
 			'$applyOrderWindow.find(\'#telAll\').val(selRows[0].telAll);' +
 			'function submitApplyOrderForm()' + 

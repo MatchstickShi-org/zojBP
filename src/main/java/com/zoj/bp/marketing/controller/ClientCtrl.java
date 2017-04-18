@@ -236,7 +236,7 @@ public class ClientCtrl
 	 */
 	@RequestMapping(value = "/applyOrder")
 	@ResponseBody
-	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Errors errors,HttpSession session) throws Exception
+	public Map<String, ?> applyOrder(@Valid OrderApprove orderApprove,Integer orderStatus,Errors errors,HttpSession session) throws Exception
 	{
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage()));
@@ -246,7 +246,7 @@ public class ClientCtrl
 		orderApprove.setClaimer(loginUser.getId());
 		orderApprove.setClaimerName(loginUser.getAlias());
 		orderApprove.setOperate(2);
-		orderSvc.addOrderApprove(orderApprove);
+		orderSvc.addOrderApprove(orderApprove,orderStatus);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	
@@ -376,6 +376,14 @@ public class ClientCtrl
 		return userSvc.getAllUserByRole(pagination, StringUtils.EMPTY, StringUtils.EMPTY, roles);
 	}
 	
+	/**
+	 * 业务转移
+	 * @param session
+	 * @param orderIds
+	 * @param salesmanId
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/transferOrder")
 	@ResponseBody
 	public Map<String, ?> transferOrder(HttpSession session,

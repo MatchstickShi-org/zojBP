@@ -104,4 +104,16 @@ public class OrderVisitDao extends BaseDao implements IOrderVisitDao
 		return jdbcOps.update("DELETE V FROM ORDER_VISIT V LEFT JOIN `ORDER` O ON V.VISITOR_ID = O.ID"
 				+ " WHERE O.DESIGNER_ID IN (" + StringUtils.join(designerIds, ',') + ")", EmptySqlParameterSource.INSTANCE);
 	}
+
+	@Override
+	public Integer updateVisitorIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
+		return jdbcOps.update("UPDATE ORDER_VISIT SET VISITOR_ID = :salesmanId "
+				+ " WHERE ORDER_ID IN (SELECT ID FROM `order` WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + "))", new MapSqlParameterSource("salesmanId",salesmanId));
+	}
+	
+	@Override
+	public Integer updateVisitorIdByOrderIds(Integer[] orderIds, Integer userId) {
+		return jdbcOps.update("UPDATE ORDER_VISIT SET VISITOR_ID = :userId "
+				+ " WHERE ORDER_ID IN (" + StringUtils.join(orderIds, ',') + ")", new MapSqlParameterSource("userId",userId));
+	}
 }

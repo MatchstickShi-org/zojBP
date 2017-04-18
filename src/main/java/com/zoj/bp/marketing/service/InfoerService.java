@@ -13,6 +13,7 @@ import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
 import com.zoj.bp.marketing.dao.IInfoerDao;
 import com.zoj.bp.marketing.dao.IOrderDao;
+import com.zoj.bp.marketing.dao.IOrderVisitDao;
 import com.zoj.bp.sysmgr.usermgr.dao.IUserDao;
 
 @Service
@@ -23,6 +24,9 @@ public class InfoerService implements IInfoerService{
 	
 	@Autowired
 	private IOrderDao orderDao;
+	
+	@Autowired
+	private IOrderVisitDao orderVisitDao;
 	
 	@Autowired
 	private IUserDao userDao;
@@ -87,7 +91,7 @@ public class InfoerService implements IInfoerService{
 	@Override
 	public DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination, User loginUser)
 	{
-		 DatagridVo<Infoer> is = infoerDao.findBySalesmanId(salesmanId,pagination);
+		DatagridVo<Infoer> is = infoerDao.findBySalesmanId(salesmanId,pagination);
 		if(loginUser.isLeader())
 			is.getRows().stream().forEach(i -> i.hideAllTel(loginUser));
 		return is;
@@ -97,6 +101,7 @@ public class InfoerService implements IInfoerService{
 	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId)
 	{
 		orderDao.updateOrderSalesmanIdByInfoers(infoerIds, salesmanId);
+		orderVisitDao.updateVisitorIdByInfoers(infoerIds,salesmanId);
 		return infoerDao.updateInfoerSalesmanId(infoerIds,salesmanId);
 	}
 }
