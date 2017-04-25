@@ -148,7 +148,7 @@ $(function()
 				}
 				else
 				{
-					if(_session_loginUserRole == 6 || _session_loginUserRole == -1)		//主案部经理 || superAdmin
+					if(_session_loginUserRole == -1)		//superAdmin
 					{
 						$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
 						$applyVisitBtn.linkbutton('disable').linkbutton('hide');
@@ -554,11 +554,11 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>联系电话：</label></td>' + 
-			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'			<td><input id="telAll" name="telAll" readonly="readonly" class="easyui-textbox" /></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>申 请 人：</label></td>' + 
-			'			<td><input id="designerName" name="designerName" readonly="readonly" class="easyui-textbox" style="width: 230px;" /></td>' + 
+			'			<td><input id="designerName" name="designerName" readonly="readonly" class="easyui-textbox" /></td>' + 
 			'		</tr>' + 
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 

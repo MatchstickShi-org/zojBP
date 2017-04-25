@@ -19,8 +19,8 @@
 			<label>设计师名称：</label>
 			<input class="easyui-textbox" id="order.designerNameInput" style="width: 120px;"/>
 			<label>状态：</label>
-			<label><input type="checkbox" value="" name="statusInput" />全部</label>
-			<label><input type="checkbox" value="0" name="statusInput" checked="checked" />未审核</label>
+			<label><input type="checkbox" value="" name="statusInput" checked="checked" />全部</label>
+			<label><input type="checkbox" value="0" name="statusInput" />未审核</label>
 			<label><input type="checkbox" value="1" name="statusInput"/>已审核</label>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="queryOrderBtn">查询</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="permitVisitBtn" disabled="true">同意回访</a>
