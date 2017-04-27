@@ -148,7 +148,7 @@ $(function()
 				}
 				else
 				{
-					if(_session_loginUserRole == -1)		//superAdmin
+					if(_session_loginUserRole == 6 || _session_loginUserRole == -1)		//主案部经理 || superAdmin
 					{
 						$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
 						$applyVisitBtn.linkbutton('disable').linkbutton('hide');
