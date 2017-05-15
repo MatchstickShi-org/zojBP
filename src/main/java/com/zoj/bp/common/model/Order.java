@@ -45,6 +45,8 @@ public class Order implements Serializable
 	private String projectAddr;
 
 	private String insertTime;
+	
+	private String putOrderTime; //提单时间
 
 	private Integer status;
 
@@ -426,4 +428,13 @@ public class Order implements Serializable
 	public void setDealAmount(BigDecimal dealAmount) {
 		this.dealAmount = dealAmount;
 	}
+
+	public String getPutOrderTime() {
+		return putOrderTime;
+	}
+
+	public void setPutOrderTime(String putOrderTime) {
+		this.putOrderTime = StringUtils.isEmpty(putOrderTime) ? putOrderTime:putOrderTime.substring(0, 19) ;
+	}
+	
 }

@@ -98,17 +98,23 @@ $(function()
 						}
 					}
 				},
-				{field:'insertTime', title:'录入日期', width: 5},
+				{field:'putOrderTime', title:'提单日期', width: 5},
 				{
 					field:'notVisitDays', title:'未回访天数', width: 3, sortable: true,
 					formatter: function(val, row, index)
 					{
-						return val == -100 ? "-" : val;
+						if(row.status == 14){
+							return 0;
+						}else{
+							return val == -100 ? "-" : val;
+						}
 					},
 					styler: function (value, row, index)
 					{
-						if(value > 1)
-							return 'background-color: red; color: white;';
+						if(row.status != 14){
+							if(value > 1)
+								return 'background-color: red; color: white;';
+						}
 					}
 				}
 			]],
@@ -155,13 +161,18 @@ $(function()
 					}
 					else
 					{
-						if(row.notVisitDays > 1 && (row.visitApplyStatus == null || row.visitApplyStatus == 0))
-						{
-							$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
-							$applyVisitBtn.linkbutton('enable').linkbutton('show');	
-						}
-						else
-						{
+						if(row.status != 14){
+							if(row.notVisitDays > 1 && (row.visitApplyStatus == null || row.visitApplyStatus == 0))
+							{
+								$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+								$applyVisitBtn.linkbutton('enable').linkbutton('show');	
+							}
+							else
+							{
+								$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
+								$applyVisitBtn.linkbutton('disable').linkbutton('hide');
+							}
+						}else{
 							$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
 							$applyVisitBtn.linkbutton('disable').linkbutton('hide');
 						}

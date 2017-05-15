@@ -31,12 +31,13 @@ public class OrderDao extends BaseDao implements IOrderDao
 		{
 			return jdbcOps.queryForObject(
 				"SELECT O.*, C.`NAME`, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, C.IS_WAIT, I.`NAME` AS infoerName, "
-				+ " 	U.ALIAS as salesmanName,U2.ALIAS AS designerName "+
+				+ " 	U.ALIAS as salesmanName,U2.ALIAS AS designerName,MAX(OCL.CHANGE_TIME) putOrderTime "+
 				" FROM `ORDER` O "+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID "+
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 "+
 				" WHERE O.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
 		}
@@ -109,11 +110,12 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
 				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY,C.IS_WAIT, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
-				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus "+
+				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus ,MAX(OCL.CHANGE_TIME) putOrderTime "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 " +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "
 				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) ";
 		if(user.isBelongMarketing())
@@ -298,7 +300,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" END notVisitDays, "
 				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
 				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY, I.NAME INFOER_NAME, I.`NAME` infoerName, U.ID salesmanId, U.ALIAS salesmanName, "+ 
-				" 	U.STATUS salesmanStatus, U2.ID designerId, U2.ALIAS designerName, U2.STATUS designerStatus "+
+				" 	U.STATUS salesmanStatus, U2.ID designerId, U2.ALIAS designerName, U2.STATUS designerStatus ,MAX(OCL.CHANGE_TIME) putOrderTime "+
 				" FROM `ORDER` O"+
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
@@ -306,6 +308,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
 				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID " +
 				" LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) " +
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 " +
 				" WHERE U2.ID = :userId ";
 		paramMap.put("userId", designer.getId());
 		if(orderId != null)

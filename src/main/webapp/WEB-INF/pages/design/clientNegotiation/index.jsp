@@ -75,8 +75,8 @@
 						<tr>
 							<td align="right" style="min-width: 80px;"><label>设计师：</label></td>
 							<td><input name="designerName" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
-							<td align="right" style="min-width: 80px;"><label>录入日期：</label></td>
-							<td><input name="insertTime" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
+							<td align="right" style="min-width: 80px;"><label>提单日期：</label></td>
+							<td><input name="putOrderTime" readonly="readonly" class="easyui-textbox" style="width: 154px;"/></td>
 						</tr>
 						<tr>
 							<td align="right"><label>面积：</label></td>
