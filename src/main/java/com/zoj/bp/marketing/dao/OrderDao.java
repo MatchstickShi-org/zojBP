@@ -37,7 +37,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID "+
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID "+
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+
-				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 "+
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = "+Status.talkingMarketingManagerAuditing.value()+
 				" WHERE O.ID = :id",
 					new MapSqlParameterSource("id", id), BeanPropertyRowMapper.newInstance(Order.class));
 		}
@@ -115,7 +115,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
 				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
-				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 " +
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = "+Status.talkingMarketingManagerAuditing.value() +
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "
 				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) ";
 		if(user.isBelongMarketing())
@@ -308,7 +308,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID " +
 				" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID " +
 				" LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) " +
-				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = 30 " +
+				" LEFT JOIN ORDER_CHANGE_LOG OCL on O.ID = OCL.ORDER_ID AND OCL.`STATUS` = " +Status.talkingMarketingManagerAuditing.value()+
 				" WHERE U2.ID = :userId ";
 		paramMap.put("userId", designer.getId());
 		if(orderId != null)
