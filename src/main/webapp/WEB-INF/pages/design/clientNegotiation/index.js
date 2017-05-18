@@ -103,18 +103,12 @@ $(function()
 					field:'notVisitDays', title:'未回访天数', width: 3, sortable: true,
 					formatter: function(val, row, index)
 					{
-						if(row.status == 14){
-							return 0;
-						}else{
-							return val == -100 ? "-" : val;
-						}
+						return val == -100 ? "-" : val;
 					},
 					styler: function (value, row, index)
 					{
-						if(row.status != 14){
-							if(value > 1)
-								return 'background-color: red; color: white;';
-						}
+						if(value > 1)
+							return 'background-color: red; color: white;';
 					}
 				}
 			]],
