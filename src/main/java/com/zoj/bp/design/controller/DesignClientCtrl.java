@@ -117,7 +117,7 @@ public class DesignClientCtrl
 		{
 			status = new Integer[]
 			{
-				Status.designerRejected.value(),
+				//Status.designerRejected.value(),
 				//Status.talkingDesignManagerAuditing.value(),
 				Status.talkingDesignerTracing.value(),
 				Status.deal.value(),

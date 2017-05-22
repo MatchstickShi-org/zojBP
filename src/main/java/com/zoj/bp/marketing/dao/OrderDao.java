@@ -101,32 +101,44 @@ public class OrderDao extends BaseDao implements IOrderDao
 		String sql = "SELECT O.*, MAX(OV.DATE) VD, "+ 
 				" CASE O.ID WHEN NULL THEN NULL "
 				+ " ELSE " 
-				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 "
-				+ " 		WHEN (O. STATUS = 34  AND O.rejectCount > 0 AND COUNT(DISTINCT OV1.ID) =0) THEN 0 "
-				+ " 		WHEN (O. STATUS = 14  AND COUNT(DISTINCT OV2.ID) =0) THEN 0  "
-				+ " 	ELSE "+ 
+				+ " 	CASE WHEN O.STATUS IN (0, 64, 90) THEN -100 ";
+				if(user.isBelongDesign()){
+					sql +=" 		WHEN (O. STATUS = 34  AND O.rejectCount > 0 AND COUNT(DISTINCT OV1.ID) =0) THEN 0 ";
+					sql +=" 		WHEN (O. STATUS = 14  AND COUNT(DISTINCT OV2.ID) =0) THEN 0  ";
+				}
+				sql +=" 	ELSE "+ 
 				" 			CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(NOW(),O.INSERT_TIME) "+ 
-				"			ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "
-				+ " 		END "
-				+ " 	END "+ 
-				" END notVisitDays, "
-				+ " A.STATUS VISIT_APPLY_STATUS, "+ 
+				"			ELSE DATEDIFF(NOW(),MAX(OV.DATE)) "+
+				" 		END "+ 
+				 " 	END "+ 
+				" END notVisitDays, "+
+				" A.STATUS VISIT_APPLY_STATUS, "+ 
 				" 	C.NAME, C.ORG_ADDR, C.TEL1, C.TEL2, C.TEL3, C.TEL4, C.TEL5, C.IS_KEY,C.IS_WAIT, I.`NAME` infoerName, U.ALIAS salesmanName, "+ 
-				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus ,O.putTime putOrderTime "+
-				" FROM (" +
-				" SELECT o.*,COUNT(DISTINCT ocl.ID) rejectCount,MAX(ocl1.CHANGE_TIME) putTime,MAX(ocl.CHANGE_TIME) rejectTime "+
-				"	FROM `order` o "+
-				" LEFT JOIN order_change_log ocl on o.ID = ocl.ORDER_ID AND ocl.`STATUS` = "+Status.designerRejected.value()+
-				" LEFT JOIN order_change_log ocl1 on o.ID = ocl1.ORDER_ID AND ocl1.`STATUS` = "+Status.talkingMarketingManagerAuditing.value()+
-				" LEFT JOIN order_visit ov ON o.ID = ov.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID "+
-				" GROUP BY o.ID) O"+
-				" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
+				" 	U.STATUS salesmanStatus, U2.ALIAS AS designerName, U2.STATUS designerStatus ";
+				if(user.isBelongDesign()){
+					sql += ",O.putTime putOrderTime ";
+				}
+				sql +=" FROM ";
+				if(user.isBelongDesign()){
+					sql +="(" +
+					" SELECT o.*,COUNT(DISTINCT ocl.ID) rejectCount,MAX(ocl1.CHANGE_TIME) putTime,MAX(ocl.CHANGE_TIME) rejectTime "+
+					"	FROM `order` o "+
+					" LEFT JOIN order_change_log ocl on o.ID = ocl.ORDER_ID AND ocl.`STATUS` = "+Status.designerRejected.value()+
+					" LEFT JOIN order_change_log ocl1 on o.ID = ocl1.ORDER_ID AND ocl1.`STATUS` = "+Status.talkingMarketingManagerAuditing.value()+
+					" LEFT JOIN order_visit ov ON o.ID = ov.ORDER_ID AND O.DESIGNER_ID = OV.VISITOR_ID "+
+					" GROUP BY o.ID) O";
+				}else{
+					sql +=" `order` O ";
+				}
+				sql +=" LEFT JOIN CLIENT C ON O.ID = C.ORDER_ID " +
 				" LEFT JOIN `USER` U ON U.ID = O.SALESMAN_ID " +
-				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID " +
-				" LEFT JOIN ORDER_VISIT OV1 ON O.ID = OV1.ORDER_ID AND O.DESIGNER_ID = OV1.VISITOR_ID AND OV1.DATE > O.putTime " +
-				" LEFT JOIN ORDER_VISIT OV2 ON O.ID = OV2.ORDER_ID AND O.DESIGNER_ID = OV2.VISITOR_ID AND OV2.DATE > O.rejectTime " +
-				" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "
-				+ " LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) ";
+				" LEFT JOIN `USER` U2 ON U2.ID = O.DESIGNER_ID ";
+				if(user.isBelongDesign()){
+					sql +=" LEFT JOIN ORDER_VISIT OV1 ON O.ID = OV1.ORDER_ID AND O.DESIGNER_ID = OV1.VISITOR_ID AND OV1.DATE > O.putTime " +
+							" LEFT JOIN ORDER_VISIT OV2 ON O.ID = OV2.ORDER_ID AND O.DESIGNER_ID = OV2.VISITOR_ID AND OV2.DATE > O.rejectTime " ;
+				}
+				sql +=" LEFT JOIN INFOER I ON I.ID = O.INFOER_ID "+ 
+				" LEFT JOIN DESIGNER_VISIT_APPLY A ON A.ORDER_ID = O.ID AND TO_DAYS(A.CREATE_TIME) = TO_DAYS(CURRENT_DATE) ";
 		if(user.isBelongMarketing())
 		{
 			sql +=" LEFT JOIN ORDER_VISIT OV ON O.ID = OV.ORDER_ID AND O.SALESMAN_ID = OV.VISITOR_ID ";
