@@ -1,6 +1,7 @@
 package com.zoj.bp.marketing.dao;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -464,7 +465,7 @@ public class OrderDao extends BaseDao implements IOrderDao
 	@Override
 	public Integer updateOrderSalesmanIdByInfoers(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE `ORDER` SET SALESMAN_ID = :salesmanId, UPDATE_TIME = now() "
-				+ " WHERE INFOER_ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
+				+ " WHERE INFOER_ID IN(:infoerIds)", new MapSqlParameterSource("salesmanId",salesmanId).addValue("infoerIds", Arrays.asList(infoerIds)));
 	}
 
 	@Override

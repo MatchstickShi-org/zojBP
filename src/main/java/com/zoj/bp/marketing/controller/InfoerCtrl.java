@@ -195,8 +195,11 @@ public class InfoerCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部经理，无法操作。"));
-		infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
-		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+		int result = infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
+		if(result > 0)
+			return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
+		else
+			return ResponseUtils.buildRespMap(ReturnCode.SYSTEM_INTERNAL_ERROR.setMsg("业务转移失败，请稍后再试。"));
 	}
 	
 	@RequestMapping(value = "/checkInfoerTel")
@@ -278,12 +281,22 @@ public class InfoerCtrl
 		return commissionCostSvc.getAllCommissionCost(pagination, infoerId, null);
 	}
 	
+	/**
+	 * 跳转选择业务员页面
+	 * @return
+	 */
 	@RequestMapping("/showAllSalesman")
 	public String showAllSalesman()
 	{
 		return "marketing/infoerMgr/selectSalesman";
 	}
 	
+	/**
+	 * 获取所有业务员
+	 * @param pagination
+	 * @return
+	 * @throws BusinessException
+	 */
 	@RequestMapping(value = "/getAllSalesman")
 	@ResponseBody
 	public DatagridVo<User> getAllSalesman(Pagination pagination) throws BusinessException

@@ -1,6 +1,7 @@
 package com.zoj.bp.marketing.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,7 +247,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	@Override
 	public Integer updateInfoerSalesmanId(Integer[] infoerIds, Integer salesmanId) {
 		return jdbcOps.update("UPDATE INFOER SET SALESMAN_ID = :salesmanId "
-				+ " WHERE ID IN(" + StringUtils.join(infoerIds, ',') + ")", new MapSqlParameterSource("salesmanId",salesmanId));
+				+ " WHERE ID IN(:infoerIds)", new MapSqlParameterSource("salesmanId",salesmanId).addValue("infoerIds", Arrays.asList(infoerIds)));
 	}
 
 	@Override
