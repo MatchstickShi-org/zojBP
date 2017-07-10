@@ -608,7 +608,7 @@ $(function()
 			'		<input id="infoerTelCount" type="hidden" value="1" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddInfoerForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" id="btnAddInfoerSubmit" onclick="submitaddInfoerForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addInfoerWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -650,6 +650,7 @@ $(function()
 			'				if(!flag)'+
 			'					return false;'+
 			'			}'+
+			'			$(\'#btnAddInfoerSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -658,6 +659,7 @@ $(function()
 			'			{' + 
 			'				$infoerDatagrid.datagrid(\'reload\');' + 
 			'				$addInfoerWindow.window(\'close\');' + 
+			'				$(\'#btnAddInfoerSubmit\').linkbutton(\'enable\');'+
 			'			}else' + 
 			'				errortel.html(data.msg);' + 
 			'		}' + 
@@ -840,7 +842,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitaddClientForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
+			'				<a class="easyui-linkbutton" id="btnAddClientSubmit" onclick="submitaddClientForm();" iconCls="icon-ok" href="javascript:void(0)">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addClientWindow.window(\'close\');" iconCls="icon-cancel" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -888,6 +890,7 @@ $(function()
 			'				if(!flag)'+
 			'					return false;'+
 			'			}'+
+			'			$(\'#btnAddClientSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -898,6 +901,7 @@ $(function()
 			'				if($infoerMgrTab.tabs("getSelected").panel("options").title == "客户")' + 
 			'					$clientGrid.datagrid(\'reload\');' + 
 			'				$addClientWindow.window(\'close\');' + 
+			'				$(\'#btnAddClientSubmit\').linkbutton(\'enable\');'+
 			'			}else' + 
 			'				errortel.html(data.msg);' + 
 			'		}' + 

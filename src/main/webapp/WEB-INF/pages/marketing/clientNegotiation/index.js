@@ -372,7 +372,10 @@ $(function()
 			  {field:'remark', title:'备注', width: 6},
 			  {field:'operateTime', title:'操作日期', width: 5}
 			  ]],
-			  pagination: true
+			  pagination: true,
+			  onDblClickRow: function(index, row){
+				  $.messager.alert('备注', row.remark);
+			  }
 		});
 		
 		$orderApproveGrid.datagrid('options').url = 'marketing/clientMgr/getOrderApproveByOrderId';
