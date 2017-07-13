@@ -49,7 +49,9 @@ import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 @RequestMapping("/marketing/infoerMgr")
 public class InfoerCtrl
 {
-	private static Logger logger = LoggerFactory.getLogger("Transfer");
+	private static Logger logger = LoggerFactory.getLogger(InfoerCtrl.class);
+	
+	private static Logger transferLogger = LoggerFactory.getLogger("Transfer");
 	
 	@Autowired
 	private IInfoerService infoerSvc;
@@ -196,19 +198,23 @@ public class InfoerCtrl
 	public Map<String, ?> transferInfoer(HttpSession session,
 			@RequestParam("infoerIds[]") Integer[] infoerIds, @RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
-		logger.info("业务转移开始");
+		transferLogger.info("业务转移开始");
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin()){
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+		{
 			logger.info("当前用户没有权限，业务转移结束");
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部经理，无法操作。"));
 		}
-		logger.info(loginUser.getAlias()+" 将信息员："+ StringUtils.join(infoerIds, ',') +" 转移给业务员："+salesmanId);
+		transferLogger.info(loginUser.getAlias()+" 将信息员："+ StringUtils.join(infoerIds, ',') +" 转移给业务员："+salesmanId);
 		int result = infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
-		if(result > 0){
-			logger.info("业务转移成功");
+		if(result > 0)
+		{
+			transferLogger.info("业务转移成功");
 			return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-		}else{
-			logger.info("业务转移失败");
+		}
+		else
+		{
+			transferLogger.info("业务转移失败");
 			return ResponseUtils.buildRespMap(ReturnCode.SYSTEM_INTERNAL_ERROR.setMsg("业务转移失败，请稍后再试。"));
 		}
 	}
