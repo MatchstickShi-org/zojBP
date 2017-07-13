@@ -11,6 +11,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -47,6 +49,8 @@ import com.zoj.bp.sysmgr.usermgr.service.IUserService;
 @RequestMapping("/marketing/infoerMgr")
 public class InfoerCtrl
 {
+	private static Logger logger = LoggerFactory.getLogger("Transfer");
+	
 	@Autowired
 	private IInfoerService infoerSvc;
 	
@@ -192,14 +196,21 @@ public class InfoerCtrl
 	public Map<String, ?> transferInfoer(HttpSession session,
 			@RequestParam("infoerIds[]") Integer[] infoerIds, @RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
+		logger.info("业务转移开始");
 		User loginUser = (User) session.getAttribute("loginUser");
-		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
+		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin()){
+			logger.info("当前用户没有权限，业务转移结束");
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部经理，无法操作。"));
+		}
+		logger.info(loginUser.getAlias()+" 将信息员："+ StringUtils.join(infoerIds, ',') +" 转移给业务员："+salesmanId);
 		int result = infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
-		if(result > 0)
+		if(result > 0){
+			logger.info("业务转移成功");
 			return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
-		else
+		}else{
+			logger.info("业务转移失败");
 			return ResponseUtils.buildRespMap(ReturnCode.SYSTEM_INTERNAL_ERROR.setMsg("业务转移失败，请稍后再试。"));
+		}
 	}
 	
 	@RequestMapping(value = "/checkInfoerTel")
