@@ -3,6 +3,8 @@
  */
 package com.zoj.bp.marketing.dao;
 
+import java.util.List;
+
 import com.zoj.bp.common.model.Infoer;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.vo.DatagridVo;
@@ -49,7 +51,7 @@ public interface IInfoerDao
 	 * @param tel
 	 * @return
 	 */
-	Infoer findByTel(Infoer infoer);
+	List<Infoer> findByTel(Infoer infoer);
 
 	/**
 	 * 根据业务员Id查询所有信息员

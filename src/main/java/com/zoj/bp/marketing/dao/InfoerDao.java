@@ -197,7 +197,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 	}
 
 	@Override
-	public Infoer findByTel(Infoer infoer) {
+	public List<Infoer> findByTel(Infoer infoer) {
 		try
 		{
 			String sql ="SELECT I.*,U.ALIAS as SALESMAN_NAME FROM INFOER I LEFT JOIN USER U ON I.SALESMAN_ID = U.ID "
@@ -221,7 +221,7 @@ public class InfoerDao extends BaseDao implements IInfoerDao
 				sql += "OR tel4 IN(" + StringUtils.join(tels, ',') + ") ";
 				sql += "OR tel5 IN(" + StringUtils.join(tels, ',') + "))";
 			}
-			return jdbcOps.queryForObject(sql,new BeanPropertySqlParameterSource(infoer), BeanPropertyRowMapper.newInstance(Infoer.class));
+			return jdbcOps.query(sql,new BeanPropertySqlParameterSource(infoer), BeanPropertyRowMapper.newInstance(Infoer.class));
 		}
 		catch (EmptyResultDataAccessException e)
 		{

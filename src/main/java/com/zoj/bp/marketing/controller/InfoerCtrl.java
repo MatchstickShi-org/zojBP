@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,12 +119,11 @@ public class InfoerCtrl
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isBelongMarketing() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("您不是商务部人员，无法新增信息员。"));
-		Infoer infoerTel = null;
 		if(infoer != null)
 		{
-			infoerTel = infoerSvc.findByTel(infoer, loginUser);
-			if(infoerTel != null)
-				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoerTel.getInsertTime()+" 被业务员 "+infoerTel.getSalesmanName()+" 录入！"));
+			List<Infoer> infoers = infoerSvc.findByTel(infoer, loginUser);
+			if(CollectionUtils.isNotEmpty(infoers))
+				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg("重复！该信息员于 "+infoers.get(0).getInsertTime()+" 被业务员 "+infoers.get(0).getSalesmanName()+" 录入！"));
 		}
 		infoer.setSalesmanId(loginUser.getId());
 		infoerSvc.addInfoer(infoer);
@@ -209,10 +209,12 @@ public class InfoerCtrl
 		if(StringUtils.isNotEmpty(tel)){
 			Infoer infoer = new Infoer();
 			infoer.setTel1(tel);
-			infoer = infoerSvc.findByTel(infoer, (User) session.getAttribute("loginUser"));
-			if(infoer != null && infoer.getId() >0)
-			return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
+			List<Infoer> infoers = infoerSvc.findByTel(infoer, (User) session.getAttribute("loginUser"));
+			if(CollectionUtils.isNotEmpty(infoers)){
+				infoer = infoers.get(0);
+				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
 					"重复！信息员["+infoer.getName()+"]的电话["+tel+"]于"+infoer.getInsertTime()+" 被业务员["+infoer.getSalesmanName()+"]录入。"));
+			}
 		}
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
