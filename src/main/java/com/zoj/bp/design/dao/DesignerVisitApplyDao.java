@@ -42,8 +42,8 @@ public class DesignerVisitApplyDao extends BaseDao implements IDesignerVisitAppl
 	{
 		Map<String, Object> paramMap = new HashMap<>();
 		String sql = "SELECT DVA.*," + 
-				" 	CASE WHEN OV.DATE IS NULL THEN DATEDIFF(CURRENT_DATE, O.INSERT_TIME) " + 
-				" 	ELSE DATEDIFF(CURRENT_DATE, OV.DATE) END AS notVisitDays, " + 
+				" 	CASE WHEN MAX(OV.DATE) IS NULL THEN DATEDIFF(CURRENT_DATE, O.INSERT_TIME) " + 
+				" 	ELSE DATEDIFF(CURRENT_DATE, MAX(OV.DATE)) END AS notVisitDays, " + 
 				" 	U.ALIAS APPROVER_NAME,U2.ALIAS DESIGNER_NAME,U3.ALIAS SALESMAN_NAME,C.`NAME`,O.`STATUS` ORDER_STATUS " + 
 				" FROM DESIGNER_VISIT_APPLY DVA " + 
 				" LEFT JOIN `USER` U ON U.ID = DVA.APPROVER " + 
@@ -65,8 +65,10 @@ public class DesignerVisitApplyDao extends BaseDao implements IDesignerVisitAppl
 		}
 		if(status != null && status.length > 0)
 			sql +=" AND DVA.`STATUS` IN(" + StringUtils.join(status, ',') + ")";
+		sql += " GROUP BY DVA.ID";
 		String countSql = "SELECT COUNT(1) count FROM (" + sql + ") T";
 		Integer count = jdbcOps.queryForObject(countSql, paramMap, Integer.class);
+		sql += " ORDER BY DVA.`STATUS`,DVA.CREATE_TIME";
 		sql += " LIMIT :start, :rows";
 		paramMap.put("start", pagination.getStartRow());
 		paramMap.put("rows", pagination.getRows());
