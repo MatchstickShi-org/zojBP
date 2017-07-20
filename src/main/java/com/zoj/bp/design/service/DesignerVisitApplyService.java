@@ -33,9 +33,12 @@ public class DesignerVisitApplyService implements IDesignerVisitApplyService
 	@Override
 	public Integer addDesignerVisitApply(DesignerVisitApply designerVisitApply) throws BusinessException
 	{
-		if (CollectionUtils.isNotEmpty(dao.getTodayApplysByOrder(designerVisitApply.getOrderId())))
-			throw new BusinessException(ReturnCode.ILLEGALITY_OPERATION.setMsg("对不起，你今天已经提交过回访申请，无法再次申请，请耐心等待。"));
-		return dao.addDesignerVisitApply(designerVisitApply);
+		synchronized ((designerVisitApply.getOrderId()+""+designerVisitApply.getDesigner()).intern())
+		{
+			if (CollectionUtils.isNotEmpty(dao.getTodayApplysByOrder(designerVisitApply.getOrderId())))
+				throw new BusinessException(ReturnCode.ILLEGALITY_OPERATION.setMsg("对不起，你今天已经提交过回访申请，无法再次申请，请耐心等待。"));
+			return dao.addDesignerVisitApply(designerVisitApply);
+		}
 	}
 
 	@Override
