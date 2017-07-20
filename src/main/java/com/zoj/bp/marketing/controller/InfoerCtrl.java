@@ -35,6 +35,7 @@ import com.zoj.bp.common.model.Order;
 import com.zoj.bp.common.model.Order.Status;
 import com.zoj.bp.common.model.User;
 import com.zoj.bp.common.model.User.Role;
+import com.zoj.bp.common.util.HttpUtils;
 import com.zoj.bp.common.util.ResponseUtils;
 import com.zoj.bp.common.vo.DatagridVo;
 import com.zoj.bp.common.vo.Pagination;
@@ -202,14 +203,14 @@ public class InfoerCtrl
 			@RequestParam("infoerIds[]") Integer[] infoerIds, @RequestParam("salesmanId") Integer salesmanId) throws Exception
 	{
 		transferLogger.debug("业务转移开始");
-		String ipAddr = getIpAddr(request);
 		User loginUser = (User) session.getAttribute("loginUser");
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 		{
 			logger.info("当前用户没有权限，业务转移结束");
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("你不是商务部经理，无法操作。"));
 		}
-		transferLogger.info("请求session id："+session.getId() +"，IP："+ipAddr+"-操作员"+loginUser.getAlias()+" 转移给业务员："+salesmanId+"，信息员"+"["+infoerIds.length+"]"+"为："+ StringUtils.join(infoerIds, ','));
+		transferLogger.info(String.format("sessionId[%s], requestIP[%s], 用户[%s]转移信息员(%s个) → 业务员[%s], 信息员: [%s]",
+				session.getId(), HttpUtils.instance().getIpAddr(request), loginUser.getAlias(), infoerIds.length, salesmanId, StringUtils.join(infoerIds, ',')));
 		int result = infoerSvc.updateInfoerSalesmanId(infoerIds, salesmanId);
 		if(result > 0)
 		{
@@ -223,40 +224,6 @@ public class InfoerCtrl
 		}
 	}
 	
-	/**
-	 * 获取客户端ip地址
-	 * @param request
-	 * @return
-	 */
-	public String getIpAddr(HttpServletRequest request){
-        String ipAddress = request.getHeader("x-forwarded-for");  
-            if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
-                ipAddress = request.getHeader("Proxy-Client-IP");  
-            }  
-            if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
-                ipAddress = request.getHeader("WL-Proxy-Client-IP");  
-            }  
-            if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
-                ipAddress = request.getRemoteAddr();  
-                if(ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")){  
-                    //根据网卡取本机配置的IP  
-                    InetAddress inet=null;  
-                    try {  
-                        inet = InetAddress.getLocalHost();  
-                    } catch (UnknownHostException e) {  
-                        e.printStackTrace();  
-                    }  
-                    ipAddress= inet.getHostAddress();  
-                }  
-            }  
-            //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割  
-            if(ipAddress!=null && ipAddress.length()>15){ //"***.***.***.***".length() = 15  
-                if(ipAddress.indexOf(",")>0){  
-                    ipAddress = ipAddress.substring(0,ipAddress.indexOf(","));  
-                }  
-            }  
-            return ipAddress;   
-    }
 	@RequestMapping(value = "/checkInfoerTel")
 	@ResponseBody
 	public Map<String, ?> checkInfoerTel(@RequestParam String tel, HttpSession session) throws Exception
