@@ -568,7 +568,7 @@ $(function()
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitApplyVisitForm();" href="javascript:void(0)">提交</a>' + 
+			'				<a id="btnApplyVisitSubmit" class="easyui-linkbutton" onclick="submitApplyVisitForm();" href="javascript:void(0)">提交</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$applyVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -590,6 +590,7 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$(\'#btnApplyVisitSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -598,6 +599,7 @@ $(function()
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$applyVisitWindow.window(\'close\');' + 
+			'				$(\'#btnApplyVisitSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
