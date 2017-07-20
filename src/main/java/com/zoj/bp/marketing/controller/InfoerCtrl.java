@@ -3,8 +3,6 @@
  */
 package com.zoj.bp.marketing.controller;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
