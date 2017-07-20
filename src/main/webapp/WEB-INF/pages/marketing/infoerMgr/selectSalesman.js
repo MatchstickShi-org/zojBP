@@ -25,7 +25,7 @@ $(function()
 				if(data.returnCode == 0)
 				{
 					$.messager.show({title:'提示',msg:'操作成功。'});
-					$infoerDatagrid.datagrid('reload');
+					$infoerDatagrid.datagrid('clearChecked').datagrid('reload');
 					$businessTransferWindow.window("close"); 
 				}
 				else
