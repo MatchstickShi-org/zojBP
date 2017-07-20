@@ -568,7 +568,7 @@ $(function()
 			'		<input id="orderId"  name="orderId" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitApplyVisitForm();" href="javascript:void(0)">提交</a>' + 
+			'				<a id="btnApplyVisitSubmit" class="easyui-linkbutton" onclick="submitApplyVisitForm();" href="javascript:void(0)">提交</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$applyVisitWindow.window(\'close\');" href="javascript:void(0)">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -590,6 +590,7 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$(\'#btnApplyVisitSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -598,6 +599,7 @@ $(function()
 			'			{' + 
 			'				$orderDatagrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$applyVisitWindow.window(\'close\');' + 
+			'				$(\'#btnApplyVisitSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
@@ -654,7 +656,7 @@ $(function()
 			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitDealOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnDealOrderSubmit" class="easyui-linkbutton" onclick="submitDealOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$dealOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -681,6 +683,7 @@ $(function()
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
 			'			$.messager.progress();' + 
+			'			$(\'#btnDealOrderSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -692,6 +695,7 @@ $(function()
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
 			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$dealOrderWindow.window(\'close\');' + 
+			'				$(\'#btnDealOrderSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
@@ -744,7 +748,7 @@ $(function()
 			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitDeadOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnDeadOrderSubmit" class="easyui-linkbutton" onclick="submitDeadOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$deadOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -771,6 +775,7 @@ $(function()
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
 			'			$.messager.progress();' + 
+			'			$(\'#btnDeadOrderSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -782,6 +787,7 @@ $(function()
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
 			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$deadOrderWindow.window(\'close\');' + 
+			'				$(\'#btnDeadOrderSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
@@ -835,7 +841,7 @@ $(function()
 			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitDisagreeOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnDisagreeOrderSubmit" class="easyui-linkbutton" onclick="submitDisagreeOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$disagreeOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -862,6 +868,7 @@ $(function()
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
 			'			$.messager.progress();' + 
+			'			$(\'#btnDisagreeOrderSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -873,6 +880,7 @@ $(function()
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
 			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$disagreeOrderWindow.window(\'close\');' + 
+			'				$(\'#btnDisagreeOrderSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
@@ -924,7 +932,7 @@ $(function()
 			'		<input id="orderStatus"  name="orderStatus" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitRepulseOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnRepulseOrderSubmit" class="easyui-linkbutton" onclick="submitRepulseOrderForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$repulseOrderWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -951,6 +959,7 @@ $(function()
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
 			'			$.messager.progress();' + 
+			'			$(\'#btnRepulseOrderSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -962,6 +971,7 @@ $(function()
 			'				if($clientMgrTab.tabs("getSelected").panel("options").title == "审核流程")' + 
 			'					$orderApproveGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$repulseOrderWindow.window(\'close\');' + 
+			'				$(\'#btnRepulseOrderSubmit\').linkbutton(\'enable\');'+
 			'			}else{' + 
 			'				$.messager.show({title:\'提示\', msg:\'操作失败！\' + data.msg}); ' + 
 			'			}' + 
@@ -1002,7 +1012,7 @@ $(function()
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddClientVisitForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnAddClientVisitSubmit" class="easyui-linkbutton" onclick="submitAddClientVisitForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -1024,6 +1034,7 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$(\'#btnAddClientVisitSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -1034,6 +1045,7 @@ $(function()
 			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addClientVisitWindow.window(\'close\');' + 
 			'				$orderDatagrid.datagrid(\'reload\');' + 
+			'				$(\'#btnAddClientVisitSubmit\').linkbutton(\'enable\');'+
 			'			}' + 
 			'		}' + 
 			'	});' + 
@@ -1066,7 +1078,7 @@ $(function()
 			'		<input id="id"  name="id" type="hidden" value="" />' + 
 			'		<tr>' + 
 			'			<td align="center" colspan="4">' + 
-			'				<a class="easyui-linkbutton" onclick="submitAddVisitCommentForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
+			'				<a id="btnAddVisitCommentSubmit" class="easyui-linkbutton" onclick="submitAddVisitCommentForm();" href="javascript:void(0)" iconCls="icon-ok">保存</a>' + 
 			'				<a class="easyui-linkbutton" onclick="$addClientVisitWindow.window(\'close\');" href="javascript:void(0)" iconCls="icon-cancel">取消</a>' + 
 			'			</td>' + 
 			'		</tr>' +
@@ -1087,6 +1099,7 @@ $(function()
 			'		{' + 
 			'			if(!$(this).form(\'validate\'))' + 
 			'				return false;' + 
+			'			$(\'#btnAddVisitCommentSubmit\').linkbutton(\'disable\');'+
 			'		},' + 
 			'		success: function(data)' + 
 			'		{' + 
@@ -1096,6 +1109,7 @@ $(function()
 			'				if($clientMgrTab.tabs(\'getSelected\').panel(\'options\').title == "设计师回访记录")' + 
 			'					$orderStylistVisitGrid.datagrid("unselectAll").datagrid(\'reload\');' + 
 			'				$addVisitCommentWindow.window(\'close\');' + 
+			'				$(\'#btnAddVisitCommentSubmit\').linkbutton(\'enable\');'+
 			'			}' + 
 			'		}' + 
 			'	});' + 
