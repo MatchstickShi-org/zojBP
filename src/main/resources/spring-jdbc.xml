@@ -12,6 +12,10 @@
 		<property name="password" value="1qaz2wsx" />
 		<property name="initialPoolSize" value="10" />
 		<property name="maxPoolSize" value="20" />
+		<!-- c3p0反空闲设置，防止8小时连接失效问题28800 -->
+		<property name="testConnectionOnCheckout" value="false"/>
+		<property name="testConnectionOnCheckin" value="true"/>
+		<property name="idleConnectionTestPeriod" value="3600"/>
 	</bean>
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
