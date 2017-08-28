@@ -137,19 +137,7 @@ public class InfoerCtrl
 		if(errors.hasErrors())
 			return ResponseUtils.buildRespMap(new BusinessException(ReturnCode.VALIDATE_FAIL.setMsg(errors.getFieldError().getDefaultMessage())));
 		User loginUser = (User) session.getAttribute("loginUser");
-		Order orderTel = null;
-		if(order != null)
-		{
-			List<String> tels = order.getTels();
-			orderTel = orderSvc.findByTels(loginUser, tels.toArray(new String[tels.size()]));
-			if(orderTel != null)
-				return ResponseUtils.buildRespMap(ReturnCode.TEL_EXISTS.setMsg(
-						"重复！该客户[" + order.getId() + "]于 "+orderTel.getInsertTime()+" 被业务员["+orderTel.getSalesmanName()+"]录入。"));
-		}
-		if(!loginUser.isSuperAdmin())
-			order.setSalesmanId(loginUser.getId());
-		order.setStatus(Status.tracing.value());//状态为正跟踪
-		orderSvc.addOrderAndClient(order);
+		orderSvc.addOrderAndClient(order,loginUser);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

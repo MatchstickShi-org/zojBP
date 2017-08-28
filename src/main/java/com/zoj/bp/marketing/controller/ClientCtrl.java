@@ -456,7 +456,7 @@ public class ClientCtrl
 		if(!loginUser.isMarketingManager() && !loginUser.isSuperAdmin())
 			return ResponseUtils.buildRespMap(ReturnCode.VALIDATE_FAIL.setMsg("对不起，您不是商务部经理，无法新生成客户。"));
 		order.setStatus(Status.tracing.value());//状态为正跟踪
-		orderSvc.addOrderAndClient(order);
+		orderSvc.addNewOrderAndClient(order);
 		return ResponseUtils.buildRespMap(ReturnCode.SUCCESS);
 	}
 	

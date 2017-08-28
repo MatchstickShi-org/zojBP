@@ -45,6 +45,14 @@ public interface IClientDao
 	 * @return 
 	 */
 	Integer addClient(Client client);
+	
+	/**
+	 * 新增客户(手机号码重复验证)
+	 * @param client 客户
+	 * @param tels 手机号码数组
+	 * @return 
+	 */
+	Integer addClientDistinctTel(Client client,String... tels);
 
 	/**
 	 * 根据号码查询客户
