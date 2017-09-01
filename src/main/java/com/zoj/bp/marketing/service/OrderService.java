@@ -145,7 +145,61 @@ public class OrderService implements IOrderService
 	}
 
 	@Override
-	public void addOrderAndClient(Order order)
+	public void addOrderAndClient(Order order,User loginUser) throws BusinessException
+	{
+		Order orderTel = null;
+		if(order != null)
+		{
+			List<String> tels = order.getTels();
+			orderTel = this.findByTels(loginUser, tels.toArray(new String[tels.size()]));
+			if(orderTel != null)
+				throw new BusinessException(ReturnCode.TEL_EXISTS.setMsg(
+						"重复！该客户[" + order.getId() + "]于 "+orderTel.getInsertTime()+" 被业务员["+orderTel.getSalesmanName()+"]录入。"));
+		}
+		if(!loginUser.isSuperAdmin())
+			order.setSalesmanId(loginUser.getId());
+		order.setStatus(Status.tracing.value());//订单初始状态设为正跟踪
+		int orderId = this.addOrder(order);
+		if(orderId > 0)
+		{
+			Client client = new Client();
+			client.setName(order.getName());
+			client.setOrgAddr(order.getOrgAddr());
+			client.setTel1(order.getTel1());
+			client.setTel2(order.getTel2());
+			client.setTel3(order.getTel3());
+			client.setTel4(order.getTel4());
+			client.setTel5(order.getTel5());
+			client.setOrderId(orderId);
+			client.setIsKey(order.getIsKey());
+			List<String> tels = order.getTels();
+			int clientId = clientDao.addClientDistinctTel(client, tels.toArray(new String[tels.size()]));
+			if(clientId <1){
+				throw new BusinessException(ReturnCode.TEL_EXISTS.setMsg("重复！该客户已被录入。"));
+			}
+			/**
+			 * 订单状态变动日志
+			 */
+			OrderChangeLog orderChangeLog = new OrderChangeLog();
+			orderChangeLog.setOrderId(orderId);
+			orderChangeLog.setStatus(order.getStatus());
+			orderChangeLogDao.addOrderChangeLog(orderChangeLog);
+			
+			Infoer infoer = infoerDao.getInfoerById(order.getInfoerId());
+			/**
+			 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
+			 */
+			if (infoer.getLevel() == Level.iron.value())
+			{
+				infoer.setLevel(Level.bronze.value());
+				infoerDao.updateInfoer(infoer);
+			}
+		}
+		
+	}
+	
+	@Override
+	public void addNewOrderAndClient(Order order)
 	{
 		int orderId = this.addOrder(order);
 		if(orderId > 0)
@@ -180,7 +234,7 @@ public class OrderService implements IOrderService
 			infoerDao.updateInfoer(infoer);
 		}
 	}
-
+	
 	@Override
 	public Order findByTels(User loginUser, String... tels)
 	{

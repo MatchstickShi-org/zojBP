@@ -94,6 +94,33 @@ public class ClientDao extends BaseDao implements IClientDao
 				new BeanPropertySqlParameterSource(client), keyHolder);
 		return keyHolder.getKey().intValue();
 	}
+	
+	@Override
+	public Integer addClientDistinctTel(Client client,String... tels)
+	{
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		String sql = "";
+		if(ArrayUtils.isNotEmpty(tels))
+		{
+			sql = "INSERT INTO CLIENT(ORDER_ID, NAME, ORG_ADDR, TEL1, TEL2, TEL3, TEL4, TEL5, IS_KEY, IS_WAIT)"
+					+ "SELECT "
+						+":orderId, :name, :orgAddr, :tel1, :tel2, :tel3, :tel4, :tel5, :isKey, :isWait "
+						+ "FROM DUAL "
+						+" 		WHERE NOT EXISTS ("
+						+" SELECT C.* "
+						+"	FROM client C ";
+						sql += " WHERE ( C.tel1 IN(" + StringUtils.join(tels, ',') + ") ";
+						sql += " OR C.tel2 IN(" + StringUtils.join(tels, ',') + ") ";
+						sql += " OR C.tel3 IN(" + StringUtils.join(tels, ',') + ") ";
+						sql += " OR C.tel4 IN(" + StringUtils.join(tels, ',') + ") ";
+						sql += " OR C.tel5 IN(" + StringUtils.join(tels, ',') + "))";
+						sql +=" )";
+		}else{
+			sql = "INSERT INTO CLIENT(ORDER_ID, NAME, ORG_ADDR, TEL1, TEL2, TEL3, TEL4, TEL5, IS_KEY, IS_WAIT) VALUES(:orderId, :name, :orgAddr, :tel1, :tel2, :tel3, :tel4, :tel5, :isKey, :isWait)";
+		}
+		int i = jdbcOps.update(sql,new BeanPropertySqlParameterSource(client), keyHolder);
+		return i == 0 ? i :keyHolder.getKey().intValue();
+	}
 
 	@Override
 	public List<Order> getClientByTels(String... tels)

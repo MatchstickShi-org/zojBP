@@ -53,7 +53,19 @@ public interface IOrderService {
 	 */
 	Integer addOrder(Order order);
 
-	void addOrderAndClient(Order order);
+	/**
+	 * 新增客户
+	 * @param order
+	 * @param loginUser
+	 * @throws BusinessException
+	 */
+	void addOrderAndClient(Order order,User loginUser) throws BusinessException; 
+	
+	/**
+	 * 新生成客户
+	 * @param order
+	 */
+	void addNewOrderAndClient(Order order); 
 
 	Order findByTels(User loginUser, String... tels);
 
