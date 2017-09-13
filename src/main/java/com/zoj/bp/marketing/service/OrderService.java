@@ -387,8 +387,10 @@ public class OrderService implements IOrderService
 							break;
 						case talkingDesignManagerAuditing://状态为：在谈单-主案部经理审核中：分配设计师跟踪
 							/** 如果客户为在谈单，则更新该客户的信息员等级为银牌 */
-							infoer.setLevel(Level.silver.value());
-							updateInfoerFlag = true;
+							if(infoer.getLevel() > Level.silver.value()){//信息员等级为银牌以下才更新
+								infoer.setLevel(Level.silver.value());
+								updateInfoerFlag = true;
+							}
 							order.setStatus(Status.talkingDesignerTracing.value());
 							orderApprove.setStatus(Status.talkingDesignerTracing.value());
 							orderChangeLog.setStatus(Status.talkingDesignerTracing.value());
@@ -397,8 +399,10 @@ public class OrderService implements IOrderService
 							break;
 						case talkingDesignerTracing://状态为：在谈单-设计师跟踪中：更新为已签单
 							/** 如果客户为已签单，则更新该客户的信息员等级为金牌 */
-							infoer.setLevel(Level.gold.value());
-							updateInfoerFlag = true;
+							if(infoer.getLevel() > Level.gold.value()){//信息员等级为金牌以下才更新
+								infoer.setLevel(Level.gold.value());
+								updateInfoerFlag = true;
+							}
 							order.setStatus(Status.deal.value());
 							order.setDealAmount(orderApprove.getDealAmount());
 							orderApprove.setStatus(Status.deal.value());
