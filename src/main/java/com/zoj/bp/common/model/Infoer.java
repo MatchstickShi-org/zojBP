@@ -221,6 +221,14 @@ public class Infoer implements Serializable
 		this.level = level;
 	}
 
+	public boolean setInfoerLevel(Integer level) {
+		if(this.level > level){
+			this.level = level;
+			return true;
+		}
+		return false;
+	}
+
 	public Integer getSalesmanId() {
 		return salesmanId;
 	}
