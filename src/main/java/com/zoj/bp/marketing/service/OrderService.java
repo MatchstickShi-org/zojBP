@@ -189,10 +189,8 @@ public class OrderService implements IOrderService
 			/**
 			 * 如果当前信息员等级为铁牌，则新增客户的时候更新等级为铜牌
 			 */
-			if (infoer.setInfoerLevel(Level.bronze.value()))
-			{
+			if (infoer.setLevel(Level.bronze))
 				infoerDao.updateInfoer(infoer);
-			}
 		}
 		
 	}
@@ -386,9 +384,9 @@ public class OrderService implements IOrderService
 							break;
 						case talkingDesignManagerAuditing://状态为：在谈单-主案部经理审核中：分配设计师跟踪
 							/** 如果客户为在谈单，则更新该客户的信息员等级为银牌 */
-							if(infoer.setInfoerLevel(Level.silver.value())){//信息员等级为银牌以下才更新
+							if(infoer.setLevel(Level.silver))		//信息员等级为银牌以下才更新
 								updateInfoerFlag = true;
-							}
+							
 							order.setStatus(Status.talkingDesignerTracing.value());
 							orderApprove.setStatus(Status.talkingDesignerTracing.value());
 							orderChangeLog.setStatus(Status.talkingDesignerTracing.value());
@@ -397,9 +395,9 @@ public class OrderService implements IOrderService
 							break;
 						case talkingDesignerTracing://状态为：在谈单-设计师跟踪中：更新为已签单
 							/** 如果客户为已签单，则更新该客户的信息员等级为金牌 */
-							if(infoer.setInfoerLevel(Level.gold.value())){//信息员等级为金牌以下才更新
+							if(infoer.setLevel(Level.gold))		//信息员等级为金牌以下才更新
 								updateInfoerFlag = true;
-							}
+							
 							order.setStatus(Status.deal.value());
 							order.setDealAmount(orderApprove.getDealAmount());
 							orderApprove.setStatus(Status.deal.value());
