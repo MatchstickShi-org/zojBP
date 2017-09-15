@@ -217,8 +217,25 @@ public class Infoer implements Serializable
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public boolean setLevel(int level)
+	{
+		if(this.level == null || this.level < level)
+			return false;
 		this.level = level;
+		return true;
+	}
+	
+	public void setLevel(Integer level)
+	{
+		this.level = level;
+	}
+	
+	public boolean setLevel(Level level)
+	{
+		if(this.level == null || this.level < level.value || level == null)
+			return false;
+		this.level = level.value;
+		return true;
 	}
 
 	public Integer getSalesmanId() {
