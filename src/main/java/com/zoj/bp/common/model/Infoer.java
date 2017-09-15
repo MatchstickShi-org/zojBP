@@ -219,10 +219,12 @@ public class Infoer implements Serializable
 
 	public boolean setLevel(int level)
 	{
-		if(this.level == null || this.level < level)
-			return false;
-		this.level = level;
-		return true;
+		if(this.level != null && this.level > level)
+		{
+			this.level = level;
+			return true;
+		}
+		return false;
 	}
 	
 	public void setLevel(Integer level)
@@ -232,10 +234,12 @@ public class Infoer implements Serializable
 	
 	public boolean setLevel(Level level)
 	{
-		if(this.level == null || this.level < level.value || level == null)
-			return false;
-		this.level = level.value;
-		return true;
+		if(this.level != null && level != null && this.level > level.value)
+		{
+			this.level = level.value;
+			return true;
+		}
+		return false;
 	}
 
 	public Integer getSalesmanId() {
