@@ -140,9 +140,9 @@ $(function()
 		{
 			if(row.designerId == _session_loginUserId || _session_loginUserRole == -1)
 			{
-				if(row.status == 90 || row.status == 0 || row.status == 64)		//已签单、死单、不准单禁止新增回访记录
+				if(row.status == 90 || row.status == 0 || row.status == 64)		//已签单、死单、不准单禁止修改客户信息
 				{
-					$('#addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+					$('#addOrderVisitBtn').linkbutton('enable').linkbutton('show');
 					$applyVisitBtn.linkbutton('disable').linkbutton('hide');
 					$submitUpdateClientFormBtn.linkbutton('disable').linkbutton('hide');
 				}

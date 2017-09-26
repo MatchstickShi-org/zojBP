@@ -165,11 +165,11 @@ $(function()
 		
 		function refreshBtn(row)
 		{
-			if(row.status == 0 || row.status == 90 || row.status == 64)		//死单、已签单、不准单商务部经理可以新生成客户，不允许再回访
+			if(row.status == 0 || row.status == 90 || row.status == 64)		//死单、已签单、不准单商务部经理可以新生成客户
 			{
 				if(_session_loginUserRole == 3 || _session_loginUserRole == -1)
 					$showNewOrderWindowBtn.linkbutton('enable').linkbutton('show');
-				$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
+//				$('#clientNegotiationMgr-addOrderVisitBtn').linkbutton('disable').linkbutton('hide');
 			}
 			else
 			{
