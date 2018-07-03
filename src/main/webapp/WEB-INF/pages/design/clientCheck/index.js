@@ -365,7 +365,7 @@ $(function()
 		$permitOrderWindow.window({width: 340});
 		$rejectOrderWindow.window({width: 340});
 		$checkDeadOrderWindow.window({width: 340});
-		$selectDesignerWindow.window({width: 500});
+		$selectDesignerWindow.window({width: 640});
 		
 		function showPermitOrderWindow()
 		{
@@ -401,7 +401,7 @@ $(function()
 			'		<input type="hidden" name="designerId" id="permitOrderForm_designerIdInput" type="hidden" value="1" />' +
 			'		<tr>' + 
 			'			<td align="right"><label>分配设计师：</label></td>' + 
-			'			<td><input id="permitOrderForm_designerNameSearchbox"  required="required" name="desingerName" prompt="请选择设计师" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
+			'			<td><input id="permitOrderForm_designerNameSearchbox" required="required" name="desingerName" prompt="请选择设计师" editable="false" class="easyui-searchbox" style="width: 160px;"/></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 
 			'			<td align="right"><label>备&nbsp;&nbsp;注：</label></td>' + 
@@ -616,7 +616,7 @@ $(function()
 			}
 			if(selIds[0].status != 60)
 			{
-				$.messager.alert('提示', '只能申请状态为<span style="color: red;">不准单审核中</span>的客户。');
+				$.messager.alert('提示', '只有状态为<span style="color: red;">不准单审核中</span>的客户才能执行[死单]操作。');
 				return;
 			}
 			$checkDeadOrderWindow.window('clear');

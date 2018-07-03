@@ -47,7 +47,7 @@
 			</c:if>
 		</div>
 	</div>
-	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
+	<div data-options="region:'south', split:true, border: true" style="height: 330px;">
 		<div id="infoerMgrTab" data-options="tools:'#infoerMgrTab-tools'">
 			<div title="详情" border="false">
 				<form id="editInfoerForm" action="marketing/infoerMgr/editInfoer" method="post" style="width: 100%;">
@@ -103,8 +103,8 @@
 						</tr>
 						<tr>
 							<td align="center" colspan="3">
-								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" iconCls="icon-save" style="width: 60px;">保存</a>
-								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
+								<a id="submitUpdateInfoerFormBtn" href="javascript:void(0)" iconCls="icon-save">保存</a>
+								<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload">刷新</a>
 							</td>
 						</tr>
 					</table>

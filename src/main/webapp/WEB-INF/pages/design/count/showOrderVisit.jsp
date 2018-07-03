@@ -11,7 +11,7 @@
 <body>
 <table style="width: 100%;">
 	<tr><td height="300">
-		<table id="orderVisitDatagrid" style="height: 300px;"></table>
+		<table id="orderVisitDatagrid" style="height: 330px;"></table>
 	</td></tr> 
 </table>
 <script type="text/javascript" src="pages/design/count/showOrderVisit.js"></script>

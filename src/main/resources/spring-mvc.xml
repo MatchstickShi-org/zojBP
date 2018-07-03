@@ -57,7 +57,7 @@
 			<mvc:exclude-mapping path="/img/**" />
 			<mvc:exclude-mapping path="/pages/**/*.js" />
 			<mvc:exclude-mapping path="/pages/**/*.css" />
-			<bean class="com.zoj.bp.common.interceptor.GlobalInterceptor"></bean>
+			<bean class="com.decoration.bp.common.interceptor.GlobalInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>

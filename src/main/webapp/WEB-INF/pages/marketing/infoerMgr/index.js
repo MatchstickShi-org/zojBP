@@ -734,7 +734,7 @@ $(function()
 			'	<input id="salesmanId" name="salesmanId" type="hidden" value="" />' + 
 			'	<table width="100%">' + 
 			'		<tr>' + 
-			'			<td align="right"><label>回访内容：</label></td>' + 
+			'			<td align="right"><label>回访内容:</label></td>' + 
 			'			<td><input name="content" required="required" class="easyui-textbox" multiline="true" style="width: 230px;height:50px;" /></td>' + 
 			'		</tr>' + 
 			'		<tr>' + 

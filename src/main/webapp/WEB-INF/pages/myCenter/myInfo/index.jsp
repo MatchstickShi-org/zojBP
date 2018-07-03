@@ -38,8 +38,8 @@
 				<td><input name="roleName" class="easyui-textbox" readonly="readonly"/></td>
 			</tr>
 			<tr><td colspan="4">
-				<a id="submitUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">保存</a>
-				<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" style="width: 60px;">刷新</a>
+				<a id="submitUpdateUserFormBtn" href="javascript:void(0)">保存</a>
+				<a id="refreshUpdateUserFormBtn" href="javascript:void(0)">刷新</a>
 			</td></tr>
 		</table>
 	</form>

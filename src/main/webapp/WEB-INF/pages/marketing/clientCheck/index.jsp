@@ -42,7 +42,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="showRejectOrderWindowBtn">驳回</a>
 		</div>
 	</div>
-	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
+	<div data-options="region:'south', split:true, border: true" style="height: 330px;">
 		<div id="clientMgrTab">
 			<div title="详情" border=false>
 				<form id="editOrderForm" action="marketing/clientMgr/editOrder" method="post" style="width: 100%;">
@@ -80,8 +80,8 @@
 						</tr>
 						<tr>
 							<td align="center" colspan="3">
-								<a id="submitUpdateClientFormBtn" href="javascript:void(0)"  iconCls="icon-save" style="width: 60px;">保存</a>
-								<a id="refreshUpdateClientFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
+								<a id="submitUpdateClientFormBtn" href="javascript:void(0)"  iconCls="icon-save">保存</a>
+								<a id="refreshUpdateClientFormBtn" href="javascript:void(0)" iconCls="icon-reload">刷新</a>
 							</td>
 						</tr>
 					</table>

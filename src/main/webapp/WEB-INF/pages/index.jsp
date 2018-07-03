@@ -9,7 +9,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>中奥建业务管理平台</title>
+<title>装饰装修业务管理平台</title>
 <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="css/header.css">
@@ -45,7 +45,7 @@
 <body>
 	<div class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'north', border: false" style="height: 50px; overflow: hidden;">
-			<div id="topDiv"><div id="logoDiv"></div><h1>中奥建业务管理平台</h1></div>
+			<div id="topDiv"><div id="logoDiv"></div><h1>装饰装修业务管理平台</h1></div>
 			<div id="topDiv-bg2"></div>
 			<div id="topDiv-loginUser" style="font-size: 14px;">
 				欢迎你，${sessionScope.loginUser.alias} (${sessionScope.loginUser.roleName})

@@ -8,7 +8,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>北京中奥建工程设计有限公司业务管理平台</title>
+<title>装饰装修业务管理平台</title>
 <link rel="stylesheet" href="css/login.css" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
@@ -20,7 +20,7 @@
 		<div id="maincontent" align="left">
 			<div id="bg_top">
 				<div id="icon"></div>
-				<div id="title">北京中奥建业务管理平台</div>
+				<div id="title">装饰装修业务管理平台</div>
 			</div>
 			<div id="bg_bottom">
 				<div id="bg_left">

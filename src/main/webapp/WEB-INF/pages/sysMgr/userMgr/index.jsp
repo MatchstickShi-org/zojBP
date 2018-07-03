@@ -24,7 +24,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true" id="revertUsersBtn">设为在职</a>
 		</div>
 	</div>
-	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
+	<div data-options="region:'south', split:true, border: true" style="height: 330px;">
 		<div id="userMgrTab">
 			<div title="详情" border="false" style="padding: 2px;">
 				<form id="editUserForm" action="sysMgr/userMgr/editUser" method="post" style="width: 100%;">
@@ -58,8 +58,8 @@
 							</td>
 						</tr>
 						<tr><td colspan="4">
-							<a id="submitUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-save" style="width: 60px;">保存</a>
-							<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
+							<a id="submitUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-save">保存</a>
+							<a id="refreshUpdateUserFormBtn" href="javascript:void(0)" iconCls="icon-reload">刷新</a>
 						</td></tr>
 					</table>
 				</form>

@@ -1,0 +1,68 @@
+package com.decoration.bp.marketing.service;
+
+import java.util.List;
+
+import com.decoration.bp.common.excption.BusinessException;
+import com.decoration.bp.common.model.Infoer;
+import com.decoration.bp.common.model.User;
+import com.decoration.bp.common.vo.DatagridVo;
+import com.decoration.bp.common.vo.Pagination;
+
+public interface IInfoerService {
+
+	Infoer getInfoerByName(String InfoerName, User loginUser);
+
+	/**
+	 * @param id
+	 * @param loginUser TODO
+	 * @return
+	 */
+	Infoer getInfoerById(Integer id, User loginUser);
+
+	/**
+	 * @param Infoer
+	 * @return
+	 */
+	void updateInfoer(Infoer infoer);
+
+	/**
+	 * @param pagination
+	 * @param salesmanId TODO
+	 * @param contains 
+	 * @return
+	 * @throws BusinessException 
+	 */
+	DatagridVo<Infoer> getAllInfoer(Pagination pagination, 
+			User loginUser,String name,String tel, Integer salesmanId, boolean containsUnderling, Integer isWait,Integer... levels) throws BusinessException;
+
+	/**
+	 * @param infoer
+	 * @return 
+	 */
+	Integer addInfoer(Infoer infoer);
+
+	/**
+	 * 
+	 * @param tel
+	 * @param loginUser TODO
+	 * @return
+	 */
+	List<Infoer> findByTel(Infoer infoer, User loginUser);
+	
+	/**
+	 * 根据业务员Id查询所有信息员
+	 * @param salesmanId
+	 * @param pagination 
+	 * @param loginUser TODO
+	 * @return
+	 */
+	DatagridVo<Infoer> findBySalesmanId(Integer salesmanId, Pagination pagination, User loginUser);
+
+	/**
+	 * 信息员业务转移
+	 * @param infoerId
+	 * @param salesmanId
+	 * @return
+	 */
+	Integer updateInfoerSalesmanId(Integer[] infoerId, Integer salesmanId);
+}

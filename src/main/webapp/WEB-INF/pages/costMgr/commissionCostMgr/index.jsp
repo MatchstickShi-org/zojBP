@@ -20,7 +20,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" id="commissionMgr-queryBtn">查询</a>
 		</div>
 	</div>
-	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
+	<div data-options="region:'south', split:true, border: true" style="height: 330px;">
 		<div id="commissionMgr-tab" data-options="tools:'#commissionMgr-tabTools'">
 			<div title="提成" border="false">
 				<table id="commissionMgr-costGrid" border="false"></table>

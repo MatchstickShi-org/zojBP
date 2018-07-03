@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.zoj.bp</groupId>
-	<artifactId>zajBP</artifactId>
+	<groupId>com.decoration.bp</groupId>
+	<artifactId>decorationBP</artifactId>
 	<version>0.2.9</version>
 	<packaging>war</packaging>
-	<name>zajBP</name>
-	<description>中奥建业务管理平台</description>
+	<name>decorationBP</name>
+	<description>装饰装修业务管理平台</description>
 	<build>
 		<pluginManagement>
 			<plugins>

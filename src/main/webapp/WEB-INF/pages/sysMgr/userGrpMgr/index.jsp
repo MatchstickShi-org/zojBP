@@ -22,7 +22,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="removeGroupsBtn">删除</a>
 		</div>
 	</div>
-	<div data-options="region:'south', split:true, border: true" style="height: 270px;">
+	<div data-options="region:'south', split:true, border: true" style="height: 330px;">
 		<div id="userGrpMgrTab">
 			<div title="详情" border="false" style="padding: 2px;">
 				<form id="editGroupForm" action="sysMgr/userGrpMgr/editGroup" method="post" style="width: 100%;">
@@ -37,8 +37,8 @@
 							<td width="70%"><input id="editGroupForm_leaderSearchbox" name="leaderName" class="easyui-searchbox" editable="false"/></td>
 						</tr>
 						<tr><td colspan="4">
-							<a id="saveGroupBtn" href="javascript:void(0)" iconCls="icon-save" style="width: 60px;">保存</a>
-							<a id="refreshGroupBtn" href="javascript:void(0)" iconCls="icon-reload" style="width: 60px;">刷新</a>
+							<a id="saveGroupBtn" href="javascript:void(0)" iconCls="icon-save">保存</a>
+							<a id="refreshGroupBtn" href="javascript:void(0)" iconCls="icon-reload">刷新</a>
 						</td></tr>
 					</table>
 				</form>

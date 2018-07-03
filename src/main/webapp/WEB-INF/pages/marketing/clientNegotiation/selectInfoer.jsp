@@ -11,7 +11,7 @@
 <body>
 <table style="width: 100%;">
 	<tr><td height="300">
-		<table id="selInfoerDatagrid" style="height: 300px;"></table>
+		<table id="selInfoerDatagrid" style="height: 330px;"></table>
 	</td></tr> 
 	<tr><td style="text-align: center;">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="selectInfoerBtn">选择</a> 
